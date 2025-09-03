@@ -2,14 +2,15 @@ import { type RouteConfig, index, prefix, route } from "@react-router/dev/routes
 
 export default [
   index("routes/page.tsx"),
+  // UI上ではGuildのことをServerと呼ぶ
   ...prefix("servers", [
-    route("settings", "routes/servers/settings/page.tsx"),
-    route("create", "routes/servers/create/page.tsx"),
+    route("settings", "routes/guilds/settings/page.tsx"),
+    route("create", "routes/guilds/create/page.tsx"),
     ...prefix(":serverId", [
-      index("routes/servers/page.tsx"),
-      route("invite", "routes/servers/invite/page.tsx"),
+      index("routes/guilds/page.tsx"),
+      route("invite", "routes/guilds/invite/page.tsx"),
       ...prefix("channels", [
-        route(":channelId", "routes/servers/channels/page.tsx"),
+        route(":channelId", "routes/guilds/channels/page.tsx"),
       ])
     ])
   ]),

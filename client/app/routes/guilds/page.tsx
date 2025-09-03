@@ -1,4 +1,4 @@
-export default function Server() {
+export default function Guild() {
   return (
     <div>
       <h1>Server</h1>
