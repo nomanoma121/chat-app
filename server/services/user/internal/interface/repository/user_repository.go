@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"time"
 	"user-service/internal/domain"
 
 	"github.com/google/uuid"
@@ -9,7 +10,7 @@ import (
 
 type CreateUserResponse struct {
 	ID        uuid.UUID
-	CreatedAt int64
+	CreatedAt time.Time
 }
 
 type UserRepository interface {

@@ -1,6 +1,8 @@
 package domain
 
 import (
+	"time"
+
 	"github.com/go-playground/validator"
 	"github.com/google/uuid"
 )
@@ -16,8 +18,8 @@ type User struct {
 	Password  string `validate:"required,min=8"`
 	Bio       string `validate:"omitempty,max=500"`
 	IconURL   string `validate:"omitempty,url"`
-	CreatedAt *int64
-	UpdatedAt *int64
+	CreatedAt *time.Time
+	UpdatedAt *time.Time
 }
 
 type RegisterRequest struct {
