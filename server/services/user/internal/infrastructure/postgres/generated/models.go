@@ -5,10 +5,8 @@
 package generated
 
 import (
-	"database/sql"
-	"time"
-
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type User struct {
@@ -17,8 +15,8 @@ type User struct {
 	Username     string
 	Email        string
 	PasswordHash string
-	Bio          sql.NullString
-	IconUrl      sql.NullString
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
+	Bio          string
+	IconUrl      string
+	CreatedAt    pgtype.Timestamp
+	UpdatedAt    pgtype.Timestamp
 }

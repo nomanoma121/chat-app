@@ -7,15 +7,15 @@ package generated
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (display_id, username, email, password_hash, bio, icon_url, created_at, updated_at)
 VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
-RETURNING (id, created_at)
+RETURNING id, created_at
 `
 
 type CreateUserParams struct {
@@ -23,12 +23,17 @@ type CreateUserParams struct {
 	Username     string
 	Email        string
 	PasswordHash string
-	Bio          sql.NullString
-	IconUrl      sql.NullString
+	Bio          string
+	IconUrl      string
 }
 
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (interface{}, error) {
-	row := q.db.QueryRowContext(ctx, createUser,
+type CreateUserRow struct {
+	ID        uuid.UUID
+	CreatedAt pgtype.Timestamp
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (*CreateUserRow, error) {
+	row := q.db.QueryRow(ctx, createUser,
 		arg.DisplayID,
 		arg.Username,
 		arg.Email,
@@ -36,17 +41,17 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (interfa
 		arg.Bio,
 		arg.IconUrl,
 	)
-	var column_1 interface{}
-	err := row.Scan(&column_1)
-	return column_1, err
+	var i CreateUserRow
+	err := row.Scan(&i.ID, &i.CreatedAt)
+	return &i, err
 }
 
 const existsByDisplayId = `-- name: ExistsByDisplayId :one
 SELECT id, display_id, username, email, password_hash, bio, icon_url, created_at, updated_at FROM users WHERE display_id = $1
 `
 
-func (q *Queries) ExistsByDisplayId(ctx context.Context, displayID string) (User, error) {
-	row := q.db.QueryRowContext(ctx, existsByDisplayId, displayID)
+func (q *Queries) ExistsByDisplayId(ctx context.Context, displayID string) (*User, error) {
+	row := q.db.QueryRow(ctx, existsByDisplayId, displayID)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -59,15 +64,16 @@ func (q *Queries) ExistsByDisplayId(ctx context.Context, displayID string) (User
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
-	return i, err
+	return &i, err
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, display_id, username, email, password_hash, bio, icon_url, created_at, updated_at FROM users WHERE id = $1
+SELECT id, display_id, username, email, password_hash, bio, icon_url, created_at, updated_at 
+FROM users WHERE id = $1
 `
 
-func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByID, id)
+func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (*User, error) {
+	row := q.db.QueryRow(ctx, getUserByID, id)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -80,31 +86,36 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
-	return i, err
+	return &i, err
 }
 
 const updateUser = `-- name: UpdateUser :one
 UPDATE users 
 SET username = $2, bio = $3, icon_url = $4, updated_at = NOW()
 WHERE id = $1
-RETURNING (id, updated_at)
+RETURNING id, updated_at
 `
 
 type UpdateUserParams struct {
 	ID       uuid.UUID
 	Username string
-	Bio      sql.NullString
-	IconUrl  sql.NullString
+	Bio      string
+	IconUrl  string
 }
 
-func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (interface{}, error) {
-	row := q.db.QueryRowContext(ctx, updateUser,
+type UpdateUserRow struct {
+	ID        uuid.UUID
+	UpdatedAt pgtype.Timestamp
+}
+
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (*UpdateUserRow, error) {
+	row := q.db.QueryRow(ctx, updateUser,
 		arg.ID,
 		arg.Username,
 		arg.Bio,
 		arg.IconUrl,
 	)
-	var column_1 interface{}
-	err := row.Scan(&column_1)
-	return column_1, err
+	var i UpdateUserRow
+	err := row.Scan(&i.ID, &i.UpdatedAt)
+	return &i, err
 }
