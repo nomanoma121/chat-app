@@ -22,7 +22,7 @@ func NewPostgresUserRepository(queries *generated.Queries) *userRepository {
 	}
 }
 
-func (r *userRepository) Create(ctx context.Context, user *domain.User) (repository.CreateUserResponse, error) {
+func (r *userRepository) Create(ctx context.Context, user *domain.User) (*repository.CreateUserResponse, error) {
 	dbUser, err := r.queries.CreateUser(ctx, generated.CreateUserParams{
 		DisplayID:    user.DisplayId,
 		Username:     user.Name,
@@ -32,9 +32,9 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) (reposit
 		IconUrl:      user.IconURL,
 	})
 	if err != nil {
-		return repository.CreateUserResponse{}, err
+		return nil, err
 	}
-	return repository.CreateUserResponse{
+	return &repository.CreateUserResponse{
 		ID:        dbUser.ID,
 		CreatedAt: dbUser.CreatedAt.Time,
 	}, nil
