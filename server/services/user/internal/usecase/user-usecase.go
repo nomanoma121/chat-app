@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"user-service/internal/domain"
-	"user-service/internal/interface/repository"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -16,7 +15,7 @@ type UserUsecase interface {
 }
 
 type userUsecase struct {
-	userRepo repository.UserRepository
+	userRepo domain.UserRepository
 }
 
 func (u *userUsecase) Register(ctx context.Context, req *domain.RegisterRequest) (*domain.User, error) {
