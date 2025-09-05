@@ -7,10 +7,10 @@ RETURNING id, created_at;
 SELECT * FROM users WHERE id = $1;
 
 -- name: ExistsByEmail :one
-SELECT id FROM users WHERE email = $1;
+SELECT COUNT(*) FROM users WHERE email = $1;
 
 -- name: ExistsByDisplayId :one
-SELECT id FROM users WHERE display_id = $1;
+SELECT COUNT(*) FROM users WHERE display_id = $1;
 
 -- name: UpdateUser :one
 UPDATE users 

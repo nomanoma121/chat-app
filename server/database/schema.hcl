@@ -41,4 +41,10 @@ table "users" {
   primary_key {
     columns = [column.id]
   }
+  unique "displayId" {
+    columns = [column.display_id]
+  }
+  unique "email" {
+    columns = [column.email]
+  }
 }

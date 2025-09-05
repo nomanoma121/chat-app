@@ -47,25 +47,25 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (*Create
 }
 
 const existsByDisplayId = `-- name: ExistsByDisplayId :one
-SELECT id FROM users WHERE display_id = $1
+SELECT COUNT(*) FROM users WHERE display_id = $1
 `
 
-func (q *Queries) ExistsByDisplayId(ctx context.Context, displayID string) (uuid.UUID, error) {
+func (q *Queries) ExistsByDisplayId(ctx context.Context, displayID string) (int64, error) {
 	row := q.db.QueryRow(ctx, existsByDisplayId, displayID)
-	var id uuid.UUID
-	err := row.Scan(&id)
-	return id, err
+	var count int64
+	err := row.Scan(&count)
+	return count, err
 }
 
 const existsByEmail = `-- name: ExistsByEmail :one
-SELECT id FROM users WHERE email = $1
+SELECT COUNT(*) FROM users WHERE email = $1
 `
 
-func (q *Queries) ExistsByEmail(ctx context.Context, email string) (uuid.UUID, error) {
+func (q *Queries) ExistsByEmail(ctx context.Context, email string) (int64, error) {
 	row := q.db.QueryRow(ctx, existsByEmail, email)
-	var id uuid.UUID
-	err := row.Scan(&id)
-	return id, err
+	var count int64
+	err := row.Scan(&count)
+	return count, err
 }
 
 const getUserByID = `-- name: GetUserByID :one

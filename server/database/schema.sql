@@ -11,5 +11,7 @@ CREATE TABLE "public"."users" (
   "icon_url" character varying(100) NOT NULL,
   "created_at" timestamp NOT NULL,
   "updated_at" timestamp NOT NULL,
-  PRIMARY KEY ("id")
+  PRIMARY KEY ("id"),
+  CONSTRAINT "displayId" UNIQUE ("display_id"),
+  CONSTRAINT "email" UNIQUE ("email")
 );
