@@ -7,18 +7,19 @@ import (
 	"user-service/internal/interface/repository"
 
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserUsecase interface {
-	Register(ctx context.Context, req *domain.RegisterRequest) (domain.User, error)
-	GetUserByID(ctx context.Context, id uuid.UUID) (domain.User, error)
+	Register(ctx context.Context, req *domain.RegisterRequest) (*domain.User, error)
+	GetUserByID(ctx context.Context, id uuid.UUID) (*domain.User, error)
 }
 
 type userUsecase struct {
 	userRepo repository.UserRepository
 }
 
-func (u *userUsecase) Register(ctx context.Context, req *domain.RegisterRequest) (*repository.CreateUserResponse, error) {
+func (u *userUsecase) Register(ctx context.Context, req *domain.RegisterRequest) (*domain.User, error) {
 	exists, err := u.userRepo.ExistsByEmail(ctx, req.Email)
 	if err != nil {
 		return nil, err
@@ -30,14 +31,21 @@ func (u *userUsecase) Register(ctx context.Context, req *domain.RegisterRequest)
 	if err != nil {
 		return nil, err
 	}
-	if !exists {
+	if exists {
 		return nil, errors.New("display ID already exists")
 	}
+
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, err
+	}
+	
 	user := domain.User{
+		ID:        uuid.New(),
 		DisplayId: req.DisplayId,
 		Name:      req.Name,
 		Email:     req.Email,
-		Password:  req.Password,
+		Password:  string(passwordHash),
 		Bio:       req.Bio,
 		IconURL:   req.IconURL,
 	}
@@ -51,3 +59,5 @@ func (u *userUsecase) GetUserByID(ctx context.Context, id uuid.UUID) (*domain.Us
 	}
 	return user, nil
 }
+
+var _ UserUsecase = (*userUsecase)(nil)

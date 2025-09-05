@@ -9,13 +9,12 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (display_id, username, email, password_hash, bio, icon_url, created_at, updated_at)
 VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
-RETURNING id, created_at
+RETURNING id, display_id, username, email, password_hash, bio, icon_url, created_at, updated_at
 `
 
 type CreateUserParams struct {
@@ -27,12 +26,7 @@ type CreateUserParams struct {
 	IconUrl      string
 }
 
-type CreateUserRow struct {
-	ID        uuid.UUID
-	CreatedAt pgtype.Timestamp
-}
-
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (*CreateUserRow, error) {
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (*User, error) {
 	row := q.db.QueryRow(ctx, createUser,
 		arg.DisplayID,
 		arg.Username,
@@ -41,8 +35,18 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (*Create
 		arg.Bio,
 		arg.IconUrl,
 	)
-	var i CreateUserRow
-	err := row.Scan(&i.ID, &i.CreatedAt)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.DisplayID,
+		&i.Username,
+		&i.Email,
+		&i.PasswordHash,
+		&i.Bio,
+		&i.IconUrl,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
 	return &i, err
 }
 

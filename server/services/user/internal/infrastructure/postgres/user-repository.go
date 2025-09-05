@@ -7,7 +7,6 @@ import (
 
 	"user-service/internal/domain"
 	"user-service/internal/infrastructure/postgres/generated"
-	"user-service/internal/interface/repository"
 
 	"github.com/google/uuid"
 )
@@ -22,7 +21,7 @@ func NewPostgresUserRepository(queries *generated.Queries) *userRepository {
 	}
 }
 
-func (r *userRepository) Create(ctx context.Context, user *domain.User) (*repository.CreateUserResponse, error) {
+func (r *userRepository) Create(ctx context.Context, user *domain.User) (*domain.User, error) {
 	dbUser, err := r.queries.CreateUser(ctx, generated.CreateUserParams{
 		DisplayID:    user.DisplayId,
 		Username:     user.Name,
@@ -34,9 +33,16 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) (*reposi
 	if err != nil {
 		return nil, err
 	}
-	return &repository.CreateUserResponse{
+	return &domain.User{
 		ID:        dbUser.ID,
-		CreatedAt: dbUser.CreatedAt.Time,
+		DisplayId: dbUser.DisplayID,
+		Name:      dbUser.Username,
+		Email:     dbUser.Email,
+		Password:  dbUser.PasswordHash,
+		Bio:       dbUser.Bio,
+		IconURL:   dbUser.IconUrl,
+		CreatedAt: &dbUser.CreatedAt.Time,
+		UpdatedAt: &dbUser.UpdatedAt.Time,
 	}, nil
 }
 

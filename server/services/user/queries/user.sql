@@ -1,7 +1,7 @@
 -- name: CreateUser :one
 INSERT INTO users (display_id, username, email, password_hash, bio, icon_url, created_at, updated_at)
 VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
-RETURNING id, created_at;
+RETURNING *;
 
 -- name: GetUserByID :one
 SELECT * FROM users WHERE id = $1;
