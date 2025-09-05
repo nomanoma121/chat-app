@@ -46,17 +46,45 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) (reposit
 }
 
 func (r *userRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*domain.User, error) {
-
+	dbUser, err := r.queries.GetUserByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return &domain.User{
+		ID:        dbUser.ID,
+		DisplayId: dbUser.DisplayID,
+		Name:     dbUser.Username,
+		Email:    dbUser.Email,
+		Password: dbUser.PasswordHash,
+		Bio:     dbUser.Bio,
+		IconURL:  dbUser.IconUrl,
+		CreatedAt: &dbUser.CreatedAt.Time,
+		UpdatedAt: &dbUser.UpdatedAt.Time,
+	}, nil
 }
 
 func (r *userRepository) ExistsByEmail(ctx context.Context, email string) (bool, error) {
-
+	id, err := r.queries.ExistsByEmail(ctx, email)
+	if err != nil {
+		return false, err
+	}
+	return id != uuid.Nil, nil
 }
 
 func (r *userRepository) ExistsByDisplayId(ctx context.Context, displayId string) (bool, error) {
-
+	id, err := r.queries.ExistsByDisplayId(ctx, displayId)
+	if err != nil {
+		return false, err
+	}
+	return id != uuid.Nil, nil
 }
 
 func (r *userRepository) Update(ctx context.Context, user *domain.User) error {
-
+	_, err := r.queries.UpdateUser(ctx, generated.UpdateUserParams{
+		ID:        user.ID,
+		Username:  user.Name,
+		Bio:      user.Bio,
+		IconUrl:   user.IconURL,
+	})
+	return err
 }

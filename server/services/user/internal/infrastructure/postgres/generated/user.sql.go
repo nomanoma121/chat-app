@@ -47,29 +47,29 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (*Create
 }
 
 const existsByDisplayId = `-- name: ExistsByDisplayId :one
-SELECT id, display_id, username, email, password_hash, bio, icon_url, created_at, updated_at FROM users WHERE display_id = $1
+SELECT id FROM users WHERE display_id = $1
 `
 
-func (q *Queries) ExistsByDisplayId(ctx context.Context, displayID string) (*User, error) {
+func (q *Queries) ExistsByDisplayId(ctx context.Context, displayID string) (uuid.UUID, error) {
 	row := q.db.QueryRow(ctx, existsByDisplayId, displayID)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.DisplayID,
-		&i.Username,
-		&i.Email,
-		&i.PasswordHash,
-		&i.Bio,
-		&i.IconUrl,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return &i, err
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
+const existsByEmail = `-- name: ExistsByEmail :one
+SELECT id FROM users WHERE email = $1
+`
+
+func (q *Queries) ExistsByEmail(ctx context.Context, email string) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, existsByEmail, email)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, display_id, username, email, password_hash, bio, icon_url, created_at, updated_at 
-FROM users WHERE id = $1
+SELECT id, display_id, username, email, password_hash, bio, icon_url, created_at, updated_at FROM users WHERE id = $1
 `
 
 func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (*User, error) {
@@ -93,7 +93,7 @@ const updateUser = `-- name: UpdateUser :one
 UPDATE users 
 SET username = $2, bio = $3, icon_url = $4, updated_at = NOW()
 WHERE id = $1
-RETURNING id, updated_at
+RETURNING (id, updated_at)
 `
 
 type UpdateUserParams struct {
@@ -103,19 +103,14 @@ type UpdateUserParams struct {
 	IconUrl  string
 }
 
-type UpdateUserRow struct {
-	ID        uuid.UUID
-	UpdatedAt pgtype.Timestamp
-}
-
-func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (*UpdateUserRow, error) {
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (interface{}, error) {
 	row := q.db.QueryRow(ctx, updateUser,
 		arg.ID,
 		arg.Username,
 		arg.Bio,
 		arg.IconUrl,
 	)
-	var i UpdateUserRow
-	err := row.Scan(&i.ID, &i.UpdatedAt)
-	return &i, err
+	var column_1 interface{}
+	err := row.Scan(&column_1)
+	return column_1, err
 }
