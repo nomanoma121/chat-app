@@ -7,6 +7,7 @@ import (
 
 	"user-service/internal/domain"
 	"user-service/internal/infrastructure/postgres/generated"
+	"user-service/internal/interface/repository"
 
 	"github.com/google/uuid"
 )
@@ -92,3 +93,5 @@ func (r *userRepository) Update(ctx context.Context, user *domain.User) error {
 	})
 	return err
 }
+
+var _ repository.UserRepository = (*userRepository)(nil)
