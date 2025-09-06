@@ -37,8 +37,8 @@ func (u *userUsecase) Register(ctx context.Context, req *domain.RegisterRequest)
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err
-	}
-	
+	}	
+
 	user := domain.User{
 		ID:        uuid.New(),
 		DisplayId: req.DisplayId,
@@ -48,6 +48,11 @@ func (u *userUsecase) Register(ctx context.Context, req *domain.RegisterRequest)
 		Bio:       req.Bio,
 		IconURL:   req.IconURL,
 	}
+
+	if err := user.Validate(); err != nil {
+		return nil, errors.New("invalid user data: " + err.Error())
+	}
+
 	return u.userRepo.Create(ctx, &user)
 }
 
@@ -57,6 +62,12 @@ func (u *userUsecase) GetUserByID(ctx context.Context, id uuid.UUID) (*domain.Us
 		return nil, err
 	}
 	return user, nil
+}
+
+func NewUserUsecase(userRepo domain.UserRepository) UserUsecase {
+	return &userUsecase{
+		userRepo: userRepo,
+	}
 }
 
 var _ UserUsecase = (*userUsecase)(nil)
