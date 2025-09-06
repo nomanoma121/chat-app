@@ -1,27 +1,28 @@
 package main
 
 import (
-	"database/sql"
+	"context"
 	"fmt"
 	"net"
 	"user-service/internal/handler"
 	"user-service/internal/infrastructure/postgres"
+	"user-service/internal/infrastructure/postgres/generated"
 	"user-service/internal/usecase"
 
-	pb "../../api/gen"
-	_ "github.com/lib/pq"
+	pb "chat-app-proto/gen"
+	"github.com/jackc/pgx/v5"
 	"google.golang.org/grpc"
 )
 
 func main() {
-	dsn := "host=localhost port=5432 user=postgres password=password dbname=chatapp sslmode=disable"
-	db, err := sql.Open("postgres", dsn)
+	dsn := "postgres://postgres:password@localhost:5432/chatapp?sslmode=disable"
+	db, err := pgx.Connect(context.Background(), dsn)
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
+	defer db.Close(context.Background())
 
-	userRepo := postgres.NewUserRepository(db)
+	userRepo := postgres.NewPostgresUserRepository(generated.New(db))
 	userUsecase := usecase.NewUserUsecase(userRepo)
 	userHandler := handler.NewUserHandler(userUsecase)
 
