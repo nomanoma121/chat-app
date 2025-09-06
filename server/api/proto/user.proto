@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package user;
+
+import "google/protobuf/timestamp.proto";
+
+service UserService {
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc GetUserByID(GetUserByIDRequest) returns (GetUserByIDResponse);
+}
+
+message User {
+  string id = 1;
+  string display_id = 2;
+  string name = 3;
+  string bio = 4;
+  string icon_url = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message RegisterRequest {
+  string display_id = 1;
+  string password = 2;
+  string email = 3;
+  string name = 4;
+  string bio = 5;
+  string icon_url = 6;
+}
+
+message RegisterResponse {
+  User user = 1;
+}
+
+message GetUserByIDRequest {
+  string id = 1;
+}
+
+message GetUserByIDResponse {
+  User user = 1;
+}
