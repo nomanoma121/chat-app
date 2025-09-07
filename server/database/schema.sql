@@ -7,9 +7,11 @@ CREATE TABLE "public"."users" (
   "username" character varying(100) NOT NULL,
   "email" character varying(100) NOT NULL,
   "password_hash" character varying(100) NOT NULL,
-  "bio" text NULL,
-  "icon_url" character varying(100) NULL,
+  "bio" text NOT NULL,
+  "icon_url" character varying(100) NOT NULL,
   "created_at" timestamp NOT NULL,
   "updated_at" timestamp NOT NULL,
-  PRIMARY KEY ("id")
+  PRIMARY KEY ("id"),
+  CONSTRAINT "displayId" UNIQUE ("display_id"),
+  CONSTRAINT "email" UNIQUE ("email")
 );

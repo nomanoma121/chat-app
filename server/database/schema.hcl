@@ -23,11 +23,11 @@ table "users" {
     type = varchar(100)
   }
   column "bio" {
-    null = true
+    null = false
     type = text
   }
   column "icon_url" {
-    null = true
+    null = false
     type = varchar(100)
   }
   column "created_at" {
@@ -40,5 +40,11 @@ table "users" {
   }
   primary_key {
     columns = [column.id]
+  }
+  unique "displayId" {
+    columns = [column.display_id]
+  }
+  unique "email" {
+    columns = [column.email]
   }
 }
