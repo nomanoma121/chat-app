@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"errors"
 	"user-service/internal/domain"
 
 	"github.com/google/uuid"
