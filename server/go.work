@@ -3,4 +3,5 @@ go 1.25.1
 use (
 	./api
 	./services/user
+	./services/api-gateway
 )
