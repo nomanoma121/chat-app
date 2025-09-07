@@ -3,7 +3,6 @@ package postgres
 import (
 	"context"
 	"database/sql"
-	"errors"
 
 	"user-service/internal/domain"
 	"user-service/internal/infrastructure/postgres/generated"
@@ -50,7 +49,7 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) (*domain
 func (r *userRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*domain.User, error) {
 	dbUser, err := r.queries.GetUserByID(ctx, id)
 	if err == sql.ErrNoRows {
-		return nil, errors.New("user not found")
+		return nil, domain.ErrUserNotFound
 	}
 	if err != nil {
 		return nil, err

@@ -37,12 +37,12 @@ func (h *UserHandler) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 
 	if err != nil {
 		switch err {
-		case usecase.ErrEmailAlreadyExists:
-			return nil, status.Error(codes.AlreadyExists, "email already exists")
-		case usecase.ErrDisplayIDAlreadyExists:
-			return nil, status.Error(codes.AlreadyExists, "display ID already exists")
-		case usecase.ErrInvalidUserData:
-			return nil, status.Error(codes.InvalidArgument, "invalid user data")
+		case domain.ErrEmailAlreadyExists:
+			return nil, status.Error(codes.AlreadyExists, domain.ErrEmailAlreadyExists.Error())
+		case domain.ErrDisplayIDAlreadyExists:
+			return nil, status.Error(codes.AlreadyExists, domain.ErrDisplayIDAlreadyExists.Error())
+		case domain.ErrInvalidUserData:
+			return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserData.Error())
 		default:
 			return nil, status.Error(codes.Internal, "failed to register user")
 		}
@@ -63,12 +63,19 @@ func (h *UserHandler) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 func (h *UserHandler) GetUserByID(ctx context.Context, req *pb.GetUserByIDRequest) (*pb.GetUserByIDResponse, error) {
 	userID, err := uuid.Parse(req.Id)
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid user ID")
+		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserID.Error())
 	}
 
 	user, err := h.userUsecase.GetUserByID(ctx, userID)
 	if err != nil {
-		return nil, status.Error(codes.Internal, "failed to get user")
+		switch err {
+		case domain.ErrUserNotFound:
+			return nil, status.Error(codes.NotFound, domain.ErrUserNotFound.Error())
+		case domain.ErrInvalidUserID:
+			return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserID.Error())
+		default:
+			return nil, status.Error(codes.Internal, "failed to get user")
+		}
 	}
 
 	pbUser := &pb.User{

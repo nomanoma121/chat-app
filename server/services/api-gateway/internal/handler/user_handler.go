@@ -40,7 +40,7 @@ type UserResponse struct {
 func (h *UserHandler) Register(c echo.Context) error {
 	var req CreateUserRequest
 	if err := c.Bind(&req); err != nil {
-		return c.JSON(400, map[string]string{"error": "Invalid request"})
+		return c.JSON(http.StatusBadRequest, "invalid request")
 	}
 
 	pbReq := &userPb.RegisterRequest{
@@ -60,9 +60,9 @@ func (h *UserHandler) Register(c echo.Context) error {
 			case codes.AlreadyExists:
 				return c.JSON(http.StatusConflict, st.Message())
 			case codes.InvalidArgument:
-				return c.JSON(http.StatusBadRequest, st.Message()) 
+				return c.JSON(http.StatusBadRequest, st.Message())
 			default:
-				return c.JSON(http.StatusInternalServerError, st.Message())
+				return c.JSON(http.StatusInternalServerError, "Internal server error")
 			}
 		}
 	}
@@ -83,7 +83,7 @@ func (h *UserHandler) Register(c echo.Context) error {
 func (h *UserHandler) GetUser(c echo.Context) error {
 	userId := c.Param("id")
 	if userId == "" {
-		return echo.NewHTTPError(http.StatusBadRequest, "User ID is required")
+		return c.JSON(http.StatusBadRequest, "User ID is required")
 	}
 
 	pbReq := &userPb.GetUserByIDRequest{
@@ -101,7 +101,7 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 			case codes.InvalidArgument:
 				return c.JSON(http.StatusBadRequest, st.Message())
 			default:
-				return c.JSON(http.StatusInternalServerError, st.Message())
+				return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Internal server error"})
 			}
 		}
 	}
