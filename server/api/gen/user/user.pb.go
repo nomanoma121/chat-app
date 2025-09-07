@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: user.proto
 
-package gen
+package userpb
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -365,8 +365,8 @@ const file_user_proto_rawDesc = "" +
 	".user.UserR\x04user2\x8c\x01\n" +
 	"\vUserService\x129\n" +
 	"\bRegister\x12\x15.user.RegisterRequest\x1a\x16.user.RegisterResponse\x12B\n" +
-	"\vGetUserByID\x12\x18.user.GetUserByIDRequest\x1a\x19.user.GetUserByIDResponseB[\n" +
-	"\bcom.userB\tUserProtoP\x01Z\x14user-service/api/gen\xa2\x02\x03UXX\xaa\x02\x04User\xca\x02\x04User\xe2\x02\x10User\\GPBMetadata\xea\x02\x04Userb\x06proto3"
+	"\vGetUserByID\x12\x18.user.GetUserByIDRequest\x1a\x19.user.GetUserByIDResponseBT\n" +
+	"\bcom.userB\tUserProtoP\x01Z\r./user;userpb\xa2\x02\x03UXX\xaa\x02\x04User\xca\x02\x04User\xe2\x02\x10User\\GPBMetadata\xea\x02\x04Userb\x06proto3"
 
 var (
 	file_user_proto_rawDescOnce sync.Once

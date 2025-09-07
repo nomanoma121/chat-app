@@ -9,7 +9,7 @@ import (
 	"user-service/internal/infrastructure/postgres/generated"
 	"user-service/internal/usecase"
 
-	pb "chat-app-proto/gen"
+	pb "chat-app-proto/gen/user"
 	"github.com/jackc/pgx/v5"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"

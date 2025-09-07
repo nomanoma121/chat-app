@@ -5,7 +5,7 @@ import (
 	"user-service/internal/domain"
 	"user-service/internal/usecase"
 
-	pb "chat-app-proto/gen"
+	pb "chat-app-proto/gen/user"
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

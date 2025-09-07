@@ -1,15 +1,12 @@
 version: v2
 managed:
   enabled: true
-  override:
-    - file_option: go_package_prefix
-      value: user-service/api/gen
 plugins:
   - remote: buf.build/protocolbuffers/go
     out: ./api/gen
-    opt: paths=source_relative
+    opt: paths=import
   - remote: buf.build/grpc/go
     out: ./api/gen
-    opt: paths=source_relative
+    opt: paths=import
 inputs:
   - directory: ./api/proto
