@@ -29,8 +29,8 @@ type User struct {
 	Password  string `validate:"required,min=8"`
 	Bio       string `validate:"omitempty,max=500"`
 	IconURL   string `validate:"omitempty,url"`
-	CreatedAt *time.Time
-	UpdatedAt *time.Time
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type RegisterRequest struct {

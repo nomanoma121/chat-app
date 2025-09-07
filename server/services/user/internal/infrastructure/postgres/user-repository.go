@@ -42,8 +42,8 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) (*domain
 		Password:  dbUser.PasswordHash,
 		Bio:       dbUser.Bio,
 		IconURL:   dbUser.IconUrl,
-		CreatedAt: &dbUser.CreatedAt.Time,
-		UpdatedAt: &dbUser.UpdatedAt.Time,
+		CreatedAt: dbUser.CreatedAt.Time,
+		UpdatedAt: dbUser.UpdatedAt.Time,
 	}, nil
 }
 
@@ -63,8 +63,8 @@ func (r *userRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*domain
 		Password:  dbUser.PasswordHash,
 		Bio:       dbUser.Bio,
 		IconURL:   dbUser.IconUrl,
-		CreatedAt: &dbUser.CreatedAt.Time,
-		UpdatedAt: &dbUser.UpdatedAt.Time,
+		CreatedAt: dbUser.CreatedAt.Time,
+		UpdatedAt: dbUser.UpdatedAt.Time,
 	}, nil
 }
 

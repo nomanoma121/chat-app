@@ -44,15 +44,9 @@ func (h *UserHandler) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 		Name:      user.Name,
 		Bio:       user.Bio,
 		IconUrl:   user.IconURL,
+		CreatedAt: timestamppb.New(user.CreatedAt),
+		UpdatedAt: timestamppb.New(user.UpdatedAt),
 	}
-
-	if user.CreatedAt != nil {
-		pbUser.CreatedAt = timestamppb.New(*user.CreatedAt)
-	}
-	if user.UpdatedAt != nil {
-		pbUser.UpdatedAt = timestamppb.New(*user.UpdatedAt)
-	}
-
 	return &pb.RegisterResponse{User: pbUser}, nil
 }
 
@@ -73,14 +67,8 @@ func (h *UserHandler) GetUserByID(ctx context.Context, req *pb.GetUserByIDReques
 		Name:      user.Name,
 		Bio:       user.Bio,
 		IconUrl:   user.IconURL,
+		CreatedAt: timestamppb.New(user.CreatedAt),
+		UpdatedAt: timestamppb.New(user.UpdatedAt),
 	}
-
-	if user.CreatedAt != nil {
-		pbUser.CreatedAt = timestamppb.New(*user.CreatedAt)
-	}
-	if user.UpdatedAt != nil {
-		pbUser.UpdatedAt = timestamppb.New(*user.UpdatedAt)
-	}
-
 	return &pb.GetUserByIDResponse{User: pbUser}, nil
 }
