@@ -13,7 +13,6 @@ type Config struct {
 }
 
 func New(config Config) *slog.Logger {
-	// Parse log level
 	var level slog.Level
 	switch strings.ToLower(config.Level) {
 	case "debug":
@@ -32,7 +31,6 @@ func New(config Config) *slog.Logger {
 		Level: level,
 	}
 
-	// Create handler based on format
 	var handler slog.Handler
 	if strings.ToLower(config.Format) == "text" {
 		handler = slog.NewTextHandler(os.Stdout, opts)
@@ -42,10 +40,17 @@ func New(config Config) *slog.Logger {
 
 	logger := slog.New(handler)
 
-	// Add service name as default attribute
 	if config.Service != "" {
 		logger = logger.With("service", config.Service)
 	}
 
 	return logger
+}
+
+func Default(serviceName string) *slog.Logger {
+	return New(Config{
+		Level:   slog.LevelInfo.String(),
+		Format:  "json",
+		Service: serviceName,
+	})
 }
