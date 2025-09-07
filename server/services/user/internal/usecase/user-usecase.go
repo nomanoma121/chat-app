@@ -9,6 +9,12 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+var (
+	ErrEmailAlreadyExists     = errors.New("email already exists")
+	ErrDisplayIDAlreadyExists = errors.New("display ID already exists")
+	ErrInvalidUserData        = errors.New("invalid user data")
+)
+
 type UserUsecase interface {
 	Register(ctx context.Context, req *domain.RegisterRequest) (*domain.User, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (*domain.User, error)
@@ -24,14 +30,14 @@ func (u *userUsecase) Register(ctx context.Context, req *domain.RegisterRequest)
 		return nil, err
 	}
 	if exists {
-		return nil, errors.New("email already exists")
+		return nil, ErrEmailAlreadyExists
 	}
 	exists, err = u.userRepo.ExistsByDisplayId(ctx, req.DisplayId)
 	if err != nil {
 		return nil, err
 	}
 	if exists {
-		return nil, errors.New("display ID already exists")
+		return nil, ErrDisplayIDAlreadyExists
 	}
 
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
@@ -50,7 +56,7 @@ func (u *userUsecase) Register(ctx context.Context, req *domain.RegisterRequest)
 	}
 
 	if err := user.Validate(); err != nil {
-		return nil, errors.New("invalid user data: " + err.Error())
+		return nil, ErrInvalidUserData
 	}
 
 	return u.userRepo.Create(ctx, &user)

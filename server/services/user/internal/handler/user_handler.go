@@ -34,8 +34,18 @@ func (h *UserHandler) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 	}
 
 	user, err := h.userUsecase.Register(ctx, domainReq)
+
 	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
+		switch err {
+		case usecase.ErrEmailAlreadyExists:
+			return nil, status.Error(codes.AlreadyExists, "email already exists")
+		case usecase.ErrDisplayIDAlreadyExists:
+			return nil, status.Error(codes.AlreadyExists, "display ID already exists")
+		case usecase.ErrInvalidUserData:
+			return nil, status.Error(codes.InvalidArgument, "invalid user data")
+		default:
+			return nil, status.Error(codes.Internal, "failed to register user")
+		}
 	}
 
 	pbUser := &pb.User{
@@ -58,7 +68,7 @@ func (h *UserHandler) GetUserByID(ctx context.Context, req *pb.GetUserByIDReques
 
 	user, err := h.userUsecase.GetUserByID(ctx, userID)
 	if err != nil {
-		return nil, status.Error(codes.NotFound, "user not found")
+		return nil, status.Error(codes.Internal, "failed to get user")
 	}
 
 	pbUser := &pb.User{

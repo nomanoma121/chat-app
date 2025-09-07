@@ -6,6 +6,8 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type UserHandler struct {
@@ -52,7 +54,17 @@ func (h *UserHandler) Register(c echo.Context) error {
 
 	pbRes, err := h.clients.User.Register(c.Request().Context(), pbReq)
 	if err != nil {
-		return c.JSON(500, map[string]string{"error": "Failed to create user"})
+		st, ok := status.FromError(err)
+		if ok {
+			switch st.Code() {
+			case codes.AlreadyExists:
+				return c.JSON(http.StatusConflict, st.Message())
+			case codes.InvalidArgument:
+				return c.JSON(http.StatusBadRequest, st.Message()) 
+			default:
+				return c.JSON(http.StatusInternalServerError, st.Message())
+			}
+		}
 	}
 
 	res := UserResponse{
@@ -65,7 +77,7 @@ func (h *UserHandler) Register(c echo.Context) error {
 		UpdatedAt: pbRes.User.UpdatedAt.AsTime().Format("2006-01-02 15:04:05"),
 	}
 
-	return c.JSON(201, res)
+	return c.JSON(http.StatusCreated, res)
 }
 
 func (h *UserHandler) GetUser(c echo.Context) error {
@@ -79,8 +91,19 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 	}
 
 	pbRes, err := h.clients.User.GetUserByID(c.Request().Context(), pbReq)
+
 	if err != nil {
-		return c.JSON(500, map[string]string{"error": "Failed to get user"})
+		st, ok := status.FromError(err)
+		if ok {
+			switch st.Code() {
+			case codes.NotFound:
+				return c.JSON(http.StatusNotFound, st.Message())
+			case codes.InvalidArgument:
+				return c.JSON(http.StatusBadRequest, st.Message())
+			default:
+				return c.JSON(http.StatusInternalServerError, st.Message())
+			}
+		}
 	}
 
 	res := UserResponse{
