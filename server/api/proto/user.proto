@@ -3,12 +3,23 @@ syntax = "proto3";
 package user;
 
 import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
 
 option go_package = "./user;userpb";
 
 service UserService {
-  rpc Register(RegisterRequest) returns (RegisterResponse);
-  rpc GetUserByID(GetUserByIDRequest) returns (GetUserByIDResponse);
+  rpc Register(RegisterRequest) returns (RegisterResponse) {
+    option (google.api.http) = {
+      post: "/auth/register"
+      body: "*"
+    };
+  }
+  rpc GetUserByID(GetUserByIDRequest) returns (GetUserByIDResponse) {
+    option (google.api.http) = {
+      get: "/users/{id}"
+    };
+  }
 }
 
 message User {
