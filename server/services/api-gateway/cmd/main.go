@@ -1,26 +1,45 @@
 package main
 
 import (
-	"api-gateway/internal/client"
-	"api-gateway/internal/router"
+	"context"
 	"log"
+	"net/http"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
+	userpb "chat-app-proto/gen/user"
+)
+
+var (
+	USER_SERVICE_ENDPOINT = "localhost:50051"
 )
 
 func main() {
-	clientConfig := client.ClientConfig{
-		UserServiceAddr: "localhost:50051",
-	}
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 
-	clients, err := client.NewClients(clientConfig)
+	grpcGatewayMux := runtime.NewServeMux()
+
+	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	err := userpb.RegisterUserServiceHandlerFromEndpoint(ctx, grpcGatewayMux, USER_SERVICE_ENDPOINT, opts)
 	if err != nil {
-		log.Fatal("Failed to initialize clients: ", err)
+		log.Fatalf("failed to register user service handler: %v", err)
 	}
-	defer clients.Close()
 
-	e := router.NewRouter(clients)
+	r := chi.NewRouter()
 
-	log.Println("API Gateway starting on port 8000")
-	if err := e.Start(":8000"); err != nil {
-		log.Fatal("Failed to start server: ", err)
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+
+	r.Mount("/", grpcGatewayMux)
+
+	log.Println("API Gateway listening on :8000")
+	if err := http.ListenAndServe(":8000", r); err != nil {
+		log.Fatalf("failed to serve: %v", err)
 	}
 }

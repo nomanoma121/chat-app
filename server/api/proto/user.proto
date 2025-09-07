@@ -11,13 +11,13 @@ option go_package = "./user;userpb";
 service UserService {
   rpc Register(RegisterRequest) returns (RegisterResponse) {
     option (google.api.http) = {
-      post: "/auth/register"
+      post: "/api/auth/register"
       body: "*"
     };
   }
   rpc GetUserByID(GetUserByIDRequest) returns (GetUserByIDResponse) {
     option (google.api.http) = {
-      get: "/users/{id}"
+      get: "/api/users/{id}"
     };
   }
 }
