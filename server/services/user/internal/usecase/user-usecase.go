@@ -59,9 +59,6 @@ func (u *userUsecase) Register(ctx context.Context, req *domain.RegisterRequest)
 func (u *userUsecase) GetUserByID(ctx context.Context, id uuid.UUID) (*domain.User, error) {
 	user, err := u.userRepo.GetUserByID(ctx, id)
 	if err != nil {
-		if errors.Is(err, domain.ErrUserNotFound) {
-			return nil, domain.ErrUserNotFound
-		}
 		return nil, err
 	}
 	return user, nil
