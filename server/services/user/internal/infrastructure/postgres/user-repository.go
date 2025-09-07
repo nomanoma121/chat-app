@@ -23,6 +23,7 @@ func NewPostgresUserRepository(queries *generated.Queries) *userRepository {
 
 func (r *userRepository) Create(ctx context.Context, user *domain.User) (*domain.User, error) {
 	dbUser, err := r.queries.CreateUser(ctx, generated.CreateUserParams{
+		ID:           user.ID,
 		DisplayID:    user.DisplayId,
 		Username:     user.Name,
 		Email:        user.Email,
