@@ -8,7 +8,7 @@
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
-    "orval": "orval --config ./orval.config.ts",
+    "orval:gen": "orval --config ./orval.config.ts",
     "biome:check": "biome check --write ./app"
   },
   "dependencies": {
@@ -21,7 +21,8 @@
     "isbot": "^5.1.27",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router": "^7.7.1"
+    "react-router": "^7.7.1",
+    "zod": "^4.1.5"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.3",
