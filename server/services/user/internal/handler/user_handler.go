@@ -41,16 +41,16 @@ func (h *UserHandler) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 	if err != nil {
 		switch err {
 		case domain.ErrEmailAlreadyExists:
-			h.logger.Warn("Registration failed: email already exists", "display_id", req.DisplayId)
+			h.logger.Warn("Registration failed: email already exists")
 			return nil, status.Error(codes.AlreadyExists, domain.ErrEmailAlreadyExists.Error())
 		case domain.ErrDisplayIDAlreadyExists:
-			h.logger.Warn("Registration failed: display ID already exists", "display_id", req.DisplayId)
+			h.logger.Warn("Registration failed: display ID already exists")
 			return nil, status.Error(codes.AlreadyExists, domain.ErrDisplayIDAlreadyExists.Error())
 		case domain.ErrInvalidUserData:
-			h.logger.Warn("Registration failed: invalid user data", "display_id", req.DisplayId)
+			h.logger.Warn("Registration failed: invalid user data")
 			return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserData.Error())
 		default:
-			h.logger.Error("Registration failed: unexpected error", "error", err, "display_id", req.DisplayId)
+			h.logger.Error("Registration failed: unexpected error", "error", err)
 			return nil, status.Error(codes.Internal, "failed to register user")
 		}
 	}
@@ -70,7 +70,7 @@ func (h *UserHandler) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 func (h *UserHandler) GetUserByID(ctx context.Context, req *pb.GetUserByIDRequest) (*pb.GetUserByIDResponse, error) {
 	userID, err := uuid.Parse(req.Id)
 	if err != nil {
-		h.logger.Warn("Invalid UUID format", "user_id", req.Id, "error", err)
+		h.logger.Warn("Invalid UUID format", "error", err)
 		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserID.Error())
 	}
 
@@ -78,13 +78,13 @@ func (h *UserHandler) GetUserByID(ctx context.Context, req *pb.GetUserByIDReques
 	if err != nil {
 		switch err {
 		case domain.ErrUserNotFound:
-			h.logger.Warn("User not found", "user_id", req.Id)
+			h.logger.Warn("User not found")
 			return nil, status.Error(codes.NotFound, domain.ErrUserNotFound.Error())
 		case domain.ErrInvalidUserID:
-			h.logger.Warn("Invalid user ID format", "user_id", req.Id)
+			h.logger.Warn("Invalid user ID format")
 			return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserID.Error())
 		default:
-			h.logger.Error("Failed to get user: unexpected error", "error", err, "user_id", req.Id)
+			h.logger.Error("Failed to get user: unexpected error", "error", err)
 			return nil, status.Error(codes.Internal, "failed to get user")
 		}
 	}
