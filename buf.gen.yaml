@@ -16,5 +16,7 @@ plugins:
     opt:
       - allow_merge=true
       - merge_file_name=openapi.swagger
+      - openapi_naming_strategy=simple
+      - simple_operation_ids=true
 inputs:
   - directory: ./server/api/proto
