@@ -28,12 +28,10 @@ func main() {
 
 	grpcGatewayMux := runtime.NewServeMux()
 
-	endpoint := USER_SERVICE_ENDPOINT
-
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	err := userpb.RegisterUserServiceHandlerFromEndpoint(ctx, grpcGatewayMux, endpoint, opts)
+	err := userpb.RegisterUserServiceHandlerFromEndpoint(ctx, grpcGatewayMux, USER_SERVICE_ENDPOINT, opts)
 	if err != nil {
-		log.Error("Failed to register user service handler", "error", err, "endpoint", endpoint)
+		log.Error("Failed to register user service handler", "error", err, "endpoint", USER_SERVICE_ENDPOINT)
 		os.Exit(1)
 	}
 
