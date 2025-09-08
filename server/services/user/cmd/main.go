@@ -11,6 +11,7 @@ import (
 	"user-service/internal/usecase"
 
 	pb "chat-app-proto/gen/user"
+
 	"github.com/jackc/pgx/v5"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -18,7 +19,7 @@ import (
 
 func main() {
 	log := logger.Default("user-service")
-	
+
 	dsn := "postgres://user:password@localhost:5432/chat_app?sslmode=disable"
 
 	db, err := pgx.Connect(context.Background(), dsn)
