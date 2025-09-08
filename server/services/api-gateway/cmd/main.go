@@ -2,8 +2,9 @@ package main
 
 import (
 	"context"
-	"log"
 	"net/http"
+	"os"
+	"shared/logger"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -19,6 +20,8 @@ var (
 )
 
 func main() {
+	log := logger.Default("api-gateway")
+
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -28,7 +31,8 @@ func main() {
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 	err := userpb.RegisterUserServiceHandlerFromEndpoint(ctx, grpcGatewayMux, USER_SERVICE_ENDPOINT, opts)
 	if err != nil {
-		log.Fatalf("failed to register user service handler: %v", err)
+		log.Error("Failed to register user service handler", "error", err, "endpoint", USER_SERVICE_ENDPOINT)
+		os.Exit(1)
 	}
 
 	r := chi.NewRouter()
@@ -38,8 +42,10 @@ func main() {
 
 	r.Mount("/", grpcGatewayMux)
 
-	log.Println("API Gateway listening on :8000")
-	if err := http.ListenAndServe(":8000", r); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+	port := "8000"
+	log.Info("API Gateway starting", "port", port)
+	if err := http.ListenAndServe(":"+port, r); err != nil {
+		log.Error("Failed to serve", "error", err, "port", port)
+		os.Exit(1)
 	}
 }
