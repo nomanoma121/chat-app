@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve": "http-server ./docs -p 3000 -c-1 --cors -o",
+    "buf:gen": "buf generate",
+    "buf:deps": "buf dep update",
+    "prism": "prism mock ./docs/openapi.swagger.json -p 8001"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.15.0",
+  "devDependencies": {
+    "@bufbuild/buf": "^1.57.0",
+    "@stoplight/prism-cli": "^5.14.2",
+    "http-server": "^14.1.1"
+  }
+}

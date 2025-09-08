@@ -1,1 +1,6 @@
 volumes/
+
+# generatedをignore
+
+**/gen/
+**/generated/
