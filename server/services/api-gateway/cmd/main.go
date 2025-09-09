@@ -6,21 +6,33 @@ import (
 	"os"
 	"shared/logger"
 
+	mdw "api-gateway/internal/middleware"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/jwtauth/v5"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/joho/godotenv"
 
 	userpb "chat-app-proto/gen/user"
 )
 
 var (
 	USER_SERVICE_ENDPOINT = "localhost:50051"
+	tokenAuth             *jwtauth.JWTAuth
 )
+
+func init() {
+	_ = godotenv.Load()
+}
 
 func main() {
 	log := logger.Default("api-gateway")
+
+	tokenAuth = jwtauth.New("HS256", []byte(os.Getenv("JWT_SECRET")), nil)
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
@@ -39,6 +51,12 @@ func main() {
 
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(mdw.JWTAuthorizer(tokenAuth, mdw.Config{
+		Skip: mdw.Paths{
+			"/api/auth/register": true,
+			"/api/auth/login":    true,
+		},
+	}))
 
 	r.Mount("/", grpcGatewayMux)
 

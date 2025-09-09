@@ -17,7 +17,7 @@ type UserUsecase interface {
 }
 
 type Config struct {
-	SECRET string
+	JWTSecret string
 }
 
 type userUsecase struct {
@@ -88,7 +88,7 @@ func (u *userUsecase) Login(ctx context.Context, req *domain.LoginRequest) (*str
 		"exp":     time.Now().Add(time.Hour * 72).Unix(),
 	})
 
-	tokenString, err := token.SignedString([]byte(u.config.SECRET))
+	tokenString, err := token.SignedString([]byte(u.config.JWTSecret))
 	if err != nil {
 		return nil, err
 	}
