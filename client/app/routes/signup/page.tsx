@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "~/hooks/use-auth";
+import { useRegister } from "~/api/gen/auth/auth";
 import type { RegisterRequest } from "~/api/gen/userProto.schemas";
 
 export default function RegisterPage() {
@@ -11,15 +11,16 @@ export default function RegisterPage() {
 		bio: "",
 		iconUrl: "",
 	});
-	const { register } = useAuth();
+	const { mutateAsync, isPending, error } = useRegister();
 
 
 	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		await register.exec(formData);
-		if (!register.isPending && !register.error) {
-			console.log("Registration successful");
+		try {
+			e.preventDefault();
+			await mutateAsync({ data: formData });
 			alert("登録に成功しました！");
+		} catch (error) {
+			alert("登録に失敗しました。");
 		}
 	};
 
@@ -137,7 +138,7 @@ export default function RegisterPage() {
 						</div>
 					</div>
 
-					{register.error && (
+					{error && (
 						<div className="text-red-600 text-sm text-center">
 							登録に失敗しました。入力内容を確認してください。
 						</div>
@@ -146,10 +147,10 @@ export default function RegisterPage() {
 					<div>
 						<button
 							type="submit"
-							disabled={register.isPending}
+							disabled={isPending}
 							className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
 						>
-							{register.isPending ? "登録中..." : "新規登録"}
+							{isPending ? "登録中..." : "新規登録"}
 						</button>
 					</div>
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "~/hooks/use-auth";
+import { useLoginMutation } from "~/hooks/use-login";
 import type { LoginRequest } from "~/api/gen/userProto.schemas";
 
 export default function LoginPage() {
@@ -7,14 +7,15 @@ export default function LoginPage() {
 		email: "",
 		password: "",
 	});
-	const { login } = useAuth();
+	const { mutateAsync, isPending, error } = useLoginMutation();
 
 	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		await login.exec(formData);
-		if (!login.isPending && !login.error) {
-			console.log("Login successful");
+		try {
+			e.preventDefault();
+			await mutateAsync(formData);
 			alert("ログインに成功しました！");
+		} catch (error) {
+			alert("ログインに失敗しました。");
 		}
 	};
 
@@ -69,7 +70,7 @@ export default function LoginPage() {
 						</div>
 					</div>
 
-					{login.error && (
+					{error && (
 						<div className="text-red-600 text-sm text-center">
 							ログインに失敗しました。メールアドレスまたはパスワードを確認してください。
 						</div>
@@ -78,10 +79,10 @@ export default function LoginPage() {
 					<div>
 						<button
 							type="submit"
-							disabled={login.isPending}
+							disabled={isPending}
 							className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
 						>
-							{login.isPending ? "ログイン中..." : "ログイン"}
+							{isPending ? "ログイン中..." : "ログイン"}
 						</button>
 					</div>
 
