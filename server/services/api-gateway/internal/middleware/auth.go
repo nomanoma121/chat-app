@@ -9,13 +9,13 @@ import (
 type Paths map[string]bool
 
 type Config struct {
-	Skip Paths
+	PublicPaths Paths
 }
 
 func JWTAuthorizer(ja *jwtauth.JWTAuth, config Config) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if config.Skip[r.URL.Path] {
+			if config.PublicPaths[r.URL.Path] {
 				next.ServeHTTP(w, r)
 				return
 			}

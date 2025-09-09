@@ -52,7 +52,7 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(mdw.JWTAuthorizer(tokenAuth, mdw.Config{
-		Skip: mdw.Paths{
+		PublicPaths: mdw.Paths{
 			"/api/auth/register": true,
 			"/api/auth/login":    true,
 		},
