@@ -19,7 +19,9 @@ export default {
       mode: 'tags-split',
       client: 'zod',
       target: 'app/schema/gen',
-      fileExtension: '.zod.ts',
     },
+    hooks: {
+      afterAllFilesWrite: "pnpm biome:check",
+    }
   },
 };
