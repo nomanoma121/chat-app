@@ -5,5 +5,4 @@ volumes/
 **/gen/
 **/generated/
 .env
-private.pem
-public.pem
+
