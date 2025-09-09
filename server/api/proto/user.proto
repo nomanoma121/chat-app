@@ -21,9 +21,20 @@ service UserService {
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "User"
+      tags: "Auth"
     };
   }
+
+  rpc Login(LoginRequest) returns (LoginResponse) {
+    option (google.api.http) = {
+      post: "/api/auth/login"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Auth"
+    };
+  }
+
   rpc GetUserByID(GetUserByIDRequest) returns (GetUserByIDResponse) {
     option (google.api.http) = {
       get: "/api/users/{id}"
@@ -32,6 +43,7 @@ service UserService {
       tags: "User"
     };
   }
+
 }
 
 message User {
@@ -70,6 +82,25 @@ message RegisterResponse {
     };
   };
   User user = 1;
+}
+
+message LoginRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["email", "password"]
+    };
+  };
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["token"]
+    };
+  };
+  string token = 2;
 }
 
 message GetUserByIDRequest {

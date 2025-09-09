@@ -3,6 +3,9 @@ INSERT INTO users (id, display_id, username, email, password_hash, bio, icon_url
 VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
 RETURNING *;
 
+-- name: FindByEmail :one
+SELECT * FROM users WHERE email = $1;
+
 -- name: GetUserByID :one
 SELECT * FROM users WHERE id = $1;
 

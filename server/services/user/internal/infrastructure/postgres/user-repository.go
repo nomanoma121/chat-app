@@ -46,6 +46,27 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) (*domain
 	}, nil
 }
 
+func (r *userRepository) FindByEmail(ctx context.Context, email string) (*domain.User, error) {
+	dbUser, err := r.queries.FindByEmail(ctx, email)
+	if err == sql.ErrNoRows {
+		return nil, domain.ErrUserNotFound
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &domain.User{
+		ID:        dbUser.ID,
+		DisplayId: dbUser.DisplayID,
+		Name:      dbUser.Username,
+		Email:     dbUser.Email,
+		Password:  dbUser.PasswordHash,
+		Bio:       dbUser.Bio,
+		IconURL:   dbUser.IconUrl,
+		CreatedAt: dbUser.CreatedAt.Time,
+		UpdatedAt: dbUser.UpdatedAt.Time,
+	}, nil
+}
+
 func (r *userRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*domain.User, error) {
 	dbUser, err := r.queries.GetUserByID(ctx, id)
 	if err == sql.ErrNoRows {

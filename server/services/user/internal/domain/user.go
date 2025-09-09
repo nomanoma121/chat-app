@@ -42,6 +42,11 @@ type RegisterRequest struct {
 	IconURL   string `validate:"omitempty,url"`
 }
 
+type LoginRequest struct {
+	Email    string `validate:"required,email"`
+	Password string `validate:"required,min=8"`
+}
+
 func NewUser(user User) *User {
 	return &User{
 		ID:        user.ID,
