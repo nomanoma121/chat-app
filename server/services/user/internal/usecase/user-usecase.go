@@ -5,7 +5,7 @@ import (
 	"time"
 	"user-service/internal/domain"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -16,8 +16,20 @@ type UserUsecase interface {
 	GetUserByID(ctx context.Context, id uuid.UUID) (*domain.User, error)
 }
 
+type Config struct {
+	SECRET string
+}
+
 type userUsecase struct {
 	userRepo domain.UserRepository
+	config   Config
+}
+
+func NewUserUsecase(userRepo domain.UserRepository, config Config) UserUsecase {
+	return &userUsecase{
+		userRepo: userRepo,
+		config:   config,
+	}
 }
 
 func (u *userUsecase) Register(ctx context.Context, req *domain.RegisterRequest) (*domain.User, error) {
@@ -68,18 +80,15 @@ func (u *userUsecase) Login(ctx context.Context, req *domain.LoginRequest) (*str
 		return nil, err
 	}
 
-	claims := jwt.MapClaims{
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": user.ID.String(),
 		"display_id": user.DisplayId,
 		"name": user.Name,
 		"iat":     time.Now().Unix(),
-		"exp":     jwt.TimeFunc().Add(time.Hour * 72).Unix(),
-	}
+		"exp":     time.Now().Add(time.Hour * 72).Unix(),
+	})
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	// jwtを生成
-	tokenString, err := token.SignedString([]byte("secret"))
+	tokenString, err := token.SignedString([]byte(u.config.SECRET))
 	if err != nil {
 		return nil, err
 	}
@@ -93,12 +102,6 @@ func (u *userUsecase) GetUserByID(ctx context.Context, id uuid.UUID) (*domain.Us
 		return nil, err
 	}
 	return user, nil
-}
-
-func NewUserUsecase(userRepo domain.UserRepository) UserUsecase {
-	return &userUsecase{
-		userRepo: userRepo,
-	}
 }
 
 var _ UserUsecase = (*userUsecase)(nil)

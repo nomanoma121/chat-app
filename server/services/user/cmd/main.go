@@ -32,7 +32,9 @@ func main() {
 	log.Info("Connected to PostgreSQL", "database", "chat_app")
 
 	userRepo := postgres.NewPostgresUserRepository(generated.New(db))
-	userUsecase := usecase.NewUserUsecase(userRepo)
+	userUsecase := usecase.NewUserUsecase(userRepo, usecase.Config{
+		SECRET: os.Getenv("SECRET_KEY"),
+	})
 	userHandler := handler.NewUserHandler(userUsecase, log)
 
 	server := grpc.NewServer()
