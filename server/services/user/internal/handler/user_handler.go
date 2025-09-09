@@ -67,6 +67,27 @@ func (h *UserHandler) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 	return &pb.RegisterResponse{User: pbUser}, nil
 }
 
+func (h *UserHandler) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
+	domainReq := &domain.LoginRequest{
+		Email:    req.Email,
+		Password: req.Password,
+	}
+
+	token, err := h.userUsecase.Login(ctx, domainReq)
+	if err != nil {
+		switch err {
+		case domain.ErrInvalidCredentials:
+			h.logger.Warn("Login failed: user not found")
+			return nil, status.Error(codes.NotFound, domain.ErrInvalidCredentials.Error())
+		default:
+			h.logger.Error("Login failed: unexpected error", "error", err)
+			return nil, status.Error(codes.Internal, "failed to login")
+		}
+	}
+
+	return &pb.LoginResponse{Token: *token}, nil
+}
+
 func (h *UserHandler) GetUserByID(ctx context.Context, req *pb.GetUserByIDRequest) (*pb.GetUserByIDResponse, error) {
 	userID, err := uuid.Parse(req.Id)
 	if err != nil {

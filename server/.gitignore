@@ -4,3 +4,5 @@ volumes/
 
 **/gen/
 **/generated/
+.env
+

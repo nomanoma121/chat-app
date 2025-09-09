@@ -12,10 +12,16 @@ import (
 
 	pb "chat-app-proto/gen/user"
 
+	"github.com/joho/godotenv"
+
 	"github.com/jackc/pgx/v5"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
+
+func init() {
+	_ = godotenv.Load()
+}
 
 func main() {
 	log := logger.Default("user-service")
@@ -32,7 +38,9 @@ func main() {
 	log.Info("Connected to PostgreSQL", "database", "chat_app")
 
 	userRepo := postgres.NewPostgresUserRepository(generated.New(db))
-	userUsecase := usecase.NewUserUsecase(userRepo)
+	userUsecase := usecase.NewUserUsecase(userRepo, usecase.Config{
+		JWTSecret: os.Getenv("JWT_SECRET"),
+	})
 	userHandler := handler.NewUserHandler(userUsecase, log)
 
 	server := grpc.NewServer()
