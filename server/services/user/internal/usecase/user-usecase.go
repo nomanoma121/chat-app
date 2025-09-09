@@ -73,17 +73,15 @@ func (u *userUsecase) Register(ctx context.Context, req *domain.RegisterRequest)
 func (u *userUsecase) Login(ctx context.Context, req *domain.LoginRequest) (*string, error) {
 	user, err := u.userRepo.FindByEmail(ctx, req.Email)
 	if err != nil {
-		return nil, err
+		return nil, domain.ErrInvalidCredentials
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
-		return nil, err
+		return nil, domain.ErrInvalidCredentials
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": user.ID.String(),
-		"display_id": user.DisplayId,
-		"name": user.Name,
 		"iat":     time.Now().Unix(),
 		"exp":     time.Now().Add(time.Hour * 72).Unix(),
 	})

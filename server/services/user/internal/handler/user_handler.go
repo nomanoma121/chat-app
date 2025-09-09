@@ -76,9 +76,9 @@ func (h *UserHandler) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 	token, err := h.userUsecase.Login(ctx, domainReq)
 	if err != nil {
 		switch err {
-		case domain.ErrUserNotFound:
+		case domain.ErrInvalidCredentials:
 			h.logger.Warn("Login failed: user not found")
-			return nil, status.Error(codes.NotFound, domain.ErrUserNotFound.Error())
+			return nil, status.Error(codes.NotFound, domain.ErrInvalidCredentials.Error())
 		default:
 			h.logger.Error("Login failed: unexpected error", "error", err)
 			return nil, status.Error(codes.Internal, "failed to login")

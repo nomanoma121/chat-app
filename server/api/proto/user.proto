@@ -100,7 +100,7 @@ message LoginResponse {
       required: ["token"]
     };
   };
-  string token = 2;
+  string token = 1;
 }
 
 message GetUserByIDRequest {
