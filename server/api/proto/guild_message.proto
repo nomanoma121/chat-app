@@ -94,6 +94,11 @@ message DeleteGuildMemberRequest {
 }
 
 message DeleteGuildMemberResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["empty"]
+    };
+  };
   google.protobuf.Empty empty = 1;
 }
 
@@ -107,6 +112,11 @@ message LeaveGuildRequest {
 }
 
 message LeaveGuildResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["empty"]
+    };
+  };
   google.protobuf.Empty empty = 1;
 }
 
@@ -158,6 +168,11 @@ message DeleteGuildInviteRequest {
 }
 
 message DeleteGuildInviteResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["empty"]
+    };
+  };
   google.protobuf.Empty empty = 1;
 }
 
@@ -245,6 +260,11 @@ message DeleteCategoryRequest {
 }
 
 message DeleteCategoryResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["empty"]
+    };
+  };
   google.protobuf.Empty empty = 1;
 }
 
@@ -296,5 +316,10 @@ message DeleteChannelRequest {
 }
 
 message DeleteChannelResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["empty"]
+    };
+  };
   google.protobuf.Empty empty = 1;
 }
