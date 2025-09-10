@@ -48,7 +48,7 @@ service GuildService {
       get: "/api/guilds/{guild_id}/members"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "Guild"
+      tags: "Member"
     };
   }
 
@@ -57,7 +57,7 @@ service GuildService {
       delete: "/api/guilds/{guild_id}/members/{user_id}"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "Guild"
+      tags: "Member"
     };
   }
 
@@ -66,7 +66,7 @@ service GuildService {
       delete: "/api/guilds/{guild_id}/members/me"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "Guild"
+      tags: "Member"
     };
   }
 
@@ -75,7 +75,7 @@ service GuildService {
       get: "/api/guilds/{guild_id}/invites"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "Guild"
+      tags: "Invite"
     };
   }
 
@@ -85,7 +85,7 @@ service GuildService {
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "Guild"
+      tags: "Invite"
     };
   }
 
@@ -94,7 +94,7 @@ service GuildService {
       delete: "/api/invites/{invite_code}"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "Guild"
+      tags: "Invite"
     };
   }
 
@@ -104,7 +104,7 @@ service GuildService {
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "Guild"
+      tags: "Invite"
     };
   }
 
@@ -113,7 +113,7 @@ service GuildService {
       get: "/api/guilds/{guild_id}/categories"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "Guild"
+      tags: "Category"
     };
   }
 
@@ -123,7 +123,7 @@ service GuildService {
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "Guild"
+      tags: "Category"
     };
   }
 
@@ -133,7 +133,7 @@ service GuildService {
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "Guild"
+      tags: "Category"
     };
   }
 
@@ -142,7 +142,7 @@ service GuildService {
       delete: "/api/categories/{category_id}"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "Guild"
+      tags: "Category"
     };
   }
 
@@ -152,7 +152,7 @@ service GuildService {
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "Guild"
+      tags: "Channel"
     };
   }
 
@@ -162,7 +162,7 @@ service GuildService {
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "Guild"
+      tags: "Channel"
     };
   }
 
@@ -171,7 +171,7 @@ service GuildService {
       delete: "/api/channels/{channel_id}"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "Guild"
+      tags: "Channel"
     };
   }
 }
