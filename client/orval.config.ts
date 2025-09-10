@@ -6,6 +6,12 @@ export default {
       target: './app/api/gen',
       client: 'react-query',
       validation: true,
+      override: {
+        mutator: {
+          path: './app/api/client.ts',
+          name: 'customClient',
+        },
+      },
     },
     hooks: {
       afterAllFilesWrite: "pnpm biome:check",
