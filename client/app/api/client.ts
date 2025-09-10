@@ -34,14 +34,14 @@ axiosInstance.interceptors.response.use(
 );
 
 export const customClient = <T>(config: AxiosRequestConfig): Promise<T> => {
-	const source = Axios.CancelToken.source();
-	const promise = axiosInstance({ ...config, cancelToken: source.token }).then(
+	const controller = new AbortController();
+	const promise = axiosInstance({ ...config, signal: controller.signal }).then(
 		({ data }) => data,
 	);
 
 	// @ts-expect-error
 	promise.cancel = () => {
-		source.cancel("Query was cancelled");
+		controller.abort();
 	};
 
 	return promise;

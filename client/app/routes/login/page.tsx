@@ -88,7 +88,7 @@ export default function LoginPage() {
 
 					<div className="text-center">
 						<a
-							href="/register"
+							href="/signup"
 							className="font-medium text-indigo-600 hover:text-indigo-500"
 						>
 							アカウントをお持ちでない場合は新規登録
