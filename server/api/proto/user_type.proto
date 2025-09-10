@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "./user;userpb";
+
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+message User {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "display_id", "name", "bio", "icon_url", "created_at", "updated_at"]
+    };
+  };
+  string id = 1;
+  string display_id = 2;
+  string name = 3;
+  string bio = 4;
+  string icon_url = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}

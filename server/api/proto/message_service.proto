@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package msg;
+
+option go_package = "./message;messagepb";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "message_message.proto";
+
+service MessageService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    name: "Message"
+    description: "Message management operations"
+  };
+
+  rpc CreateMessage(CreateMessageRequest) returns (CreateMessageResponse) {
+    option (google.api.http) = {
+      post: "/api/channels/{channel_id}/messages"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Message"
+    };
+  }
+
+  rpc GetMessagesByChannelID(GetMessagesByChannelIDRequest) returns (GetMessagesByChannelIDResponse) {
+    option (google.api.http) = {
+      get: "/api/channels/{channel_id}/messages"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Message"
+    };
+  }
+
+  rpc UpdateMessageByMessageID(UpdateMessageByMessageIDRequest) returns (UpdateMessageByMessageIDResponse) {
+    option (google.api.http) = {
+      put: "/api/messages/{message_id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Message"
+    };
+  }
+
+  rpc DeleteMessageByMessageID(DeleteMessageByMessageIDRequest) returns (DeleteMessageByMessageIDResponse) {
+    option (google.api.http) = {
+      delete: "/api/messages/{message_id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Message"
+    };
+  }
+}

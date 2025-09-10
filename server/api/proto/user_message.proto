@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "./user;userpb";
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "user_type.proto";
+
+message RegisterRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["display_id", "password", "email", "name"]
+    };
+  };
+  string display_id = 1;
+  string password = 2;
+  string email = 3;
+  string name = 4;
+  string bio = 5;
+  string icon_url = 6;
+}
+
+message RegisterResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["user"]
+    };
+  };
+  User user = 1;
+}
+
+message LoginRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["email", "password"]
+    };
+  };
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["token"]
+    };
+  };
+  string token = 1;
+}
+
+message MeRequest {}
+
+message MeResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["user"]
+    };
+  };
+  User user = 1;
+}
+
+message GetUserByIDRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id"]
+    };
+  };
+  string id = 1;
+}
+
+message GetUserByIDResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["user"]
+    };
+  };
+  User user = 1;
+}
+
+message UpdateUserRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["name", "bio", "icon_url"]
+    };
+  };
+  string display_id = 1;
+  string name = 2;
+  string bio = 3;
+  string icon_url = 4;
+}
+
+message UpdateUserResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["user"]
+    };
+  };
+  User user = 1;
+}

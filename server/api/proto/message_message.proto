@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package msg;
+
+option go_package = "./message;messagepb";
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/empty.proto";
+import "message_type.proto";
+
+message CreateMessageRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["channel_id", "content"]
+    };
+  };
+  string channel_id = 1;
+  string content = 2;
+  string reply_id = 3;
+}
+
+message CreateMessageResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["message"]
+    };
+  };
+  Message message = 1;
+}
+
+message GetMessagesByChannelIDRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["channel_id"]
+    };
+  };
+  string channel_id = 1;
+}
+
+message GetMessagesByChannelIDResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["messages"]
+    };
+  };
+  repeated Message messages = 1;
+}
+
+message UpdateMessageByMessageIDRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["message_id", "content"]
+    };
+  };
+  string message_id = 1;
+  string content = 2;
+  string reply_id = 3;
+}
+
+message UpdateMessageByMessageIDResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["message"]
+    };
+  };
+  Message message = 1;
+}
+
+message DeleteMessageByMessageIDRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["message_id"]
+    };
+  };
+  string message_id = 1;
+}
+
+message DeleteMessageByMessageIDResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["empty"]
+    };
+  };
+  google.protobuf.Empty empty = 1;
+}
