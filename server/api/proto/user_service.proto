@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package user;
 
+option go_package = "./user;userpb";
+
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "user_message.proto";
-
-option go_package = "./user;userpb";
 
 service UserService {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {

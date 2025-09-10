@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package user;
 
+option go_package = "./user;userpb";
+
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "user_type.proto";
 

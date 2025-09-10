@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package msg;
 
+option go_package = "./message;messagepb";
+
 import "google/protobuf/timestamp.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 

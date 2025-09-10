@@ -4,9 +4,7 @@ package msg;
 
 option go_package = "./message;messagepb";
 
-import "google/protobuf/timestamp.proto";
 import "google/api/annotations.proto";
-import "google/protobuf/empty.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "message_message.proto";
 
@@ -45,7 +43,7 @@ service MessageService {
     };
   }
 
-  rpc DeleteMessageByMessageID(DeleteMessageByMessageIDRequest) returns (google.protobuf.Empty) {
+  rpc DeleteMessageByMessageID(DeleteMessageByMessageIDRequest) returns (DeleteMessageByMessageIDResponse) {
     option (google.api.http) = {
       delete: "/api/messages/{message_id}"
     };
