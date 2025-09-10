@@ -1,8 +1,15 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useRegister } from "~/api/gen/auth/auth";
 import type { RegisterRequest } from "~/api/gen/userProto.schemas";
 
 export default function RegisterPage() {
+	const displayIdId = useId();
+	const nameId = useId();
+	const emailId = useId();
+	const passwordId = useId();
+	const bioId = useId();
+	const iconUrlId = useId();
+
 	const [formData, setFormData] = useState<RegisterRequest>({
 		displayId: "",
 		email: "",
@@ -13,19 +20,20 @@ export default function RegisterPage() {
 	});
 	const { mutateAsync, isPending, error } = useRegister();
 
-
 	const handleSubmit = async (e: React.FormEvent) => {
 		try {
 			e.preventDefault();
 			await mutateAsync({ data: formData });
 			alert("登録に成功しました！");
-		} catch (error) {
+		} catch (_error) {
 			alert("登録に失敗しました。");
 		}
 	};
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-		setFormData(prev => ({
+	const handleChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+	) => {
+		setFormData((prev) => ({
 			...prev,
 			[e.target.name]: e.target.value,
 		}));
@@ -42,11 +50,14 @@ export default function RegisterPage() {
 				<form className="mt-8 space-y-6" onSubmit={handleSubmit}>
 					<div className="space-y-4">
 						<div>
-							<label htmlFor="displayId" className="block text-sm font-medium text-gray-700">
-								displayId: 
+							<label
+								htmlFor={displayIdId}
+								className="block text-sm font-medium text-gray-700"
+							>
+								displayId:
 							</label>
 							<input
-								id="displayId"
+								id={displayIdId}
 								name="displayId"
 								type="text"
 								required
@@ -58,11 +69,14 @@ export default function RegisterPage() {
 						</div>
 
 						<div>
-							<label htmlFor="name" className="block text-sm font-medium text-gray-700">
-							  ニックネーム
+							<label
+								htmlFor={nameId}
+								className="block text-sm font-medium text-gray-700"
+							>
+								ニックネーム
 							</label>
 							<input
-								id="name"
+								id={nameId}
 								name="name"
 								type="text"
 								required
@@ -74,11 +88,14 @@ export default function RegisterPage() {
 						</div>
 
 						<div>
-							<label htmlFor="email" className="block text-sm font-medium text-gray-700">
+							<label
+								htmlFor={emailId}
+								className="block text-sm font-medium text-gray-700"
+							>
 								メールアドレス
 							</label>
 							<input
-								id="email"
+								id={emailId}
 								name="email"
 								type="email"
 								autoComplete="email"
@@ -91,11 +108,14 @@ export default function RegisterPage() {
 						</div>
 
 						<div>
-							<label htmlFor="password" className="block text-sm font-medium text-gray-700">
+							<label
+								htmlFor={passwordId}
+								className="block text-sm font-medium text-gray-700"
+							>
 								パスワード
 							</label>
 							<input
-								id="password"
+								id={passwordId}
 								name="password"
 								type="password"
 								autoComplete="new-password"
@@ -108,11 +128,14 @@ export default function RegisterPage() {
 						</div>
 
 						<div>
-							<label htmlFor="bio" className="block text-sm font-medium text-gray-700">
+							<label
+								htmlFor={bioId}
+								className="block text-sm font-medium text-gray-700"
+							>
 								自己紹介（任意）
 							</label>
 							<textarea
-								id="bio"
+								id={bioId}
 								name="bio"
 								rows={3}
 								className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -123,11 +146,14 @@ export default function RegisterPage() {
 						</div>
 
 						<div>
-							<label htmlFor="iconUrl" className="block text-sm font-medium text-gray-700">
+							<label
+								htmlFor={iconUrlId}
+								className="block text-sm font-medium text-gray-700"
+							>
 								アイコンURL（任意）
 							</label>
 							<input
-								id="iconUrl"
+								id={iconUrlId}
 								name="iconUrl"
 								type="url"
 								className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"

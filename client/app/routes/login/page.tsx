@@ -1,8 +1,10 @@
-import { useState } from "react";
-import { useLoginMutation } from "~/hooks/use-login";
+import { useId, useState } from "react";
 import type { LoginRequest } from "~/api/gen/userProto.schemas";
+import { useLoginMutation } from "~/hooks/use-login";
 
 export default function LoginPage() {
+	const emailId = useId();
+	const passwordId = useId();
 	const [formData, setFormData] = useState<LoginRequest>({
 		email: "",
 		password: "",
@@ -14,13 +16,13 @@ export default function LoginPage() {
 			e.preventDefault();
 			await mutateAsync(formData);
 			alert("ログインに成功しました！");
-		} catch (error) {
+		} catch (_error) {
 			alert("ログインに失敗しました。");
 		}
 	};
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setFormData(prev => ({
+		setFormData((prev) => ({
 			...prev,
 			[e.target.name]: e.target.value,
 		}));
@@ -37,11 +39,11 @@ export default function LoginPage() {
 				<form className="mt-8 space-y-6" onSubmit={handleSubmit}>
 					<div className="rounded-md shadow-sm -space-y-px">
 						<div>
-							<label htmlFor="email" className="sr-only">
+							<label htmlFor={emailId} className="sr-only">
 								メールアドレス
 							</label>
 							<input
-								id="email"
+								id={emailId}
 								name="email"
 								type="email"
 								autoComplete="email"
@@ -53,11 +55,11 @@ export default function LoginPage() {
 							/>
 						</div>
 						<div>
-							<label htmlFor="password" className="sr-only">
+							<label htmlFor={passwordId} className="sr-only">
 								パスワード
 							</label>
 							<input
-								id="password"
+								id={passwordId}
 								name="password"
 								type="password"
 								autoComplete="current-password"
