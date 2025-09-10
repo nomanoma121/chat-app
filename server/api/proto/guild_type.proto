@@ -28,12 +28,12 @@ message Invite {
       required: ["guild_id", "creator_id", "max_uses", "current_uses", "code", "expires_at", "created_at"]
     };
   };
-  string guild_id = 2;
-  string creator_id = 3;
-  int32 max_uses = 4;
-  int32 current_uses = 5;
-  string code = 6;
-  google.protobuf.Timestamp expires_at = 8;
+  string guild_id = 1;
+  string creator_id = 2;
+  int32 max_uses = 3;
+  int32 current_uses = 4;
+  string code = 5;
+  google.protobuf.Timestamp expires_at = 6;
   google.protobuf.Timestamp created_at = 7;
 }
 
@@ -43,11 +43,11 @@ message Member {
       required: ["user_id", "guild_id", "created_at", "updated_at"]
     };
   };
-  string user_id = 2;
-  string guild_id = 3;
-  string nickname = 4;
-  google.protobuf.Timestamp created_at = 5;
-  google.protobuf.Timestamp updated_at = 6;
+  string user_id = 1;
+  string guild_id = 2;
+  string nickname = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
 }
 
 message Category {
