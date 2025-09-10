@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package msg;
+
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+message Message {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "author_id", "channel_id", "content", "created_at", "updated_at"]
+    };
+  };
+  string id = 1;
+  string author_id = 2;
+  string channel_id = 3;
+  string reply_id = 4;
+  string content = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
