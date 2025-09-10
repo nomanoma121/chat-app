@@ -1,0 +1,300 @@
+syntax = "proto3";
+
+package guild;
+
+option go_package = "./guild;guildpb";
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/empty.proto";
+import "guild_type.proto";
+
+message CreateGuildRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["name"]
+    };
+  };
+  string name = 1;
+  string description = 2;
+}
+
+message CreateGuildResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["guild"]
+    };
+  };
+  Guild guild = 1;
+}
+
+message GetGuildByIDRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["guild_id"]
+    };
+  };
+  string guild_id = 1;
+}
+
+message GetGuildByIDResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["guild"]
+    };
+  };
+  Guild guild = 1;
+}
+
+message UpdateGuildRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["guild_id"]
+    };
+  };
+  string guild_id = 1;
+  string name = 2;
+  string description = 3;
+}
+
+message UpdateGuildResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["guild"]
+    };
+  };
+  Guild guild = 1;
+}
+
+message GetGuildMembersRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["guild_id"]
+    };
+  };
+  string guild_id = 1;
+}
+
+message GetGuildMembersResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["members"]
+    };
+  };
+  repeated Member members = 1;
+}
+
+message DeleteGuildMemberRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["guild_id", "user_id"]
+    };
+  };
+  string guild_id = 1;
+  string user_id = 2;
+}
+
+message DeleteGuildMemberResponse {
+  google.protobuf.Empty empty = 1;
+}
+
+message LeaveGuildRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["guild_id"]
+    };
+  };
+  string guild_id = 1;
+}
+
+message LeaveGuildResponse {
+  google.protobuf.Empty empty = 1;
+}
+
+message GetGuildInvitesRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["guild_id"]
+    };
+  };
+  string guild_id = 1;
+}
+
+message GetGuildInvitesResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["invites"]
+    };
+  };
+  repeated Invite invites = 1;
+}
+
+message CreateGuildInviteRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["guild_id", "max_uses", "expires_in_seconds"]
+    };
+  };
+  string guild_id = 1;
+  int32 max_uses = 2;
+  int32 expires_in_seconds = 3;
+}
+
+message CreateGuildInviteResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["invite"]
+    };
+  };
+  Invite invite = 1;
+}
+
+message DeleteGuildInviteRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["invite_code"]
+    };
+  };
+  string invite_code = 1;
+}
+
+message DeleteGuildInviteResponse {
+  google.protobuf.Empty empty = 1;
+}
+
+message JoinGuildRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["invite_code"]
+    };
+  };
+  string invite_code = 1;
+}
+
+message JoinGuildResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["guild"]
+    };
+  };
+  Guild guild = 1;
+}
+
+message GetCategoriesRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["guild_id"]
+    };
+  };
+  string guild_id = 1;
+}
+
+message GetCategoriesResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["categories"]
+    };
+  };
+  repeated Category categories = 1;
+}
+
+message CreateCategoryRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["guild_id", "name"]
+    };
+  };
+  string guild_id = 1;
+  string name = 2;
+}
+
+message CreateCategoryResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["category"]
+    };
+  };
+  Category category = 1;
+}
+
+message UpdateCategoryRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["category_id", "name"]
+    };
+  };
+  string category_id = 1;
+  string name = 2;
+}
+
+message UpdateCategoryResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["category"]
+    };
+  };
+  Category category = 1;
+}
+
+message DeleteCategoryRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["category_id"]
+    };
+  };
+  string category_id = 1;
+}
+
+message DeleteCategoryResponse {
+  google.protobuf.Empty empty = 1;
+}
+
+message CreateChannelRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["category_id", "name"]
+    };
+  };
+  string category_id = 1;
+  string name = 2;
+}
+
+message CreateChannelResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["channel"]
+    };
+  };
+  Channel channel = 1;
+}
+
+message UpdateChannelRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["channel_id", "name"]
+    };
+  };
+  string channel_id = 1;
+  string name = 2;
+}
+
+message UpdateChannelResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["channel"]
+    };
+  };
+  Channel channel = 1;
+}
+
+message DeleteChannelRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["channel_id"]
+    };
+  };
+  string channel_id = 1;
+}
+
+message DeleteChannelResponse {
+  google.protobuf.Empty empty = 1;
+}

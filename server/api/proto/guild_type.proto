@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package guild;
+
+option go_package = "./guild;guildpb";
+
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+message Guild {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "name", "owner_id", "created_at", "updated_at"]
+    };
+  };
+  string id = 1;
+  string name = 2;
+  string owner_id = 3;
+  string description = 4;
+  string icon_url = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message Invite {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["guild_id", "creator_id", "max_uses", "current_uses", "code", "expires_at", "created_at"]
+    };
+  };
+  string guild_id = 2;
+  string creator_id = 3;
+  int32 max_uses = 4;
+  int32 current_uses = 5;
+  string code = 6;
+  google.protobuf.Timestamp expires_at = 8;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+message Member {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["user_id", "guild_id", "created_at", "updated_at"]
+    };
+  };
+  string user_id = 2;
+  string guild_id = 3;
+  string nickname = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+message Category {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "guild_id", "name", "created_at", "updated_at"]
+    };
+  };
+  string id = 1;
+  string guild_id = 2;
+  string name = 3;
+  int32 position = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+message Channel {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "guild_id", "name", "created_at", "updated_at"]
+    };
+  };
+  string id = 1;
+  string category_id = 2;
+  string name = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+}

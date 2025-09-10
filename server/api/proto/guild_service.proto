@@ -1,0 +1,177 @@
+syntax = "proto3";
+
+package guild;
+
+option go_package = "./guild;guildpb";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "guild_message.proto";
+
+service GuildService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    name: "Guild"
+    description: "Guild management operations"
+  };
+
+  rpc CreateGuild(CreateGuildRequest) returns (CreateGuildResponse) {
+    option (google.api.http) = {
+      post: "/api/guilds"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+
+  rpc GetGuildByID(GetGuildByIDRequest) returns (GetGuildByIDResponse) {
+    option (google.api.http) = {
+      get: "/api/guilds/{guild_id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+
+  rpc UpdateGuild(UpdateGuildRequest) returns (UpdateGuildResponse) {
+    option (google.api.http) = {
+      put: "/api/guilds/{guild_id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+
+  rpc GetGuildMembers(GetGuildMembersRequest) returns (GetGuildMembersResponse) {
+    option (google.api.http) = {
+      get: "/api/guilds/{guild_id}/members"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+
+  rpc DeleteGuildMember(DeleteGuildMemberRequest) returns (DeleteGuildMemberResponse) {
+    option (google.api.http) = {
+      delete: "/api/guilds/{guild_id}/members/{user_id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+
+  rpc LeaveGuild(LeaveGuildRequest) returns (LeaveGuildResponse) {
+    option (google.api.http) = {
+      delete: "/api/guilds/{guild_id}/members/me"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+
+  rpc GetGuildInvites(GetGuildInvitesRequest) returns (GetGuildInvitesResponse) {
+    option (google.api.http) = {
+      get: "/api/guilds/{guild_id}/invites"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+
+  rpc CreateGuildInvite(CreateGuildInviteRequest) returns (CreateGuildInviteResponse) {
+    option (google.api.http) = {
+      post: "/api/guilds/{guild_id}/invites"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+
+  rpc DeleteGuildInvite(DeleteGuildInviteRequest) returns (DeleteGuildInviteResponse) {
+    option (google.api.http) = {
+      delete: "/api/invites/{invite_code}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+
+  rpc JoinGuild(JoinGuildRequest) returns (JoinGuildResponse) {
+    option (google.api.http) = {
+      post: "/api/invites/{invite_code}/join"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+
+  rpc GetCategories(GetCategoriesRequest) returns (GetCategoriesResponse) {
+    option (google.api.http) = {
+      get: "/api/guilds/{guild_id}/categories"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+
+  rpc CreateCategory(CreateCategoryRequest) returns (CreateCategoryResponse) {
+    option (google.api.http) = {
+      post: "/api/guilds/{guild_id}/categories"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+
+  rpc UpdateCategory(UpdateCategoryRequest) returns (UpdateCategoryResponse) {
+    option (google.api.http) = {
+      put: "/api/categories/{category_id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+
+  rpc DeleteCategory(DeleteCategoryRequest) returns (DeleteCategoryResponse) {
+    option (google.api.http) = {
+      delete: "/api/categories/{category_id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+
+  rpc CreateChannel(CreateChannelRequest) returns (CreateChannelResponse) {
+    option (google.api.http) = {
+      post: "/api/categories/{category_id}/channels"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+
+  rpc UpdateChannel(UpdateChannelRequest) returns (UpdateChannelResponse) {
+    option (google.api.http) = {
+      put: "/api/channels/{channel_id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+
+  rpc DeleteChannel(DeleteChannelRequest) returns (DeleteChannelResponse) {
+    option (google.api.http) = {
+      delete: "/api/channels/{channel_id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+}
