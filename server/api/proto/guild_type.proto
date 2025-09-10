@@ -67,7 +67,7 @@ message Category {
 message Channel {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
-      required: ["id", "name", "created_at", "updated_at"]
+      required: ["id", "name", "category_id", "created_at", "updated_at"]
     };
   };
   string id = 1;
