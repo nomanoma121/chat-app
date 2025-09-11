@@ -27,6 +27,11 @@ export default defineConfig({
             hover: { value: "#2E4AB8" },
             dark: { value: "#474E98" }
           },
+          border: {
+            soft: { value: "#3a3d43" },
+            subtle: { value: "#42464d" },
+            muted: { value: "#484c54" },
+          },
         }
       }
     }

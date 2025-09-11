@@ -8,7 +8,7 @@ export const Sidebar = () => {
       height: "100vh",
       borderRight: "1px solid",
       bg: "bg.secondary",
-      borderColor: "border.secondary",
+      borderColor: "border.soft",
     })}>
       <GuildList />
     </div>

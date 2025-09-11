@@ -47,7 +47,7 @@ export const GuildList = () => {
         width: "70px",
         height: "100vh",
         bg: "bg.secondary",
-        borderColor: "gray.500",
+        borderColor: "border.soft",
         borderRightWidth: "1px",
         display: "flex",
         flexDirection: "column",
@@ -57,7 +57,7 @@ export const GuildList = () => {
       <div
         className={css({
           borderBottomWidth: "1px",
-          borderColor: "border.secondary",
+          borderColor: "border.soft",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
