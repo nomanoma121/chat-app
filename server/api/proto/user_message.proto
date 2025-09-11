@@ -49,9 +49,15 @@ message LoginResponse {
   string token = 1;
 }
 
-message MeRequest {}
+message AuthMeRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: []
+    };
+  };
+}
 
-message MeResponse {
+message AuthMeResponse {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       required: ["user"]

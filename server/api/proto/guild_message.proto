@@ -45,6 +45,23 @@ message GetGuildByIDResponse {
   Guild guild = 1;
 }
 
+message ListMyGuildsRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: []
+    };
+  };
+}
+
+message ListMyGuildsResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["guilds"]
+    };
+  };
+  repeated Guild guilds = 1;
+}
+
 message UpdateGuildRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {

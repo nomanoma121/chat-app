@@ -9,8 +9,8 @@ plugins:
     out: ./server/api/gen
     opt: paths=import
   - remote: buf.build/grpc-ecosystem/gateway
-    out: ./server/api/gen/user
-    opt: paths=source_relative
+    out: ./server/api/gen
+    opt: paths=import
   - remote: buf.build/grpc-ecosystem/openapiv2
     out: ./docs
     opt:

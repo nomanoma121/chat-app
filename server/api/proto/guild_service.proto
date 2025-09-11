@@ -33,6 +33,16 @@ service GuildService {
     };
   }
 
+  rpc ListMyGuilds(ListMyGuildsRequest) returns (ListMyGuildsResponse) {
+    option (google.api.http) = {
+      // userに属するもののため、/usersとしている
+      get: "/api/users/me/guilds"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+
   rpc UpdateGuild(UpdateGuildRequest) returns (UpdateGuildResponse) {
     option (google.api.http) = {
       put: "/api/guilds/{guild_id}"
