@@ -34,7 +34,7 @@ service UserService {
     };
   }
 
-  rpc Me(MeRequest) returns (MeResponse) {
+  rpc AuthMe(AuthMeRequest) returns (AuthMeResponse) {
     option (google.api.http) = {
       get: "/api/auth/me"
     };
