@@ -21,7 +21,12 @@ export default defineConfig({
             tertiary: { value: "#202225" },
             quaternary: { value: "#40444b" },
             quinary: { value: "#4f545c" },
-          }
+          },
+          accent: {
+            normal: { value: "#3E63DD" },
+            hover: { value: "#2E4AB8" },
+            dark: { value: "#474E98" }
+          },
         }
       }
     }

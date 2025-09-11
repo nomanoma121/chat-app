@@ -52,7 +52,7 @@ export default function Guild() {
                 background: "bg.secondary",
                 width: "50%",
                 _hover: {
-                  background: "bg.primary",
+                  background: "accent.dark",
                 },
               })}
 							onClick={() => navigate(`/servers/${guild.id}/channels/1`)}
