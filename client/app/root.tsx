@@ -11,6 +11,7 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { css } from "../styled-system/css";
 import stylesheet from "./app.css?url";
 
 export const links: Route.LinksFunction = () => [
@@ -39,7 +40,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<Meta />
 				<Links />
 			</head>
-			<body>
+			<body
+				className={css({
+					bg: "bg.primary",
+					color: "white",
+					fontFamily: "Inter, sans-serif",
+					minH: "100vh",
+				})}
+			>
 				{children}
 				<ScrollRestoration />
 				<Scripts />

@@ -9,6 +9,20 @@ export default defineConfig({
     createPreset({ accentColor: indigo, grayColor: slate, radius: "md" }),
   ],
   include: ["./app/**/*.{js,jsx,ts,tsx,vue}"],
-  jsxFramework: "react", // or 'solid' or 'vue'
+  jsxFramework: "react",
   outdir: "styled-system",
+  theme: {
+    extend: {
+      tokens: {
+        colors: {
+          bg: {
+            primary: { value: "#36393f" },
+            secondary: { value: "#2f3136" }, 
+            tertiary: { value: "#202225" },
+            quaternary: { value: "#40444b" },
+          }
+        }
+      }
+    }
+  }
 });
