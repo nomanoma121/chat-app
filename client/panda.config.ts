@@ -20,6 +20,7 @@ export default defineConfig({
             secondary: { value: "#2f3136" }, 
             tertiary: { value: "#202225" },
             quaternary: { value: "#40444b" },
+            quinary: { value: "#4f545c" },
           }
         }
       }

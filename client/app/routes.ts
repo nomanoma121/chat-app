@@ -23,8 +23,6 @@ export default [
         ]),
       ]),
     ]),
-    layout("routes/_layout/setting.tsx", [
-      ...prefix("settings", [index("routes/settings/page.tsx")]),
-    ]),
+    ...prefix("settings", [index("routes/settings/page.tsx")]),
   ]),
 ] satisfies RouteConfig;
