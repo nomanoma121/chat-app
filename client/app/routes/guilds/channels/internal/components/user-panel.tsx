@@ -2,7 +2,6 @@ import { Card } from "~/components/ui/card";
 import { Avatar } from "~/components/ui/avatar";
 import { css } from "styled-system/css";
 import { Settings } from "lucide-react";
-import { IconButton } from "../ui/icon-button";
 
 interface UserPanelProps {
   name?: string;
