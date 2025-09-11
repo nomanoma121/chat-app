@@ -16,7 +16,7 @@ export default [
       layout("routes/guilds/layout.tsx", [
         index("routes/guilds/page.tsx"),
         route("settings", "routes/guilds/settings/page.tsx"),
-        route("create", "routes/guilds/create/page.tsx"),
+        route("new", "routes/guilds/new/page.tsx"),
       ]),
       ...prefix(":serverId", [
         route("invite", "routes/guilds/invite/page.tsx"),
