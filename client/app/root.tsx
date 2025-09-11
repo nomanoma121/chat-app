@@ -47,6 +47,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 					fontFamily: "Inter, sans-serif",
 					minH: "100vh",
 				})}
+				suppressHydrationWarning
 			>
 				{children}
 				<ScrollRestoration />

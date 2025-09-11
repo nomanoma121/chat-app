@@ -13,9 +13,11 @@ export default [
   ...prefix("invite", [route(":inviteId", "routes/invite/page.tsx")]), // UI上ではGuildのことをServerと呼ぶ
   layout("routes/layout.tsx", [
     ...prefix("servers", [
-      index("routes/guilds/page.tsx"),
-      route("settings", "routes/guilds/settings/page.tsx"),
-      route("create", "routes/guilds/create/page.tsx"),
+      layout("routes/guilds/layout.tsx", [
+        index("routes/guilds/page.tsx"),
+        route("settings", "routes/guilds/settings/page.tsx"),
+        route("create", "routes/guilds/create/page.tsx"),
+      ]),
       ...prefix(":serverId", [
         route("invite", "routes/guilds/invite/page.tsx"),
         ...prefix("channels", [
