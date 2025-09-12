@@ -1,6 +1,12 @@
 import { useId, useState } from "react";
 import { useRegister } from "~/api/gen/auth/auth";
 import type { RegisterRequest } from "~/api/gen/userProto.schemas";
+import { Card } from "~/components/ui/card";
+import { Field } from "~/components/ui/field";
+import { FormLabel } from "~/components/ui/form-label";
+import { css } from "styled-system/css";
+import { Button } from "~/components/ui/button";
+import { useNavigate } from "react-router";
 
 export default function RegisterPage() {
 	const displayIdId = useId();
@@ -9,6 +15,7 @@ export default function RegisterPage() {
 	const passwordId = useId();
 	const bioId = useId();
 	const iconUrlId = useId();
+	const navigate = useNavigate();
 
 	const [formData, setFormData] = useState<RegisterRequest>({
 		displayId: "",
@@ -24,9 +31,9 @@ export default function RegisterPage() {
 		try {
 			e.preventDefault();
 			await mutateAsync({ data: formData });
-			alert("登録に成功しました！");
+			navigate("/servers");
 		} catch (_error) {
-			alert("登録に失敗しました。");
+			// エラーはerror stateで表示される
 		}
 	};
 
@@ -40,156 +47,187 @@ export default function RegisterPage() {
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-			<div className="max-w-md w-full space-y-8">
-				<div>
-					<h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+		<div>
+			<Card.Root
+				className={css({
+					width: "500px",
+					margin: "0 auto",
+					marginTop: "80px",
+					padding: "30px",
+					background: "bg.secondary",
+				})}
+			>
+				<Card.Header>
+					<h1
+						className={css({
+							fontSize: "2xl",
+							fontWeight: "bold",
+							textAlign: "center",
+							color: "text.bright"
+						})}
+					>
 						新規登録
-					</h2>
-				</div>
-				<form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-					<div className="space-y-4">
-						<div>
-							<label
-								htmlFor={displayIdId}
-								className="block text-sm font-medium text-gray-700"
-							>
-								displayId:
-							</label>
-							<input
+					</h1>
+				</Card.Header>
+				<Card.Body>
+					<form onSubmit={handleSubmit} className={css({
+						display: "flex",
+						flexDirection: "column",
+						gap: "20px",
+					})}>
+						<Field.Root>
+							<FormLabel color="text.bright">displayId</FormLabel>
+							<Field.Input
 								id={displayIdId}
 								name="displayId"
 								type="text"
 								required
-								className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
 								placeholder="例: user123"
 								value={formData.displayId}
 								onChange={handleChange}
+								className={css({ 
+									background: "bg.primary", 
+									border: "none",
+									color: "text.bright"
+								})}
 							/>
-						</div>
+						</Field.Root>
 
-						<div>
-							<label
-								htmlFor={nameId}
-								className="block text-sm font-medium text-gray-700"
-							>
-								ニックネーム
-							</label>
-							<input
+						<Field.Root>
+							<FormLabel color="text.bright">ニックネーム</FormLabel>
+							<Field.Input
 								id={nameId}
 								name="name"
 								type="text"
 								required
-								className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
 								placeholder="例: 太郎"
 								value={formData.name}
 								onChange={handleChange}
+								className={css({ 
+									background: "bg.primary", 
+									border: "none",
+									color: "text.bright"
+								})}
 							/>
-						</div>
+						</Field.Root>
 
-						<div>
-							<label
-								htmlFor={emailId}
-								className="block text-sm font-medium text-gray-700"
-							>
-								メールアドレス
-							</label>
-							<input
+						<Field.Root>
+							<FormLabel color="text.bright">メールアドレス</FormLabel>
+							<Field.Input
 								id={emailId}
 								name="email"
 								type="email"
 								autoComplete="email"
 								required
-								className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
 								placeholder="例: user@example.com"
 								value={formData.email}
 								onChange={handleChange}
+								className={css({ 
+									background: "bg.primary", 
+									border: "none",
+									color: "text.bright"
+								})}
 							/>
-						</div>
+						</Field.Root>
 
-						<div>
-							<label
-								htmlFor={passwordId}
-								className="block text-sm font-medium text-gray-700"
-							>
-								パスワード
-							</label>
-							<input
+						<Field.Root>
+							<FormLabel color="text.bright">パスワード</FormLabel>
+							<Field.Input
 								id={passwordId}
 								name="password"
 								type="password"
 								autoComplete="new-password"
 								required
-								className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-								placeholder="パスワード"
+								placeholder="パスワードを入力してください"
 								value={formData.password}
 								onChange={handleChange}
+								className={css({ 
+									background: "bg.primary", 
+									border: "none",
+									color: "text.bright"
+								})}
 							/>
-						</div>
+						</Field.Root>
 
-						<div>
-							<label
-								htmlFor={bioId}
-								className="block text-sm font-medium text-gray-700"
-							>
-								自己紹介（任意）
-							</label>
-							<textarea
+						<Field.Root>
+							<FormLabel color="text.bright">自己紹介（任意）</FormLabel>
+							<Field.Textarea
 								id={bioId}
 								name="bio"
 								rows={3}
-								className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-								placeholder="自己紹介文"
+								placeholder="自己紹介文を入力してください"
 								value={formData.bio || ""}
 								onChange={handleChange}
+								className={css({ 
+									background: "bg.primary", 
+									border: "none",
+									color: "text.bright",
+									resize: "none"
+								})}
 							/>
-						</div>
+						</Field.Root>
 
-						<div>
-							<label
-								htmlFor={iconUrlId}
-								className="block text-sm font-medium text-gray-700"
-							>
-								アイコンURL（任意）
-							</label>
-							<input
+						<Field.Root>
+							<FormLabel color="text.bright">アイコンURL（任意）</FormLabel>
+							<Field.Input
 								id={iconUrlId}
 								name="iconUrl"
 								type="url"
-								className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
 								placeholder="https://example.com/icon.jpg"
 								value={formData.iconUrl || ""}
 								onChange={handleChange}
+								className={css({ 
+									background: "bg.primary", 
+									border: "none",
+									color: "text.bright"
+								})}
 							/>
-						</div>
-					</div>
+						</Field.Root>
 
-					{error && (
-						<div className="text-red-600 text-sm text-center">
-							登録に失敗しました。入力内容を確認してください。
-						</div>
-					)}
+						{error && (
+							<div className={css({
+								color: "accent.default",
+								fontSize: "sm",
+								textAlign: "center",
+								padding: "2",
+								bg: "bg.tertiary",
+								borderRadius: "md"
+							})}>
+								登録に失敗しました。入力内容を確認してください。
+							</div>
+						)}
 
-					<div>
-						<button
+						<Button 
 							type="submit"
 							disabled={isPending}
-							className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+							className={css({ 
+								width: "100%",
+								marginTop: "10px"
+							})}
 						>
 							{isPending ? "登録中..." : "新規登録"}
-						</button>
-					</div>
+						</Button>
 
-					<div className="text-center">
-						<a
-							href="/login"
-							className="font-medium text-indigo-600 hover:text-indigo-500"
-						>
-							既にアカウントをお持ちの場合はログイン
-						</a>
-					</div>
-				</form>
-			</div>
+						<div className={css({
+							textAlign: "center",
+							marginTop: "4"
+						})}>
+							<a
+								href="/login"
+								className={css({
+									fontWeight: "medium",
+									color: "accent.default",
+									_hover: {
+										color: "accent.emphasized"
+									}
+								})}
+							>
+								ログインはこちら
+							</a>
+						</div>
+					</form>
+				</Card.Body>
+			</Card.Root>
 		</div>
 	);
 }
