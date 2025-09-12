@@ -11,49 +11,60 @@ import { Text } from "~/components/ui/text";
 
 export const GeneralTab = () => {
   return (
-    <div className={css({
-      display: "flex",
-      flexDirection: "column",
-    })}>
-      {/* サーバー情報 */}
-      <Card.Root className={css({
-        background: "bg.secondary",
-      })}>
+    <div
+      className={css({
+        display: "flex",
+        flexDirection: "column",
+      })}
+    >
+      <Card.Root
+        className={css({
+          background: "bg.secondary",
+        })}
+      >
         <Card.Header>
-          <Heading className={css({
-            fontSize: "lg",
-            fontWeight: "semibold",
-            color: "text.bright",
-            marginBottom: "8px"
-          })}>
+          <Heading
+            className={css({
+              fontSize: "lg",
+              fontWeight: "semibold",
+              color: "text.bright",
+              marginBottom: "8px",
+            })}
+          >
             サーバー概要
           </Heading>
-          <Text className={css({
-            fontSize: "sm",
-            color: "text.medium",
-            marginBottom: "16px"
-          })}>
+          <Text
+            className={css({
+              fontSize: "sm",
+              color: "text.medium",
+              marginBottom: "16px",
+            })}
+          >
             サーバーの基本情報を編集できます
           </Text>
         </Card.Header>
-        
-        <Card.Body className={css({
-          display: "flex",
-          flexDirection: "column",
-          gap: "20px"
-        })}>
-          {/* サーバーアイコン */}
-          <div className={css({
+
+        <Card.Body
+          className={css({
             display: "flex",
-            alignItems: "center",
-            gap: "16px"
-          })}>
+            flexDirection: "column",
+            gap: "20px",
+          })}
+        >
+          {/* サーバーアイコン */}
+          <div
+            className={css({
+              display: "flex",
+              alignItems: "center",
+              gap: "16px",
+            })}
+          >
             <Avatar
               name="開発チーム"
               size="lg"
               className={css({
                 width: "64px",
-                height: "64px"
+                height: "64px",
               })}
             />
             <Button
@@ -61,7 +72,16 @@ export const GeneralTab = () => {
               className={css({
                 display: "flex",
                 alignItems: "center",
-                gap: "8px"
+                bgColor: "bg.tertiary",
+                color: "text.medium",
+                _hover: {
+                  bgColor: "bg.quaternary",
+                  color: "text.bright",
+                },
+                paddingX: "12px",
+                paddingY: "8px",
+                fontSize: "sm",
+                gap: "8px",
               })}
             >
               <Upload size={16} />
@@ -74,127 +94,141 @@ export const GeneralTab = () => {
             <FormLabel color="text.bright">サーバー名</FormLabel>
             <Field.Input
               defaultValue="開発チーム"
-              className={css({ 
-                background: "bg.primary", 
-                border: "none",
-                color: "text.bright"
+              className={css({
+                borderColor: "border.soft",
+                color: "text.bright",
+                _hover: {
+                  borderColor: "accent.default",
+                },
               })}
             />
           </Field.Root>
 
-          {/* サーバー説明 */}
           <Field.Root>
             <FormLabel color="text.bright">サーバー説明</FormLabel>
             <Field.Textarea
               defaultValue="フルスタック開発チームのサーバーです"
               rows={3}
-              className={css({ 
-                background: "bg.primary", 
-                border: "none",
+              className={css({
+                borderColor: "border.soft",
                 color: "text.bright",
-                resize: "none"
+                resize: "none",
+                _hover: { borderColor: "accent.default" },
               })}
             />
           </Field.Root>
 
           {/* サーバー統計 */}
-          <div className={css({
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: "16px",
-            marginTop: "8px"
-          })}>
-            <div className={css({
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              padding: "16px",
-              background: "bg.tertiary",
-              borderRadius: "md"
-            })}>
-              <span className={css({
-                fontSize: "2xl",
-                fontWeight: "bold",
-                color: "text.bright"
-              })}>
+          <div
+            className={css({
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: "16px",
+              marginTop: "8px",
+            })}
+          >
+            <div
+              className={css({
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                padding: "16px",
+              })}
+            >
+              <span
+                className={css({
+                  fontSize: "2xl",
+                  fontWeight: "bold",
+                  color: "accent.default",
+                })}
+              >
                 42人
               </span>
-              <span className={css({
-                fontSize: "sm",
-                color: "text.medium"
-              })}>
+              <span
+                className={css({
+                  fontSize: "sm",
+                  color: "text.medium",
+                })}
+              >
                 メンバー数
               </span>
             </div>
-            <div className={css({
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              padding: "16px",
-              background: "bg.tertiary",
-              borderRadius: "md"
-            })}>
-              <span className={css({
-                fontSize: "2xl",
-                fontWeight: "bold",
-                color: "text.bright"
-              })}>
+            <div
+              className={css({
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                padding: "16px",
+              })}
+            >
+              <span
+                className={css({
+                  fontSize: "2xl",
+                  fontWeight: "bold",
+                  color: "text.bright",
+                })}
+              >
                 2024/1/10
               </span>
-              <span className={css({
-                fontSize: "sm",
-                color: "text.medium"
-              })}>
+              <span
+                className={css({
+                  fontSize: "sm",
+                  color: "text.medium",
+                })}
+              >
                 作成日
               </span>
             </div>
           </div>
 
-          {/* 保存ボタン */}
-          <Button className={css({
-            alignSelf: "flex-start",
-            marginTop: "8px"
-          })}>
+          <Button
+            className={css({
+              marginTop: "8px",
+            })}
+          >
             変更を保存
           </Button>
         </Card.Body>
       </Card.Root>
 
-      {/* 危険な操作 */}
-      <Card.Root className={css({
-        background: "bg.secondary",
-        padding: "24px",
-        borderColor: "accent.default",
-        borderWidth: "1px"
-      })}>
+      <Card.Root
+        className={css({
+          background: "bg.secondary",
+          marginY: "24px",
+        })}
+      >
         <Card.Header>
-          <h3 className={css({
-            fontSize: "lg",
-            fontWeight: "semibold",
-            color: "accent.default",
-            marginBottom: "8px"
-          })}>
+          <h3
+            className={css({
+              fontSize: "lg",
+              fontWeight: "semibold",
+              color: "danger.default",
+              marginBottom: "8px",
+            })}
+          >
             危険な操作
           </h3>
-          <p className={css({
-            fontSize: "sm",
-            color: "text.medium",
-            marginBottom: "16px"
-          })}>
+          <p
+            className={css({
+              fontSize: "sm",
+              color: "text.medium",
+              marginBottom: "16px",
+            })}
+          >
             これらの操作は元に戻せません
           </p>
         </Card.Header>
-        
+
         <Card.Body>
           <Button
             variant="outline"
             className={css({
-              color: "accent.default",
-              borderColor: "accent.default",
+              color: "text.bright",
+              bgColor: "danger.default",
               _hover: {
-                background: "accent.default",
-                color: "bg.primary"
-              }
+                bgColor: "danger.emphasized",
+                color: "text.bright",
+              },
             })}
           >
             サーバーを削除

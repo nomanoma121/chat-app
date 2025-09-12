@@ -49,20 +49,12 @@ export default function ServerSetting() {
             border: "none",
           })}
         >
-          <Tabs.Trigger value="general" asChild>
-            <Text>
-              一般
-            </Text>
-          </Tabs.Trigger>
-          <Tabs.Trigger value="members" asChild>
-            <Text>
-              メンバー
-            </Text>
-          </Tabs.Trigger>
+          <Tabs.Trigger value="general">一般</Tabs.Trigger>
+          <Tabs.Trigger value="members">メンバー</Tabs.Trigger>
         </Tabs.List>
         <Tabs.Content value="general">
-          <div>Hello</div>
-        </Tabs.Content>
+					<GeneralTab />
+				</Tabs.Content>
         <Tabs.Content value="members">
           <MembersTab />
         </Tabs.Content>

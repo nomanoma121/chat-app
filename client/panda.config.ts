@@ -34,6 +34,11 @@ export default defineConfig({
             emphasized: { value: "#a855f7" },   // violet.10 - 強調されたバイオレット
             subtle: { value: "#c4b5fd" },       // violet.11 - 薄いバイオレット
           },
+          danger: {
+            default: { value: "#ef4444" },      // red.500 - メインの警告色
+            emphasized: { value: "#dc2626" },   // red.600 - 強調された警告色
+            subtle: { value: "#fca5a5" },       // red.300 - 薄い警告色
+          },
           border: {
             soft: { value: "#373745" },         // 薄い紫グレーの境界
             subtle: { value: "#44444f" },       // 紫がかったグレーの縁
