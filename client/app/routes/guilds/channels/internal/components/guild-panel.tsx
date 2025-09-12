@@ -22,7 +22,6 @@ export const GuildPanel = () => {
 
   return (
     <div className={css({
-      padding: "16px",
       color: "white",
       width: "250px",
       bg: "bg.secondary"

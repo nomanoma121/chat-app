@@ -18,46 +18,23 @@ const channelStyles = cva({
     position: 'relative',
     _hover: {
       bg: 'bg.quaternary',
-      color: 'fg.default',
     }
   },
   variants: {
     selected: {
       true: {
         bg: 'bg.quaternary',
-        color: 'fg.default',
+        color: 'white',
       }
     },
     unread: {
       true: {
-        color: 'fg.default',
-        _after: {
-          content: '""',
-          position: 'absolute',
-          left: '0',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          width: '4px',
-          height: '8px',
-          bg: 'fg.default',
-          borderRadius: 'full',
-        }
+        color: 'fg.muted',
       }
     },
     mentioned: {
       true: {
-        color: 'fg.default',
-        _after: {
-          content: '""',
-          position: 'absolute',
-          left: '0',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          width: '4px',
-          height: '8px',
-          bg: 'accent.normal',
-          borderRadius: 'full',
-        }
+        color: 'white',
       }
     }
   }
@@ -128,14 +105,6 @@ export const Channel = forwardRef<HTMLDivElement, ChannelProps>((props, ref) => 
         </div>
       )}
       
-      {!hasMention && hasUnread && (
-        <div className={css({
-          minWidth: '16px',
-          height: '16px',
-          borderRadius: 'full',
-          bg: 'fg.muted',
-        })} />
-      )}
     </div>
   )
 })
