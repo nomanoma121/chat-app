@@ -1,5 +1,7 @@
+import { UserRoundPlus } from "lucide-react";
 import { css } from "styled-system/css";
 import { Category } from "~/components/features/category";
+import { Heading } from "~/components/ui/heading";
 
 // Demo data
 const textChannels = [
@@ -26,6 +28,21 @@ export const GuildPanel = () => {
       width: "250px",
       bg: "bg.secondary"
     })}>
+      <div className={css({
+        borderBottomWidth: "1px",
+        borderColor: "border.soft",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingX: "",
+        height: "12",
+      })}>
+        <Heading className={css({ fontSize: "sm", color: "text.medium" })}>
+          MYSERVER
+        </Heading>
+        <UserRoundPlus size={16} className={css({ marginLeft: "8px", cursor: "pointer", color: "text.medium" })} />
+      </div>
+
       <Category onChannelSelect={handleChannelSelect}>
         <Category.Title>Text Channels</Category.Title>
         {textChannels.map(channel => (

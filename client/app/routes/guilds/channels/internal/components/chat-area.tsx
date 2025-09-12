@@ -2,6 +2,7 @@ import { css } from "styled-system/css";
 import { useState, useRef, useEffect } from "react";
 import { Message, type MessageData } from "~/components/features/message";
 import { MessageInput } from "~/components/features/message-input";
+import { Heading } from "~/components/ui/heading";
 
 const mockMessages: MessageData[] = [
   {
@@ -85,9 +86,9 @@ export const ChatArea = () => {
       <div className={css({
         display: "flex",
         alignItems: "center",
-        padding: "12px 16px",
-        borderBottom: "1px solid",
-        borderColor: "border.subtle",
+        paddingX: "4",
+        borderBottomWidth: "1px",
+        borderColor: "border.soft",
         backgroundColor: "bg.primary",
         boxShadow: "0 1px 0 rgba(4,4,5,0.2), 0 1.5px 0 rgba(6,6,7,0.05), 0 2px 0 rgba(4,4,5,0.05)",
         zIndex: 1
@@ -95,7 +96,8 @@ export const ChatArea = () => {
         <div className={css({
           display: "flex",
           alignItems: "center",
-          gap: "8px"
+          gap: "8px",
+          height: "12",
         })}>
           <div className={css({
             color: "fg.muted",
@@ -104,14 +106,14 @@ export const ChatArea = () => {
           })}>
             #
           </div>
-          <h2 className={css({
+          <Heading className={css({
             fontSize: "lg",
             fontWeight: "semibold",
             color: "text.bright",
             margin: 0
           })}>
             general
-          </h2>
+          </Heading>
         </div>
         <div className={css({
           marginLeft: "16px",
