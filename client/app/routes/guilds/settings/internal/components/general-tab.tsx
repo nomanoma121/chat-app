@@ -6,8 +6,8 @@ import { Button } from "~/components/ui/button";
 import { Avatar } from "~/components/ui/avatar";
 import { Upload } from "lucide-react";
 import { Heading } from "~/components/ui/heading";
-import { Textarea } from "~/components/ui/textarea";
 import { Text } from "~/components/ui/text";
+import { Settings } from "lucide-react";
 
 export const GeneralTab = () => {
   return (
@@ -29,9 +29,12 @@ export const GeneralTab = () => {
               fontWeight: "semibold",
               color: "text.bright",
               marginBottom: "8px",
+              display: "flex",
+              alignItems: "center",
             })}
           >
-            サーバー概要
+            <Settings size={20} className={css({ marginRight: "8px" })} />
+            <Text className={css({ marginRight: "8px" })}>サーバー管理</Text>
           </Heading>
           <Text
             className={css({
@@ -97,9 +100,6 @@ export const GeneralTab = () => {
               className={css({
                 borderColor: "border.soft",
                 color: "text.bright",
-                _hover: {
-                  borderColor: "accent.default",
-                },
               })}
             />
           </Field.Root>
@@ -113,7 +113,6 @@ export const GeneralTab = () => {
                 borderColor: "border.soft",
                 color: "text.bright",
                 resize: "none",
-                _hover: { borderColor: "accent.default" },
               })}
             />
           </Field.Root>

@@ -1,11 +1,5 @@
 import { defineConfig } from "@pandacss/dev";
 import { createPreset } from "@park-ui/panda-preset";
-import indigo from "@park-ui/panda-preset/colors/indigo";
-import ruby from "@park-ui/panda-preset/colors/ruby";
-import teal from "@park-ui/panda-preset/colors/teal";
-import tomato from "@park-ui/panda-preset/colors/tomato";
-import purple from "@park-ui/panda-preset/colors/purple";
-import sky from "@park-ui/panda-preset/colors/sky";
 import violet from "@park-ui/panda-preset/colors/violet";
 import slate from "@park-ui/panda-preset/colors/slate";
 
