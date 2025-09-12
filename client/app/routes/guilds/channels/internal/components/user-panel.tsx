@@ -78,7 +78,7 @@ export const UserPanel = ({ name, iconUrl }: UserPanelProps) => {
               className={css({
                 width: "4",
                 height: "4",
-                color: "white",
+                color: "text.bright",
               })}
             />
           </div>

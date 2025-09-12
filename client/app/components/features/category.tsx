@@ -73,12 +73,12 @@ const titleStyles = cva({
     cursor: 'pointer',
     fontSize: 'xs',
     fontWeight: 'bold',
-    color: 'bg.quinary',
+    color: 'text.medium',
     textTransform: 'uppercase',
     letterSpacing: '0.5px',
     transition: 'all 0.1s ease',
     _hover: {
-      color: 'white',
+      color: 'text.bright',
     }
   }
 })

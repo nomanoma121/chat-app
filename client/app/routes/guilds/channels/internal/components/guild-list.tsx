@@ -66,13 +66,13 @@ export const GuildList = () => {
       >
         <IconButton
           variant="ghost"
-          color="white"
+          color="text.bright"
           width="12"
           height="12"
           className={css({
             _hover: {
               bg: "accent.default",
-              color: "white",
+              color: "text.bright",
             },
           })}
           onClick={() => navigate('/servers')}

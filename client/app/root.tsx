@@ -43,7 +43,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 			<body
 				className={css({
 					bg: "bg.primary",
-					color: "white",
+					color: "text.bright",
 					fontFamily: "Inter, sans-serif",
 					minH: "100vh",
 				})}

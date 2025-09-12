@@ -24,17 +24,17 @@ const channelStyles = cva({
     selected: {
       true: {
         bg: 'bg.quaternary',
-        color: 'accent.default',
+        color: 'text.bright',
       }
     },
     unread: {
       true: {
-        color: 'fg.default',
+        color: 'text.medium',
       }
     },
     mentioned: {
       true: {
-        color: 'accent.default',
+        color: 'text.medium',
       }
     }
   }

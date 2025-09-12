@@ -40,14 +40,14 @@ export default function CreateNewGuild() {
           })}
         >
           <Field.Root className={css({ width: "100%" })}>
-            <FormLabel color="white">サーバー名</FormLabel>
+            <FormLabel color="text.bright">サーバー名</FormLabel>
             <Field.Input
               placeholder="サーバー名を入力してください"
               className={css({ background: "bg.primary", border: "none" })}
             />
           </Field.Root>
           <Field.Root className={css({ width: "100%" })}>
-            <FormLabel color="white">サーバーの説明</FormLabel>
+            <FormLabel color="text.bright">サーバーの説明</FormLabel>
             <Field.Textarea
               placeholder="サーバーの説明を入力してください"
               className={css({ background: "bg.primary", border: "none", resize: "none" })}
