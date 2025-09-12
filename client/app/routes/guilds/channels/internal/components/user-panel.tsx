@@ -2,6 +2,7 @@ import { Card } from "~/components/ui/card";
 import { Avatar } from "~/components/ui/avatar";
 import { css } from "styled-system/css";
 import { Settings } from "lucide-react";
+import { useNavigate } from "react-router";
 
 interface UserPanelProps {
   name?: string;
@@ -9,6 +10,7 @@ interface UserPanelProps {
 }
 
 export const UserPanel = ({ name, iconUrl }: UserPanelProps) => {
+  const navigate = useNavigate();
   return (
     <Card.Root
       className={css({
@@ -80,6 +82,7 @@ export const UserPanel = ({ name, iconUrl }: UserPanelProps) => {
                 height: "4",
                 color: "text.bright",
               })}
+              onClick={() => navigate("/settings")}
             />
           </div>
         </div>

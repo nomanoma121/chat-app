@@ -4,7 +4,7 @@ import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
-import { ArrowLeft, Link, Copy, Trash2, Calendar, Users, UserPlus } from "lucide-react";
+import { ArrowLeft, Link, Copy, Trash2, Calendar, Users } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Text } from "~/components/ui/text";
 import { Heading } from "~/components/ui/heading";
@@ -89,23 +89,12 @@ export default function InvitePage() {
         <Text className={css({ ml: "8px" })}>戻る</Text>
       </Button>
       
-      <div className={css({ mt: "12px", mb: "20px" })}>
-        <Heading
-          className={css({ 
-            color: "text.bright", 
-            display: "flex", 
-            alignItems: "center",
-            mb: "8px"
-          })}
-          size="xl"
-        >
-          <UserPlus size={24} className={css({ mr: "12px" })} />
-          サーバー招待
-        </Heading>
-        <Text className={css({ color: "text.medium", fontSize: "sm" })}>
-          招待リンクを作成・管理して、新しいメンバーをサーバーに招待しましょう
-        </Text>
-      </div>
+      <Heading
+        className={css({ color: "text.bright", mt: "12px", mb: "20px" })}
+        size="xl"
+      >
+        サーバー招待
+      </Heading>
 
       {/* 新しい招待リンク作成 */}
       <Card.Root
@@ -151,7 +140,7 @@ export default function InvitePage() {
               <FormLabel color="text.bright">最大使用回数</FormLabel>
               <Field.Select
                 value={inviteSettings.maxUses}
-                onValueChange={(value) => handleSettingChange('maxUses', value)}
+                onChange={(e) => handleSettingChange('maxUses', e.target.value)}
               >
                 <option value="1">1回</option>
                 <option value="5">5回</option>
@@ -167,7 +156,7 @@ export default function InvitePage() {
               <FormLabel color="text.bright">有効期限</FormLabel>
               <Field.Select
                 value={inviteSettings.expiryDays}
-                onValueChange={(value) => handleSettingChange('expiryDays', value)}
+                onChange={(e) => handleSettingChange('expiryDays', e.target.value)}
               >
                 <option value="1">1日後</option>
                 <option value="7">7日後</option>

@@ -8,6 +8,7 @@ import { Input } from "~/components/ui/input";
 import { Users } from "lucide-react";
 import { UserRoundPlus } from "lucide-react";
 import { Heading } from "~/components/ui/heading";
+import { useNavigate } from "react-router";
 
 const mockMembers = [
   {
@@ -45,6 +46,7 @@ const mockMembers = [
 ];
 
 export const MembersTab = () => {
+  const navigate = useNavigate();
   return (
     <div
       className={css({
@@ -106,6 +108,7 @@ export const MembersTab = () => {
               className={css({
                 color: "text.bright",
               })}
+              onClick={() => navigate("/servers/1/invite")}
             >
               <UserRoundPlus size={16} />
               新しいメンバーを招待
