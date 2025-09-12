@@ -43,6 +43,7 @@ const messageHeaderStyles = cva({
 const messageActionsStyles = cva({
   base: {
     position: 'absolute',
+    color: 'text.medium',
     top: '-8px',
     right: '16px',
     display: 'flex',
@@ -117,6 +118,7 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>((props, ref) => 
         <Avatar
           name={message.author.name}
           src={message.author.avatar}
+          size="sm"
         />
       </div>
       
@@ -139,8 +141,8 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>((props, ref) => 
           <span 
             className={css({
               fontWeight: 'semibold',
-              fontSize: 'md',
-              color: message.author.color || 'accent.default',
+              fontSize: 'sm',
+              color: message.author.color || 'text.bright',
               cursor: 'pointer',
               _hover: { textDecoration: 'underline' }
             })}
@@ -159,7 +161,7 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>((props, ref) => 
         <div className={css({
           fontSize: 'md',
           lineHeight: '1.375',
-          color: 'fg.default',
+          color: 'text.medium',
           wordWrap: 'break-word'
         })}>
           {message.content}

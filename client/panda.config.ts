@@ -37,6 +37,11 @@ export default defineConfig({
             subtle: { value: "#404040" },       // ニュートラルグレーの縁
             default: { value: "#4a4a4a" },      // グレーの輝き
           },
+          text: {
+            soft: { value: "#6b7280" },         // ベーステーマに近い薄いグレー
+            medium: { value: "#9ca3af" },       // ベーステーマに近い中間グレー
+            bright: { value: "#d1d5db" },       // ベーステーマに近い明るいグレー
+          },
         }
       }
     }

@@ -1,9 +1,7 @@
 import { css } from "styled-system/css";
 import { useState, useRef, useEffect } from "react";
 import { Message, type MessageData } from "~/components/features/message";
-import { Input } from "~/components/ui/input";
-import { Send, Plus, Smile } from "lucide-react";
-import { IconButton } from "~/components/ui/icon-button";
+import { MessageInput } from "~/components/features/message-input";
 
 const mockMessages: MessageData[] = [
   {
@@ -42,7 +40,6 @@ const mockMessages: MessageData[] = [
 
 export const ChatArea = () => {
   const [messages, setMessages] = useState<MessageData[]>(mockMessages);
-  const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -54,12 +51,10 @@ export const ChatArea = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = () => {
-    if (!inputValue.trim()) return;
-    
+  const handleSendMessage = (message: string) => {
     const newMessage: MessageData = {
       id: Date.now().toString(),
-      content: inputValue,
+      content: message,
       author: {
         id: "current-user",
         name: "You"
@@ -68,14 +63,6 @@ export const ChatArea = () => {
     };
 
     setMessages(prev => [...prev, newMessage]);
-    setInputValue("");
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
   };
 
   const handleReply = (messageId: string) => {
@@ -120,7 +107,7 @@ export const ChatArea = () => {
           <h2 className={css({
             fontSize: "lg",
             fontWeight: "semibold",
-            color: "fg.default",
+            color: "text.bright",
             margin: 0
           })}>
             general
@@ -135,7 +122,6 @@ export const ChatArea = () => {
         </div>
       </div>
 
-      {/* Messages Area */}
       <div 
         ref={messagesContainerRef}
         className={css({
@@ -163,104 +149,10 @@ export const ChatArea = () => {
         </div>
       </div>
 
-      {/* Input Area */}
-      <div className={css({
-        padding: "16px 16px 24px 16px",
-        backgroundColor: "bg.primary"
-      })}>
-        <div className={css({
-          display: "flex",
-          alignItems: "flex-end",
-          gap: "12px",
-          backgroundColor: "bg.emphasized",
-          borderRadius: "lg",
-          padding: "0 12px",
-          minHeight: "44px"
-        })}>
-          <IconButton
-            variant="ghost"
-            size="sm"
-            className={css({ 
-              color: "fg.subtle",
-              flexShrink: 0,
-              alignSelf: "center"
-            })}
-          >
-            <Plus size={20} />
-          </IconButton>
-
-          <div className={css({ 
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            paddingY: "10px"
-          })}>
-            <Input
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyPress}
-              placeholder="Message #general"
-              className={css({
-                border: "none",
-                backgroundColor: "transparent",
-                padding: 0,
-                fontSize: "md",
-                color: "fg.default",
-                width: "100%",
-                _placeholder: {
-                  color: "fg.subtle"
-                },
-                _focus: {
-                  outline: "none",
-                  boxShadow: "none"
-                }
-              })}
-            />
-          </div>
-
-          <div className={css({
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            flexShrink: 0
-          })}>
-            <IconButton
-              variant="ghost"
-              size="sm"
-              className={css({ 
-                color: "fg.subtle",
-                _hover: {
-                  color: "fg.default"
-                }
-              })}
-            >
-              <Smile size={20} />
-            </IconButton>
-            
-            <IconButton
-              variant="ghost"
-              size="sm"
-              onClick={handleSendMessage}
-              disabled={!inputValue.trim()}
-              className={css({ 
-                color: inputValue.trim() ? "accent.default" : "fg.subtle",
-                _hover: {
-                  color: inputValue.trim() ? "accent.emphasized" : "fg.default"
-                },
-                _disabled: {
-                  opacity: 0.6,
-                  cursor: "not-allowed",
-                  _hover: {
-                    color: "fg.subtle"
-                  }
-                }
-              })}
-            >
-              <Send size={18} />
-            </IconButton>
-          </div>
-        </div>
-      </div>
+      <MessageInput 
+        onSendMessage={handleSendMessage}
+        placeholder="Message #general"
+      />
     </div>
   )
 }
