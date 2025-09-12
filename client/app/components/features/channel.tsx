@@ -24,17 +24,17 @@ const channelStyles = cva({
     selected: {
       true: {
         bg: 'bg.quaternary',
-        color: 'white',
+        color: 'accent.default',
       }
     },
     unread: {
       true: {
-        color: 'fg.muted',
+        color: 'fg.default',
       }
     },
     mentioned: {
       true: {
-        color: 'white',
+        color: 'accent.default',
       }
     }
   }
@@ -98,8 +98,8 @@ export const Channel = forwardRef<HTMLDivElement, ChannelProps>((props, ref) => 
           alignItems: 'center',
           justifyContent: 'center',
           padding: '0 4px',
-          bg: 'accent.normal',
-          color: 'white'
+          bg: 'accent.default',
+          color: 'bg.primary'
         })}>
           {(channel.mentionCount ?? 0) > 99 ? '99+' : channel.mentionCount}
         </div>

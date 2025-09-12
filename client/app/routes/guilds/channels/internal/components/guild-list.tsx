@@ -71,7 +71,7 @@ export const GuildList = () => {
           height="12"
           className={css({
             _hover: {
-              bg: "accent.normal",
+              bg: "accent.default",
               color: "white",
             },
           })}

@@ -9,8 +9,30 @@ export default function Guild() {
   const { data, isPending, error } = useListMyGuilds();
 	const navigate = useNavigate();
 
-  if (data == null) {
-    return;
+  if (isPending) {
+    return (
+      <div className={css({ 
+        display: "flex", 
+        justifyContent: "center", 
+        alignItems: "center", 
+        minHeight: "200px" 
+      })}>
+        <p>読み込み中...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={css({ 
+        display: "flex", 
+        justifyContent: "center", 
+        alignItems: "center", 
+        minHeight: "200px" 
+      })}>
+        <p>サーバー一覧の読み込みに失敗しました</p>
+      </div>
+    );
   }
 
   return (
@@ -41,7 +63,18 @@ export default function Guild() {
           marginTop: "8",
         })}
       >
-        {data.guilds.length === 0 && <p>参加しているサーバーがありません</p>}
+        {(!data || data.guilds.length === 0) && (
+          <div className={css({
+            textAlign: "center",
+            padding: "8",
+            color: "fg.muted"
+          })}>
+            <p>参加しているサーバーがありません</p>
+            <p className={css({ fontSize: "sm", marginTop: "2" })}>
+              新しいサーバーを作成するか、招待コードで参加してください
+            </p>
+          </div>
+        )}
         {data.guilds.length > 0 &&
           data.guilds.map((guild) => (
             <Card.Root
@@ -52,7 +85,8 @@ export default function Guild() {
                 background: "bg.secondary",
                 width: "50%",
                 _hover: {
-                  background: "accent.dark",
+                  background: "bg.quaternary",
+                  borderColor: "accent.default",
                 },
               })}
 							onClick={() => navigate(`/servers/${guild.id}/channels/1`)}

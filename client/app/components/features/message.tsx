@@ -140,11 +140,10 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>((props, ref) => 
             className={css({
               fontWeight: 'semibold',
               fontSize: 'md',
-              color: 'fg.default',
+              color: message.author.color || 'accent.default',
               cursor: 'pointer',
               _hover: { textDecoration: 'underline' }
             })}
-            style={{ color: message.author.color }}
           >
             {message.author.name}
           </span>

@@ -8,9 +8,7 @@ export const Sidebar = () => {
     <div className={css({
       width: "320px",
       height: "100vh",
-      borderRight: "1px solid",
       bg: "bg.secondary",
-      borderColor: "border.soft",
       display: "flex",
       flexDirection: "row",
     })}>
