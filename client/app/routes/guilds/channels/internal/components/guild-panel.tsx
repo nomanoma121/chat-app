@@ -34,7 +34,7 @@ export const GuildPanel = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        paddingX: "",
+        paddingX: "5",
         height: "12",
       })}>
         <Heading className={css({ fontSize: "sm", color: "text.medium" })}>

@@ -176,6 +176,7 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>((props, ref) => 
           variant="ghost"
           size="sm"
           onClick={() => onReact?.(message.id, '👍')}
+          className={css({ color: 'text.bright', _hover: { color: 'text.bright', bgColor: 'bg.tertiary' } })}
         >
           <Smile size={16} />
         </IconButton>
@@ -183,12 +184,14 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>((props, ref) => 
           variant="ghost"
           size="sm"
           onClick={() => onReply?.(message.id)}
+          className={css({ color: 'text.bright', _hover: { color: 'text.bright', bgColor: 'bg.tertiary' } })}
         >
           <Reply size={16} />
         </IconButton>
         <IconButton
           variant="ghost"
           size="sm"
+          className={css({ color: 'text.bright', _hover: { color: 'text.bright', bgColor: 'bg.tertiary' } })}
         >
           <MoreHorizontal size={16} />
         </IconButton>
