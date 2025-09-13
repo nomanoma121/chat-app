@@ -183,6 +183,7 @@ export const GeneralTab = () => {
           <Button
             className={css({
               marginTop: "8px",
+              alignSelf: "flex-end",
             })}
           >
             変更を保存
@@ -228,6 +229,7 @@ export const GeneralTab = () => {
                 bgColor: "danger.emphasized",
                 color: "text.bright",
               },
+              alignSelf: "flex-end",
             })}
           >
             サーバーを削除
