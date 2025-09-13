@@ -248,7 +248,7 @@ table "invites" {
   schema = schema.public
   column "invite_code" {
     null = false
-    type = uuid
+    type = varchar(16)
   }
   column "creator_id" {
     null = false
@@ -261,7 +261,8 @@ table "invites" {
   column "max_uses" {
     null = false
     type = int
-    default = 0
+    # 無制限のときは -1
+    default = -1
   }
   column "current_uses" {
     null = false
