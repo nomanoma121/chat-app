@@ -1,14 +1,25 @@
 import { css } from "styled-system/css";
 import { Card } from "~/components/ui/card";
-import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
-import { ArrowLeft, Link, Copy, Trash2, Calendar, Users } from "lucide-react";
+import { IconButton } from "~/components/ui/icon-button";
+import {
+  ArrowLeft,
+  Link2,
+  Copy,
+  Trash2,
+  Plus,
+  ChevronsUpDownIcon,
+  CheckIcon,
+} from "lucide-react";
 import { useNavigate } from "react-router";
 import { Text } from "~/components/ui/text";
 import { Heading } from "~/components/ui/heading";
 import { useState } from "react";
+import { NumberInput } from "~/components/ui/number-input";
+import { Select, createListCollection } from "~/components/ui/select";
+import { Switch } from "~/components/ui/switch";
 
 const mockInvites = [
   {
@@ -36,26 +47,44 @@ const mockInvites = [
 export default function InvitePage() {
   const navigate = useNavigate();
   const [inviteSettings, setInviteSettings] = useState({
-    maxUses: "10",
+    isUnlimited: false,
+    maxUses: 10,
     expiryDays: "7",
     temporary: false,
   });
 
-  const handleSettingChange = (key: string, value: string | boolean) => {
-    setInviteSettings(prev => ({
+  const handleSettingChange = (
+    key: string,
+    value: string | boolean | number
+  ) => {
+    setInviteSettings((prev) => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }));
   };
+
+  const expiryDaysCollection = createListCollection({
+    items: [
+      { label: "1日後", value: "1" },
+      { label: "7日後", value: "7" },
+      { label: "15日後", value: "15" },
+      { label: "30日後", value: "30" },
+    ],
+  });
 
   const handleCreateInvite = () => {
     console.log("Creating invite with settings:", inviteSettings);
     // 実際のAPI呼び出し処理
   };
 
-  const handleCopyInvite = (code: string) => {
-    navigator.clipboard.writeText(`https://discord.gg/${code}`);
-    console.log(`Copied invite: ${code}`);
+  const handleCopyInvite = async (code: string) => {
+    const inviteUrl = `https://discord.gg/${code}`;
+    try {
+      await navigator.clipboard.writeText(inviteUrl);
+      console.log("招待リンクをコピーしました");
+    } catch (err) {
+      console.error("Failed to copy invite link:", err);
+    }
   };
 
   const handleDeleteInvite = (id: string) => {
@@ -66,11 +95,11 @@ export default function InvitePage() {
   return (
     <div
       className={css({
-        height: "100vh",
-        width: "800",
+        width: "800px",
         margin: "0 auto",
         background: "bg.primary",
         paddingY: "10",
+        paddingBottom: "20",
       })}
     >
       <Button
@@ -88,7 +117,7 @@ export default function InvitePage() {
         <ArrowLeft size={18} />
         <Text className={css({ ml: "8px" })}>戻る</Text>
       </Button>
-      
+
       <Heading
         className={css({ color: "text.bright", mt: "12px", mb: "20px" })}
         size="xl"
@@ -114,7 +143,7 @@ export default function InvitePage() {
               alignItems: "center",
             })}
           >
-            <Link size={20} className={css({ marginRight: "8px" })} />
+            <Plus size={20} className={css({ marginRight: "8px" })} />
             新しい招待リンクを作成
           </Heading>
           <Text
@@ -135,38 +164,130 @@ export default function InvitePage() {
             gap: "20px",
           })}
         >
-          <div className={css({ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" })}>
-            <Field.Root>
-              <FormLabel color="text.bright">最大使用回数</FormLabel>
-              <Field.Select
-                value={inviteSettings.maxUses}
-                onChange={(e) => handleSettingChange('maxUses', e.target.value)}
+          <div
+            className={css({
+              display: "flex",
+              flexDirection: "row",
+              gap: "16px",
+            })}
+          >
+            <div
+              className={css({
+                width: "50%",
+                display: "flex",
+                flexDirection: "column",
+                gap: "16px",
+              })}
+            >
+              <Select.Root
+                collection={expiryDaysCollection}
+                positioning={{
+                  placement: "right",
+                  sameWidth: true,
+                  strategy: "absolute",
+                  flip: false,
+                }}
+                className={css({ width: "50%" })}
+                defaultValue={["7"]}
               >
-                <option value="1">1回</option>
-                <option value="5">5回</option>
-                <option value="10">10回</option>
-                <option value="25">25回</option>
-                <option value="50">50回</option>
-                <option value="100">100回</option>
-                <option value="unlimited">無制限</option>
-              </Field.Select>
-            </Field.Root>
+                <Select.Label className={css({ color: "text.bright" })}>
+                  有効期限
+                </Select.Label>
+                <Select.Control>
+                  <Select.Trigger color="text.bright">
+                    <Select.ValueText placeholder="有効期限を選択" />
+                    <ChevronsUpDownIcon />
+                  </Select.Trigger>
+                </Select.Control>
+                <Select.Positioner>
+                  <Select.Content
+                    className={css({
+                      color: "text.bright",
+                      bg: "bg.secondary",
+                      borderColor: "border.soft",
+                    })}
+                  >
+                    {expiryDaysCollection.items.map((item) => (
+                      <Select.Item
+                        key={item.value}
+                        item={item}
+                        className={css({
+                          _hover: {
+                            bg: "bg.tertiary",
+                            color: "text.bright",
+                          },
+                          _selected: {
+                            bg: "bg.tertiary",
+                            color: "text.bright",
+                          },
+                        })}
+                      >
+                        <Select.ItemText>
+                          <Text>{item.label}</Text>
+                        </Select.ItemText>
+                        <Select.ItemIndicator>
+                          <CheckIcon />
+                        </Select.ItemIndicator>
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </Select.Positioner>
+              </Select.Root>
+            </div>
 
-            <Field.Root>
-              <FormLabel color="text.bright">有効期限</FormLabel>
-              <Field.Select
-                value={inviteSettings.expiryDays}
-                onChange={(e) => handleSettingChange('expiryDays', e.target.value)}
+            <div
+              className={css({
+                width: "50%",
+              })}
+            >
+              <div
+                className={css({
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                  mb: "7px",
+                })}
               >
-                <option value="1">1日後</option>
-                <option value="7">7日後</option>
-                <option value="30">30日後</option>
-                <option value="never">無期限</option>
-              </Field.Select>
-            </Field.Root>
+                <FormLabel color="text.bright">使用回数制限</FormLabel>
+                <Switch
+                  checked={inviteSettings.isUnlimited}
+                  onCheckedChange={(details) =>
+                    handleSettingChange("isUnlimited", details.checked)
+                  }
+                  className={css({ 
+                    mx: "12px",
+                    "& [data-part='control']": {
+                      bg: "bg.quaternary",
+                      _checked: {
+                        bg: "accent.default"
+                      }
+                    }
+                  })}
+                >
+                  <Text size="sm" className={css({ color: "text.bright" })}>
+                    無制限
+                  </Text>
+                </Switch>
+              </div>
+              {!inviteSettings.isUnlimited && (
+                <NumberInput
+                  value={inviteSettings.maxUses.toString()}
+                  onValueChange={(details) =>
+                    handleSettingChange("maxUses", parseInt(details.value))
+                  }
+                  min={1}
+                  max={50}
+                  width="50%"
+                />
+              )}
+            </div>
           </div>
 
-          <Button onClick={handleCreateInvite} className={css({ alignSelf: "flex-start" })}>
+          <Button
+            onClick={handleCreateInvite}
+            className={css({ alignSelf: "flex-end" })}
+          >
             招待リンクを作成
           </Button>
         </Card.Body>
@@ -191,7 +312,7 @@ export default function InvitePage() {
             })}
           >
             <span className={css({ display: "flex", alignItems: "center" })}>
-              <Users size={20} className={css({ marginRight: "8px" })} />
+              <Link2 size={20} className={css({ marginRight: "8px" })} />
               既存の招待リンク ({mockInvites.length})
             </span>
           </Heading>
@@ -203,15 +324,24 @@ export default function InvitePage() {
               key={invite.id}
               className={css({
                 padding: "20px",
-                borderBottom: "1px solid",
-                borderColor: "border.soft",
-                _last: { borderBottom: "none" },
-                _hover: { background: "bg.tertiary" },
               })}
             >
-              <div className={css({ display: "flex", justifyContent: "space-between", alignItems: "flex-start" })}>
+              <div
+                className={css({
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                })}
+              >
                 <div className={css({ flex: 1 })}>
-                  <div className={css({ display: "flex", alignItems: "center", gap: "12px", mb: "8px" })}>
+                  <div
+                    className={css({
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      mb: "8px",
+                    })}
+                  >
                     <Text
                       className={css({
                         fontFamily: "mono",
@@ -227,7 +357,10 @@ export default function InvitePage() {
                     </Text>
                     <Badge
                       className={css({
-                        background: invite.uses >= (invite.maxUses || 999) ? "danger.default" : "accent.default",
+                        background:
+                          invite.uses >= (invite.maxUses || 999)
+                            ? "danger.default"
+                            : "accent.default",
                         color: "text.bright",
                       })}
                     >
@@ -235,28 +368,54 @@ export default function InvitePage() {
                     </Badge>
                   </div>
 
-                  <div className={css({ display: "flex", flexDirection: "column", gap: "4px" })}>
-                    <Text className={css({ fontSize: "sm", color: "text.medium" })}>
+                  <div
+                    className={css({
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "4px",
+                    })}
+                  >
+                    <Text
+                      className={css({ fontSize: "sm", color: "text.medium" })}
+                    >
                       作成者: {invite.creator}
                     </Text>
-                    <Text className={css({ fontSize: "sm", color: "text.medium" })}>
+                    <Text
+                      className={css({ fontSize: "sm", color: "text.medium" })}
+                    >
                       作成日: {invite.createdAt}
                     </Text>
                     {invite.expiresAt && (
-                      <Text className={css({ fontSize: "sm", color: "text.medium" })}>
+                      <Text
+                        className={css({
+                          fontSize: "sm",
+                          color: "text.medium",
+                        })}
+                      >
                         期限: {invite.expiresAt}
                       </Text>
                     )}
                     {invite.maxUses && (
-                      <Text className={css({ fontSize: "sm", color: "text.medium" })}>
+                      <Text
+                        className={css({
+                          fontSize: "sm",
+                          color: "text.medium",
+                        })}
+                      >
                         最大使用回数: {invite.maxUses}回
                       </Text>
                     )}
                   </div>
                 </div>
 
-                <div className={css({ display: "flex", gap: "8px" })}>
-                  <Button
+                <div
+                  className={css({
+                    display: "flex",
+                    gap: "8px",
+                    alignItems: "center",
+                  })}
+                >
+                  <IconButton
                     variant="outline"
                     size="sm"
                     onClick={() => handleCopyInvite(invite.code)}
@@ -264,12 +423,17 @@ export default function InvitePage() {
                       display: "flex",
                       alignItems: "center",
                       gap: "6px",
+                      color: "text.medium",
+                      borderColor: "border.soft",
+                      _hover: {
+                        background: "bg.quaternary",
+                        color: "text.bright",
+                      },
                     })}
                   >
                     <Copy size={14} />
-                    コピー
-                  </Button>
-                  <Button
+                  </IconButton>
+                  <IconButton
                     variant="outline"
                     size="sm"
                     onClick={() => handleDeleteInvite(invite.id)}
@@ -286,8 +450,7 @@ export default function InvitePage() {
                     })}
                   >
                     <Trash2 size={14} />
-                    削除
-                  </Button>
+                  </IconButton>
                 </div>
               </div>
             </div>
