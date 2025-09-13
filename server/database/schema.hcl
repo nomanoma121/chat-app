@@ -85,14 +85,17 @@ table "messages" {
   foreign_key "author" {
     columns = [column.author_id]
     ref_columns = [table.users.column.id]
+    on_delete = NO_ACTION
   }
   foreign_key "channel" {
     columns = [column.channel_id]
     ref_columns = [table.channels.column.id]
+    on_delete = CASCADE
   }
   foreign_key "reply" {
     columns = [column.reply_id]
     ref_columns = [table.messages.column.id]
+    on_delete = SET_NULL
   }
 }
 
@@ -132,6 +135,7 @@ table "guilds" {
   foreign_key "owner" {
     columns = [column.owner_id]
     ref_columns = [table.users.column.id]
+    on_delete = RESTRICT
   }
 }
 
@@ -163,10 +167,12 @@ table "members" {
   foreign_key "user" {
     columns = [column.user_id]
     ref_columns = [table.users.column.id]
+    on_delete = NO_ACTION
   }
   foreign_key "guild" {
     columns = [column.guild_id]
     ref_columns = [table.guilds.column.id]
+    on_delete = CASCADE
   }
 }
 
@@ -202,6 +208,7 @@ table "categories" {
   foreign_key "guild" {
     columns = [column.guild_id]
     ref_columns = [table.guilds.column.id]
+    on_delete = CASCADE
   }
 }
 
@@ -233,6 +240,7 @@ table "channels" {
   foreign_key "category" {
     columns = [column.category_id]
     ref_columns = [table.categories.column.id]
+    on_delete = CASCADE
   }
 }
 
@@ -274,10 +282,12 @@ table "invites" {
   foreign_key "creator" {
     columns = [column.creator_id]
     ref_columns = [table.users.column.id]
+    on_delete = NO_ACTION
   }
   foreign_key "guild" {
     columns = [column.guild_id]
     ref_columns = [table.guilds.column.id]
+    on_delete = CASCADE
   }
 }
 
