@@ -1,12 +1,12 @@
 import { useId, useState } from "react";
+import { useNavigate } from "react-router";
+import { css } from "styled-system/css";
 import { useRegister } from "~/api/gen/auth/auth";
 import type { RegisterRequest } from "~/api/gen/userProto.schemas";
+import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
-import { css } from "styled-system/css";
-import { Button } from "~/components/ui/button";
-import { useNavigate } from "react-router";
 
 export default function RegisterPage() {
 	const displayIdId = useId();
@@ -63,18 +63,21 @@ export default function RegisterPage() {
 							fontSize: "2xl",
 							fontWeight: "bold",
 							textAlign: "center",
-							color: "text.bright"
+							color: "text.bright",
 						})}
 					>
 						新規登録
 					</h1>
 				</Card.Header>
 				<Card.Body>
-					<form onSubmit={handleSubmit} className={css({
-						display: "flex",
-						flexDirection: "column",
-						gap: "20px",
-					})}>
+					<form
+						onSubmit={handleSubmit}
+						className={css({
+							display: "flex",
+							flexDirection: "column",
+							gap: "20px",
+						})}
+					>
 						<Field.Root>
 							<FormLabel color="text.bright">displayId</FormLabel>
 							<Field.Input
@@ -85,10 +88,10 @@ export default function RegisterPage() {
 								placeholder="例: user123"
 								value={formData.displayId}
 								onChange={handleChange}
-								className={css({ 
-									background: "bg.primary", 
+								className={css({
+									background: "bg.primary",
 									border: "none",
-									color: "text.bright"
+									color: "text.bright",
 								})}
 							/>
 						</Field.Root>
@@ -103,10 +106,10 @@ export default function RegisterPage() {
 								placeholder="例: 太郎"
 								value={formData.name}
 								onChange={handleChange}
-								className={css({ 
-									background: "bg.primary", 
+								className={css({
+									background: "bg.primary",
 									border: "none",
-									color: "text.bright"
+									color: "text.bright",
 								})}
 							/>
 						</Field.Root>
@@ -122,10 +125,10 @@ export default function RegisterPage() {
 								placeholder="例: user@example.com"
 								value={formData.email}
 								onChange={handleChange}
-								className={css({ 
-									background: "bg.primary", 
+								className={css({
+									background: "bg.primary",
 									border: "none",
-									color: "text.bright"
+									color: "text.bright",
 								})}
 							/>
 						</Field.Root>
@@ -141,10 +144,10 @@ export default function RegisterPage() {
 								placeholder="パスワードを入力してください"
 								value={formData.password}
 								onChange={handleChange}
-								className={css({ 
-									background: "bg.primary", 
+								className={css({
+									background: "bg.primary",
 									border: "none",
-									color: "text.bright"
+									color: "text.bright",
 								})}
 							/>
 						</Field.Root>
@@ -158,11 +161,11 @@ export default function RegisterPage() {
 								placeholder="自己紹介文を入力してください"
 								value={formData.bio || ""}
 								onChange={handleChange}
-								className={css({ 
-									background: "bg.primary", 
+								className={css({
+									background: "bg.primary",
 									border: "none",
 									color: "text.bright",
-									resize: "none"
+									resize: "none",
 								})}
 							/>
 						</Field.Root>
@@ -176,50 +179,54 @@ export default function RegisterPage() {
 								placeholder="https://example.com/icon.jpg"
 								value={formData.iconUrl || ""}
 								onChange={handleChange}
-								className={css({ 
-									background: "bg.primary", 
+								className={css({
+									background: "bg.primary",
 									border: "none",
-									color: "text.bright"
+									color: "text.bright",
 								})}
 							/>
 						</Field.Root>
 
 						{error && (
-							<div className={css({
-								color: "accent.default",
-								fontSize: "sm",
-								textAlign: "center",
-								padding: "2",
-								bg: "bg.tertiary",
-								borderRadius: "md"
-							})}>
+							<div
+								className={css({
+									color: "accent.default",
+									fontSize: "sm",
+									textAlign: "center",
+									padding: "2",
+									bg: "bg.tertiary",
+									borderRadius: "md",
+								})}
+							>
 								登録に失敗しました。入力内容を確認してください。
 							</div>
 						)}
 
-						<Button 
+						<Button
 							type="submit"
 							disabled={isPending}
-							className={css({ 
+							className={css({
 								width: "100%",
-								marginTop: "10px"
+								marginTop: "10px",
 							})}
 						>
 							{isPending ? "登録中..." : "新規登録"}
 						</Button>
 
-						<div className={css({
-							textAlign: "center",
-							marginTop: "4"
-						})}>
+						<div
+							className={css({
+								textAlign: "center",
+								marginTop: "4",
+							})}
+						>
 							<a
 								href="/login"
 								className={css({
 									fontWeight: "medium",
 									color: "accent.default",
 									_hover: {
-										color: "accent.emphasized"
-									}
+										color: "accent.emphasized",
+									},
 								})}
 							>
 								ログインはこちら

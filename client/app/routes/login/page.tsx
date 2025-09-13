@@ -1,12 +1,12 @@
 import { useId, useState } from "react";
+import { useNavigate } from "react-router";
+import { css } from "styled-system/css";
 import type { LoginRequest } from "~/api/gen/userProto.schemas";
-import { useLoginMutation } from "~/hooks/use-login";
+import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
-import { css } from "styled-system/css";
-import { Button } from "~/components/ui/button";
-import { useNavigate } from "react-router";
+import { useLoginMutation } from "~/hooks/use-login";
 
 export default function LoginPage() {
 	const emailId = useId();
@@ -52,18 +52,21 @@ export default function LoginPage() {
 							fontSize: "2xl",
 							fontWeight: "bold",
 							textAlign: "center",
-							color: "text.bright"
+							color: "text.bright",
 						})}
 					>
 						ログイン
 					</h1>
 				</Card.Header>
 				<Card.Body>
-					<form onSubmit={handleSubmit} className={css({
-						display: "flex",
-						flexDirection: "column",
-						gap: "20px",
-					})}>
+					<form
+						onSubmit={handleSubmit}
+						className={css({
+							display: "flex",
+							flexDirection: "column",
+							gap: "20px",
+						})}
+					>
 						<Field.Root>
 							<FormLabel color="text.bright">メールアドレス</FormLabel>
 							<Field.Input
@@ -75,10 +78,10 @@ export default function LoginPage() {
 								placeholder="メールアドレスを入力してください"
 								value={formData.email}
 								onChange={handleChange}
-								className={css({ 
-									background: "bg.primary", 
+								className={css({
+									background: "bg.primary",
 									border: "none",
-									color: "text.bright"
+									color: "text.bright",
 								})}
 							/>
 						</Field.Root>
@@ -93,50 +96,54 @@ export default function LoginPage() {
 								placeholder="パスワードを入力してください"
 								value={formData.password}
 								onChange={handleChange}
-								className={css({ 
-									background: "bg.primary", 
+								className={css({
+									background: "bg.primary",
 									border: "none",
-									color: "text.bright"
+									color: "text.bright",
 								})}
 							/>
 						</Field.Root>
 
 						{error && (
-							<div className={css({
-								color: "accent.default",
-								fontSize: "sm",
-								textAlign: "center",
-								padding: "2",
-								bg: "bg.tertiary",
-								borderRadius: "md"
-							})}>
+							<div
+								className={css({
+									color: "accent.default",
+									fontSize: "sm",
+									textAlign: "center",
+									padding: "2",
+									bg: "bg.tertiary",
+									borderRadius: "md",
+								})}
+							>
 								ログインに失敗しました。メールアドレスまたはパスワードを確認してください。
 							</div>
 						)}
 
-						<Button 
+						<Button
 							type="submit"
 							disabled={isPending}
-							className={css({ 
+							className={css({
 								width: "100%",
-								marginTop: "10px"
+								marginTop: "10px",
 							})}
 						>
 							{isPending ? "ログイン中..." : "ログイン"}
 						</Button>
 
-						<div className={css({
-							textAlign: "center",
-							marginTop: "4"
-						})}>
+						<div
+							className={css({
+								textAlign: "center",
+								marginTop: "4",
+							})}
+						>
 							<a
 								href="/signup"
 								className={css({
 									fontWeight: "medium",
 									color: "accent.default",
 									_hover: {
-										color: "accent.emphasized"
-									}
+										color: "accent.emphasized",
+									},
 								})}
 							>
 								新規登録はこちら
