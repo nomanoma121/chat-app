@@ -1,16 +1,12 @@
 import { defineConfig } from "@pandacss/dev";
 import { createPreset } from "@park-ui/panda-preset";
-import indigo from "@park-ui/panda-preset/colors/indigo";
-import ruby from "@park-ui/panda-preset/colors/ruby";
-import teal from "@park-ui/panda-preset/colors/teal";
-import tomato from "@park-ui/panda-preset/colors/tomato";
-import purple from "@park-ui/panda-preset/colors/purple";
+import violet from "@park-ui/panda-preset/colors/violet";
 import slate from "@park-ui/panda-preset/colors/slate";
 
 export default defineConfig({
   preflight: true,
   presets: [
-    createPreset({ accentColor: ruby, grayColor: slate, radius: "md" }),
+    createPreset({ accentColor: violet, grayColor: slate, radius: "md" }),
   ],
   include: ["./app/**/*.{js,jsx,ts,tsx,vue}"],
   jsxFramework: "react",
@@ -19,28 +15,33 @@ export default defineConfig({
     extend: {
       tokens: {
         colors: {
-          // Midnight Honey Theme - ミッドナイトハニー系
+          // Midnight Violet Theme - ミッドナイトバイオレット系
           bg: {
-            primary: { value: "#1a1a1a" },      // 深い真夜中
-            secondary: { value: "#242424" },    // 夜の影
-            tertiary: { value: "#2f2f2f" },     // 黒蜜の色
-            quaternary: { value: "#3a3a3a" },   // 濃いハニー
-            emphasized: { value: "#454545" },   // 夜のゴールド
+            primary: { value: "#1a1a20" },      // 深い紫の夜
+            secondary: { value: "#202027" },    // 夜のラベンダー
+            tertiary: { value: "#27273a" },     // 濃い紫の影
+            quaternary: { value: "#2e2e44" },   // ダークバイオレット
+            emphasized: { value: "#3a3a50" },   // 夜のアメジスト
           },
           accent: {
-            default: { value: "#e54666" },      // ruby.9 - メインのルビー色
-            emphasized: { value: "#ec5a72" },   // ruby.10 - 強調されたルビー  
-            subtle: { value: "#ff949d" },       // ruby.11 - 薄いルビー
+            default: { value: "#8b5cf6" },      // violet.9 - メインのバイオレット色
+            emphasized: { value: "#a855f7" },   // violet.10 - 強調されたバイオレット
+            subtle: { value: "#c4b5fd" },       // violet.11 - 薄いバイオレット
+          },
+          danger: {
+            default: { value: "#ef4444" },      // red.500 - メインの警告色
+            emphasized: { value: "#dc2626" },   // red.600 - 強調された警告色
+            subtle: { value: "#fca5a5" },       // red.300 - 薄い警告色
           },
           border: {
-            soft: { value: "#333333" },         // 薄いグレーの境界
-            subtle: { value: "#404040" },       // ニュートラルグレーの縁
-            default: { value: "#4a4a4a" },      // グレーの輝き
+            soft: { value: "#373745" },         // 薄い紫グレーの境界
+            subtle: { value: "#44444f" },       // 紫がかったグレーの縁
+            default: { value: "#525266" },      // バイオレットグレーの輝き
           },
           text: {
-            soft: { value: "#6b7280" },         // ベーステーマに近い薄いグレー
-            medium: { value: "#9ca3af" },       // ベーステーマに近い中間グレー
-            bright: { value: "#d1d5db" },       // ベーステーマに近い明るいグレー
+            soft: { value: "#737391" },         // 薄い紫グレー
+            medium: { value: "#9c9cb8" },       // 中間の紫グレー
+            bright: { value: "#d4d4e8" },       // 明るい紫グレー
           },
         }
       }
