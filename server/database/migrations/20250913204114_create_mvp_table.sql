@@ -35,10 +35,10 @@ CREATE TABLE "public"."channels" (
 );
 -- Create "invites" table
 CREATE TABLE "public"."invites" (
-  "invite_code" uuid NOT NULL,
+  "invite_code" character varying(16) NOT NULL,
   "creator_id" uuid NOT NULL,
   "guild_id" uuid NOT NULL,
-  "max_uses" integer NOT NULL DEFAULT 0,
+  "max_uses" integer NOT NULL DEFAULT -1,
   "current_uses" integer NOT NULL DEFAULT 0,
   "expires_at" timestamp NOT NULL,
   "created_at" timestamp NOT NULL,
