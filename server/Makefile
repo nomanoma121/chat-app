@@ -1,4 +1,4 @@
-.PHONY: migrate-create migrate-apply db-reset-clean schema-to-sql sqlc-generate generate schema-docs
+.PHONY: migrate-create migrate-apply db-reset-clean schema-to-sql sqlc-generate generate schema-docs migrate-hash-fix
 
 # Variables
 DATABASE_URL := postgres://user:password@localhost:5432/chat_app?sslmode=disable
@@ -29,6 +29,13 @@ migrate-apply:
 	atlas migrate apply \
 		--dir "$(MIGRATIONS_DIR)" \
 		--url "$(DATABASE_URL)"
+
+# Fix migration hash issues (regenerate atlas.sum)
+migrate-hash-fix:
+	@echo "🔧 Regenerating atlas.sum from migration files..."
+	atlas migrate hash \
+		--dir "$(MIGRATIONS_DIR)"
+	@echo "✅ Migration hashes fixed!"
 
 # Schema management
 schema-to-sql:
