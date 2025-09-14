@@ -47,6 +47,13 @@ type LoginRequest struct {
 	Password string `validate:"required,min=8"`
 }
 
+type UpdateRequest struct {
+	ID        uuid.UUID `validate:"required"`
+	Name      string    `validate:"required,min=1,max=15"`
+	Bio       string    `validate:"omitempty,max=500"`
+	IconURL   string    `validate:"omitempty,url"`
+}
+
 func NewUser(user User) *User {
 	return &User{
 		ID:        user.ID,
@@ -61,4 +68,16 @@ func NewUser(user User) *User {
 
 func (u *User) Validate() error {
 	return validate.Struct(u)
+}
+
+func (r *RegisterRequest) Validate() error {
+	return validate.Struct(r)
+}
+
+func (r *LoginRequest) Validate() error {
+	return validate.Struct(r)
+}
+
+func (r *UpdateRequest) Validate() error {
+	return validate.Struct(r)
 }

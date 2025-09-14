@@ -12,5 +12,5 @@ type UserRepository interface {
 	GetUserByID(ctx context.Context, id uuid.UUID) (*User, error)
 	ExistsByEmail(ctx context.Context, email string) (bool, error)
 	ExistsByDisplayId(ctx context.Context, displayId string) (bool, error)
-	Update(ctx context.Context, user *User) error
+	Update(ctx context.Context, user *UpdateRequest) error
 }

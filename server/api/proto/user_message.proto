@@ -109,7 +109,6 @@ message UpdateUserRequest {
       required: ["name", "bio", "icon_url"]
     };
   };
-  string display_id = 1;
   string name = 2;
   string bio = 3;
   string icon_url = 4;

@@ -104,12 +104,12 @@ func (r *userRepository) ExistsByDisplayId(ctx context.Context, displayId string
 	return count > 0, nil
 }
 
-func (r *userRepository) Update(ctx context.Context, user *domain.User) error {
+func (r *userRepository) Update(ctx context.Context, user *domain.UpdateRequest) error {
 	_, err := r.queries.UpdateUser(ctx, generated.UpdateUserParams{
-		ID:       user.ID,
-		Username: user.Name,
-		Bio:      user.Bio,
-		IconUrl:  user.IconURL,
+		ID:        user.ID,
+		Username:  user.Name,
+		Bio:       user.Bio,
+		IconUrl:   user.IconURL,
 	})
 	return err
 }
