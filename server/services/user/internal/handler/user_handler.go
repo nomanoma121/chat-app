@@ -4,6 +4,7 @@ import (
 	"context"
 	"log/slog"
 	"shared/metadata"
+	"time"
 	"user-service/internal/domain"
 	"user-service/internal/usecase"
 
@@ -135,8 +136,8 @@ func (h *UserHandler) AuthMe(ctx context.Context, req *pb.AuthMeRequest) (*pb.Au
 
 	return &pb.AuthMeResponse{
 		UserId: claims.UserID,
-		Exp:    claims.Exp.Format("2006-01-02 15:04:05"),
-		Iat:    claims.Iat.Format("2006-01-02 15:04:05"),
+		Exp:    claims.Exp.Format(time.RFC3339),
+		Iat:    claims.Iat.Format(time.RFC3339),
 	}, nil
 }
 
