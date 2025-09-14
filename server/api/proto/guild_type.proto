@@ -76,3 +76,13 @@ message Channel {
   google.protobuf.Timestamp created_at = 4;
   google.protobuf.Timestamp updated_at = 5;
 }
+
+message CategoryWithChannels {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["category", "channels"]
+    };
+  };
+  Category category = 1;
+  repeated Channel channels = 2;
+}

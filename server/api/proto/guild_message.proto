@@ -27,6 +27,25 @@ message CreateGuildResponse {
   Guild guild = 1;
 }
 
+message GetGuildOverviewRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["guild_id"]
+    };
+  };
+  string guild_id = 1;
+}
+
+message GetGuildOverviewResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["guild", "categories"]
+    };
+  };
+  Guild guild = 1;
+  repeated CategoryWithChannels categories = 2;
+}
+
 message GetGuildByIDRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
