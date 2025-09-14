@@ -101,24 +101,6 @@ message UpdateGuildResponse {
   Guild guild = 1;
 }
 
-message GetGuildMembersRequest {
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-    json_schema: {
-      required: ["guild_id"]
-    };
-  };
-  string guild_id = 1;
-}
-
-message GetGuildMembersResponse {
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-    json_schema: {
-      required: ["members"]
-    };
-  };
-  repeated Member members = 1;
-}
-
 message DeleteGuildMemberRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
@@ -228,24 +210,6 @@ message JoinGuildResponse {
     };
   };
   Guild guild = 1;
-}
-
-message GetCategoriesRequest {
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-    json_schema: {
-      required: ["guild_id"]
-    };
-  };
-  string guild_id = 1;
-}
-
-message GetCategoriesResponse {
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-    json_schema: {
-      required: ["categories"]
-    };
-  };
-  repeated Category categories = 1;
 }
 
 message CreateCategoryRequest {
