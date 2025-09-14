@@ -7,6 +7,7 @@ import (
 	"shared/logger"
 
 	mdw "api-gateway/internal/middleware"
+	"api-gateway/internal/interceptor"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -44,7 +45,10 @@ func main() {
 		runtime.WithErrorHandler(utils.CustomErrorHandler),
 	)
 
-	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	opts := []grpc.DialOption{
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithUnaryInterceptor(interceptor.JWTToMetadata()),
+	}
 	err := userpb.RegisterUserServiceHandlerFromEndpoint(ctx, grpcGatewayMux, USER_SERVICE_ENDPOINT, opts)
 	if err != nil {
 		log.Error("Failed to register user service handler", "error", err, "endpoint", USER_SERVICE_ENDPOINT)
