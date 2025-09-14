@@ -8,6 +8,7 @@ import (
 	"user-service/internal/usecase"
 
 	pb "chat-app-proto/gen/user"
+
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -127,7 +128,7 @@ func (h *UserHandler) AuthMe(ctx context.Context, req *pb.AuthMeRequest) (*pb.Au
 	claims, err := metadata.GetJWTClaimsFromMetadata(ctx)
 	if err != nil {
 		h.logger.Warn("Failed to get JWT claims from metadata", "error", err)
-		return nil, status.Error(codes.Unauthenticated, "authentication required")
+		return nil, status.Error(codes.Unauthenticated, domain.ErrInvalidCredentials.Error())
 	}
 
 	h.logger.Info("AuthMe called", "user_id", claims.UserID)
@@ -137,7 +138,7 @@ func (h *UserHandler) AuthMe(ctx context.Context, req *pb.AuthMeRequest) (*pb.Au
 		Exp:    claims.Exp.Format("2006-01-02 15:04:05"),
 		Iat:    claims.Iat.Format("2006-01-02 15:04:05"),
 	}
-	
+
 	return response, nil
 }
 
@@ -151,7 +152,7 @@ func (h *UserHandler) GetCurrentUser(ctx context.Context, req *pb.GetCurrentUser
 	userID, err := uuid.Parse(userIDStr)
 	if err != nil {
 		h.logger.Warn("Invalid user ID format", "user_id", userIDStr, "error", err)
-		return nil, status.Error(codes.InvalidArgument, "invalid user ID format")
+		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserData.Error())
 	}
 
 	user, err := h.userUsecase.GetUserByID(ctx, userID)
@@ -159,10 +160,10 @@ func (h *UserHandler) GetCurrentUser(ctx context.Context, req *pb.GetCurrentUser
 		switch err {
 		case domain.ErrUserNotFound:
 			h.logger.Warn("User not found", "user_id", userID)
-			return nil, status.Error(codes.NotFound, "user not found")
+			return nil, status.Error(codes.NotFound, domain.ErrUserNotFound.Error())
 		default:
 			h.logger.Error("Failed to get current user", "user_id", userID, "error", err)
-			return nil, status.Error(codes.Internal, "failed to get user")
+			return nil, status.Error(codes.Internal, domain.ErrInternalServerError.Error())
 		}
 	}
 
