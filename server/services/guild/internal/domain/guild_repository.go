@@ -6,11 +6,8 @@ import (
 	"github.com/google/uuid"
 )
 
-type UserRepository interface {
-	Create(ctx context.Context, user *User) (*User, error)
-	FindByEmail(ctx context.Context, email string) (*User, error)
-	GetUserByID(ctx context.Context, id uuid.UUID) (*User, error)
-	ExistsByEmail(ctx context.Context, email string) (bool, error)
-	ExistsByDisplayId(ctx context.Context, displayId string) (bool, error)
-	Update(ctx context.Context, user *UpdateRequest) (*User, error)
+type GuildRepository interface {
+	Create(ctx context.Context, guild *GuildRequest) (*Guild, error)
+	GetGuildByID(ctx context.Context, id uuid.UUID) (*Guild, error)
+	Update(ctx context.Context, guild *GuildRequest) (*Guild, error)
 }

@@ -3,11 +3,9 @@ package domain
 import "errors"
 
 var (
-	ErrUserNotFound           = errors.New("user not found")
-	ErrEmailAlreadyExists     = errors.New("email already exists")
-	ErrDisplayIDAlreadyExists = errors.New("display ID already exists")
-	ErrInvalidUserData        = errors.New("invalid user data")
-	ErrInvalidUserID          = errors.New("invalid user ID")
-	ErrInternalServerError     = errors.New("internal server error")
-	ErrInvalidCredentials    = errors.New("invalid credentials")
+	ErrGuildNotFound       = errors.New("guild not found")
+	ErrInvalidGuildData    = errors.New("invalid guild data")
+	ErrInvalidGuildID      = errors.New("invalid guild ID")
+	ErrInternalServerError = errors.New("internal server error")
+	ErrInvalidCredentials  = errors.New("invalid credentials")
 )

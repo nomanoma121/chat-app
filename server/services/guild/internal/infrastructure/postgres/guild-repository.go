@@ -10,123 +10,69 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-type userRepository struct {
+type guildRepository struct {
 	queries *generated.Queries
 }
 
-func NewPostgresUserRepository(queries *generated.Queries) *userRepository {
-	return &userRepository{
+func NewPostgresGuildRepository(queries *generated.Queries) *guildRepository {
+	return &guildRepository{
 		queries: queries,
 	}
 }
 
-func (r *userRepository) Create(ctx context.Context, user *domain.User) (*domain.User, error) {
-	dbUser, err := r.queries.CreateUser(ctx, generated.CreateUserParams{
-		ID:           user.ID,
-		DisplayID:    user.DisplayId,
-		Username:     user.Name,
-		Email:        user.Email,
-		PasswordHash: user.Password,
-		Bio:          user.Bio,
-		IconUrl:      user.IconURL,
+func (r *guildRepository) Create(ctx context.Context, guild *domain.GuildRequest) (*domain.Guild, error) {
+	dbGuild, err := r.queries.CreateGuild(ctx, generated.CreateGuildParams{
+		ID:          guild.ID,
+		OwnerID:     guild.OwnerID,
+		Name:        guild.Name,
+		Description: guild.Description,
+		IconURL:    guild.IconURL,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &domain.User{
-		ID:        dbUser.ID,
-		DisplayId: dbUser.DisplayID,
-		Name:      dbUser.Username,
-		Email:     dbUser.Email,
-		Password:  dbUser.PasswordHash,
-		Bio:       dbUser.Bio,
-		IconURL:   dbUser.IconUrl,
-		CreatedAt: dbUser.CreatedAt.Time,
-		UpdatedAt: dbUser.UpdatedAt.Time,
+	return &domain.Guild{
+		ID:          dbGuild.ID,
+		Name:        dbGuild.Name,
+		Description: dbGuild.Description,
+		CreatedAt:   dbGuild.CreatedAt.Time,
+		UpdatedAt:   dbGuild.UpdatedAt.Time,
 	}, nil
 }
 
-func (r *userRepository) FindByEmail(ctx context.Context, email string) (*domain.User, error) {
-	dbUser, err := r.queries.FindByEmail(ctx, email)
+func (r *guildRepository) GetGuildByID(ctx context.Context, id uuid.UUID) (*domain.Guild, error) {
+	dbGuild, err := r.queries.GetGuildByID(ctx, id)
 	if err != nil {
 		if err == pgx.ErrNoRows {
-			return nil, domain.ErrUserNotFound
+			return nil, domain.ErrGuildNotFound
 		}
 		return nil, err
 	}
-	return &domain.User{
-		ID:        dbUser.ID,
-		DisplayId: dbUser.DisplayID,
-		Name:      dbUser.Username,
-		Email:     dbUser.Email,
-		Password:  dbUser.PasswordHash,
-		Bio:       dbUser.Bio,
-		IconURL:   dbUser.IconUrl,
-		CreatedAt: dbUser.CreatedAt.Time,
-		UpdatedAt: dbUser.UpdatedAt.Time,
+	return &domain.Guild{
+		ID:          dbGuild.ID,
+		Name:        dbGuild.Name,
+		Description: dbGuild.Description,
+		CreatedAt:   dbGuild.CreatedAt.Time,
+		UpdatedAt:   dbGuild.UpdatedAt.Time,
 	}, nil
 }
 
-func (r *userRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*domain.User, error) {
-	dbUser, err := r.queries.GetUserByID(ctx, id)
-	if err != nil {
-		if err == pgx.ErrNoRows {
-			return nil, domain.ErrUserNotFound
-		}
-		return nil, err
-	}
-	return &domain.User{
-		ID:        dbUser.ID,
-		DisplayId: dbUser.DisplayID,
-		Name:      dbUser.Username,
-		Email:     dbUser.Email,
-		Password:  dbUser.PasswordHash,
-		Bio:       dbUser.Bio,
-		IconURL:   dbUser.IconUrl,
-		CreatedAt: dbUser.CreatedAt.Time,
-		UpdatedAt: dbUser.UpdatedAt.Time,
-	}, nil
-}
-
-func (r *userRepository) ExistsByEmail(ctx context.Context, email string) (bool, error) {
-	count, err := r.queries.ExistsByEmail(ctx, email)
-	if err != nil {
-		return false, err
-	}
-	return count > 0, nil
-}
-
-func (r *userRepository) ExistsByDisplayId(ctx context.Context, displayId string) (bool, error) {
-	count, err := r.queries.ExistsByDisplayId(ctx, displayId)
-	if err != nil {
-		return false, err
-	}
-	return count > 0, nil
-}
-
-func (r *userRepository) Update(ctx context.Context, user *domain.UpdateRequest) (*domain.User, error) {
-	dbUser, err := r.queries.UpdateUser(ctx, generated.UpdateUserParams{
-		ID:       user.ID,
-		Username: user.Name,
-		Bio:      user.Bio,
-		IconUrl:  user.IconURL,
+func (r *guildRepository) Update(ctx context.Context, guild *domain.GuildRequest) (*domain.Guild, error) {
+	dbGuild, err := r.queries.UpdateGuild(ctx, generated.UpdateGuildParams{
+		ID:          guild.ID,
+		Name:        guild.Name,
+		Description: guild.Description,
 	})
-
 	if err != nil {
 		return nil, err
 	}
-
-	return &domain.User{
-		ID:        dbUser.ID,
-		DisplayId: dbUser.DisplayID,
-		Name:      dbUser.Username,
-		Email:     dbUser.Email,
-		Password:  dbUser.PasswordHash,
-		Bio:       dbUser.Bio,
-		IconURL:   dbUser.IconUrl,
-		CreatedAt: dbUser.CreatedAt.Time,
-		UpdatedAt: dbUser.UpdatedAt.Time,
+	return &domain.Guild{
+		ID:          dbGuild.ID,
+		Name:        dbGuild.Name,
+		Description: dbGuild.Description,
+		CreatedAt:   dbGuild.CreatedAt.Time,
+		UpdatedAt:   dbGuild.UpdatedAt.Time,
 	}, nil
 }
 
-var _ domain.UserRepository = (*userRepository)(nil)
+var _ domain.GuildRepository = (*guildRepository)(nil)

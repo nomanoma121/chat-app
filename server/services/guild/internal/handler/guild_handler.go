@@ -29,17 +29,13 @@ func NewGuildHandler(guildUsecase usecase.GuildUsecase, logger *slog.Logger) *Gu
 	}
 }
 
-func (h *GuildHandler) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
-	domainReq := &domain.RegisterRequest{
-		DisplayId: req.DisplayId,
-		Name:      req.Name,
-		Email:     req.Email,
-		Password:  req.Password,
-		Bio:       req.Bio,
-		IconURL:   req.IconUrl,
+func (h *GuildHandler) Create(ctx context.Context, req *pb.CreateGuildRequest) (*pb.CreateGuildResponse, error) {
+	domainReq := &domain.GuildRequest{
+		Name:        req.Name,
+		Description: req.Description,
 	}
 
-	guild, err := h.guildUsecase.Register(ctx, domainReq)
+	guild, err := h.guildUsecase.Create(ctx, domainReq)
 
 	if err != nil {
 		switch err {

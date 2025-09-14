@@ -2,78 +2,61 @@ package usecase
 
 import (
 	"context"
-	"time"
 	"guild-service/internal/domain"
 
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type GuildUsecase interface {
-	Create(ctx context.Context, req *domain.RegisterRequest) (*domain.User, error)
-	Update(ctx context.Context, user *domain.UpdateRequest) (*domain.User, error)
+	Create(ctx context.Context, req *domain.GuildRequest) (*domain.Guild, error)
+	Update(ctx context.Context, user *domain.GuildRequest) (*domain.Guild, error)
+	GetByID(ctx context.Context, id uuid.UUID) (*domain.Guild, error)
 }
 
 type Config struct {
 	JWTSecret string
 }
 
-type userUsecase struct {
-	userRepo domain.UserRepository
-	config   Config
+type guildUsecase struct {
+	guildRepo domain.GuildRepository
+	config    Config
 }
 
-func NewUserUsecase(userRepo domain.UserRepository, config Config) UserUsecase {
-	return &userUsecase{
-		userRepo: userRepo,
-		config:   config,
+func NewGuildUsecase(guildRepo domain.GuildRepository, config Config) GuildUsecase {
+	return &guildUsecase{
+		guildRepo: guildRepo,
+		config:    config,
 	}
 }
 
-func (u *userUsecase) Register(ctx context.Context, req *domain.RegisterRequest) (*domain.User, error) {
+func (u *guildUsecase) Create(ctx context.Context, req *domain.GuildRequest) (*domain.Guild, error) {
 	if err := req.Validate(); err != nil {
-		return nil, domain.ErrInvalidUserData
-	}
-	exists, err := u.userRepo.ExistsByEmail(ctx, req.Email)
-	if err != nil {
-		return nil, err
-	}
-	if exists {
-		return nil, domain.ErrEmailAlreadyExists
-	}
-	exists, err = u.userRepo.ExistsByDisplayId(ctx, req.DisplayId)
-	if err != nil {
-		return nil, err
-	}
-	if exists {
-		return nil, domain.ErrDisplayIDAlreadyExists
+		return nil, domain.ErrInvalidGuildData
 	}
 
-	passwordHash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	guild := &domain.GuildRequest{
+		ID:          uuid.New(),
+		Name:        req.Name,
+		Description: req.Description,
+	}
+
+	createdGuild, err := u.guildRepo.Create(ctx, guild)
 	if err != nil {
 		return nil, err
 	}
 
-	user := domain.User{
-		ID:        uuid.New(),
-		DisplayId: req.DisplayId,
-		Name:      req.Name,
-		Email:     req.Email,
-		Password:  string(passwordHash),
-		Bio:       req.Bio,
-		IconURL:   req.IconURL,
-	}
-
-	return u.userRepo.Create(ctx, &user)
+	return createdGuild, nil
 }
 
-func (u *userUsecase) Update(ctx context.Context, req *domain.UpdateRequest) (*domain.User, error) {
+func (u *guildUsecase) Update(ctx context.Context, req *domain.GuildRequest) (*domain.Guild, error) {
 	if err := req.Validate(); err != nil {
-		return nil, domain.ErrInvalidUserData
+		return nil, domain.ErrInvalidGuildData
 	}
+	return u.guildRepo.Update(ctx, req)
+}
 
-	return u.userRepo.Update(ctx, req)
+func (u *guildUsecase) GetByID(ctx context.Context, id uuid.UUID) (*domain.Guild, error) {
+	return u.guildRepo.GetGuildByID(ctx, id)
 }
 
 var _ GuildUsecase = (*guildUsecase)(nil)

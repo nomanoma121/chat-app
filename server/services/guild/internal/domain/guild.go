@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"regexp"
 	"time"
 
 	"github.com/go-playground/validator"
@@ -10,74 +9,36 @@ import (
 
 var validate = validator.New()
 
-func init() {
-	validate.RegisterValidation("display_id", validateDisplayId)
+type Guild struct {
+	ID          uuid.UUID `validate:"required"`
+	OwnerID     uuid.UUID `validate:"required"`
+	Name        string    `validate:"required,min=2,max=20"`
+	Description string    `validate:"required,max=200"`
+	IconURL     string    `validate:"omitempty,url"`
+	CreatedAt   time.Time `validate:"required"`
+	UpdatedAt   time.Time `validate:"required"`
 }
 
-func validateDisplayId(fl validator.FieldLevel) bool {
-	// 英数字、ドット、アンダースコア、ハイフン
-	matched, _ := regexp.MatchString(`^[a-zA-Z0-9_.-]+$`, fl.Field().String())
-	return matched
-}
-
-type User struct {
-	ID uuid.UUID `validate:"required"`
-	// 半角英数字、ドット、アンダースコア、ハイフンのみ
-	DisplayId string `validate:"required,min=3,max=20,display_id"`
-	Name      string `validate:"required,min=1,max=15"`
-	Email     string `validate:"required,email"`
-	Password  string `validate:"required,min=8"`
-	Bio       string `validate:"omitempty,max=500"`
-	IconURL   string `validate:"omitempty,url"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-}
-
-type RegisterRequest struct {
-	DisplayId string `validate:"required,min=3,max=20,display_id"`
-	Name      string `validate:"required,min=1,max=15"`
-	Email     string `validate:"required,email"`
-	Password  string `validate:"required,min=8"`
-	Bio       string `validate:"omitempty,max=500"`
-	IconURL   string `validate:"omitempty,url"`
-}
-
-type LoginRequest struct {
-	Email    string `validate:"required,email"`
-	Password string `validate:"required,min=8"`
-}
-
-type UpdateRequest struct {
-	ID        uuid.UUID `validate:"required"`
-	Name      string    `validate:"required,min=1,max=15"`
-	Bio       string    `validate:"omitempty,max=500"`
-	IconURL   string    `validate:"omitempty,url"`
-}
-
-func NewUser(user User) *User {
-	return &User{
-		ID:        user.ID,
-		DisplayId: user.DisplayId,
-		Name:      user.Name,
-		Email:     user.Email,
-		Password:  user.Password,
-		Bio:       user.Bio,
-		IconURL:   user.IconURL,
+func NewGuild(guild Guild) *Guild {
+	return &Guild{
+		ID:          guild.ID,
+		OwnerID:     guild.OwnerID,
+		Name:        guild.Name,
+		Description: guild.Description,
+		IconURL:    guild.IconURL,
+		CreatedAt:   guild.CreatedAt,
+		UpdatedAt:   guild.UpdatedAt,
 	}
 }
 
-func (u *User) Validate() error {
-	return validate.Struct(u)
+type GuildRequest struct {
+	ID          uuid.UUID `validate:"required"`
+	OwnerID     uuid.UUID `validate:"required"`
+	Name        string    `validate:"required,min=2,max=20"`
+	Description string    `validate:"required,max=200"`
+	IconURL     string    `validate:"omitempty,url"`
 }
 
-func (r *RegisterRequest) Validate() error {
-	return validate.Struct(r)
-}
-
-func (r *LoginRequest) Validate() error {
-	return validate.Struct(r)
-}
-
-func (r *UpdateRequest) Validate() error {
-	return validate.Struct(r)
+func (g *GuildRequest) Validate() error {
+	return validate.Struct(g)
 }

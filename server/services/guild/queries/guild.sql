@@ -1,11 +1,11 @@
 -- name: CreateGuild :one
-INSERT INTO guilds (id, name, description, created_at, updated_at)
-VALUES ($1, $2, $3, NOW(), NOW())
+INSERT INTO guilds (id, owner_id, name, description, icon_url, created_at, updated_at)
+VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
 RETURNING *;
 
 -- name: UpdateGuild :one
 UPDATE guilds
-SET name = $2, description = $3, updated_at = NOW()
+SET owner_id = $2, name = $3, description = $4, icon_url = $5, updated_at = NOW()
 WHERE id = $1
 RETURNING *;
 
