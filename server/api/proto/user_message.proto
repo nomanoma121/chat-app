@@ -63,6 +63,25 @@ message AuthMeResponse {
       required: ["user"]
     };
   };
+  string user_id = 1;
+  string exp = 2;
+  string iat = 3;
+}
+
+message GetCurrentUserRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: []
+    };
+  };
+}
+
+message GetCurrentUserResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["user"]
+    };
+  };
   User user = 1;
 }
 
