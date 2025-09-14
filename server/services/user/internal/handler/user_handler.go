@@ -133,13 +133,11 @@ func (h *UserHandler) AuthMe(ctx context.Context, req *pb.AuthMeRequest) (*pb.Au
 
 	h.logger.Info("AuthMe called", "user_id", claims.UserID)
 
-	response := &pb.AuthMeResponse{
+	return &pb.AuthMeResponse{
 		UserId: claims.UserID,
 		Exp:    claims.Exp.Format("2006-01-02 15:04:05"),
 		Iat:    claims.Iat.Format("2006-01-02 15:04:05"),
-	}
-
-	return response, nil
+	}, nil
 }
 
 func (h *UserHandler) GetCurrentUser(ctx context.Context, req *pb.GetCurrentUserRequest) (*pb.GetCurrentUserResponse, error) {

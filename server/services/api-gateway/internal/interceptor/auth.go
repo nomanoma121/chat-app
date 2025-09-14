@@ -3,7 +3,6 @@ package interceptor
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/go-chi/jwtauth/v5"
 	"google.golang.org/grpc"
@@ -23,12 +22,12 @@ func JWTToMetadata() grpc.UnaryClientInterceptor {
 			pairs = append(pairs, "user_id", userID)
 		}
 
-		if exp, ok := claims["exp"].(time.Time); ok {
-			pairs = append(pairs, "exp", fmt.Sprintf("%d", exp.Unix()))
+		if exp, ok := claims["exp"].(float64); ok {
+			pairs = append(pairs, "exp", fmt.Sprintf("%d", int64(exp)))
 		}
 
-		if iat, ok := claims["iat"].(time.Time); ok {
-			pairs = append(pairs, "iat", fmt.Sprintf("%d", iat.Unix()))
+		if iat, ok := claims["iat"].(float64); ok {
+			pairs = append(pairs, "iat", fmt.Sprintf("%d", int64(iat)))
 		}
 
 		if len(pairs) > 0 {

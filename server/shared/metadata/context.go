@@ -16,8 +16,8 @@ var (
 
 type JWTClaims struct {
 	UserID string
-	Exp    *time.Time
-	Iat    *time.Time
+	Exp    time.Time
+	Iat    time.Time
 }
 
 func GetJWTClaimsFromMetadata(ctx context.Context) (*JWTClaims, error) {
@@ -37,15 +37,13 @@ func GetJWTClaimsFromMetadata(ctx context.Context) (*JWTClaims, error) {
 
 	if expValues := md.Get("exp"); len(expValues) > 0 {
 		if expTimestamp, err := strconv.ParseInt(expValues[0], 10, 64); err == nil {
-			expTime := time.Unix(expTimestamp, 0)
-			claims.Exp = &expTime
+			claims.Exp = time.Unix(expTimestamp, 0)
 		}
 	}
 
 	if iatValues := md.Get("iat"); len(iatValues) > 0 {
 		if iatTimestamp, err := strconv.ParseInt(iatValues[0], 10, 64); err == nil {
-			iatTime := time.Unix(iatTimestamp, 0)
-			claims.Iat = &iatTime
+			claims.Iat = time.Unix(iatTimestamp, 0)
 		}
 	}
 

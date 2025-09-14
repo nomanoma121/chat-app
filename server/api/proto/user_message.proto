@@ -60,7 +60,7 @@ message AuthMeRequest {
 message AuthMeResponse {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
-      required: ["user"]
+      required: ["user_id", "exp", "iat"]
     };
   };
   string user_id = 1;
