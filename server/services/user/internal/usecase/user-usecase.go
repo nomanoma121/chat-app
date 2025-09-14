@@ -14,7 +14,7 @@ type UserUsecase interface {
 	Register(ctx context.Context, req *domain.RegisterRequest) (*domain.User, error)
 	Login(ctx context.Context, req *domain.LoginRequest) (*string, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (*domain.User, error)
-	Update(ctx context.Context, user *domain.UpdateRequest) error
+	Update(ctx context.Context, user *domain.UpdateRequest) (*domain.User, error)
 }
 
 type Config struct {
@@ -97,9 +97,9 @@ func (u *userUsecase) Login(ctx context.Context, req *domain.LoginRequest) (*str
 	return &tokenString, nil
 }
 
-func (u *userUsecase) Update(ctx context.Context, req *domain.UpdateRequest) error {
+func (u *userUsecase) Update(ctx context.Context, req *domain.UpdateRequest) (*domain.User, error) {
 	if err := req.Validate(); err != nil {
-		return domain.ErrInvalidUserData
+		return nil, domain.ErrInvalidUserData
 	}
 
 	return u.userRepo.Update(ctx, req)

@@ -179,3 +179,51 @@ func (h *UserHandler) GetCurrentUser(ctx context.Context, req *pb.GetCurrentUser
 
 	return &pb.GetCurrentUserResponse{User: pbUser}, nil
 }
+
+func (h *UserHandler) Update(ctx context.Context, req *pb.UpdateRequest) (*pb.UpdateResponse, error) {
+	userIDStr, err := metadata.GetUserIDFromMetadata(ctx)
+	if err != nil {
+		h.logger.Warn("Failed to get user ID from metadata", "error", err)
+		return nil, status.Error(codes.Unauthenticated, "authentication required")
+	}
+
+	userID, err := uuid.Parse(userIDStr)
+	if err != nil {
+		h.logger.Warn("Invalid user ID format", "user_id", userIDStr, "error", err)
+		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserData.Error())
+	}
+
+	domainReq := &domain.UpdateRequest{
+		ID:      userID,
+		Name:    req.Name,
+		Bio:     req.Bio,
+		IconURL: req.IconUrl,
+	}
+
+	updatedUser, err := h.userUsecase.Update(ctx, domainReq)
+	if err != nil {
+		switch err {
+		case domain.ErrUserNotFound:
+			h.logger.Warn("User not found", "user_id", userID)
+			return nil, status.Error(codes.NotFound, domain.ErrUserNotFound.Error())
+		case domain.ErrInvalidUserData:
+			h.logger.Warn("Invalid user data", "user_id", userID)
+			return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserData.Error())
+		default:
+			h.logger.Error("Failed to update user", "user_id", userID, "error", err)
+			return nil, status.Error(codes.Internal, domain.ErrInternalServerError.Error())
+		}
+	}
+
+	pbUser := &pb.User{
+		Id:        updatedUser.ID.String(),
+		DisplayId: updatedUser.DisplayId,
+		Name:      updatedUser.Name,
+		Bio:       updatedUser.Bio,
+		IconUrl:   updatedUser.IconURL,
+		CreatedAt: timestamppb.New(updatedUser.CreatedAt),
+		UpdatedAt: timestamppb.New(updatedUser.UpdatedAt),
+	}
+
+	return &pb.UpdateResponse{User: pbUser}, nil
+}
