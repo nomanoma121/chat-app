@@ -24,7 +24,7 @@ func init() {
 }
 
 func main() {
-	log := logger.Default("user-service")
+	log := logger.Default("guild-service")
 
 	dsn := "postgres://user:password@localhost:5432/chat_app?sslmode=disable"
 

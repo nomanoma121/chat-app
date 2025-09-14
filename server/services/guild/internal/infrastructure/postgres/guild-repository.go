@@ -66,6 +66,7 @@ func (r *guildRepository) Update(ctx context.Context, guild *domain.UpdateGuildR
 		ID:          guild.ID,
 		Name:        guild.Name,
 		Description: guild.Description,
+		IconUrl:     guild.IconURL,
 	})
 	if err != nil {
 		return nil, err
