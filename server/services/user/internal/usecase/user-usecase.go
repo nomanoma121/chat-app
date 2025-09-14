@@ -14,6 +14,7 @@ type UserUsecase interface {
 	Register(ctx context.Context, req *domain.RegisterRequest) (*domain.User, error)
 	Login(ctx context.Context, req *domain.LoginRequest) (*string, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (*domain.User, error)
+	Update(ctx context.Context, user *domain.UpdateRequest) (*domain.User, error)
 }
 
 type Config struct {
@@ -33,6 +34,9 @@ func NewUserUsecase(userRepo domain.UserRepository, config Config) UserUsecase {
 }
 
 func (u *userUsecase) Register(ctx context.Context, req *domain.RegisterRequest) (*domain.User, error) {
+	if err := req.Validate(); err != nil {
+		return nil, domain.ErrInvalidUserData
+	}
 	exists, err := u.userRepo.ExistsByEmail(ctx, req.Email)
 	if err != nil {
 		return nil, err
@@ -63,14 +67,13 @@ func (u *userUsecase) Register(ctx context.Context, req *domain.RegisterRequest)
 		IconURL:   req.IconURL,
 	}
 
-	if err := user.Validate(); err != nil {
-		return nil, domain.ErrInvalidUserData
-	}
-
 	return u.userRepo.Create(ctx, &user)
 }
 
 func (u *userUsecase) Login(ctx context.Context, req *domain.LoginRequest) (*string, error) {
+	if err := req.Validate(); err != nil {
+		return nil, domain.ErrInvalidUserData
+	}
 	user, err := u.userRepo.FindByEmail(ctx, req.Email)
 	if err != nil {
 		return nil, domain.ErrInvalidCredentials
@@ -92,6 +95,14 @@ func (u *userUsecase) Login(ctx context.Context, req *domain.LoginRequest) (*str
 	}
 
 	return &tokenString, nil
+}
+
+func (u *userUsecase) Update(ctx context.Context, req *domain.UpdateRequest) (*domain.User, error) {
+	if err := req.Validate(); err != nil {
+		return nil, domain.ErrInvalidUserData
+	}
+
+	return u.userRepo.Update(ctx, req)
 }
 
 func (u *userUsecase) GetUserByID(ctx context.Context, id uuid.UUID) (*domain.User, error) {

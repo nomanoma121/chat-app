@@ -2,12 +2,12 @@ package postgres
 
 import (
 	"context"
-	"database/sql"
 
 	"user-service/internal/domain"
 	"user-service/internal/infrastructure/postgres/generated"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 )
 
 type userRepository struct {
@@ -48,10 +48,10 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) (*domain
 
 func (r *userRepository) FindByEmail(ctx context.Context, email string) (*domain.User, error) {
 	dbUser, err := r.queries.FindByEmail(ctx, email)
-	if err == sql.ErrNoRows {
-		return nil, domain.ErrUserNotFound
-	}
 	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, domain.ErrUserNotFound
+		}
 		return nil, err
 	}
 	return &domain.User{
@@ -69,10 +69,10 @@ func (r *userRepository) FindByEmail(ctx context.Context, email string) (*domain
 
 func (r *userRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*domain.User, error) {
 	dbUser, err := r.queries.GetUserByID(ctx, id)
-	if err == sql.ErrNoRows {
-		return nil, domain.ErrUserNotFound
-	}
 	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, domain.ErrUserNotFound
+		}
 		return nil, err
 	}
 	return &domain.User{
@@ -104,14 +104,29 @@ func (r *userRepository) ExistsByDisplayId(ctx context.Context, displayId string
 	return count > 0, nil
 }
 
-func (r *userRepository) Update(ctx context.Context, user *domain.User) error {
-	_, err := r.queries.UpdateUser(ctx, generated.UpdateUserParams{
+func (r *userRepository) Update(ctx context.Context, user *domain.UpdateRequest) (*domain.User, error) {
+	dbUser, err := r.queries.UpdateUser(ctx, generated.UpdateUserParams{
 		ID:       user.ID,
 		Username: user.Name,
 		Bio:      user.Bio,
 		IconUrl:  user.IconURL,
 	})
-	return err
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &domain.User{
+		ID:        dbUser.ID,
+		DisplayId: dbUser.DisplayID,
+		Name:      dbUser.Username,
+		Email:     dbUser.Email,
+		Password:  dbUser.PasswordHash,
+		Bio:       dbUser.Bio,
+		IconURL:   dbUser.IconUrl,
+		CreatedAt: dbUser.CreatedAt.Time,
+		UpdatedAt: dbUser.UpdatedAt.Time,
+	}, nil
 }
 
 var _ domain.UserRepository = (*userRepository)(nil)

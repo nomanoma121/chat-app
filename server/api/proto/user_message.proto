@@ -60,6 +60,25 @@ message AuthMeRequest {
 message AuthMeResponse {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
+      required: ["user_id", "exp", "iat"]
+    };
+  };
+  string user_id = 1;
+  string exp = 2;
+  string iat = 3;
+}
+
+message GetCurrentUserRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: []
+    };
+  };
+}
+
+message GetCurrentUserResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
       required: ["user"]
     };
   };
@@ -84,19 +103,18 @@ message GetUserByIDResponse {
   User user = 1;
 }
 
-message UpdateUserRequest {
+message UpdateRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       required: ["name", "bio", "icon_url"]
     };
   };
-  string display_id = 1;
   string name = 2;
   string bio = 3;
   string icon_url = 4;
 }
 
-message UpdateUserResponse {
+message UpdateResponse {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       required: ["user"]
