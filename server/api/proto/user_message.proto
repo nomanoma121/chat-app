@@ -103,7 +103,7 @@ message GetUserByIDResponse {
   User user = 1;
 }
 
-message UpdateUserRequest {
+message UpdateRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       required: ["name", "bio", "icon_url"]
@@ -114,7 +114,7 @@ message UpdateUserRequest {
   string icon_url = 4;
 }
 
-message UpdateUserResponse {
+message UpdateResponse {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       required: ["user"]
