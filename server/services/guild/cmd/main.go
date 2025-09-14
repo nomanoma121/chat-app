@@ -2,15 +2,15 @@ package main
 
 import (
 	"context"
-	"net"
-	"os"
-	"shared/logger"
 	"guild-service/internal/handler"
 	"guild-service/internal/infrastructure/postgres"
 	"guild-service/internal/infrastructure/postgres/generated"
 	"guild-service/internal/usecase"
+	"net"
+	"os"
+	"shared/logger"
 
-	pb "chat-app-proto/gen/user"
+	pb "chat-app-proto/gen/guild"
 
 	"github.com/joho/godotenv"
 

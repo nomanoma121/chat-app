@@ -5,7 +5,7 @@ RETURNING *;
 
 -- name: UpdateGuild :one
 UPDATE guilds
-SET owner_id = $2, name = $3, description = $4, icon_url = $5, updated_at = NOW()
+SET name = $2, description = $3, icon_url = $4, updated_at = NOW()
 WHERE id = $1
 RETURNING *;
 

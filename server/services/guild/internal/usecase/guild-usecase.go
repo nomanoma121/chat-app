@@ -8,8 +8,8 @@ import (
 )
 
 type GuildUsecase interface {
-	Create(ctx context.Context, req *domain.GuildRequest) (*domain.Guild, error)
-	Update(ctx context.Context, user *domain.GuildRequest) (*domain.Guild, error)
+	Create(ctx context.Context, req *domain.CreateGuildRequest) (*domain.Guild, error)
+	Update(ctx context.Context, user *domain.UpdateGuildRequest) (*domain.Guild, error)
 	GetByID(ctx context.Context, id uuid.UUID) (*domain.Guild, error)
 }
 
@@ -29,15 +29,17 @@ func NewGuildUsecase(guildRepo domain.GuildRepository, config Config) GuildUseca
 	}
 }
 
-func (u *guildUsecase) Create(ctx context.Context, req *domain.GuildRequest) (*domain.Guild, error) {
+func (u *guildUsecase) Create(ctx context.Context, req *domain.CreateGuildRequest) (*domain.Guild, error) {
 	if err := req.Validate(); err != nil {
 		return nil, domain.ErrInvalidGuildData
 	}
 
-	guild := &domain.GuildRequest{
+	guild := &domain.CreateGuildRequest{
 		ID:          uuid.New(),
+		OwnerID:     req.OwnerID,
 		Name:        req.Name,
 		Description: req.Description,
+		IconURL:     req.IconURL,
 	}
 
 	createdGuild, err := u.guildRepo.Create(ctx, guild)
@@ -48,7 +50,7 @@ func (u *guildUsecase) Create(ctx context.Context, req *domain.GuildRequest) (*d
 	return createdGuild, nil
 }
 
-func (u *guildUsecase) Update(ctx context.Context, req *domain.GuildRequest) (*domain.Guild, error) {
+func (u *guildUsecase) Update(ctx context.Context, req *domain.UpdateGuildRequest) (*domain.Guild, error) {
 	if err := req.Validate(); err != nil {
 		return nil, domain.ErrInvalidGuildData
 	}

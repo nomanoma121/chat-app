@@ -7,7 +7,7 @@ import (
 )
 
 type GuildRepository interface {
-	Create(ctx context.Context, guild *GuildRequest) (*Guild, error)
+	Create(ctx context.Context, guild *CreateGuildRequest) (*Guild, error)
 	GetGuildByID(ctx context.Context, id uuid.UUID) (*Guild, error)
-	Update(ctx context.Context, guild *GuildRequest) (*Guild, error)
+	Update(ctx context.Context, guild *UpdateGuildRequest) (*Guild, error)
 }

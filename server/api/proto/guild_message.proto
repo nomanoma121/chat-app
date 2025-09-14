@@ -11,11 +11,13 @@ import "guild_type.proto";
 message CreateGuildRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
-      required: ["name"]
+      required: ["name", "description", "icon_url"]
     };
   };
-  string name = 1;
-  string description = 2;
+  // owner_idはjwtから取得するため不要
+  string name = 2;
+  string description = 3;
+  string icon_url = 4;
 }
 
 message CreateGuildResponse {
@@ -89,7 +91,8 @@ message UpdateGuildRequest {
   };
   string guild_id = 1;
   string name = 2;
-  string description = 3;
+  string icon_url = 3;
+  string description = 4;
 }
 
 message UpdateGuildResponse {

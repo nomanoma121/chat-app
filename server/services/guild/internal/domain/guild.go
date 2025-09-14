@@ -25,13 +25,13 @@ func NewGuild(guild Guild) *Guild {
 		OwnerID:     guild.OwnerID,
 		Name:        guild.Name,
 		Description: guild.Description,
-		IconURL:    guild.IconURL,
+		IconURL:     guild.IconURL,
 		CreatedAt:   guild.CreatedAt,
 		UpdatedAt:   guild.UpdatedAt,
 	}
 }
 
-type GuildRequest struct {
+type CreateGuildRequest struct {
 	ID          uuid.UUID `validate:"required"`
 	OwnerID     uuid.UUID `validate:"required"`
 	Name        string    `validate:"required,min=2,max=20"`
@@ -39,6 +39,17 @@ type GuildRequest struct {
 	IconURL     string    `validate:"omitempty,url"`
 }
 
-func (g *GuildRequest) Validate() error {
+type UpdateGuildRequest struct {
+	ID          uuid.UUID `validate:"required"`
+	Name        string    `validate:"required,min=2,max=20"`
+	Description string    `validate:"required,max=200"`
+	IconURL     string    `validate:"omitempty,url"`
+}
+
+func (g *CreateGuildRequest) Validate() error {
+	return validate.Struct(g)
+}
+
+func (g *UpdateGuildRequest) Validate() error {
 	return validate.Struct(g)
 }
