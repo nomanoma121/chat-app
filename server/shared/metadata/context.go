@@ -3,6 +3,8 @@ package metadata
 import (
 	"context"
 	"errors"
+	"strconv"
+	"time"
 
 	"google.golang.org/grpc/metadata"
 )
@@ -12,17 +14,48 @@ var (
 	ErrUserIDNotFound   = errors.New("user_id not found in metadata")
 )
 
-// GetUserIDFromMetadata extracts user_id from gRPC incoming metadata
-func GetUserIDFromMetadata(ctx context.Context) (string, error) {
+type JWTClaims struct {
+	UserID string
+	Exp    *time.Time
+	Iat    *time.Time
+}
+
+func GetJWTClaimsFromMetadata(ctx context.Context) (*JWTClaims, error) {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
-		return "", ErrMetadataNotFound
+		return nil, ErrMetadataNotFound
 	}
 
 	userIDs := md.Get("user_id")
 	if len(userIDs) == 0 {
-		return "", ErrUserIDNotFound
+		return nil, ErrUserIDNotFound
 	}
 
-	return userIDs[0], nil
+	claims := &JWTClaims{
+		UserID: userIDs[0],
+	}
+
+	if expValues := md.Get("exp"); len(expValues) > 0 {
+		if expTimestamp, err := strconv.ParseInt(expValues[0], 10, 64); err == nil {
+			expTime := time.Unix(expTimestamp, 0)
+			claims.Exp = &expTime
+		}
+	}
+
+	if iatValues := md.Get("iat"); len(iatValues) > 0 {
+		if iatTimestamp, err := strconv.ParseInt(iatValues[0], 10, 64); err == nil {
+			iatTime := time.Unix(iatTimestamp, 0)
+			claims.Iat = &iatTime
+		}
+	}
+
+	return claims, nil
+}
+
+func GetUserIDFromMetadata(ctx context.Context) (string, error) {
+	claims, err := GetJWTClaimsFromMetadata(ctx)
+	if err != nil {
+		return "", err
+	}
+	return claims.UserID, nil
 }

@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"log/slog"
+	"shared/metadata"
 	"user-service/internal/domain"
 	"user-service/internal/usecase"
 
@@ -120,4 +121,60 @@ func (h *UserHandler) GetUserByID(ctx context.Context, req *pb.GetUserByIDReques
 		UpdatedAt: timestamppb.New(user.UpdatedAt),
 	}
 	return &pb.GetUserByIDResponse{User: pbUser}, nil
+}
+
+func (h *UserHandler) AuthMe(ctx context.Context, req *pb.AuthMeRequest) (*pb.AuthMeResponse, error) {
+	claims, err := metadata.GetJWTClaimsFromMetadata(ctx)
+	if err != nil {
+		h.logger.Warn("Failed to get JWT claims from metadata", "error", err)
+		return nil, status.Error(codes.Unauthenticated, "authentication required")
+	}
+
+	h.logger.Info("AuthMe called", "user_id", claims.UserID)
+
+	response := &pb.AuthMeResponse{
+		UserId: claims.UserID,
+		Exp:    claims.Exp.Format("2006-01-02 15:04:05"),
+		Iat:    claims.Iat.Format("2006-01-02 15:04:05"),
+	}
+	
+	return response, nil
+}
+
+func (h *UserHandler) GetCurrentUser(ctx context.Context, req *pb.GetCurrentUserRequest) (*pb.GetCurrentUserResponse, error) {
+	userIDStr, err := metadata.GetUserIDFromMetadata(ctx)
+	if err != nil {
+		h.logger.Warn("Failed to get user ID from metadata", "error", err)
+		return nil, status.Error(codes.Unauthenticated, "authentication required")
+	}
+
+	userID, err := uuid.Parse(userIDStr)
+	if err != nil {
+		h.logger.Warn("Invalid user ID format", "user_id", userIDStr, "error", err)
+		return nil, status.Error(codes.InvalidArgument, "invalid user ID format")
+	}
+
+	user, err := h.userUsecase.GetUserByID(ctx, userID)
+	if err != nil {
+		switch err {
+		case domain.ErrUserNotFound:
+			h.logger.Warn("User not found", "user_id", userID)
+			return nil, status.Error(codes.NotFound, "user not found")
+		default:
+			h.logger.Error("Failed to get current user", "user_id", userID, "error", err)
+			return nil, status.Error(codes.Internal, "failed to get user")
+		}
+	}
+
+	pbUser := &pb.User{
+		Id:        user.ID.String(),
+		DisplayId: user.DisplayId,
+		Name:      user.Name,
+		Bio:       user.Bio,
+		IconUrl:   user.IconURL,
+		CreatedAt: timestamppb.New(user.CreatedAt),
+		UpdatedAt: timestamppb.New(user.UpdatedAt),
+	}
+
+	return &pb.GetCurrentUserResponse{User: pbUser}, nil
 }
