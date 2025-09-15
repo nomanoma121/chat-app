@@ -14,7 +14,7 @@ type Guild struct {
 	OwnerID     uuid.UUID `validate:"required"`
 	Name        string    `validate:"required,min=2,max=20"`
 	Description string    `validate:"required,max=200"`
-	IconURL     string    `validate:"omitempty,url"`
+	IconURL     string    `validate:"required,url"`
 	CreatedAt   time.Time `validate:"required"`
 	UpdatedAt   time.Time `validate:"required"`
 }
@@ -29,21 +29,6 @@ func NewGuild(guild Guild) *Guild {
 		CreatedAt:   guild.CreatedAt,
 		UpdatedAt:   guild.UpdatedAt,
 	}
-}
-
-type CreateGuildRequest struct {
-	ID          uuid.UUID `validate:"required"`
-	OwnerID     uuid.UUID `validate:"required"`
-	Name        string    `validate:"required,min=2,max=20"`
-	Description string    `validate:"required,max=200"`
-	IconURL     string    `validate:"omitempty,url"`
-}
-
-type UpdateGuildRequest struct {
-	ID          uuid.UUID `validate:"required"`
-	Name        string    `validate:"required,min=2,max=20"`
-	Description string    `validate:"required,max=200"`
-	IconURL     string    `validate:"omitempty,url"`
 }
 
 func (g *CreateGuildRequest) Validate() error {

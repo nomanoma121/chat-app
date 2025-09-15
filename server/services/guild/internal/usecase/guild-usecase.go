@@ -4,12 +4,15 @@ import (
 	"context"
 	"guild-service/internal/domain"
 
+	"github.com/go-playground/validator"
 	"github.com/google/uuid"
 )
 
+var validate = validator.New()
+
 type GuildUsecase interface {
-	Create(ctx context.Context, req *domain.CreateGuildRequest) (*domain.Guild, error)
-	Update(ctx context.Context, user *domain.UpdateGuildRequest) (*domain.Guild, error)
+	Create(ctx context.Context, req *CreateGuildRequest) (*domain.Guild, error)
+	Update(ctx context.Context, user *UpdateGuildRequest) (*domain.Guild, error)
 	GetByID(ctx context.Context, id uuid.UUID) (*domain.Guild, error)
 }
 
@@ -29,7 +32,18 @@ func NewGuildUsecase(guildRepo domain.GuildRepository, config Config) GuildUseca
 	}
 }
 
-func (u *guildUsecase) Create(ctx context.Context, req *domain.CreateGuildRequest) (*domain.Guild, error) {
+type CreateGuildRequest struct {
+	OwnerID     uuid.UUID `validate:"required"`
+	Name        string    `validate:"required,min=2,max=20"`
+	Description string    `validate:"required,max=200"`
+	IconURL     string    `validate:"required,url"`
+}
+
+func (r *CreateGuildRequest) Validate() error {
+	return validate.Struct(r)
+}
+
+func (u *guildUsecase) Create(ctx context.Context, req *CreateGuildRequest) (*domain.Guild, error) {
 	if err := req.Validate(); err != nil {
 		return nil, domain.ErrInvalidGuildData
 	}
@@ -50,11 +64,28 @@ func (u *guildUsecase) Create(ctx context.Context, req *domain.CreateGuildReques
 	return createdGuild, nil
 }
 
-func (u *guildUsecase) Update(ctx context.Context, req *domain.UpdateGuildRequest) (*domain.Guild, error) {
+type UpdateGuildRequest struct {
+	ID          uuid.UUID `validate:"required"`
+	Name        string    `validate:"required,min=2,max=20"`
+	Description string    `validate:"required,max=200"`
+	IconURL     string    `validate:"required,url"`
+}
+
+func (r *UpdateGuildRequest) Validate() error {
+	return validate.Struct(r)
+}
+
+func (u *guildUsecase) Update(ctx context.Context, req *UpdateGuildRequest) (*domain.Guild, error) {
 	if err := req.Validate(); err != nil {
 		return nil, domain.ErrInvalidGuildData
 	}
-	return u.guildRepo.Update(ctx, req)
+
+	return u.guildRepo.Update(ctx, &domain.UpdateGuildRequest{
+		ID:          req.ID,
+		Name:        req.Name,
+		Description: req.Description,
+		IconURL:     req.IconURL,
+	})
 }
 
 func (u *guildUsecase) GetByID(ctx context.Context, id uuid.UUID) (*domain.Guild, error) {

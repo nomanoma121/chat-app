@@ -28,7 +28,7 @@ func NewGuildHandler(guildUsecase usecase.GuildUsecase, logger *slog.Logger) *Gu
 	}
 }
 
-func (h *GuildHandler) Create(ctx context.Context, req *pb.CreateGuildRequest) (*pb.CreateGuildResponse, error) {
+func (h *GuildHandler) CreateGuild(ctx context.Context, req *pb.CreateGuildRequest) (*pb.CreateGuildResponse, error) {
 	userIDStr, err := metadata.GetUserIDFromMetadata(ctx)
 	if err != nil {
 		h.logger.Warn("Failed to get user ID from metadata", "error", err)
@@ -41,14 +41,12 @@ func (h *GuildHandler) Create(ctx context.Context, req *pb.CreateGuildRequest) (
 		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidGuildData.Error())
 	}
 
-	domainReq := &domain.CreateGuildRequest{
+	guild, err := h.guildUsecase.Create(ctx, &usecase.CreateGuildRequest{
 		OwnerID:     userID,
 		Name:        req.Name,
 		Description: req.Description,
 		IconURL:     req.IconUrl,
-	}
-
-	guild, err := h.guildUsecase.Create(ctx, domainReq)
+	})
 	if err != nil {
 		switch err {
 		case domain.ErrInvalidGuildData:
@@ -103,21 +101,21 @@ func (h *GuildHandler) GetGuildByID(ctx context.Context, req *pb.GetGuildByIDReq
 	return &pb.GetGuildByIDResponse{Guild: pbGuild}, nil
 }
 
-func (h *GuildHandler) Update(ctx context.Context, req *pb.UpdateGuildRequest) (*pb.UpdateGuildResponse, error) {
+func (h *GuildHandler) UpdateGuild(ctx context.Context, req *pb.UpdateGuildRequest) (*pb.UpdateGuildResponse, error) {
 	guildID, err := uuid.Parse(req.GuildId)
 	if err != nil {
 		h.logger.Warn("Invalid guild ID format", "guild_id", req.GuildId, "error", err)
 		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidGuildID.Error())
 	}
 
-	domainReq := &domain.UpdateGuildRequest{
+	usecaseReq := &usecase.UpdateGuildRequest{
 		ID:          guildID,
 		Name:        req.Name,
 		Description: req.Description,
 		IconURL:     req.IconUrl,
 	}
 
-	updatedGuild, err := h.guildUsecase.Update(ctx, domainReq)
+	updatedGuild, err := h.guildUsecase.Update(ctx, usecaseReq)
 	if err != nil {
 		switch err {
 		case domain.ErrGuildNotFound:
