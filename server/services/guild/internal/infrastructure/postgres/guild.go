@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"guild-service/internal/domain"
+	"guild-service/internal/domain/model"
+	"guild-service/internal/domain/repository"
 	"guild-service/internal/infrastructure/postgres/generated"
 
 	"github.com/google/uuid"
@@ -20,7 +22,7 @@ func NewPostgresGuildRepository(queries *generated.Queries) *guildRepository {
 	}
 }
 
-func (r *guildRepository) Create(ctx context.Context, guild *domain.CreateGuildRequest) (*domain.Guild, error) {
+func (r *guildRepository) Create(ctx context.Context, guild *repository.CreateGuildInput) (*model.Guild, error) {
 	dbGuild, err := r.queries.CreateGuild(ctx, generated.CreateGuildParams{
 		ID:          guild.ID,
 		OwnerID:     guild.OwnerID,
@@ -31,7 +33,7 @@ func (r *guildRepository) Create(ctx context.Context, guild *domain.CreateGuildR
 	if err != nil {
 		return nil, err
 	}
-	return &domain.Guild{
+	return &model.Guild{
 		ID:          dbGuild.ID,
 		OwnerID:     dbGuild.OwnerID,
 		Name:        dbGuild.Name,
@@ -42,7 +44,7 @@ func (r *guildRepository) Create(ctx context.Context, guild *domain.CreateGuildR
 	}, nil
 }
 
-func (r *guildRepository) GetGuildByID(ctx context.Context, id uuid.UUID) (*domain.Guild, error) {
+func (r *guildRepository) GetGuildByID(ctx context.Context, id uuid.UUID) (*model.Guild, error) {
 	dbGuild, err := r.queries.GetGuildByID(ctx, id)
 	if err != nil {
 		if err == pgx.ErrNoRows {
@@ -50,7 +52,7 @@ func (r *guildRepository) GetGuildByID(ctx context.Context, id uuid.UUID) (*doma
 		}
 		return nil, err
 	}
-	return &domain.Guild{
+	return &model.Guild{
 		ID:          dbGuild.ID,
 		OwnerID:     dbGuild.OwnerID,
 		Name:        dbGuild.Name,
@@ -61,7 +63,7 @@ func (r *guildRepository) GetGuildByID(ctx context.Context, id uuid.UUID) (*doma
 	}, nil
 }
 
-func (r *guildRepository) Update(ctx context.Context, guild *domain.UpdateGuildRequest) (*domain.Guild, error) {
+func (r *guildRepository) Update(ctx context.Context, guild *repository.UpdateGuildInput) (*model.Guild, error) {
 	dbGuild, err := r.queries.UpdateGuild(ctx, generated.UpdateGuildParams{
 		ID:          guild.ID,
 		Name:        guild.Name,
@@ -71,7 +73,7 @@ func (r *guildRepository) Update(ctx context.Context, guild *domain.UpdateGuildR
 	if err != nil {
 		return nil, err
 	}
-	return &domain.Guild{
+	return &model.Guild{
 		ID:          dbGuild.ID,
 		OwnerID:     dbGuild.OwnerID,
 		Name:        dbGuild.Name,
@@ -82,4 +84,4 @@ func (r *guildRepository) Update(ctx context.Context, guild *domain.UpdateGuildR
 	}, nil
 }
 
-var _ domain.GuildRepository = (*guildRepository)(nil)
+var _ repository.GuildRepository = (*guildRepository)(nil)

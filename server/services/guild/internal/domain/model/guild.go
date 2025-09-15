@@ -15,15 +15,3 @@ type Guild struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
-
-func NewGuild(guild Guild) *Guild {
-	return &Guild{
-		ID:          guild.ID,
-		OwnerID:     guild.OwnerID,
-		Name:        guild.Name,
-		Description: guild.Description,
-		IconURL:     guild.IconURL,
-		CreatedAt:   guild.CreatedAt,
-		UpdatedAt:   guild.UpdatedAt,
-	}
-}
