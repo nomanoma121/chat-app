@@ -1,6 +1,8 @@
 package category
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 )
 
@@ -9,6 +11,6 @@ type Category struct {
 	GuildID   uuid.UUID
 	Name      string
 	Order     int
-	CreatedAt int64
-	UpdatedAt int64
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

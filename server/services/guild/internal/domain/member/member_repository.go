@@ -1,15 +1,17 @@
 package member
 
 import (
+	"context"
+
 	"github.com/google/uuid"
 )
 
-type MemberInput struct {
+type AddMemberInput struct {
 	UserID   uuid.UUID
 	GuildID  uuid.UUID
 	Nickname string
 }
 
 type IMemberRepository interface {
-	Create(member *MemberInput) (*Member, error)
+	AddMember(ctx context.Context, member *AddMemberInput) (*Member, error)
 }
