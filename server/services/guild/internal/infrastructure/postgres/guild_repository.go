@@ -4,8 +4,7 @@ import (
 	"context"
 
 	"guild-service/internal/domain"
-	"guild-service/internal/domain/model"
-	"guild-service/internal/domain/repository"
+	"guild-service/internal/domain/guild"
 	"guild-service/internal/infrastructure/postgres/generated"
 
 	"github.com/google/uuid"
@@ -22,18 +21,18 @@ func NewPostgresGuildRepository(queries *generated.Queries) *guildRepository {
 	}
 }
 
-func (r *guildRepository) Create(ctx context.Context, guild *repository.CreateGuildInput) (*model.Guild, error) {
+func (r *guildRepository) Create(ctx context.Context, input *guild.CreateGuildInput) (*guild.Guild, error) {
 	dbGuild, err := r.queries.CreateGuild(ctx, generated.CreateGuildParams{
-		ID:          guild.ID,
-		OwnerID:     guild.OwnerID,
-		Name:        guild.Name,
-		Description: guild.Description,
-		IconUrl:     guild.IconURL,
+		ID:          input.ID,
+		OwnerID:     input.OwnerID,
+		Name:        input.Name,
+		Description: input.Description,
+		IconUrl:     input.IconURL,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &model.Guild{
+	return &guild.Guild{
 		ID:          dbGuild.ID,
 		OwnerID:     dbGuild.OwnerID,
 		Name:        dbGuild.Name,
@@ -44,7 +43,7 @@ func (r *guildRepository) Create(ctx context.Context, guild *repository.CreateGu
 	}, nil
 }
 
-func (r *guildRepository) GetGuildByID(ctx context.Context, id uuid.UUID) (*model.Guild, error) {
+func (r *guildRepository) GetGuildByID(ctx context.Context, id uuid.UUID) (*guild.Guild, error) {
 	dbGuild, err := r.queries.GetGuildByID(ctx, id)
 	if err != nil {
 		if err == pgx.ErrNoRows {
@@ -52,7 +51,7 @@ func (r *guildRepository) GetGuildByID(ctx context.Context, id uuid.UUID) (*mode
 		}
 		return nil, err
 	}
-	return &model.Guild{
+	return &guild.Guild{
 		ID:          dbGuild.ID,
 		OwnerID:     dbGuild.OwnerID,
 		Name:        dbGuild.Name,
@@ -63,17 +62,17 @@ func (r *guildRepository) GetGuildByID(ctx context.Context, id uuid.UUID) (*mode
 	}, nil
 }
 
-func (r *guildRepository) Update(ctx context.Context, guild *repository.UpdateGuildInput) (*model.Guild, error) {
+func (r *guildRepository) Update(ctx context.Context, input *guild.UpdateGuildInput) (*guild.Guild, error) {
 	dbGuild, err := r.queries.UpdateGuild(ctx, generated.UpdateGuildParams{
-		ID:          guild.ID,
-		Name:        guild.Name,
-		Description: guild.Description,
-		IconUrl:     guild.IconURL,
+		ID:          input.ID,
+		Name:        input.Name,
+		Description: input.Description,
+		IconUrl:     input.IconURL,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &model.Guild{
+	return &guild.Guild{
 		ID:          dbGuild.ID,
 		OwnerID:     dbGuild.OwnerID,
 		Name:        dbGuild.Name,
@@ -84,4 +83,4 @@ func (r *guildRepository) Update(ctx context.Context, guild *repository.UpdateGu
 	}, nil
 }
 
-var _ repository.GuildRepository = (*guildRepository)(nil)
+var _ guild.IGuildRepository = (*guildRepository)(nil)
