@@ -3,33 +3,37 @@ package member
 import (
 	"time"
 
+	"github.com/go-playground/validator"
 	"github.com/google/uuid"
 )
 
+var validate = validator.New()
+
 type Member struct {
-	UserID    uuid.UUID `db:"user_id"`
-	GuildID   uuid.UUID `db:"guild_id"`
-	Nickname  string    `db:"nickname"`
-	Order     int       `db:"order"`
-	JoinedAt  time.Time `db:"joined_at"`
-	UpdatedAt time.Time `db:"updated_at"`
+	userID   uuid.UUID
+	guildID  uuid.UUID
+	nickname string
+	joinedAt time.Time
 }
 
-func NewMember(guildID, userID uuid.UUID, nickname string) *Member {
-	return &Member{
-		GuildID:   guildID,
-		UserID:    userID,
-		Nickname:  nickname,
-		JoinedAt:  time.Now(),
-		UpdatedAt: time.Now(),
+type NewMemberDTO struct {
+	UserID   uuid.UUID `validate:"required,uuid4"`
+	GuildID  uuid.UUID `validate:"required,uuid4"`
+	Nickname string    `validate:"required,min=1,max=20"`
+}
+
+func (m *NewMemberDTO) Validate() error {
+	return validate.Struct(m)
+}
+
+func NewMember(dto *NewMemberDTO) (*Member, error) {
+	if err := dto.Validate(); err != nil {
+		return nil, err
 	}
+	return &Member{
+		userID:   dto.UserID,
+		guildID:  dto.GuildID,
+		nickname: dto.Nickname,
+		joinedAt: time.Now(),
+	}, nil
 }
-
-func (m *Member) Add(guildID, userID uuid.UUID, nickname string) {
-	m.GuildID = guildID
-	m.UserID = userID
-	m.Nickname = nickname
-	m.JoinedAt = time.Now()
-	m.UpdatedAt = time.Now()
-}
-
