@@ -42,22 +42,19 @@ func main() {
 
 	guildRepo := postgres.NewPostgresGuildRepository(generated.New(db))
 	guildUsecase := usecase.NewGuildUsecase(guildRepo, validate)
-	guildHandler := handler.NewGuildHandler(guildUsecase, log)
 
 	categoryRepo := postgres.NewPostgresCategoryRepository(generated.New(db))
 	categoryUsecase := usecase.NewCategoryUsecase(categoryRepo, validate)
-	categoryHandler := handler.NewCategoryHandler(categoryUsecase, log)
 
 	channelRepo := postgres.NewPostgresChannelRepository(generated.New(db))
 	channelUsecase := usecase.NewChannelUsecase(channelRepo, validate)
-	channelHandler := handler.NewChannelHandler(channelUsecase, log)
 
 	postgres.NewPostgresMemberRepository(generated.New(db))
 
+	guildHandler := handler.NewGuildServiceHandler(categoryUsecase, channelUsecase, guildUsecase, log)
+
 	server := grpc.NewServer()
 	pb.RegisterGuildServiceServer(server, guildHandler)
-	pb.RegisterGuildServiceServer(server, categoryHandler)
-	pb.RegisterGuildServiceServer(server, channelHandler)
 	reflection.Register(server)
 
 	port := 50052

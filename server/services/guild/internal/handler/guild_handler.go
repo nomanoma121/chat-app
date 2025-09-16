@@ -139,3 +139,4 @@ func (h *guildHandler) UpdateGuild(ctx context.Context, req *pb.UpdateGuildReque
 
 	return &pb.UpdateGuildResponse{Guild: pbGuild}, nil
 }
+
