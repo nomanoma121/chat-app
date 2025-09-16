@@ -5,6 +5,7 @@ import (
 )
 
 type CreateCategoryInput struct {
+	ID      uuid.UUID
 	GuildID uuid.UUID
 	Name    string
 	Order   int

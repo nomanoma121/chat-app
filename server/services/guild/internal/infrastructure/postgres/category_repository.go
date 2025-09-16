@@ -15,7 +15,7 @@ type categoryRepository struct {
 	db      *pgxpool.Pool
 }
 
-func NewCategoryRepository(queries *generated.Queries, db *pgxpool.Pool) *categoryRepository {
+func NewPostgresCategoryRepository(queries *generated.Queries, db *pgxpool.Pool) *categoryRepository {
 	return &categoryRepository{
 		queries: queries,
 		db:      db,

@@ -10,7 +10,7 @@ type channelRepository struct {
 	queries *generated.Queries
 }
 
-func NewChannelRepository(queries *generated.Queries) *channelRepository {
+func NewPostgresChannelRepository(queries *generated.Queries) *channelRepository {
 	return &channelRepository{
 		queries: queries,
 	}

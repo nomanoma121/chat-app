@@ -12,6 +12,7 @@ import (
 
 	pb "chat-app-proto/gen/guild"
 
+	"github.com/go-playground/validator"
 	"github.com/joho/godotenv"
 
 	"github.com/jackc/pgx/v5"
@@ -37,11 +38,23 @@ func main() {
 
 	log.Info("Connected to PostgreSQL", "database", "chat_app")
 
+	validate := validator.New()
+
 	guildRepo := postgres.NewPostgresGuildRepository(generated.New(db))
-	guildUsecase := usecase.NewGuildUsecase(guildRepo, usecase.Config{
-		JWTSecret: os.Getenv("JWT_SECRET"),
-	})
+	guildUsecase := usecase.NewGuildUsecase(guildRepo, validate)
 	guildHandler := handler.NewGuildHandler(guildUsecase, log)
+
+	categoryRepo := postgres.NewPostgresCategoryRepository(generated.New(db))
+	categoryUsecase := usecase.NewCategoryUsecase(categoryRepo, validate)
+	categoryHandler := handler.NewCategoryHandler(categoryUsecase, log)
+
+	channelRepo := postgres.NewPostgresChannelRepository(generated.New(db))
+	channelUsecase := usecase.NewChannelUsecase(channelRepo, validate)
+	channelHandler := handler.NewChannelHandler(channelUsecase, log)
+
+	memberRepo := postgres.NewPostgresMemberRepository(generated.New(db))
+	memberUsecase := usecase.NewMemberUsecase(memberRepo, validate)
+	memberHandler := handler.NewMemberHandler(memberUsecase, log)
 
 	server := grpc.NewServer()
 	pb.RegisterGuildServiceServer(server, guildHandler)

@@ -2,14 +2,12 @@ package usecase
 
 import (
 	"context"
-	"guild-service/internal/domain/guild"
 	"guild-service/internal/domain"
+	"guild-service/internal/domain/guild"
 
 	"github.com/go-playground/validator"
 	"github.com/google/uuid"
 )
-
-var validate = validator.New()
 
 type GuildUsecase interface {
 	Create(ctx context.Context, req *CreateGuildRequest) (*guild.Guild, error)
@@ -17,19 +15,15 @@ type GuildUsecase interface {
 	GetByID(ctx context.Context, id uuid.UUID) (*guild.Guild, error)
 }
 
-type Config struct {
-	JWTSecret string
-}
-
 type guildUsecase struct {
 	guildRepo guild.IGuildRepository
-	config    Config
+	validator *validator.Validate
 }
 
-func NewGuildUsecase(guildRepo guild.IGuildRepository, config Config) GuildUsecase {
+func NewGuildUsecase(guildRepo guild.IGuildRepository, validator *validator.Validate) GuildUsecase {
 	return &guildUsecase{
 		guildRepo: guildRepo,
-		config:    config,
+		validator: validator,
 	}
 }
 
@@ -52,7 +46,7 @@ func (u *guildUsecase) Create(ctx context.Context, req *CreateGuildRequest) (*gu
 	guild := &guild.CreateGuildInput{
 		ID:          uuid.New(),
 		OwnerID:     req.OwnerID,
-		Name:        req.Name,	
+		Name:        req.Name,
 		Description: req.Description,
 		IconURL:     req.IconURL,
 	}

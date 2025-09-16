@@ -10,7 +10,7 @@ type memberRepository struct {
 	queries *generated.Queries
 }
 
-func NewMemberRepository(queries *generated.Queries) *memberRepository {
+func NewPostgresMemberRepository(queries *generated.Queries) *memberRepository {
 	return &memberRepository{
 		queries: queries,
 	}

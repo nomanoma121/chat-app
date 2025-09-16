@@ -15,20 +15,20 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-type GuildHandler struct {
+type guildHandler struct {
 	pb.UnimplementedGuildServiceServer
 	guildUsecase usecase.GuildUsecase
 	logger       *slog.Logger
 }
 
-func NewGuildHandler(guildUsecase usecase.GuildUsecase, logger *slog.Logger) *GuildHandler {
-	return &GuildHandler{
+func NewGuildHandler(guildUsecase usecase.GuildUsecase, logger *slog.Logger) *guildHandler {
+	return &guildHandler{
 		guildUsecase: guildUsecase,
 		logger:       logger,
 	}
 }
 
-func (h *GuildHandler) CreateGuild(ctx context.Context, req *pb.CreateGuildRequest) (*pb.CreateGuildResponse, error) {
+func (h *guildHandler) CreateGuild(ctx context.Context, req *pb.CreateGuildRequest) (*pb.CreateGuildResponse, error) {
 	userIDStr, err := metadata.GetUserIDFromMetadata(ctx)
 	if err != nil {
 		h.logger.Warn("Failed to get user ID from metadata", "error", err)
@@ -70,7 +70,7 @@ func (h *GuildHandler) CreateGuild(ctx context.Context, req *pb.CreateGuildReque
 	return &pb.CreateGuildResponse{Guild: pbGuild}, nil
 }
 
-func (h *GuildHandler) GetGuildByID(ctx context.Context, req *pb.GetGuildByIDRequest) (*pb.GetGuildByIDResponse, error) {
+func (h *guildHandler) GetGuildByID(ctx context.Context, req *pb.GetGuildByIDRequest) (*pb.GetGuildByIDResponse, error) {
 	guildID, err := uuid.Parse(req.GuildId)
 	if err != nil {
 		h.logger.Warn("Invalid UUID format", "error", err)
@@ -101,7 +101,7 @@ func (h *GuildHandler) GetGuildByID(ctx context.Context, req *pb.GetGuildByIDReq
 	return &pb.GetGuildByIDResponse{Guild: pbGuild}, nil
 }
 
-func (h *GuildHandler) UpdateGuild(ctx context.Context, req *pb.UpdateGuildRequest) (*pb.UpdateGuildResponse, error) {
+func (h *guildHandler) UpdateGuild(ctx context.Context, req *pb.UpdateGuildRequest) (*pb.UpdateGuildResponse, error) {
 	guildID, err := uuid.Parse(req.GuildId)
 	if err != nil {
 		h.logger.Warn("Invalid guild ID format", "guild_id", req.GuildId, "error", err)
