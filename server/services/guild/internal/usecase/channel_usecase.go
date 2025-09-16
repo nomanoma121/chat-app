@@ -10,7 +10,7 @@ import (
 )
 
 type ChannelUsecase interface {
-	CreateChannel(ctx context.Context, params *CreateChannelParams) (*domain.Channel, error)
+	Create(ctx context.Context, params *CreateChannelParams) (*domain.Channel, error)
 }
 
 type channelUsecase struct {
@@ -26,19 +26,18 @@ func NewChannelUsecase(channelRepo domain.IChannelRepository, validator *validat
 }
 
 type CreateChannelParams struct {
-	CategoryID string `validate:"required,uuid4"`
-	Name       string `validate:"required,min=1,max=100"`
-	Order      int    `validate:"gte=0"`
+	CategoryID uuid.UUID `validate:"required,uuid4"`
+	Name       string    `validate:"required,min=1,max=100"`
 }
 
-func (u *channelUsecase) CreateChannel(ctx context.Context, params *CreateChannelParams) (*domain.Channel, error) {
+func (u *channelUsecase) Create(ctx context.Context, params *CreateChannelParams) (*domain.Channel, error) {
 	if err := u.validator.Struct(params); err != nil {
 		return nil, err
 	}
 
 	return u.channelRepo.Create(ctx, &domain.Channel{
 		ID:         uuid.New(),
-		CategoryID: uuid.MustParse(params.CategoryID),
+		CategoryID: params.CategoryID,
 		Name:       params.Name,
 		CreatedAt:  time.Now(),
 	})

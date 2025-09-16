@@ -34,12 +34,8 @@ type CreateGuildParams struct {
 	IconURL     string    `validate:"required,url"`
 }
 
-func (r *CreateGuildParams) Validate() error {
-	return validate.Struct(r)
-}
-
 func (u *guildUsecase) Create(ctx context.Context, params *CreateGuildParams) (*domain.Guild, error) {
-	if err := params.Validate(); err != nil {
+	if err := u.validator.Struct(params); err != nil {
 		return nil, domain.ErrInvalidGuildData
 	}
 
@@ -67,12 +63,8 @@ type UpdateGuildParams struct {
 	IconURL     string    `validate:"required,url"`
 }
 
-func (r *UpdateGuildParams) Validate() error {
-	return validate.Struct(r)
-}
-
 func (u *guildUsecase) Update(ctx context.Context, params *UpdateGuildParams) (*domain.Guild, error) {
-	if err := params.Validate(); err != nil {
+	if err := u.validator.Struct(params); err != nil {
 		return nil, domain.ErrInvalidGuildData
 	}
 
