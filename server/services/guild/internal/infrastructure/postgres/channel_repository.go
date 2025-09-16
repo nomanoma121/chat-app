@@ -2,8 +2,9 @@ package postgres
 
 import (
 	"context"
-	"guild-service/internal/domain/channel"
+	"guild-service/internal/domain"
 	"guild-service/internal/infrastructure/postgres/generated"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type channelRepository struct {
@@ -16,24 +17,22 @@ func NewPostgresChannelRepository(queries *generated.Queries) *channelRepository
 	}
 }
 
-func (r *channelRepository) Create(input *channel.CreateChannelInput) (*channel.Channel, error) {
-	dbChannel, err := r.queries.CreateChannel(context.Background(), generated.CreateChannelParams{
-		ID:         input.ID,
-		CategoryID: input.CategoryID,
-		Name:       input.Name,
-		Order:      int32(input.Order),
+func (r *channelRepository) Create(ctx context.Context, channel *domain.Channel) (*domain.Channel, error) {
+	dbChannel, err := r.queries.CreateChannel(ctx, generated.CreateChannelParams{
+		ID:         channel.ID,
+		CategoryID: channel.CategoryID,
+		Name:       channel.Name,
+		CreatedAt:  pgtype.Timestamp{Time: channel.CreatedAt, Valid: true},
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &channel.Channel{
+	return &domain.Channel{
 		ID:         dbChannel.ID,
 		CategoryID: dbChannel.CategoryID,
 		Name:       dbChannel.Name,
-		Order:      int(dbChannel.Order),
 		CreatedAt:  dbChannel.CreatedAt.Time,
-		UpdatedAt:  dbChannel.UpdatedAt.Time,
 	}, nil
 }
 
-var _ channel.IChannelRepository = (*channelRepository)(nil)
+var _ domain.IChannelRepository = (*channelRepository)(nil)

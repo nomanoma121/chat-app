@@ -186,10 +186,6 @@ table "categories" {
     null = false
     type = uuid
   }
-  column "order" {
-    null = false
-    type = int
-  }
   column "name" {
     null = false
     type = varchar(100)
@@ -225,10 +221,6 @@ table "channels" {
   column "category_id" {
     null = false
     type = uuid
-  }
-  column "order" {
-    null = false
-    type = int
   }
   column "created_at" {
     null = false

@@ -41,7 +41,7 @@ func (h *guildHandler) CreateGuild(ctx context.Context, req *pb.CreateGuildReque
 		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidGuildData.Error())
 	}
 
-	guild, err := h.guildUsecase.Create(ctx, &usecase.CreateGuildRequest{
+	guild, err := h.guildUsecase.Create(ctx, &usecase.CreateGuildParams{
 		OwnerID:     userID,
 		Name:        req.Name,
 		Description: req.Description,
@@ -65,7 +65,6 @@ func (h *guildHandler) CreateGuild(ctx context.Context, req *pb.CreateGuildReque
 		Description: guild.Description,
 		IconUrl:     guild.IconURL,
 		CreatedAt:   timestamppb.New(guild.CreatedAt),
-		UpdatedAt:   timestamppb.New(guild.UpdatedAt),
 	}
 	return &pb.CreateGuildResponse{Guild: pbGuild}, nil
 }
@@ -96,7 +95,6 @@ func (h *guildHandler) GetGuildByID(ctx context.Context, req *pb.GetGuildByIDReq
 		Description: guild.Description,
 		IconUrl:     guild.IconURL,
 		CreatedAt:   timestamppb.New(guild.CreatedAt),
-		UpdatedAt:   timestamppb.New(guild.UpdatedAt),
 	}
 	return &pb.GetGuildByIDResponse{Guild: pbGuild}, nil
 }
@@ -108,7 +106,7 @@ func (h *guildHandler) UpdateGuild(ctx context.Context, req *pb.UpdateGuildReque
 		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidGuildID.Error())
 	}
 
-	usecaseReq := &usecase.UpdateGuildRequest{
+	usecaseReq := &usecase.UpdateGuildParams{
 		ID:          guildID,
 		Name:        req.Name,
 		Description: req.Description,
@@ -137,7 +135,6 @@ func (h *guildHandler) UpdateGuild(ctx context.Context, req *pb.UpdateGuildReque
 		Description: updatedGuild.Description,
 		IconUrl:     updatedGuild.IconURL,
 		CreatedAt:   timestamppb.New(updatedGuild.CreatedAt),
-		UpdatedAt:   timestamppb.New(updatedGuild.UpdatedAt),
 	}
 
 	return &pb.UpdateGuildResponse{Guild: pbGuild}, nil

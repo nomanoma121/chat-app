@@ -2,7 +2,7 @@ package postgres
 
 import (
 	"context"
-	"guild-service/internal/domain/member"
+	"guild-service/internal/domain"
 	"guild-service/internal/infrastructure/postgres/generated"
 )
 
@@ -16,22 +16,21 @@ func NewPostgresMemberRepository(queries *generated.Queries) *memberRepository {
 	}
 }
 
-func (r *memberRepository) AddMember(ctx context.Context, input *member.AddMemberInput) (*member.Member, error) {
+func (r *memberRepository) AddMember(ctx context.Context, member *domain.Member) (*domain.Member, error) {
 	dbMember, err := r.queries.AddMember(ctx, generated.AddMemberParams{
-		GuildID:  input.GuildID,
-		UserID:   input.UserID,
-		Nickname: input.Nickname,
+		GuildID:  member.GuildID,
+		UserID:   member.UserID,
+		Nickname: member.Nickname,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &member.Member{
+	return &domain.Member{
 		GuildID:   dbMember.GuildID,
 		UserID:    dbMember.UserID,
 		Nickname:  dbMember.Nickname,
 		JoinedAt:  dbMember.JoinedAt.Time,
-		UpdatedAt: dbMember.UpdatedAt.Time,
 	}, nil
 }
 
-var _ member.IMemberRepository = (*memberRepository)(nil)
+var _ domain.IMemberRepository = (*memberRepository)(nil)

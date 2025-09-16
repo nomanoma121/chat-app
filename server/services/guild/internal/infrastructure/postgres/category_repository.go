@@ -3,10 +3,10 @@ package postgres
 import (
 	"context"
 
-	"guild-service/internal/domain/category"
+	"guild-service/internal/domain"
 	"guild-service/internal/infrastructure/postgres/generated"
 
-	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -22,24 +22,22 @@ func NewPostgresCategoryRepository(queries *generated.Queries, db *pgxpool.Pool)
 	}
 }
 
-func (r *categoryRepository) Create(input *category.CreateCategoryInput) (*category.Category, error) {
-	dbCategory, err := r.queries.CreateCategory(context.Background(), generated.CreateCategoryParams{
-		ID:      uuid.New(),
-		GuildID: input.GuildID,
-		Name:    input.Name,
-		Order:   int32(input.Order),
+func (r *categoryRepository) Create(ctx context.Context, category *domain.Category) (*domain.Category, error) {
+	dbCategory, err := r.queries.CreateCategory(ctx, generated.CreateCategoryParams{
+		ID:      category.ID,
+		GuildID: category.GuildID,
+		Name:    category.Name,
+		CreatedAt: pgtype.Timestamp{Time: category.CreatedAt, Valid: true},
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &category.Category{
+	return &domain.Category{
 		ID:        dbCategory.ID,
 		GuildID:   dbCategory.GuildID,
 		Name:      dbCategory.Name,
-		Order:     int(dbCategory.Order),
 		CreatedAt: dbCategory.CreatedAt.Time,
-		UpdatedAt: dbCategory.UpdatedAt.Time,
 	}, nil
 }
 
-var _ category.ICategoryRepository = (*categoryRepository)(nil)
+var _ domain.ICategoryRepository = (*categoryRepository)(nil)

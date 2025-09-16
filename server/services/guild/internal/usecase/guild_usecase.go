@@ -3,52 +3,53 @@ package usecase
 import (
 	"context"
 	"guild-service/internal/domain"
-	"guild-service/internal/domain/guild"
+	"time"
 
 	"github.com/go-playground/validator"
 	"github.com/google/uuid"
 )
 
 type GuildUsecase interface {
-	Create(ctx context.Context, req *CreateGuildRequest) (*guild.Guild, error)
-	Update(ctx context.Context, user *UpdateGuildRequest) (*guild.Guild, error)
-	GetByID(ctx context.Context, id uuid.UUID) (*guild.Guild, error)
+	Create(ctx context.Context, params *CreateGuildParams) (*domain.Guild, error)
+	Update(ctx context.Context, params *UpdateGuildParams) (*domain.Guild, error)
+	GetByID(ctx context.Context, id uuid.UUID) (*domain.Guild, error)
 }
 
 type guildUsecase struct {
-	guildRepo guild.IGuildRepository
+	guildRepo domain.IGuildRepository
 	validator *validator.Validate
 }
 
-func NewGuildUsecase(guildRepo guild.IGuildRepository, validator *validator.Validate) GuildUsecase {
+func NewGuildUsecase(guildRepo domain.IGuildRepository, validator *validator.Validate) GuildUsecase {
 	return &guildUsecase{
 		guildRepo: guildRepo,
 		validator: validator,
 	}
 }
 
-type CreateGuildRequest struct {
+type CreateGuildParams struct {
 	OwnerID     uuid.UUID `validate:"required"`
 	Name        string    `validate:"required,min=2,max=20"`
 	Description string    `validate:"required,max=200"`
 	IconURL     string    `validate:"required,url"`
 }
 
-func (r *CreateGuildRequest) Validate() error {
+func (r *CreateGuildParams) Validate() error {
 	return validate.Struct(r)
 }
 
-func (u *guildUsecase) Create(ctx context.Context, req *CreateGuildRequest) (*guild.Guild, error) {
-	if err := req.Validate(); err != nil {
+func (u *guildUsecase) Create(ctx context.Context, params *CreateGuildParams) (*domain.Guild, error) {
+	if err := params.Validate(); err != nil {
 		return nil, domain.ErrInvalidGuildData
 	}
 
-	guild := &guild.CreateGuildInput{
+	guild := &domain.Guild{
 		ID:          uuid.New(),
-		OwnerID:     req.OwnerID,
-		Name:        req.Name,
-		Description: req.Description,
-		IconURL:     req.IconURL,
+		OwnerID:     params.OwnerID,
+		Name:        params.Name,
+		Description: params.Description,
+		IconURL:     params.IconURL,
+		CreatedAt:   time.Now(),
 	}
 
 	createdGuild, err := u.guildRepo.Create(ctx, guild)
@@ -59,31 +60,31 @@ func (u *guildUsecase) Create(ctx context.Context, req *CreateGuildRequest) (*gu
 	return createdGuild, nil
 }
 
-type UpdateGuildRequest struct {
+type UpdateGuildParams struct {
 	ID          uuid.UUID `validate:"required"`
 	Name        string    `validate:"required,min=2,max=20"`
 	Description string    `validate:"required,max=200"`
 	IconURL     string    `validate:"required,url"`
 }
 
-func (r *UpdateGuildRequest) Validate() error {
+func (r *UpdateGuildParams) Validate() error {
 	return validate.Struct(r)
 }
 
-func (u *guildUsecase) Update(ctx context.Context, req *UpdateGuildRequest) (*guild.Guild, error) {
-	if err := req.Validate(); err != nil {
+func (u *guildUsecase) Update(ctx context.Context, params *UpdateGuildParams) (*domain.Guild, error) {
+	if err := params.Validate(); err != nil {
 		return nil, domain.ErrInvalidGuildData
 	}
 
-	return u.guildRepo.Update(ctx, &guild.UpdateGuildInput{
-		ID:          req.ID,
-		Name:        req.Name,
-		Description: req.Description,
-		IconURL:     req.IconURL,
+	return u.guildRepo.Update(ctx, &domain.Guild{
+		ID:          params.ID,
+		Name:        params.Name,
+		Description: params.Description,
+		IconURL:     params.IconURL,
 	})
 }
 
-func (u *guildUsecase) GetByID(ctx context.Context, id uuid.UUID) (*guild.Guild, error) {
+func (u *guildUsecase) GetByID(ctx context.Context, id uuid.UUID) (*domain.Guild, error) {
 	return u.guildRepo.GetGuildByID(ctx, id)
 }
 
