@@ -19,7 +19,6 @@ message Guild {
   string description = 4;
   string icon_url = 5;
   google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
 }
 
 message Invite {
@@ -34,7 +33,6 @@ message Invite {
   int32 current_uses = 4;
   string code = 5;
   google.protobuf.Timestamp expires_at = 6;
-  google.protobuf.Timestamp created_at = 7;
 }
 
 message Member {
@@ -47,7 +45,6 @@ message Member {
   string guild_id = 2;
   string nickname = 3;
   google.protobuf.Timestamp created_at = 4;
-  google.protobuf.Timestamp updated_at = 5;
 }
 
 message Category {
@@ -61,7 +58,6 @@ message Category {
   string name = 3;
   int32 position = 4;
   google.protobuf.Timestamp created_at = 5;
-  google.protobuf.Timestamp updated_at = 6;
 }
 
 message Channel {
@@ -74,7 +70,6 @@ message Channel {
   string category_id = 2;
   string name = 3;
   google.protobuf.Timestamp created_at = 4;
-  google.protobuf.Timestamp updated_at = 5;
 }
 
 message CategoryWithChannels {
