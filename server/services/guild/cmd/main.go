@@ -51,7 +51,11 @@ func main() {
 
 	postgres.NewPostgresMemberRepository(generated.New(db))
 
-	guildHandler := handler.NewGuildServiceHandler(categoryUsecase, channelUsecase, guildUsecase, log)
+	guildHandler := handler.NewGuildServiceHandler(&handler.NewGuildServiceHandlerParams{
+		GuildHandler:    handler.NewGuildHandler(guildUsecase, log),
+		CategoryHandler: handler.NewCategoryHandler(categoryUsecase, log),
+		ChannelHandler:  handler.NewChannelHandler(channelUsecase, log),
+	})
 
 	server := grpc.NewServer()
 	pb.RegisterGuildServiceServer(server, guildHandler)

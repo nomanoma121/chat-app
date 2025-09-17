@@ -14,19 +14,19 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-type ChannelHandler struct {
+type channelHandler struct {
 	channelUsecase usecase.ChannelUsecase
 	logger         *slog.Logger
 }
 
-func NewChannelHandler(channelUsecase usecase.ChannelUsecase, logger *slog.Logger) *ChannelHandler {
-	return &ChannelHandler{
+func NewChannelHandler(channelUsecase usecase.ChannelUsecase, logger *slog.Logger) *channelHandler {
+	return &channelHandler{
 		channelUsecase: channelUsecase,
 		logger:         logger,
 	}
 }
 
-func (h *ChannelHandler) CreateChannel(ctx context.Context, req *pb.CreateChannelRequest) (*pb.CreateChannelResponse, error) {
+func (h *channelHandler) CreateChannel(ctx context.Context, req *pb.CreateChannelRequest) (*pb.CreateChannelResponse, error) {
 	categoryID, err := uuid.Parse(req.CategoryId)
 	if err != nil {
 		h.logger.Warn("Invalid category ID format", "category_id", req.CategoryId, "error", err)

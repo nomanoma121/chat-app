@@ -14,19 +14,19 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-type CategoryHandler struct {
+type categoryHandler struct {
 	categoryUsecase usecase.CategoryUsecase
 	logger          *slog.Logger
 }
 
-func NewCategoryHandler(categoryUsecase usecase.CategoryUsecase, logger *slog.Logger) *CategoryHandler {
-	return &CategoryHandler{
+func NewCategoryHandler(categoryUsecase usecase.CategoryUsecase, logger *slog.Logger) *categoryHandler {
+	return &categoryHandler{
 		categoryUsecase: categoryUsecase,
 		logger:          logger,
 	}
 }
 
-func (h *CategoryHandler) CreateCategory(ctx context.Context, req *pb.CreateCategoryRequest) (*pb.CreateCategoryResponse, error) {
+func (h *categoryHandler) CreateCategory(ctx context.Context, req *pb.CreateCategoryRequest) (*pb.CreateCategoryResponse, error) {
 	guildID, err := uuid.Parse(req.GuildId)
 	if err != nil {
 		h.logger.Warn("Invalid guild ID format", "guild_id", req.GuildId, "error", err)

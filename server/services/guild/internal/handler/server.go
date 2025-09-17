@@ -4,29 +4,28 @@ import (
 	"context"
 
 	pb "chat-app-proto/gen/guild"
-	"guild-service/internal/usecase"
 	"log/slog"
 )
 
 type GuildServiceHandler struct {
 	pb.UnimplementedGuildServiceServer
 	guildHandler    *guildHandler
-	categoryHandler *CategoryHandler
-	channelHandler  *ChannelHandler
+	categoryHandler *categoryHandler
+	channelHandler  *channelHandler
 	logger          *slog.Logger
 }
 
-func NewGuildServiceHandler(
-	categoryUsecase usecase.CategoryUsecase,
-	channelUsecase usecase.ChannelUsecase,
-	guildUsecase usecase.GuildUsecase,
-	logger *slog.Logger,
-) *GuildServiceHandler {
+type NewGuildServiceHandlerParams struct {
+	GuildHandler    *guildHandler
+	CategoryHandler *categoryHandler
+	ChannelHandler  *channelHandler
+}
+
+func NewGuildServiceHandler(params *NewGuildServiceHandlerParams) *GuildServiceHandler {
 	return &GuildServiceHandler{
-		guildHandler:    NewGuildHandler(guildUsecase, logger),
-		categoryHandler: NewCategoryHandler(categoryUsecase, logger),
-		channelHandler:  NewChannelHandler(channelUsecase, logger),
-		logger:          logger,
+		guildHandler:    params.GuildHandler,
+		categoryHandler: params.CategoryHandler,
+		channelHandler:  params.ChannelHandler,
 	}
 }
 
