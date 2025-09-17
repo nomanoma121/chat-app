@@ -26,13 +26,13 @@ func NewChannelUsecase(channelRepo domain.IChannelRepository, validator *validat
 }
 
 type CreateChannelParams struct {
-	CategoryID uuid.UUID `validate:"required,uuid4"`
+	CategoryID uuid.UUID `validate:"required"`
 	Name       string    `validate:"required,min=1,max=100"`
 }
 
 func (u *channelUsecase) Create(ctx context.Context, params *CreateChannelParams) (*domain.Channel, error) {
 	if err := u.validator.Struct(params); err != nil {
-		return nil, err
+		return nil, domain.ErrInvalidChannelData
 	}
 
 	return u.channelRepo.Create(ctx, &domain.Channel{

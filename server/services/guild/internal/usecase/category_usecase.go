@@ -26,13 +26,13 @@ func NewCategoryUsecase(categoryRepo domain.ICategoryRepository, validator *vali
 }
 
 type CreateCategoryParams struct {
-	GuildID uuid.UUID `validate:"required,uuid4"`
+	GuildID uuid.UUID `validate:"required"`
 	Name    string    `validate:"required,min=1,max=100"`
 }
 
 func (u *categoryUsecase) CreateCategory(ctx context.Context, params *CreateCategoryParams) (*domain.Category, error) {
 	if err := u.validator.Struct(params); err != nil {
-		return nil, err
+		return nil, domain.ErrInvalidCategoryData
 	}
 
 	return u.categoryRepo.Create(ctx, &domain.Category{
