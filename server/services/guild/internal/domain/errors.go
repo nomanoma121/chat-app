@@ -5,6 +5,7 @@ import "errors"
 var (
 	// Not Found
 	ErrGuildNotFound    = errors.New("guild not found")
+	ErrUserNotFound     = errors.New("user not found")
 	ErrCategoryNotFound = errors.New("category not found")
 	ErrChannelNotFound  = errors.New("channel not found")
 	ErrMemberNotFound   = errors.New("member not found")

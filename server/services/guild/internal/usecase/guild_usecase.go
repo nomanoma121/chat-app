@@ -17,12 +17,14 @@ type GuildUsecase interface {
 
 type guildUsecase struct {
 	guildRepo domain.IGuildRepository
+	userSvc   domain.IUserService
 	validator *validator.Validate
 }
 
-func NewGuildUsecase(guildRepo domain.IGuildRepository, validator *validator.Validate) GuildUsecase {
+func NewGuildUsecase(guildRepo domain.IGuildRepository, userSvc domain.IUserService, validator *validator.Validate) GuildUsecase {
 	return &guildUsecase{
 		guildRepo: guildRepo,
+		userSvc:   userSvc,
 		validator: validator,
 	}
 }
@@ -37,6 +39,14 @@ type CreateGuildParams struct {
 func (u *guildUsecase) Create(ctx context.Context, params *CreateGuildParams) (*domain.Guild, error) {
 	if err := u.validator.Struct(params); err != nil {
 		return nil, domain.ErrInvalidGuildData
+	}
+
+	exists, err := u.userSvc.Exists(params.OwnerID)
+	if err != nil {
+		return nil, err
+	}
+	if !exists {
+		return nil, domain.ErrUserNotFound
 	}
 
 	guild := &domain.Guild{

@@ -70,4 +70,7 @@ service UserService {
       tags: "User"
     };
   }
+
+  // 内部通信用
+  rpc Exists(ExistsRequest) returns (ExistsResponse);
 }

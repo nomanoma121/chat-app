@@ -122,3 +122,21 @@ message UpdateResponse {
   };
   User user = 1;
 }
+
+message ExistsRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["user_id"]
+    };
+  };
+  string user_id = 1;
+}
+
+message ExistsResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["exists"]
+    };
+  };
+  bool exists = 1;
+}
