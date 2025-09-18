@@ -52,7 +52,8 @@ func main() {
 
 	validate := validator.New()
 
-	userConn, err := grpc.NewClient("localhost:50051", grpc.WithInsecure())
+	userServiceURL := os.Getenv("USER_SERVICE_URL")
+	userConn, err := grpc.NewClient(userServiceURL, grpc.WithInsecure())
 	if err != nil {
 		log.Error("Failed to connect to user service", "error", err)
 		os.Exit(1)

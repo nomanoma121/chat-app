@@ -226,3 +226,24 @@ func (h *UserHandler) Update(ctx context.Context, req *pb.UpdateRequest) (*pb.Up
 
 	return &pb.UpdateResponse{User: pbUser}, nil
 }
+
+func (h *UserHandler) Exists(ctx context.Context, req *pb.ExistsRequest) (*pb.ExistsResponse, error) {
+	userID, err := uuid.Parse(req.UserId)
+	if err != nil {
+		h.logger.Warn("Invalid user ID format", "user_id", req.UserId, "error", err)
+		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserID.Error())
+	}
+
+	_, err = h.userUsecase.GetUserByID(ctx, userID)
+	if err != nil {
+		switch err {
+		case domain.ErrUserNotFound:
+			return &pb.ExistsResponse{Exists: false}, nil
+		default:
+			h.logger.Error("Failed to check user existence", "user_id", userID, "error", err)
+			return nil, status.Error(codes.Internal, "failed to check user existence")
+		}
+	}
+
+	return &pb.ExistsResponse{Exists: true}, nil
+}
