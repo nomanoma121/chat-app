@@ -136,7 +136,6 @@ func (u *guildUsecase) GetByID(ctx context.Context, id uuid.UUID) (*domain.Guild
 	return u.store.Guilds().GetByID(ctx, id)
 }
 
-// overview
 func (u *guildUsecase) GetGuildOverview(ctx context.Context, guildID uuid.UUID) (*domain.GuildOverview, error) {
 	guild, err := u.store.Guilds().GetByID(ctx, guildID)
 	if err != nil {

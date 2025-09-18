@@ -140,8 +140,6 @@ func (h *guildHandler) UpdateGuild(ctx context.Context, req *pb.UpdateGuildReque
 	return &pb.UpdateGuildResponse{Guild: pbGuild}, nil
 }
 
-// GuildOverview
-// guild id から
 func (h *guildHandler) GetGuildOverview(ctx context.Context, req *pb.GetGuildOverviewRequest) (*pb.GetGuildOverviewResponse, error) {
 	guildID, err := uuid.Parse(req.GuildId)
 	if err != nil {

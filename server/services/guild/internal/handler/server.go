@@ -41,6 +41,10 @@ func (h *GuildServiceHandler) UpdateGuild(ctx context.Context, req *pb.UpdateGui
 	return h.guildHandler.UpdateGuild(ctx, req)
 }
 
+func (h *GuildServiceHandler) GetGuildOverview(ctx context.Context, req *pb.GetGuildOverviewRequest) (*pb.GetGuildOverviewResponse, error) {
+	return h.guildHandler.GetGuildOverview(ctx, req)
+}
+
 func (h *GuildServiceHandler) CreateCategory(ctx context.Context, req *pb.CreateCategoryRequest) (*pb.CreateCategoryResponse, error) {
 	return h.categoryHandler.CreateCategory(ctx, req)
 }
