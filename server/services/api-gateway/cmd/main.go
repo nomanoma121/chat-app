@@ -25,13 +25,16 @@ import (
 )
 
 var (
-	USER_SERVICE_ENDPOINT = "localhost:50051"
-	GUILD_SERVICE_ENDPOINT = "localhost:50052"
-	tokenAuth             *jwtauth.JWTAuth
+	USER_SERVICE_ENDPOINT  string
+	GUILD_SERVICE_ENDPOINT string
+	tokenAuth              *jwtauth.JWTAuth
 )
 
 func init() {
 	_ = godotenv.Load()
+
+	USER_SERVICE_ENDPOINT = os.Getenv("USER_SERVICE_URL")
+	GUILD_SERVICE_ENDPOINT = os.Getenv("GUILD_SERVICE_URL")
 }
 
 func main() {
