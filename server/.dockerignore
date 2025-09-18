@@ -1,0 +1,30 @@
+# Development files
+*.md
+README*
+.git/
+.gitignore
+.env*
+.vscode/
+.idea/
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Build artifacts and temporary files
+volumes/
+*/bin/
+*/tmp/
+*/.cache/
+*.log
+
+# Test files
+*_test.go
+*/testdata/
+*/coverage.out
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Node.js (if any frontend build tools)
+node_modules/

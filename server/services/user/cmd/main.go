@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 	"shared/logger"
+	"time"
 	"user-service/internal/handler"
 	"user-service/internal/infrastructure/postgres"
 	"user-service/internal/infrastructure/postgres/generated"
@@ -19,23 +20,34 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+var db *pgx.Conn
+
 func init() {
 	_ = godotenv.Load()
+
+	log := logger.Default("user-service")
+	dsn := os.Getenv("DATABASE_URL")
+
+	log.Info("Connecting to database...")
+	var err error
+	for i := 0; i < 30; i++ {
+		db, err = pgx.Connect(context.Background(), dsn)
+		if err == nil {
+			break
+		}
+		log.Warn("Failed to connect to database, retrying...", "attempt", i+1, "error", err)
+		time.Sleep(2 * time.Second)
+	}
+	if err != nil {
+		log.Error("Failed to connect to database after retries", "error", err)
+		os.Exit(1)
+	}
+	log.Info("Connected to PostgreSQL", "database", "chat_app")
 }
 
 func main() {
 	log := logger.Default("user-service")
-
-	dsn := "postgres://user:password@localhost:5432/chat_app?sslmode=disable"
-
-	db, err := pgx.Connect(context.Background(), dsn)
-	if err != nil {
-		log.Error("Failed to connect to database", "error", err)
-		os.Exit(1)
-	}
 	defer db.Close(context.Background())
-
-	log.Info("Connected to PostgreSQL", "database", "chat_app")
 
 	userRepo := postgres.NewPostgresUserRepository(generated.New(db))
 	userUsecase := usecase.NewUserUsecase(userRepo, usecase.Config{

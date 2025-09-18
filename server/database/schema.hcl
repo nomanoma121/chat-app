@@ -150,7 +150,7 @@ table "members" {
     type = uuid
   }
   column "nickname" {
-    null = true
+    null = false
     type = varchar(100)
   }
   column "joined_at" {
@@ -185,10 +185,6 @@ table "categories" {
   column "guild_id" {
     null = false
     type = uuid
-  }
-  column "position" {
-    null = false
-    type = int
   }
   column "name" {
     null = false

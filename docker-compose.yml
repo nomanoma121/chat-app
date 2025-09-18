@@ -1,17 +1,68 @@
-services: 
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: chat_app
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   adminer:
     image: adminer
     ports:
       - "8080:8080"
     depends_on:
       - postgres
-  postgres:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: chat_app
+
+  user:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: user
     ports:
-      - "5432:5432"
-    volumes:
-      - ./server/volumes/postgres:/var/lib/postgresql/data
+      - "50051:50051"
+    environment:
+      - JWT_SECRET=your-secret-key-here
+      - DATABASE_URL=postgres://user:password@postgres:5432/chat_app?sslmode=disable
+    depends_on:
+      - postgres
+
+  guild:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: guild
+    ports:
+      - "50052:50052"
+    environment:
+      - DATABASE_URL=postgres://user:password@postgres:5432/chat_app?sslmode=disable
+      - USER_SERVICE_URL=user:50051
+    depends_on:
+      - postgres
+      - user
+
+  api-gateway:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: api-gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - JWT_SECRET=your-secret-key-here
+      - USER_SERVICE_URL=user:50051
+      - GUILD_SERVICE_URL=guild:50052
+    depends_on:
+      - user
+      - guild
+
+volumes:
+  postgres_data:

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { css } from "styled-system/css";
 import { Avatar } from "~/components/ui/avatar";
 import { Card } from "~/components/ui/card";
+import { Text } from "~/components/ui/text";
 
 interface UserPanelProps {
 	name?: string;
@@ -53,13 +54,14 @@ export const UserPanel = ({ name, iconUrl }: UserPanelProps) => {
 							height: "7",
 						})}
 					/>
-					<p
+					<Text
 						className={css({
 							marginLeft: "2",
+							color: "text.bright",
 						})}
 					>
-						{name}
-					</p>
+						{name ?? "Unknown User"}
+					</Text>
 				</div>
 				<div className={css({ display: "flex", alignItems: "center" })}>
 					<div

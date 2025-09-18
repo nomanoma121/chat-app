@@ -24,6 +24,15 @@ service GuildService {
     };
   }
 
+  rpc GetGuildOverview(GetGuildOverviewRequest) returns (GetGuildOverviewResponse) {
+    option (google.api.http) = {
+      get: "/api/guilds/{guild_id}/overview"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Guild"
+    };
+  }
+
   rpc GetGuildByID(GetGuildByIDRequest) returns (GetGuildByIDResponse) {
     option (google.api.http) = {
       get: "/api/guilds/{guild_id}"
@@ -50,15 +59,6 @@ service GuildService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "Guild"
-    };
-  }
-
-  rpc GetGuildMembers(GetGuildMembersRequest) returns (GetGuildMembersResponse) {
-    option (google.api.http) = {
-      get: "/api/guilds/{guild_id}/members"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "Member"
     };
   }
 
@@ -115,15 +115,6 @@ service GuildService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "Invite"
-    };
-  }
-
-  rpc GetCategories(GetCategoriesRequest) returns (GetCategoriesResponse) {
-    option (google.api.http) = {
-      get: "/api/guilds/{guild_id}/categories"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      tags: "Category"
     };
   }
 

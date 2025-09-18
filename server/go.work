@@ -5,4 +5,5 @@ use (
 	./shared
 	./services/user
 	./services/api-gateway
+	./services/guild
 )

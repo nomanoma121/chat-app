@@ -19,5 +19,4 @@ message Message {
   string reply_id = 4;
   string content = 5;
   google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
 }

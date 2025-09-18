@@ -21,15 +21,20 @@ import (
 	"api-gateway/internal/utils"
 
 	userpb "chat-app-proto/gen/user"
+	guildpb "chat-app-proto/gen/guild"
 )
 
 var (
-	USER_SERVICE_ENDPOINT = "localhost:50051"
-	tokenAuth             *jwtauth.JWTAuth
+	USER_SERVICE_ENDPOINT  string
+	GUILD_SERVICE_ENDPOINT string
+	tokenAuth              *jwtauth.JWTAuth
 )
 
 func init() {
 	_ = godotenv.Load()
+
+	USER_SERVICE_ENDPOINT = os.Getenv("USER_SERVICE_URL")
+	GUILD_SERVICE_ENDPOINT = os.Getenv("GUILD_SERVICE_URL")
 }
 
 func main() {
@@ -52,6 +57,11 @@ func main() {
 	err := userpb.RegisterUserServiceHandlerFromEndpoint(ctx, grpcGatewayMux, USER_SERVICE_ENDPOINT, opts)
 	if err != nil {
 		log.Error("Failed to register user service handler", "error", err, "endpoint", USER_SERVICE_ENDPOINT)
+		os.Exit(1)
+	}
+	err = guildpb.RegisterGuildServiceHandlerFromEndpoint(ctx, grpcGatewayMux, GUILD_SERVICE_ENDPOINT, opts)
+	if err != nil {
+		log.Error("Failed to register guild service handler", "error", err, "endpoint", GUILD_SERVICE_ENDPOINT)
 		os.Exit(1)
 	}
 
