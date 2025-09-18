@@ -18,6 +18,12 @@ type Category struct {
 	CreatedAt time.Time
 }
 
+type CategoryOverview struct {
+	*Category
+	Channels []*Channel
+}
+
 type ICategoryRepository interface {
 	Create(ctx context.Context, category *Category) (*Category, error)
+	GetByGuildID(ctx context.Context, guildID uuid.UUID) ([]*Category, error)
 }

@@ -16,7 +16,7 @@ func NewPostgresMemberRepository(queries *gen.Queries) *memberRepository {
 	}
 }
 
-func (r *memberRepository) AddMember(ctx context.Context, member *domain.Member) (*domain.Member, error) {
+func (r *memberRepository) Add(ctx context.Context, member *domain.Member) (*domain.Member, error) {
 	dbMember, err := r.queries.AddMember(ctx, gen.AddMemberParams{
 		GuildID:  member.GuildID,
 		UserID:   member.UserID,

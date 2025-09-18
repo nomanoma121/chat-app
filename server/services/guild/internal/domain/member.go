@@ -15,5 +15,5 @@ type Member struct {
 }
 
 type IMemberRepository interface {
-	AddMember(ctx context.Context, member *Member) (*Member, error)
+	Add(ctx context.Context, member *Member) (*Member, error)
 }

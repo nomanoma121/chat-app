@@ -16,6 +16,11 @@ type Guild struct {
 	CreatedAt   time.Time
 }
 
+type GuildOverview struct {
+	*Guild
+	Categories []*CategoryOverview
+}
+
 type IGuildRepository interface {
 	Create(ctx context.Context, guild *Guild) (*Guild, error)
 	GetByID(ctx context.Context, id uuid.UUID) (*Guild, error)

@@ -4,6 +4,8 @@ import (
 	"context"
 	"guild-service/internal/domain"
 	"guild-service/internal/infrastructure/postgres/gen"
+
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -33,6 +35,23 @@ func (r *channelRepository) Create(ctx context.Context, channel *domain.Channel)
 		Name:       dbChannel.Name,
 		CreatedAt:  dbChannel.CreatedAt.Time,
 	}, nil
+}
+
+func (r *channelRepository) GetByCategoryID(ctx context.Context, categoryID uuid.UUID) ([]*domain.Channel, error) {
+	dbChannels, err := r.queries.GetByCategoryID(ctx, categoryID)
+	if err != nil {
+		return nil, err
+	}
+	channels := make([]*domain.Channel, len(dbChannels))
+	for i, dbChannel := range dbChannels {
+		channels[i] = &domain.Channel{
+			ID:         dbChannel.ID,
+			CategoryID: dbChannel.CategoryID,
+			Name:       dbChannel.Name,
+			CreatedAt:  dbChannel.CreatedAt.Time,
+		}
+	}
+	return channels, nil
 }
 
 var _ domain.IChannelRepository = (*channelRepository)(nil)
