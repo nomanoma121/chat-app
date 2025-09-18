@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"guild-service/internal/domain"
-	"guild-service/internal/infrastructure/postgres/generated"
+	"guild-service/internal/infrastructure/postgres/gen"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -12,17 +12,17 @@ import (
 )
 
 type guildRepository struct {
-	queries *generated.Queries
+	queries *gen.Queries
 }
 
-func NewPostgresGuildRepository(queries *generated.Queries) *guildRepository {
+func NewPostgresGuildRepository(queries *gen.Queries) *guildRepository {
 	return &guildRepository{
 		queries: queries,
 	}
 }
 
 func (r *guildRepository) Create(ctx context.Context, guild *domain.Guild) (*domain.Guild, error) {
-	dbGuild, err := r.queries.CreateGuild(ctx, generated.CreateGuildParams{
+	dbGuild, err := r.queries.CreateGuild(ctx, gen.CreateGuildParams{
 		ID:          guild.ID,
 		OwnerID:     guild.OwnerID,
 		Name:        guild.Name,
@@ -62,7 +62,7 @@ func (r *guildRepository) GetGuildByID(ctx context.Context, id uuid.UUID) (*doma
 }
 
 func (r *guildRepository) Update(ctx context.Context, guild *domain.Guild) (*domain.Guild, error) {
-	dbGuild, err := r.queries.UpdateGuild(ctx, generated.UpdateGuildParams{
+	dbGuild, err := r.queries.UpdateGuild(ctx, gen.UpdateGuildParams{
 		ID:          guild.ID,
 		Name:        guild.Name,
 		Description: guild.Description,

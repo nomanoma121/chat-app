@@ -2,25 +2,23 @@ package postgres
 
 import (
 	"context"
-
 	"guild-service/internal/domain"
-	"guild-service/internal/infrastructure/postgres/generated"
-
+	"guild-service/internal/infrastructure/postgres/gen"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type categoryRepository struct {
-	queries *generated.Queries
+	queries *gen.Queries
 }
 
-func NewPostgresCategoryRepository(queries *generated.Queries) *categoryRepository {
+func NewPostgresCategoryRepository(queries *gen.Queries) *categoryRepository {
 	return &categoryRepository{
 		queries: queries,
 	}
 }
 
 func (r *categoryRepository) Create(ctx context.Context, category *domain.Category) (*domain.Category, error) {
-	dbCategory, err := r.queries.CreateCategory(ctx, generated.CreateCategoryParams{
+	dbCategory, err := r.queries.CreateCategory(ctx, gen.CreateCategoryParams{
 		ID:        category.ID,
 		GuildID:   category.GuildID,
 		Name:      category.Name,

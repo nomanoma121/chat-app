@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"guild-service/internal/domain"
-	"guild-service/internal/infrastructure/postgres/generated"
+	"guild-service/internal/infrastructure/postgres/gen"
 
 	"github.com/jackc/pgx/v5"
 )
@@ -17,7 +17,6 @@ type Store interface {
 	ExecTx(ctx context.Context, fn func(Store) error) error
 }
 
-// 2. こちらが具体的な実装となる構造体
 type SQLStore struct {
 	db         *pgx.Conn
 	guilds     domain.IGuildRepository
@@ -28,7 +27,7 @@ type SQLStore struct {
 
 // 3. コンストラクタで、フィールドを初期化する
 func NewSQLStore(db *pgx.Conn) Store {
-	queries := generated.New(db)
+	queries := gen.New(db)
 	return &SQLStore{
 		db:         db,
 		guilds:     NewPostgresGuildRepository(queries),
@@ -60,9 +59,9 @@ func (s *SQLStore) ExecTx(ctx context.Context, fn func(Store) error) error {
 		return err
 	}
 
-	txQueries := generated.New(tx)
+	txQueries := gen.New(tx)
 	txStore := &SQLStore{
-		db:         s.db, // Keep original connection for interface
+		db:         s.db,
 		guilds:     NewPostgresGuildRepository(txQueries),
 		channels:   NewPostgresChannelRepository(txQueries),
 		categories: NewPostgresCategoryRepository(txQueries),
