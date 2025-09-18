@@ -18,6 +18,6 @@ type Guild struct {
 
 type IGuildRepository interface {
 	Create(ctx context.Context, guild *Guild) (*Guild, error)
-	GetGuildByID(ctx context.Context, id uuid.UUID) (*Guild, error)
+	GetByID(ctx context.Context, id uuid.UUID) (*Guild, error)
 	Update(ctx context.Context, guild *Guild) (*Guild, error)
 }

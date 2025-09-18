@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"guild-service/internal/handler"
+	user "guild-service/internal/infrastructure/grpc"
 	"guild-service/internal/infrastructure/postgres"
-	"guild-service/internal/infrastructure/postgres/generated"
 	"guild-service/internal/usecase"
 	"net"
 	"os"
@@ -40,16 +40,19 @@ func main() {
 
 	validate := validator.New()
 
-	guildRepo := postgres.NewPostgresGuildRepository(generated.New(db))
-	guildUsecase := usecase.NewGuildUsecase(guildRepo, validate)
+	userConn, err := grpc.NewClient("localhost:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Error("Failed to connect to user service", "error", err)
+		os.Exit(1)
+	}
+	defer userConn.Close()
 
-	categoryRepo := postgres.NewPostgresCategoryRepository(generated.New(db))
-	categoryUsecase := usecase.NewCategoryUsecase(categoryRepo, validate)
+	userClient := user.NewUserServiceClient(userConn)
+	store := postgres.NewPostgresStore(db)
 
-	channelRepo := postgres.NewPostgresChannelRepository(generated.New(db))
-	channelUsecase := usecase.NewChannelUsecase(channelRepo, validate)
-
-	postgres.NewPostgresMemberRepository(generated.New(db))
+	guildUsecase := usecase.NewGuildUsecase(store, userClient, validate)
+	categoryUsecase := usecase.NewCategoryUsecase(store, validate)
+	channelUsecase := usecase.NewChannelUsecase(store, validate)
 
 	guildHandler := handler.NewGuildServiceHandler(&handler.NewGuildServiceHandlerParams{
 		GuildHandler:    handler.NewGuildHandler(guildUsecase, log),

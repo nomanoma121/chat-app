@@ -7,6 +7,10 @@ import (
 	"github.com/google/uuid"
 )
 
+var (
+	DefaultChannelName = "general"
+)
+
 type Channel struct {
 	ID         uuid.UUID
 	CategoryID uuid.UUID

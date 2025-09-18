@@ -16,14 +16,14 @@ type GuildUsecase interface {
 }
 
 type guildUsecase struct {
-	guildRepo domain.IGuildRepository
+	store     domain.IStore
 	userSvc   domain.IUserService
 	validator *validator.Validate
 }
 
-func NewGuildUsecase(guildRepo domain.IGuildRepository, userSvc domain.IUserService, validator *validator.Validate) GuildUsecase {
+func NewGuildUsecase(store domain.IStore, userSvc domain.IUserService, validator *validator.Validate) GuildUsecase {
 	return &guildUsecase{
-		guildRepo: guildRepo,
+		store:     store,
 		userSvc:   userSvc,
 		validator: validator,
 	}
@@ -58,7 +58,40 @@ func (u *guildUsecase) Create(ctx context.Context, params *CreateGuildParams) (*
 		CreatedAt:   time.Now(),
 	}
 
-	createdGuild, err := u.guildRepo.Create(ctx, guild)
+	category := &domain.Category{
+		ID:        uuid.New(),
+		GuildID:   guild.ID,
+		Name:      domain.DefaultCategoryName,
+		CreatedAt: time.Now(),
+	}
+
+	channel := &domain.Channel{
+		ID:         uuid.New(),
+		CategoryID: category.ID,
+		Name:       domain.DefaultChannelName,
+		CreatedAt:  time.Now(),
+	}
+
+	var createdGuild *domain.Guild
+	// ギルド作成時にデフォルトのカテゴリとチャンネルを作成する
+	err = u.store.ExecTx(ctx, func(store domain.IStore) error {
+		createdGuild, err = store.Guilds().Create(ctx, guild)
+		if err != nil {
+			return err
+		}
+
+		_, err = store.Categories().Create(ctx, category)
+		if err != nil {
+			return err
+		}
+
+		_, err = store.Channels().Create(ctx, channel)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +111,7 @@ func (u *guildUsecase) Update(ctx context.Context, params *UpdateGuildParams) (*
 		return nil, domain.ErrInvalidGuildData
 	}
 
-	return u.guildRepo.Update(ctx, &domain.Guild{
+	return u.store.Guilds().Update(ctx, &domain.Guild{
 		ID:          params.ID,
 		Name:        params.Name,
 		Description: params.Description,
@@ -87,7 +120,7 @@ func (u *guildUsecase) Update(ctx context.Context, params *UpdateGuildParams) (*
 }
 
 func (u *guildUsecase) GetByID(ctx context.Context, id uuid.UUID) (*domain.Guild, error) {
-	return u.guildRepo.GetGuildByID(ctx, id)
+	return u.store.Guilds().GetByID(ctx, id)
 }
 
 var _ GuildUsecase = (*guildUsecase)(nil)

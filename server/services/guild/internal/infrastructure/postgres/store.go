@@ -4,20 +4,12 @@ import (
 	"context"
 	"fmt"
 	"guild-service/internal/domain"
-	"guild-service/internal/infrastructure/postgres/gen"
+	"guild-service/internal/infrastructure/postgres/gen" // sqlcが生成したパッケージ
 
 	"github.com/jackc/pgx/v5"
 )
 
-type Store interface {
-	Guilds() domain.IGuildRepository
-	Channels() domain.IChannelRepository
-	Categories() domain.ICategoryRepository
-	Members() domain.IMemberRepository
-	ExecTx(ctx context.Context, fn func(Store) error) error
-}
-
-type SQLStore struct {
+type PostgresStore struct {
 	db         *pgx.Conn
 	guilds     domain.IGuildRepository
 	channels   domain.IChannelRepository
@@ -25,42 +17,43 @@ type SQLStore struct {
 	members    domain.IMemberRepository
 }
 
-// 3. コンストラクタで、フィールドを初期化する
-func NewSQLStore(db *pgx.Conn) Store {
-	queries := gen.New(db)
-	return &SQLStore{
+func NewPostgresStore(db *pgx.Conn) domain.IStore {
+	q := gen.New(db)
+
+	return &PostgresStore{
 		db:         db,
-		guilds:     NewPostgresGuildRepository(queries),
-		channels:   NewPostgresChannelRepository(queries),
-		categories: NewPostgresCategoryRepository(queries),
-		members:    NewPostgresMemberRepository(queries),
+		guilds:     NewPostgresGuildRepository(q),
+		channels:   NewPostgresChannelRepository(q),
+		categories: NewPostgresCategoryRepository(q),
+		members:    NewPostgresMemberRepository(q),
 	}
 }
 
-func (s *SQLStore) Guilds() domain.IGuildRepository {
+func (s *PostgresStore) Guilds() domain.IGuildRepository {
 	return s.guilds
 }
 
-func (s *SQLStore) Channels() domain.IChannelRepository {
+func (s *PostgresStore) Channels() domain.IChannelRepository {
 	return s.channels
 }
 
-func (s *SQLStore) Categories() domain.ICategoryRepository {
+func (s *PostgresStore) Categories() domain.ICategoryRepository {
 	return s.categories
 }
 
-func (s *SQLStore) Members() domain.IMemberRepository {
+func (s *PostgresStore) Members() domain.IMemberRepository {
 	return s.members
 }
 
-func (s *SQLStore) ExecTx(ctx context.Context, fn func(Store) error) error {
+func (s *PostgresStore) ExecTx(ctx context.Context, fn func(domain.IStore) error) error {
 	tx, err := s.db.Begin(ctx)
 	if err != nil {
 		return err
 	}
 
 	txQueries := gen.New(tx)
-	txStore := &SQLStore{
+
+	txStore := &PostgresStore{
 		db:         s.db,
 		guilds:     NewPostgresGuildRepository(txQueries),
 		channels:   NewPostgresChannelRepository(txQueries),
@@ -78,3 +71,5 @@ func (s *SQLStore) ExecTx(ctx context.Context, fn func(Store) error) error {
 
 	return tx.Commit(ctx)
 }
+
+var _ domain.IStore = (*PostgresStore)(nil)

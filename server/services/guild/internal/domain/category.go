@@ -7,6 +7,10 @@ import (
 	"github.com/google/uuid"
 )
 
+const (
+	DefaultCategoryName = "一般"
+)
+
 type Category struct {
 	ID        uuid.UUID
 	GuildID   uuid.UUID

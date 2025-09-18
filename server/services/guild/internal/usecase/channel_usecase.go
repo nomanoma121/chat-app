@@ -14,14 +14,14 @@ type ChannelUsecase interface {
 }
 
 type channelUsecase struct {
-	channelRepo domain.IChannelRepository
-	validator   *validator.Validate
+	store     domain.IStore
+	validator *validator.Validate
 }
 
-func NewChannelUsecase(channelRepo domain.IChannelRepository, validator *validator.Validate) ChannelUsecase {
+func NewChannelUsecase(store domain.IStore, validator *validator.Validate) ChannelUsecase {
 	return &channelUsecase{
-		channelRepo: channelRepo,
-		validator:   validator,
+		store:     store,
+		validator: validator,
 	}
 }
 
@@ -35,7 +35,7 @@ func (u *channelUsecase) Create(ctx context.Context, params *CreateChannelParams
 		return nil, domain.ErrInvalidChannelData
 	}
 
-	return u.channelRepo.Create(ctx, &domain.Channel{
+	return u.store.Channels().Create(ctx, &domain.Channel{
 		ID:         uuid.New(),
 		CategoryID: params.CategoryID,
 		Name:       params.Name,

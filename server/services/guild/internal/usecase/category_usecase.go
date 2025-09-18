@@ -14,14 +14,14 @@ type CategoryUsecase interface {
 }
 
 type categoryUsecase struct {
-	categoryRepo domain.ICategoryRepository
-	validator    *validator.Validate
+	store     domain.IStore
+	validator *validator.Validate
 }
 
-func NewCategoryUsecase(categoryRepo domain.ICategoryRepository, validator *validator.Validate) CategoryUsecase {
+func NewCategoryUsecase(store domain.IStore, validator *validator.Validate) CategoryUsecase {
 	return &categoryUsecase{
-		categoryRepo: categoryRepo,
-		validator:    validator,
+		store:     store,
+		validator: validator,
 	}
 }
 
@@ -35,7 +35,7 @@ func (u *categoryUsecase) CreateCategory(ctx context.Context, params *CreateCate
 		return nil, domain.ErrInvalidCategoryData
 	}
 
-	return u.categoryRepo.Create(ctx, &domain.Category{
+	return u.store.Categories().Create(ctx, &domain.Category{
 		ID:        uuid.New(),
 		GuildID:   params.GuildID,
 		Name:      params.Name,

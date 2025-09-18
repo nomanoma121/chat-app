@@ -43,7 +43,7 @@ func (r *guildRepository) Create(ctx context.Context, guild *domain.Guild) (*dom
 	}, nil
 }
 
-func (r *guildRepository) GetGuildByID(ctx context.Context, id uuid.UUID) (*domain.Guild, error) {
+func (r *guildRepository) GetByID(ctx context.Context, id uuid.UUID) (*domain.Guild, error) {
 	dbGuild, err := r.queries.GetGuildByID(ctx, id)
 	if err != nil {
 		if err == pgx.ErrNoRows {
