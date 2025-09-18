@@ -21,6 +21,34 @@ message Guild {
   google.protobuf.Timestamp created_at = 6;
 }
 
+message GuildDetail {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "name", "owner_id", "created_at", "categories"]
+    };
+  };
+  string id = 1;
+  string name = 2;
+  string owner_id = 3;
+  string description = 4;
+  string icon_url = 5;
+  google.protobuf.Timestamp created_at = 6;
+  repeated CategoryDetail categories = 7;
+}
+
+message CategoryDetail {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "guild_id", "name", "created_at", "channels"]
+    };
+  };
+  string id = 1;
+  string guild_id = 2;
+  string name = 3;
+  google.protobuf.Timestamp created_at = 4;
+  repeated Channel channels = 5;
+}
+
 message Invite {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
@@ -56,7 +84,6 @@ message Category {
   string id = 1;
   string guild_id = 2;
   string name = 3;
-  int32 position = 4;
   google.protobuf.Timestamp created_at = 5;
 }
 
@@ -70,14 +97,4 @@ message Channel {
   string category_id = 2;
   string name = 3;
   google.protobuf.Timestamp created_at = 4;
-}
-
-message CategoryWithChannels {
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-    json_schema: {
-      required: ["category", "channels"]
-    };
-  };
-  Category category = 1;
-  repeated Channel channels = 2;
 }

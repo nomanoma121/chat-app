@@ -44,8 +44,7 @@ message GetGuildOverviewResponse {
       required: ["guild", "categories"]
     };
   };
-  Guild guild = 1;
-  repeated CategoryWithChannels categories = 2;
+  GuildDetail guild = 1;
 }
 
 message GetGuildByIDRequest {
