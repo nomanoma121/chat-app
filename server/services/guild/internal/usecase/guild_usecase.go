@@ -13,6 +13,7 @@ type GuildUsecase interface {
 	Create(ctx context.Context, params *CreateGuildParams) (*domain.Guild, error)
 	Update(ctx context.Context, params *UpdateGuildParams) (*domain.Guild, error)
 	GetByID(ctx context.Context, id uuid.UUID) (*domain.Guild, error)
+	GetGuildOverview(ctx context.Context, guildID uuid.UUID) (*domain.GuildOverview, error)
 }
 
 type guildUsecase struct {
@@ -72,6 +73,13 @@ func (u *guildUsecase) Create(ctx context.Context, params *CreateGuildParams) (*
 		CreatedAt:  time.Now(),
 	}
 
+	member := &domain.Member{
+		GuildID:  guild.ID,
+		UserID:   params.OwnerID,
+		Nickname: params.Name,
+		JoinedAt: time.Now(),
+	}
+
 	var createdGuild *domain.Guild
 	// ギルド作成時にデフォルトのカテゴリとチャンネルを作成する
 	err = u.store.ExecTx(ctx, func(store domain.IStore) error {
@@ -86,6 +94,11 @@ func (u *guildUsecase) Create(ctx context.Context, params *CreateGuildParams) (*
 		}
 
 		_, err = store.Channels().Create(ctx, channel)
+		if err != nil {
+			return err
+		}
+
+		_, err = store.Members().Add(ctx, member)
 		if err != nil {
 			return err
 		}
@@ -121,6 +134,37 @@ func (u *guildUsecase) Update(ctx context.Context, params *UpdateGuildParams) (*
 
 func (u *guildUsecase) GetByID(ctx context.Context, id uuid.UUID) (*domain.Guild, error) {
 	return u.store.Guilds().GetByID(ctx, id)
+}
+
+// overview
+func (u *guildUsecase) GetGuildOverview(ctx context.Context, guildID uuid.UUID) (*domain.GuildOverview, error) {
+	guild, err := u.store.Guilds().GetByID(ctx, guildID)
+	if err != nil {
+		return nil, err
+	}
+
+	categoriesOverview := make([]*domain.CategoryOverview, 0)
+
+	categories, err := u.store.Categories().GetByGuildID(ctx, guildID)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, category := range categories {
+		channels, err := u.store.Channels().GetByCategoryID(ctx, category.ID)
+		if err != nil {
+			return nil, err
+		}
+		categoriesOverview = append(categoriesOverview, &domain.CategoryOverview{
+			Category: category,
+			Channels: channels,
+		})
+	}
+
+	return &domain.GuildOverview{
+		Guild:      guild,
+		Categories: categoriesOverview,
+	}, nil
 }
 
 var _ GuildUsecase = (*guildUsecase)(nil)

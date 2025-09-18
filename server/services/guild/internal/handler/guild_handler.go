@@ -140,3 +140,57 @@ func (h *guildHandler) UpdateGuild(ctx context.Context, req *pb.UpdateGuildReque
 	return &pb.UpdateGuildResponse{Guild: pbGuild}, nil
 }
 
+// GuildOverview
+// guild id から
+func (h *guildHandler) GetGuildOverview(ctx context.Context, req *pb.GetGuildOverviewRequest) (*pb.GetGuildOverviewResponse, error) {
+	guildID, err := uuid.Parse(req.GuildId)
+	if err != nil {
+		h.logger.Warn("Invalid guild ID format", "guild_id", req.GuildId, "error", err)
+		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidGuildID.Error())
+	}
+
+	guildOverview, err := h.guildUsecase.GetGuildOverview(ctx, guildID)
+	if err != nil {
+		switch err {
+		case domain.ErrGuildNotFound:
+			h.logger.Warn("Guild not found", "guild_id", guildID)
+			return nil, status.Error(codes.NotFound, domain.ErrGuildNotFound.Error())
+		default:
+			h.logger.Error("Failed to get guild overview", "guild_id", guildID, "error", err)
+			return nil, status.Error(codes.Internal, domain.ErrInternalServerError.Error())
+		}
+	}
+
+	pbCategories := make([]*pb.CategoryDetail, len(guildOverview.Categories))
+	for i, category := range guildOverview.Categories {
+		pbChannels := make([]*pb.Channel, len(category.Channels))
+		for j, channel := range category.Channels {
+			pbChannels[j] = &pb.Channel{
+				Id:         channel.ID.String(),
+				CategoryId: channel.CategoryID.String(),
+				Name:       channel.Name,
+				CreatedAt:  timestamppb.New(channel.CreatedAt),
+			}
+		}
+
+		pbCategories[i] = &pb.CategoryDetail{
+			Id:        category.ID.String(),
+			GuildId:   category.GuildID.String(),
+			Name:      category.Name,
+			CreatedAt: timestamppb.New(category.CreatedAt),
+			Channels:  pbChannels,
+		}
+	}
+
+	pbGuild := &pb.GuildDetail{
+		Id:          guildOverview.Guild.ID.String(),
+		OwnerId:     guildOverview.Guild.OwnerID.String(),
+		Name:        guildOverview.Guild.Name,
+		Description: guildOverview.Guild.Description,
+		IconUrl:     guildOverview.Guild.IconURL,
+		CreatedAt:   timestamppb.New(guildOverview.Guild.CreatedAt),
+		Categories:  pbCategories,
+	}
+
+	return &pb.GetGuildOverviewResponse{Guild: pbGuild}, nil
+}
