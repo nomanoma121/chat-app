@@ -30,7 +30,7 @@ func NewUserHandler(userUsecase usecase.UserUsecase, logger *slog.Logger) *UserH
 }
 
 func (h *UserHandler) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
-	domainReq := &domain.RegisterRequest{
+	usecaseParams := &usecase.RegisterParams{
 		DisplayId: req.DisplayId,
 		Name:      req.Name,
 		Email:     req.Email,
@@ -39,7 +39,7 @@ func (h *UserHandler) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 		IconURL:   req.IconUrl,
 	}
 
-	user, err := h.userUsecase.Register(ctx, domainReq)
+	user, err := h.userUsecase.Register(ctx, usecaseParams)
 
 	if err != nil {
 		switch err {
@@ -65,18 +65,17 @@ func (h *UserHandler) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 		Bio:       user.Bio,
 		IconUrl:   user.IconURL,
 		CreatedAt: timestamppb.New(user.CreatedAt),
-		UpdatedAt: timestamppb.New(user.UpdatedAt),
 	}
 	return &pb.RegisterResponse{User: pbUser}, nil
 }
 
 func (h *UserHandler) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
-	domainReq := &domain.LoginRequest{
+	usecaseParams := &usecase.LoginParams{
 		Email:    req.Email,
 		Password: req.Password,
 	}
 
-	token, err := h.userUsecase.Login(ctx, domainReq)
+	token, err := h.userUsecase.Login(ctx, usecaseParams)
 	if err != nil {
 		switch err {
 		case domain.ErrInvalidCredentials:
@@ -120,7 +119,6 @@ func (h *UserHandler) GetUserByID(ctx context.Context, req *pb.GetUserByIDReques
 		Bio:       user.Bio,
 		IconUrl:   user.IconURL,
 		CreatedAt: timestamppb.New(user.CreatedAt),
-		UpdatedAt: timestamppb.New(user.UpdatedAt),
 	}
 	return &pb.GetUserByIDResponse{User: pbUser}, nil
 }
@@ -173,7 +171,6 @@ func (h *UserHandler) GetCurrentUser(ctx context.Context, req *pb.GetCurrentUser
 		Bio:       user.Bio,
 		IconUrl:   user.IconURL,
 		CreatedAt: timestamppb.New(user.CreatedAt),
-		UpdatedAt: timestamppb.New(user.UpdatedAt),
 	}
 
 	return &pb.GetCurrentUserResponse{User: pbUser}, nil
@@ -192,14 +189,14 @@ func (h *UserHandler) Update(ctx context.Context, req *pb.UpdateRequest) (*pb.Up
 		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserData.Error())
 	}
 
-	domainReq := &domain.UpdateRequest{
+	usecaseParams := &usecase.UpdateParams{
 		ID:      userID,
 		Name:    req.Name,
 		Bio:     req.Bio,
 		IconURL: req.IconUrl,
 	}
 
-	updatedUser, err := h.userUsecase.Update(ctx, domainReq)
+	updatedUser, err := h.userUsecase.Update(ctx, usecaseParams)
 	if err != nil {
 		switch err {
 		case domain.ErrUserNotFound:
@@ -221,7 +218,6 @@ func (h *UserHandler) Update(ctx context.Context, req *pb.UpdateRequest) (*pb.Up
 		Bio:       updatedUser.Bio,
 		IconUrl:   updatedUser.IconURL,
 		CreatedAt: timestamppb.New(updatedUser.CreatedAt),
-		UpdatedAt: timestamppb.New(updatedUser.UpdatedAt),
 	}
 
 	return &pb.UpdateResponse{User: pbUser}, nil

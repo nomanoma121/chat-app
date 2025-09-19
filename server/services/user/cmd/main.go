@@ -13,6 +13,7 @@ import (
 
 	pb "chat-app-proto/gen/user"
 
+	"github.com/go-playground/validator"
 	"github.com/joho/godotenv"
 
 	"github.com/jackc/pgx/v5"
@@ -50,9 +51,10 @@ func main() {
 	defer db.Close(context.Background())
 
 	userRepo := postgres.NewPostgresUserRepository(generated.New(db))
+	validate := validator.New()
 	userUsecase := usecase.NewUserUsecase(userRepo, usecase.Config{
 		JWTSecret: os.Getenv("JWT_SECRET"),
-	})
+	}, validate)
 	userHandler := handler.NewUserHandler(userUsecase, log)
 
 	server := grpc.NewServer()

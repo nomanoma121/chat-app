@@ -31,7 +31,6 @@ type User struct {
 	Bio           string                 `protobuf:"bytes,4,opt,name=bio,proto3" json:"bio,omitempty"`
 	IconUrl       string                 `protobuf:"bytes,5,opt,name=icon_url,json=iconUrl,proto3" json:"icon_url,omitempty"`
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -108,18 +107,11 @@ func (x *User) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-func (x *User) GetUpdatedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.UpdatedAt
-	}
-	return nil
-}
-
 var File_user_type_proto protoreflect.FileDescriptor
 
 const file_user_type_proto_rawDesc = "" +
 	"\n" +
-	"\x0fuser_type.proto\x12\x04user\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xb7\x02\n" +
+	"\x0fuser_type.proto\x12\x04user\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xef\x01\n" +
 	"\x04User\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
@@ -128,13 +120,10 @@ const file_user_type_proto_rawDesc = "" +
 	"\x03bio\x18\x04 \x01(\tR\x03bio\x12\x19\n" +
 	"\bicon_url\x18\x05 \x01(\tR\aiconUrl\x129\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
-	"\n" +
-	"updated_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt:I\x92AF\n" +
-	"D\xd2\x01\x02id\xd2\x01\n" +
+	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:<\x92A9\n" +
+	"7\xd2\x01\x02id\xd2\x01\n" +
 	"display_id\xd2\x01\x04name\xd2\x01\x03bio\xd2\x01\bicon_url\xd2\x01\n" +
-	"created_at\xd2\x01\n" +
-	"updated_atBX\n" +
+	"created_atBX\n" +
 	"\bcom.userB\rUserTypeProtoP\x01Z\r./user;userpb\xa2\x02\x03UXX\xaa\x02\x04User\xca\x02\x04User\xe2\x02\x10User\\GPBMetadata\xea\x02\x04Userb\x06proto3"
 
 var (
@@ -156,12 +145,11 @@ var file_user_type_proto_goTypes = []any{
 }
 var file_user_type_proto_depIdxs = []int32{
 	1, // 0: user.User.created_at:type_name -> google.protobuf.Timestamp
-	1, // 1: user.User.updated_at:type_name -> google.protobuf.Timestamp
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_user_type_proto_init() }
