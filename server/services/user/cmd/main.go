@@ -48,8 +48,11 @@ func init() {
 
 func main() {
 	log := logger.Default("user-service")
-	defer db.Close(context.Background())
-
+	defer func() {
+		if err := db.Close(context.Background()); err != nil {
+			log.Error("Failed to close database connection", "error", err)
+		}
+	}()
 	userRepo := postgres.NewPostgresUserRepository(generated.New(db))
 	validate := validator.New()
 	userUsecase := usecase.NewUserUsecase(userRepo, usecase.Config{

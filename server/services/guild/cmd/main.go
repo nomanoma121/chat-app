@@ -49,7 +49,11 @@ func init() {
 
 func main() {
 	log := logger.Default("guild-service")
-	defer db.Close(context.Background())
+	defer func() {
+		if err := db.Close(context.Background()); err != nil {
+			log.Error("Failed to close database connection", "error", err)
+		}
+	}()
 
 	validate := validator.New()
 
@@ -59,7 +63,11 @@ func main() {
 		log.Error("Failed to connect to user service", "error", err)
 		os.Exit(1)
 	}
-	defer userConn.Close()
+	defer func() {
+		if err := userConn.Close(); err != nil {
+			log.Error("Failed to close user service connection", "error", err)
+		}
+	}()
 
 	userClient := user.NewUserServiceClient(userConn)
 	store := postgres.NewPostgresStore(db)

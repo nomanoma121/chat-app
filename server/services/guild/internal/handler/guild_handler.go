@@ -181,12 +181,12 @@ func (h *guildHandler) GetGuildOverview(ctx context.Context, req *pb.GetGuildOve
 	}
 
 	pbGuild := &pb.GuildDetail{
-		Id:          guildOverview.Guild.ID.String(),
-		OwnerId:     guildOverview.Guild.OwnerID.String(),
-		Name:        guildOverview.Guild.Name,
-		Description: guildOverview.Guild.Description,
-		IconUrl:     guildOverview.Guild.IconURL,
-		CreatedAt:   timestamppb.New(guildOverview.Guild.CreatedAt),
+		Id:          guildOverview.ID.String(),
+		OwnerId:     guildOverview.OwnerID.String(),
+		Name:        guildOverview.Name,
+		Description: guildOverview.Description,
+		IconUrl:     guildOverview.IconURL,
+		CreatedAt:   timestamppb.New(guildOverview.CreatedAt),
 		Categories:  pbCategories,
 	}
 
