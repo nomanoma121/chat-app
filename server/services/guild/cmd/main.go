@@ -22,6 +22,7 @@ import (
 )
 
 var db *pgx.Conn
+var opts []grpc.DialOption
 
 func init() {
 	_ = godotenv.Load()
@@ -53,7 +54,7 @@ func main() {
 	validate := validator.New()
 
 	userServiceURL := os.Getenv("USER_SERVICE_URL")
-	userConn, err := grpc.NewClient(userServiceURL, grpc.WithInsecure())
+	userConn, err := grpc.NewClient(userServiceURL, opts...)
 	if err != nil {
 		log.Error("Failed to connect to user service", "error", err)
 		os.Exit(1)

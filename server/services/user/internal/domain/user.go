@@ -66,10 +66,6 @@ func NewUser(user User) *User {
 	}
 }
 
-func (u *User) Validate() error {
-	return validate.Struct(u)
-}
-
 func (r *RegisterRequest) Validate() error {
 	return validate.Struct(r)
 }

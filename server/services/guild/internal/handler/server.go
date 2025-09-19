@@ -4,7 +4,6 @@ import (
 	"context"
 
 	pb "chat-app-proto/gen/guild"
-	"log/slog"
 )
 
 type GuildServiceHandler struct {
@@ -12,7 +11,6 @@ type GuildServiceHandler struct {
 	guildHandler    *guildHandler
 	categoryHandler *categoryHandler
 	channelHandler  *channelHandler
-	logger          *slog.Logger
 }
 
 type NewGuildServiceHandlerParams struct {
