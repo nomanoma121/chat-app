@@ -1,4 +1,4 @@
-.PHONY: migrate-create migrate-apply db-reset-clean schema-to-sql sqlc-generate generate schema-docs migrate-hash-fix
+.PHONY: migrate-create migrate-apply db-reset-clean schema-to-sql sqlc-generate generate schema-docs migrate-hash-fix lint lint-guild lint-user lint-api-gateway
 
 # Variables
 DATABASE_URL := postgres://user:password@localhost:5432/chat_app?sslmode=disable
@@ -56,3 +56,19 @@ sqlc-generate:
 # Combined workflow
 generate: schema-to-sql sqlc-generate
 	@echo "🎉 Schema → SQL → Go code generation complete!"
+
+lint: lint-guild lint-user lint-api-gateway
+	@echo "🎉 All linting complete!"
+
+lint-guild:
+	@echo "==> Linting guild-service..."
+	@cd services/guild && golangci-lint run
+
+lint-user:
+	@echo "==> Linting user-service..."
+	@cd services/user && golangci-lint run
+
+lint-api-gateway:
+	@echo "==> Linting api-gateway..."
+	@cd services/api-gateway && golangci-lint run
+
