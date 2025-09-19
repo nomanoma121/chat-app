@@ -25,5 +25,8 @@ func CustomErrorHandler(ctx context.Context, mux *runtime.ServeMux, marshaler ru
 	
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(runtime.HTTPStatusFromCode(st.Code()))
-	json.NewEncoder(w).Encode(res)
+	err = json.NewEncoder(w).Encode(res)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }

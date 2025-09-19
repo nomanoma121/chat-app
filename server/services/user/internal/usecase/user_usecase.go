@@ -57,7 +57,11 @@ func validateDisplayId(fl validator.FieldLevel) bool {
 }
 
 func NewUserUsecase(userRepo domain.UserRepository, config Config, validator *validator.Validate) UserUsecase {
-	validator.RegisterValidation("display_id", validateDisplayId)
+	// TODO: もうちょいいい書き方ありそう
+	err := validator.RegisterValidation("display_id", validateDisplayId)
+	if err != nil {
+		return nil
+	}
 	return &userUsecase{
 		userRepo:  userRepo,
 		config:    config,
