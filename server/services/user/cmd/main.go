@@ -13,6 +13,7 @@ import (
 
 	pb "chat-app-proto/gen/user"
 
+	"github.com/go-playground/validator"
 	"github.com/joho/godotenv"
 
 	"github.com/jackc/pgx/v5"
@@ -47,12 +48,16 @@ func init() {
 
 func main() {
 	log := logger.Default("user-service")
-	defer db.Close(context.Background())
-
+	defer func() {
+		if err := db.Close(context.Background()); err != nil {
+			log.Error("Failed to close database connection", "error", err)
+		}
+	}()
 	userRepo := postgres.NewPostgresUserRepository(generated.New(db))
+	validate := validator.New()
 	userUsecase := usecase.NewUserUsecase(userRepo, usecase.Config{
 		JWTSecret: os.Getenv("JWT_SECRET"),
-	})
+	}, validate)
 	userHandler := handler.NewUserHandler(userUsecase, log)
 
 	server := grpc.NewServer()

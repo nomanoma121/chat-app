@@ -1,13 +1,14 @@
 package main
 
 import (
+	"api-gateway/internal/interceptor"
+	"api-gateway/internal/utils"
 	"context"
 	"net/http"
 	"os"
 	"shared/logger"
 
 	mdw "api-gateway/internal/middleware"
-	"api-gateway/internal/interceptor"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -18,10 +19,9 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/joho/godotenv"
-	"api-gateway/internal/utils"
 
-	userpb "chat-app-proto/gen/user"
 	guildpb "chat-app-proto/gen/guild"
+	userpb "chat-app-proto/gen/user"
 )
 
 var (

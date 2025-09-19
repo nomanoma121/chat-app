@@ -20,7 +20,6 @@ func JWTAuthorizer(ja *jwtauth.JWTAuth, config Config) func(http.Handler) http.H
 				return
 			}
 			token, err := jwtauth.VerifyRequest(ja, r, jwtauth.TokenFromHeader)
-
 			if err != nil {
 				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 				return

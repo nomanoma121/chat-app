@@ -7,9 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var (
-	DefaultChannelName = "general"
-)
+var DefaultChannelName = "general"
 
 type Channel struct {
 	ID         uuid.UUID

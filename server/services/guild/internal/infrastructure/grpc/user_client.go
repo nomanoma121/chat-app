@@ -3,11 +3,10 @@ package grpc
 import (
 	pb "chat-app-proto/gen/user"
 	"context"
+	"guild-service/internal/domain"
 
 	"github.com/google/uuid"
 	"google.golang.org/grpc"
-
-	"guild-service/internal/domain"
 )
 
 type userServiceClient struct {

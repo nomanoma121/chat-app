@@ -21,7 +21,10 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var db *pgx.Conn
+var (
+	db   *pgx.Conn
+	opts []grpc.DialOption
+)
 
 func init() {
 	_ = godotenv.Load()
@@ -48,17 +51,25 @@ func init() {
 
 func main() {
 	log := logger.Default("guild-service")
-	defer db.Close(context.Background())
+	defer func() {
+		if err := db.Close(context.Background()); err != nil {
+			log.Error("Failed to close database connection", "error", err)
+		}
+	}()
 
 	validate := validator.New()
 
 	userServiceURL := os.Getenv("USER_SERVICE_URL")
-	userConn, err := grpc.NewClient(userServiceURL, grpc.WithInsecure())
+	userConn, err := grpc.NewClient(userServiceURL, opts...)
 	if err != nil {
 		log.Error("Failed to connect to user service", "error", err)
 		os.Exit(1)
 	}
-	defer userConn.Close()
+	defer func() {
+		if err := userConn.Close(); err != nil {
+			log.Error("Failed to close user service connection", "error", err)
+		}
+	}()
 
 	userClient := user.NewUserServiceClient(userConn)
 	store := postgres.NewPostgresStore(db)

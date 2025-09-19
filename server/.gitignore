@@ -1,8 +1,4 @@
 volumes/
 
-# generatedをignore
-
-**/gen/
-**/generated/
 .env
 

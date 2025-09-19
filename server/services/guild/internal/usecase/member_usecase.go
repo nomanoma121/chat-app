@@ -26,7 +26,7 @@ package usecase
 // 	}
 // }
 
-// type AddMemberParams struct {	
+// type AddMemberParams struct {
 // 	GuildID  string `validate:"required,uuid4"`
 // 	UserID   string `validate:"required,uuid4"`
 // 	Nickname string `validate:"required,min=2,max=30"`
