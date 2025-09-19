@@ -1,4 +1,4 @@
-.PHONY: migrate-create migrate-apply db-reset-clean schema-to-sql sqlc-generate generate schema-docs migrate-hash-fix lint lint-guild lint-user lint-api-gateway lint-all
+.PHONY: migrate-create migrate-apply db-reset-clean schema-to-sql sqlc-generate generate schema-docs migrate-hash-fix lint lint-guild lint-user lint-api-gateway lint-all fix
 
 # Variables
 DATABASE_URL := postgres://user:password@localhost:5432/chat_app?sslmode=disable
@@ -75,4 +75,11 @@ lint-api-gateway:
 lint-all:
 	@echo "==> Running golangci-lint on all modules..."
 	golangci-lint run ./services/user/... ./services/guild/... ./services/api-gateway/... ./shared/... ./api/...
+
+fix:
+	@echo "==> Auto-fixing format and lint issues..."
+	gofmt -w ./services/user/ ./services/guild/ ./services/api-gateway/ ./shared/ ./api/
+	goimports -w ./services/user/ ./services/guild/ ./services/api-gateway/ ./shared/ ./api/ || echo "goimports not found, skipping import fixes"
+	golangci-lint run --fix ./services/user/... ./services/guild/... ./services/api-gateway/... ./shared/... ./api/...
+	@echo "✅ Auto-fix complete!"
 

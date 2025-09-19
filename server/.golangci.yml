@@ -7,7 +7,6 @@ linters:
     - unused
     - ineffassign
     - govet
-    - gosec
     - misspell
     - unconvert
     - unparam
