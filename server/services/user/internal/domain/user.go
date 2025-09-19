@@ -26,5 +26,3 @@ type UserRepository interface {
 	ExistsByDisplayId(ctx context.Context, displayId string) (bool, error)
 	Update(ctx context.Context, user *User) (*User, error)
 }
-
-

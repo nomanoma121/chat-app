@@ -8,6 +8,6 @@ var (
 	ErrDisplayIDAlreadyExists = errors.New("display ID already exists")
 	ErrInvalidUserData        = errors.New("invalid user data")
 	ErrInvalidUserID          = errors.New("invalid user ID")
-	ErrInternalServerError     = errors.New("internal server error")
-	ErrInvalidCredentials    = errors.New("invalid credentials")
+	ErrInternalServerError    = errors.New("internal server error")
+	ErrInvalidCredentials     = errors.New("invalid credentials")
 )

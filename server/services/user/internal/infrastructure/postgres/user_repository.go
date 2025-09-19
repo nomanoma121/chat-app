@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"context"
-
 	"user-service/internal/domain"
 	"user-service/internal/infrastructure/postgres/generated"
 
@@ -108,7 +107,6 @@ func (r *userRepository) Update(ctx context.Context, user *domain.User) (*domain
 		Bio:      user.Bio,
 		IconUrl:  user.IconURL,
 	})
-
 	if err != nil {
 		return nil, err
 	}

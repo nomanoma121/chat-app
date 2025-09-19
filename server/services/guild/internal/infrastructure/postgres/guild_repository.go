@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"context"
-
 	"guild-service/internal/domain"
 	"guild-service/internal/infrastructure/postgres/gen"
 

@@ -21,8 +21,10 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var db *pgx.Conn
-var opts []grpc.DialOption
+var (
+	db   *pgx.Conn
+	opts []grpc.DialOption
+)
 
 func init() {
 	_ = godotenv.Load()

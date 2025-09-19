@@ -40,7 +40,6 @@ func (h *UserHandler) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 	}
 
 	user, err := h.userUsecase.Register(ctx, usecaseParams)
-
 	if err != nil {
 		switch err {
 		case domain.ErrEmailAlreadyExists:
