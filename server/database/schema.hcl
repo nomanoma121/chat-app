@@ -121,6 +121,10 @@ table "guilds" {
     null = false
     type = varchar(255)
   }
+  column "default_channel_id" {
+    null = false
+    type = uuid
+  }
   column "created_at" {
     null = false
     type = timestamp
