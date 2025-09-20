@@ -583,7 +583,7 @@ var File_guild_type_proto protoreflect.FileDescriptor
 
 const file_guild_type_proto_rawDesc = "" +
 	"\n" +
-	"\x10guild_type.proto\x12\x05guild\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\x97\x02\n" +
+	"\x10guild_type.proto\x12\x05guild\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xc5\x02\n" +
 	"\x05Guild\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x19\n" +
@@ -592,9 +592,9 @@ const file_guild_type_proto_rawDesc = "" +
 	"\bicon_url\x18\x05 \x01(\tR\aiconUrl\x12,\n" +
 	"\x12default_channel_id\x18\a \x01(\tR\x10defaultChannelId\x129\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:)\x92A&\n" +
-	"$\xd2\x01\x02id\xd2\x01\x04name\xd2\x01\bowner_id\xd2\x01\n" +
-	"created_at\"\xe1\x02\n" +
+	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:W\x92AT\n" +
+	"R\xd2\x01\x02id\xd2\x01\x04name\xd2\x01\bowner_id\xd2\x01\vdescription\xd2\x01\x12default_channel_id\xd2\x01\bicon_url\xd2\x01\n" +
+	"created_at\"\x8f\x03\n" +
 	"\vGuildDetail\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x19\n" +
@@ -606,8 +606,8 @@ const file_guild_type_proto_rawDesc = "" +
 	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x125\n" +
 	"\n" +
 	"categories\x18\a \x03(\v2\x15.guild.CategoryDetailR\n" +
-	"categories:6\x92A3\n" +
-	"1\xd2\x01\x02id\xd2\x01\x04name\xd2\x01\bowner_id\xd2\x01\n" +
+	"categories:d\x92Aa\n" +
+	"_\xd2\x01\x02id\xd2\x01\x04name\xd2\x01\bowner_id\xd2\x01\vdescription\xd2\x01\x12default_channel_id\xd2\x01\bicon_url\xd2\x01\n" +
 	"created_at\xd2\x01\n" +
 	"categories\"\xec\x01\n" +
 	"\x0eCategoryDetail\x12\x0e\n" +

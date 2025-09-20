@@ -1648,14 +1648,14 @@ const file_guild_message_proto_rawDesc = "" +
 	"\x00\"L\n" +
 	"\x14ListMyGuildsResponse\x12$\n" +
 	"\x06guilds\x18\x01 \x03(\v2\f.guild.GuildR\x06guilds:\x0e\x92A\v\n" +
-	"\t\xd2\x01\x06guilds\"\xc0\x01\n" +
+	"\t\xd2\x01\x06guilds\"\xf5\x01\n" +
 	"\x12UpdateGuildRequest\x12\x19\n" +
 	"\bguild_id\x18\x01 \x01(\tR\aguildId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x19\n" +
 	"\bicon_url\x18\x03 \x01(\tR\aiconUrl\x12 \n" +
 	"\vdescription\x18\x04 \x01(\tR\vdescription\x12,\n" +
-	"\x12default_channel_id\x18\x05 \x01(\tR\x10defaultChannelId:\x10\x92A\r\n" +
-	"\v\xd2\x01\bguild_id\"H\n" +
+	"\x12default_channel_id\x18\x05 \x01(\tR\x10defaultChannelId:E\x92AB\n" +
+	"@\xd2\x01\bguild_id\xd2\x01\x04name\xd2\x01\vdescription\xd2\x01\bicon_url\xd2\x01\x12default_channel_id\"H\n" +
 	"\x13UpdateGuildResponse\x12\"\n" +
 	"\x05guild\x18\x01 \x01(\v2\f.guild.GuildR\x05guild:\r\x92A\n" +
 	"\n" +
