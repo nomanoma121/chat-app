@@ -1,17 +1,14 @@
 import * as v from "valibot";
 
-const MAX_GUILD_NAME_LENGTH = 20;
-const MIN_GUILD_NAME_LENGTH = 2;
-const MAX_GUILD_DESCRIPTION_LENGTH = 100;
 
 export const GuildSchema = {
 	Name: v.pipe(
 		v.string(),
-		v.minLength(MIN_GUILD_NAME_LENGTH),
-		v.maxLength(MAX_GUILD_NAME_LENGTH),
+		v.minLength(1, "サーバー名は必須です"),
+		v.maxLength(20, "サーバー名は20文字以内で入力してください"),
 	),
 	Description: v.optional(
-		v.pipe(v.string(), v.maxLength(MAX_GUILD_DESCRIPTION_LENGTH)),
+		v.pipe(v.string(), v.maxLength(100, "説明は100文字以内で入力してください")),
 	),
 	IconUrl: v.string(),
 };

@@ -20,7 +20,7 @@ type FormInputValues = v.InferInput<typeof CreateGuildForm>;
 
 export default function CreateGuild() {
 	const navigate = useNavigate();
-	const { mutateAsync } = useCreateGuild();
+	const { mutateAsync, isPending } = useCreateGuild();
 
 	const {
 		register,
@@ -28,7 +28,8 @@ export default function CreateGuild() {
 		formState: { errors, isValid },
 		reset,
 	} = useForm<FormInputValues>({
-		resolver: standardSchemaResolver(GuildSchema),
+		resolver: standardSchemaResolver(CreateGuildForm),
+		mode: "onChange",
 		defaultValues: {
 			name: "",
 			description: "",
@@ -162,6 +163,8 @@ export default function CreateGuild() {
 						<Button
 							type="submit"
 							className={css({ width: "100%", marginTop: "10px" })}
+							loading={isPending}
+							disabled={!isValid || isPending}
 						>
 							サーバーを作成
 						</Button>
