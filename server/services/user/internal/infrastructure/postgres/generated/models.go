@@ -26,13 +26,14 @@ type Channel struct {
 }
 
 type Guild struct {
-	ID          uuid.UUID
-	Name        string
-	OwnerID     uuid.UUID
-	Description string
-	IconUrl     string
-	CreatedAt   pgtype.Timestamp
-	UpdatedAt   pgtype.Timestamp
+	ID               uuid.UUID
+	Name             string
+	OwnerID          uuid.UUID
+	Description      string
+	IconUrl          string
+	DefaultChannelID uuid.UUID
+	CreatedAt        pgtype.Timestamp
+	UpdatedAt        pgtype.Timestamp
 }
 
 type Invite struct {

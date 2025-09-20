@@ -13,27 +13,29 @@ import (
 )
 
 const createGuild = `-- name: CreateGuild :one
-INSERT INTO guilds (id, owner_id, name, description, icon_url, created_at, updated_at)
-VALUES ($1, $2, $3, $4, $5, $6, NOW())
-RETURNING id, owner_id, name, description, icon_url, created_at
+INSERT INTO guilds (id, owner_id, name, description, icon_url, default_channel_id, created_at, updated_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+RETURNING id, owner_id, name, description, icon_url, default_channel_id, created_at
 `
 
 type CreateGuildParams struct {
-	ID          uuid.UUID
-	OwnerID     uuid.UUID
-	Name        string
-	Description string
-	IconUrl     string
-	CreatedAt   pgtype.Timestamp
+	ID               uuid.UUID
+	OwnerID          uuid.UUID
+	Name             string
+	Description      string
+	IconUrl          string
+	DefaultChannelID uuid.UUID
+	CreatedAt        pgtype.Timestamp
 }
 
 type CreateGuildRow struct {
-	ID          uuid.UUID
-	OwnerID     uuid.UUID
-	Name        string
-	Description string
-	IconUrl     string
-	CreatedAt   pgtype.Timestamp
+	ID               uuid.UUID
+	OwnerID          uuid.UUID
+	Name             string
+	Description      string
+	IconUrl          string
+	DefaultChannelID uuid.UUID
+	CreatedAt        pgtype.Timestamp
 }
 
 func (q *Queries) CreateGuild(ctx context.Context, arg CreateGuildParams) (*CreateGuildRow, error) {
@@ -43,6 +45,7 @@ func (q *Queries) CreateGuild(ctx context.Context, arg CreateGuildParams) (*Crea
 		arg.Name,
 		arg.Description,
 		arg.IconUrl,
+		arg.DefaultChannelID,
 		arg.CreatedAt,
 	)
 	var i CreateGuildRow
@@ -52,22 +55,24 @@ func (q *Queries) CreateGuild(ctx context.Context, arg CreateGuildParams) (*Crea
 		&i.Name,
 		&i.Description,
 		&i.IconUrl,
+		&i.DefaultChannelID,
 		&i.CreatedAt,
 	)
 	return &i, err
 }
 
 const getGuildByID = `-- name: GetGuildByID :one
-SELECT id, owner_id, name, description, icon_url, created_at FROM guilds WHERE id = $1
+SELECT id, owner_id, name, description, icon_url, default_channel_id, created_at FROM guilds WHERE id = $1
 `
 
 type GetGuildByIDRow struct {
-	ID          uuid.UUID
-	OwnerID     uuid.UUID
-	Name        string
-	Description string
-	IconUrl     string
-	CreatedAt   pgtype.Timestamp
+	ID               uuid.UUID
+	OwnerID          uuid.UUID
+	Name             string
+	Description      string
+	IconUrl          string
+	DefaultChannelID uuid.UUID
+	CreatedAt        pgtype.Timestamp
 }
 
 func (q *Queries) GetGuildByID(ctx context.Context, id uuid.UUID) (*GetGuildByIDRow, error) {
@@ -79,6 +84,7 @@ func (q *Queries) GetGuildByID(ctx context.Context, id uuid.UUID) (*GetGuildByID
 		&i.Name,
 		&i.Description,
 		&i.IconUrl,
+		&i.DefaultChannelID,
 		&i.CreatedAt,
 	)
 	return &i, err
@@ -86,25 +92,27 @@ func (q *Queries) GetGuildByID(ctx context.Context, id uuid.UUID) (*GetGuildByID
 
 const updateGuild = `-- name: UpdateGuild :one
 UPDATE guilds
-SET name = $2, description = $3, icon_url = $4, updated_at = NOW()
+SET name = $2, description = $3, icon_url = $4, default_channel_id = $5, updated_at = NOW()
 WHERE id = $1
-RETURNING id, owner_id, name, description, icon_url, created_at
+RETURNING id, owner_id, name, description, icon_url, default_channel_id, created_at
 `
 
 type UpdateGuildParams struct {
-	ID          uuid.UUID
-	Name        string
-	Description string
-	IconUrl     string
+	ID               uuid.UUID
+	Name             string
+	Description      string
+	IconUrl          string
+	DefaultChannelID uuid.UUID
 }
 
 type UpdateGuildRow struct {
-	ID          uuid.UUID
-	OwnerID     uuid.UUID
-	Name        string
-	Description string
-	IconUrl     string
-	CreatedAt   pgtype.Timestamp
+	ID               uuid.UUID
+	OwnerID          uuid.UUID
+	Name             string
+	Description      string
+	IconUrl          string
+	DefaultChannelID uuid.UUID
+	CreatedAt        pgtype.Timestamp
 }
 
 func (q *Queries) UpdateGuild(ctx context.Context, arg UpdateGuildParams) (*UpdateGuildRow, error) {
@@ -113,6 +121,7 @@ func (q *Queries) UpdateGuild(ctx context.Context, arg UpdateGuildParams) (*Upda
 		arg.Name,
 		arg.Description,
 		arg.IconUrl,
+		arg.DefaultChannelID,
 	)
 	var i UpdateGuildRow
 	err := row.Scan(
@@ -121,6 +130,7 @@ func (q *Queries) UpdateGuild(ctx context.Context, arg UpdateGuildParams) (*Upda
 		&i.Name,
 		&i.Description,
 		&i.IconUrl,
+		&i.DefaultChannelID,
 		&i.CreatedAt,
 	)
 	return &i, err
