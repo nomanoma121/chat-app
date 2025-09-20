@@ -10,7 +10,7 @@ import "user_type.proto";
 message RegisterRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
-      required: ["display_id", "password", "email", "name"]
+      required: ["display_id", "password", "email", "name", "bio", "icon_url"]
     };
   };
   string display_id = 1;

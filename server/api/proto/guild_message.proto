@@ -85,7 +85,7 @@ message ListMyGuildsResponse {
 message UpdateGuildRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
-      required: ["guild_id"]
+      required: ["guild_id", "name", "description", "icon_url", "default_channel_id"]
     };
   };
   string guild_id = 1;
