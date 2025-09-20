@@ -92,6 +92,7 @@ message UpdateGuildRequest {
   string name = 2;
   string icon_url = 3;
   string description = 4;
+  string default_channel_id = 5;
 }
 
 message UpdateGuildResponse {

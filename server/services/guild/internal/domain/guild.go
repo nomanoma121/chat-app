@@ -8,12 +8,13 @@ import (
 )
 
 type Guild struct {
-	ID          uuid.UUID
-	OwnerID     uuid.UUID
-	Name        string
-	Description string
-	IconURL     string
-	CreatedAt   time.Time
+	ID               uuid.UUID
+	OwnerID          uuid.UUID
+	Name             string
+	Description      string
+	IconURL          string
+	DefaultChannelID uuid.UUID
+	CreatedAt        time.Time
 }
 
 type GuildOverview struct {

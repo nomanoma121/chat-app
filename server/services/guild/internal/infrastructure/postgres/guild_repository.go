@@ -22,23 +22,25 @@ func NewPostgresGuildRepository(queries *gen.Queries) *guildRepository {
 
 func (r *guildRepository) Create(ctx context.Context, guild *domain.Guild) (*domain.Guild, error) {
 	dbGuild, err := r.queries.CreateGuild(ctx, gen.CreateGuildParams{
-		ID:          guild.ID,
-		OwnerID:     guild.OwnerID,
-		Name:        guild.Name,
-		Description: guild.Description,
-		IconUrl:     guild.IconURL,
-		CreatedAt:   pgtype.Timestamp{Time: guild.CreatedAt, Valid: true},
+		ID:               guild.ID,
+		OwnerID:          guild.OwnerID,
+		Name:             guild.Name,
+		Description:      guild.Description,
+		IconUrl:          guild.IconURL,
+		DefaultChannelID: guild.DefaultChannelID,
+		CreatedAt:        pgtype.Timestamp{Time: guild.CreatedAt, Valid: true},
 	})
 	if err != nil {
 		return nil, err
 	}
 	return &domain.Guild{
-		ID:          dbGuild.ID,
-		OwnerID:     dbGuild.OwnerID,
-		Name:        dbGuild.Name,
-		Description: dbGuild.Description,
-		IconURL:     dbGuild.IconUrl,
-		CreatedAt:   dbGuild.CreatedAt.Time,
+		ID:               dbGuild.ID,
+		OwnerID:          dbGuild.OwnerID,
+		Name:             dbGuild.Name,
+		Description:      dbGuild.Description,
+		IconURL:          dbGuild.IconUrl,
+		DefaultChannelID: dbGuild.DefaultChannelID,
+		CreatedAt:        dbGuild.CreatedAt.Time,
 	}, nil
 }
 
@@ -56,6 +58,7 @@ func (r *guildRepository) GetByID(ctx context.Context, id uuid.UUID) (*domain.Gu
 		Name:        dbGuild.Name,
 		Description: dbGuild.Description,
 		IconURL:     dbGuild.IconUrl,
+		DefaultChannelID: dbGuild.DefaultChannelID,
 		CreatedAt:   dbGuild.CreatedAt.Time,
 	}, nil
 }
@@ -76,6 +79,7 @@ func (r *guildRepository) Update(ctx context.Context, guild *domain.Guild) (*dom
 		Name:        dbGuild.Name,
 		Description: dbGuild.Description,
 		IconURL:     dbGuild.IconUrl,
+		DefaultChannelID: dbGuild.DefaultChannelID,
 		CreatedAt:   dbGuild.CreatedAt.Time,
 	}, nil
 }

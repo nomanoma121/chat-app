@@ -33,6 +33,7 @@ message GuildDetail {
   string owner_id = 3;
   string description = 4;
   string icon_url = 5;
+  string default_channel_id = 8;
   google.protobuf.Timestamp created_at = 6;
   repeated CategoryDetail categories = 7;
 }
