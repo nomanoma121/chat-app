@@ -1,17 +1,59 @@
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { css } from "styled-system/css";
+import * as v from "valibot";
+import { useCreateGuild } from "~/api/gen/guild/guild";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
-import { Input } from "~/components/ui/input";
-import { Textarea } from "~/components/ui/textarea";
+import { GuildSchema } from "~/schema/guild";
 
-export default function CreateNewGuild() {
+const CreateGuildForm = v.object({
+	name: GuildSchema.Name,
+	description: GuildSchema.Description,
+	iconUrl: GuildSchema.IconUrl,
+});
+
+type FormInputValues = v.InferInput<typeof CreateGuildForm>;
+
+export default function CreateGuild() {
 	const navigate = useNavigate();
+	const { mutateAsync } = useCreateGuild();
+
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isValid },
+		reset,
+	} = useForm<FormInputValues>({
+		resolver: standardSchemaResolver(GuildSchema),
+		defaultValues: {
+			name: "",
+			description: "",
+			iconUrl: "",
+		},
+	});
+
+	const onSubmit = async (data: FormInputValues) => {
+		try {
+			const result = await mutateAsync({
+				data: {
+					name: data.name,
+					description: data.description ?? "",
+					iconUrl: data.iconUrl,
+				}
+			});
+			reset();
+			navigate(`/guilds/${result.guild.id}`);
+		} catch (error) {
+			console.error("Error creating guild:", error);
+		}
+	};
+
 	return (
 		<div>
-			{/* 中心にカードが来て、サーバーを作成する画面を表示する */}
 			<Card.Root
 				className={css({
 					width: "500px",
@@ -39,30 +81,91 @@ export default function CreateNewGuild() {
 						gap: "20px",
 					})}
 				>
-					<Field.Root className={css({ width: "100%" })}>
-						<FormLabel color="text.bright">サーバー名</FormLabel>
-						<Field.Input
-							placeholder="サーバー名を入力してください"
-							className={css({ background: "bg.primary", border: "none" })}
-						/>
-					</Field.Root>
-					<Field.Root className={css({ width: "100%" })}>
-						<FormLabel color="text.bright">サーバーの説明</FormLabel>
-						<Field.Textarea
-							placeholder="サーバーの説明を入力してください"
-							className={css({
-								background: "bg.primary",
-								border: "none",
-								resize: "none",
-							})}
-						/>
-					</Field.Root>
-					<Button
-						className={css({ width: "100%", marginTop: "10px" })}
-						onClick={() => navigate("/servers/1/channels/1")}
+					<form
+						onSubmit={handleSubmit(onSubmit)}
+						className={css({
+							width: "100%",
+							display: "flex",
+							flexDirection: "column",
+							gap: "20px",
+						})}
 					>
-						サーバーを作成
-					</Button>
+						<Field.Root className={css({ width: "100%" })}>
+							<FormLabel color="text.bright">サーバー名</FormLabel>
+							<Field.Input
+								{...register("name")}
+								placeholder="サーバー名を入力してください"
+								className={css({
+									background: "bg.primary",
+									border: "none",
+									color: "text.bright",
+								})}
+							/>
+							{errors.name && (
+								<Field.ErrorText
+									className={css({
+										color: "red.500",
+										fontSize: "sm",
+										marginTop: "4px",
+									})}
+								>
+									{errors.name.message}
+								</Field.ErrorText>
+							)}
+						</Field.Root>
+						<Field.Root className={css({ width: "100%" })}>
+							<FormLabel color="text.bright">サーバーの説明</FormLabel>
+							<Field.Textarea
+								{...register("description")}
+								placeholder="サーバーの説明を入力してください"
+								className={css({
+									background: "bg.primary",
+									border: "none",
+									resize: "none",
+								})}
+							/>
+							{errors.description && (
+								<Field.ErrorText
+									className={css({
+										color: "red.500",
+										fontSize: "sm",
+										marginTop: "4px",
+									})}
+								>
+									{errors.description.message}
+								</Field.ErrorText>
+							)}
+						</Field.Root>
+						<Field.Root className={css({ width: "100%" })}>
+							<FormLabel color="text.bright">アイコンURL</FormLabel>
+							<Field.Input
+								{...register("iconUrl")}
+								placeholder="https://example.com/icon.png"
+								className={css({
+									background: "bg.primary",
+									border: "none",
+									color: "text.bright",
+								})}
+							/>
+							{errors.iconUrl && (
+								<Field.ErrorText
+									className={css({
+										color: "red.500",
+										fontSize: "sm",
+										marginTop: "4px",
+									})}
+								>
+									{errors.iconUrl.message}
+								</Field.ErrorText>
+							)}
+						</Field.Root>
+						<Button
+							type="submit"
+							className={css({ width: "100%", marginTop: "10px" })}
+						>
+							サーバーを作成
+						</Button>
+					</form>
 				</Card.Body>
 			</Card.Root>
 		</div>
