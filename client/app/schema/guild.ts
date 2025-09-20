@@ -1,6 +1,5 @@
 import * as v from "valibot";
 
-
 export const GuildSchema = {
 	Name: v.pipe(
 		v.string(),
@@ -10,8 +9,5 @@ export const GuildSchema = {
 	Description: v.optional(
 		v.pipe(v.string(), v.maxLength(100, "説明は100文字以内で入力してください")),
 	),
-	IconUrl: v.pipe(
-		v.string(),
-		v.url("有効なURLを入力してください"),
-	)
+	IconUrl: v.pipe(v.string(), v.url("有効なURLを入力してください")),
 };

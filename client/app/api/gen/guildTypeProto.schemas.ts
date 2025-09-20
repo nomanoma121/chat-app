@@ -145,6 +145,7 @@ export interface Guild {
 	ownerId: string;
 	description?: string;
 	iconUrl?: string;
+	defaultChannelId?: string;
 	createdAt: string;
 }
 
@@ -154,6 +155,7 @@ export interface GuildDetail {
 	ownerId: string;
 	description?: string;
 	iconUrl?: string;
+	defaultChannelId?: string;
 	createdAt: string;
 	categories: CategoryDetail[];
 }
@@ -242,6 +244,7 @@ export interface UpdateGuildBody {
 	name?: string;
 	iconUrl?: string;
 	description?: string;
+	defaultChannelId?: string;
 }
 
 export interface UpdateGuildResponse {
