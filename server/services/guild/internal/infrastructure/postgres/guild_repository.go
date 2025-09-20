@@ -65,10 +65,11 @@ func (r *guildRepository) GetByID(ctx context.Context, id uuid.UUID) (*domain.Gu
 
 func (r *guildRepository) Update(ctx context.Context, guild *domain.Guild) (*domain.Guild, error) {
 	dbGuild, err := r.queries.UpdateGuild(ctx, gen.UpdateGuildParams{
-		ID:          guild.ID,
-		Name:        guild.Name,
-		Description: guild.Description,
-		IconUrl:     guild.IconURL,
+		ID:               guild.ID,
+		Name:             guild.Name,
+		Description:      guild.Description,
+		IconUrl:          guild.IconURL,
+		DefaultChannelID: guild.DefaultChannelID,
 	})
 	if err != nil {
 		return nil, err
