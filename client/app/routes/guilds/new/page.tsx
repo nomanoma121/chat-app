@@ -25,11 +25,11 @@ export default function CreateGuild() {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isValid },
+		formState: { errors, isValid, touchedFields },
 		reset,
 	} = useForm<FormInputValues>({
 		resolver: standardSchemaResolver(CreateGuildForm),
-		mode: "onChange",
+		mode: "onBlur",
 		defaultValues: {
 			name: "",
 			description: "",
@@ -59,7 +59,7 @@ export default function CreateGuild() {
 				className={css({
 					width: "500px",
 					margin: "0 auto",
-					marginTop: "100px",
+					marginTop: "70px",
 					padding: "20px",
 					background: "bg.secondary",
 				})}
@@ -91,7 +91,7 @@ export default function CreateGuild() {
 							gap: "20px",
 						})}
 					>
-						<Field.Root className={css({ width: "100%" })}>
+						<Field.Root className={css({ width: "100%" })} invalid={!!errors.name}>
 							<FormLabel color="text.bright">サーバー名</FormLabel>
 							<Field.Input
 								{...register("name")}
@@ -103,18 +103,12 @@ export default function CreateGuild() {
 								})}
 							/>
 							{errors.name && (
-								<Field.ErrorText
-									className={css({
-										color: "red.500",
-										fontSize: "sm",
-										marginTop: "4px",
-									})}
-								>
+								<Field.ErrorText>
 									{errors.name.message}
 								</Field.ErrorText>
 							)}
 						</Field.Root>
-						<Field.Root className={css({ width: "100%" })}>
+						<Field.Root className={css({ width: "100%" })} invalid={!!errors.description}>
 							<FormLabel color="text.bright">サーバーの説明</FormLabel>
 							<Field.Textarea
 								{...register("description")}
@@ -126,18 +120,12 @@ export default function CreateGuild() {
 								})}
 							/>
 							{errors.description && (
-								<Field.ErrorText
-									className={css({
-										color: "red.500",
-										fontSize: "sm",
-										marginTop: "4px",
-									})}
-								>
+								<Field.ErrorText>
 									{errors.description.message}
 								</Field.ErrorText>
 							)}
 						</Field.Root>
-						<Field.Root className={css({ width: "100%" })}>
+						<Field.Root className={css({ width: "100%" })} invalid={!!errors.iconUrl}>
 							<FormLabel color="text.bright">アイコンURL</FormLabel>
 							<Field.Input
 								{...register("iconUrl")}
@@ -149,13 +137,7 @@ export default function CreateGuild() {
 								})}
 							/>
 							{errors.iconUrl && (
-								<Field.ErrorText
-									className={css({
-										color: "red.500",
-										fontSize: "sm",
-										marginTop: "4px",
-									})}
-								>
+								<Field.ErrorText>
 									{errors.iconUrl.message}
 								</Field.ErrorText>
 							)}

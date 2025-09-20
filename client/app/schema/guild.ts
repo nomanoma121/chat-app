@@ -10,5 +10,8 @@ export const GuildSchema = {
 	Description: v.optional(
 		v.pipe(v.string(), v.maxLength(100, "説明は100文字以内で入力してください")),
 	),
-	IconUrl: v.string(),
+	IconUrl: v.pipe(
+		v.string(),
+		v.url("有効なURLを入力してください"),
+	)
 };
