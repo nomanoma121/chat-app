@@ -25,6 +25,7 @@ import type {
 	CreateGuildRequest,
 	CreateGuildResponse,
 	GetGuildByIDResponse,
+	GetGuildOverviewResponse,
 	ListMyGuildsResponse,
 	Status,
 	UpdateGuildBody,
@@ -309,6 +310,154 @@ export const useUpdateGuild = <TError = Status, TContext = unknown>(
 
 	return useMutation(mutationOptions, queryClient);
 };
+export const getGuildOverview = (guildId: string, signal?: AbortSignal) => {
+	return customClient<GetGuildOverviewResponse>({
+		url: `/api/guilds/${guildId}/overview`,
+		method: "GET",
+		signal,
+	});
+};
+
+export const getGetGuildOverviewQueryKey = (guildId?: string) => {
+	return [`/api/guilds/${guildId}/overview`] as const;
+};
+
+export const getGetGuildOverviewQueryOptions = <
+	TData = Awaited<ReturnType<typeof getGuildOverview>>,
+	TError = Status,
+>(
+	guildId: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getGuildOverview>>,
+				TError,
+				TData
+			>
+		>;
+	},
+) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getGetGuildOverviewQueryKey(guildId);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof getGuildOverview>>
+	> = ({ signal }) => getGuildOverview(guildId, signal);
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: !!guildId,
+		...queryOptions,
+	} as UseQueryOptions<
+		Awaited<ReturnType<typeof getGuildOverview>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData> };
+};
+
+export type GetGuildOverviewQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getGuildOverview>>
+>;
+export type GetGuildOverviewQueryError = Status;
+
+export function useGetGuildOverview<
+	TData = Awaited<ReturnType<typeof getGuildOverview>>,
+	TError = Status,
+>(
+	guildId: string,
+	options: {
+		query: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getGuildOverview>>,
+				TError,
+				TData
+			>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getGuildOverview>>,
+					TError,
+					Awaited<ReturnType<typeof getGuildOverview>>
+				>,
+				"initialData"
+			>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData>;
+};
+export function useGetGuildOverview<
+	TData = Awaited<ReturnType<typeof getGuildOverview>>,
+	TError = Status,
+>(
+	guildId: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getGuildOverview>>,
+				TError,
+				TData
+			>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getGuildOverview>>,
+					TError,
+					Awaited<ReturnType<typeof getGuildOverview>>
+				>,
+				"initialData"
+			>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useGetGuildOverview<
+	TData = Awaited<ReturnType<typeof getGuildOverview>>,
+	TError = Status,
+>(
+	guildId: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getGuildOverview>>,
+				TError,
+				TData
+			>
+		>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+export function useGetGuildOverview<
+	TData = Awaited<ReturnType<typeof getGuildOverview>>,
+	TError = Status,
+>(
+	guildId: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getGuildOverview>>,
+				TError,
+				TData
+			>
+		>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+	const queryOptions = getGetGuildOverviewQueryOptions(guildId, options);
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+		TData,
+		TError
+	> & { queryKey: DataTag<QueryKey, TData> };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
 export const listMyGuilds = (signal?: AbortSignal) => {
 	return customClient<ListMyGuildsResponse>({
 		url: `/api/users/me/guilds`,

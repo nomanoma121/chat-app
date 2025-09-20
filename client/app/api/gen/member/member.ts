@@ -6,175 +6,18 @@
  */
 
 import type {
-	DataTag,
-	DefinedInitialDataOptions,
-	DefinedUseQueryResult,
 	MutationFunction,
 	QueryClient,
-	QueryFunction,
-	QueryKey,
-	UndefinedInitialDataOptions,
 	UseMutationOptions,
 	UseMutationResult,
-	UseQueryOptions,
-	UseQueryResult,
 } from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { customClient } from "../../client";
 import type {
 	DeleteGuildMemberResponse,
-	GetGuildMembersResponse,
 	LeaveGuildResponse,
 	Status,
 } from "../guildTypeProto.schemas";
-
-export const getGuildMembers = (guildId: string, signal?: AbortSignal) => {
-	return customClient<GetGuildMembersResponse>({
-		url: `/api/guilds/${guildId}/members`,
-		method: "GET",
-		signal,
-	});
-};
-
-export const getGetGuildMembersQueryKey = (guildId?: string) => {
-	return [`/api/guilds/${guildId}/members`] as const;
-};
-
-export const getGetGuildMembersQueryOptions = <
-	TData = Awaited<ReturnType<typeof getGuildMembers>>,
-	TError = Status,
->(
-	guildId: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getGuildMembers>>,
-				TError,
-				TData
-			>
-		>;
-	},
-) => {
-	const { query: queryOptions } = options ?? {};
-
-	const queryKey =
-		queryOptions?.queryKey ?? getGetGuildMembersQueryKey(guildId);
-
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getGuildMembers>>> = ({
-		signal,
-	}) => getGuildMembers(guildId, signal);
-
-	return {
-		queryKey,
-		queryFn,
-		enabled: !!guildId,
-		...queryOptions,
-	} as UseQueryOptions<
-		Awaited<ReturnType<typeof getGuildMembers>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData> };
-};
-
-export type GetGuildMembersQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getGuildMembers>>
->;
-export type GetGuildMembersQueryError = Status;
-
-export function useGetGuildMembers<
-	TData = Awaited<ReturnType<typeof getGuildMembers>>,
-	TError = Status,
->(
-	guildId: string,
-	options: {
-		query: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getGuildMembers>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getGuildMembers>>,
-					TError,
-					Awaited<ReturnType<typeof getGuildMembers>>
-				>,
-				"initialData"
-			>;
-	},
-	queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData>;
-};
-export function useGetGuildMembers<
-	TData = Awaited<ReturnType<typeof getGuildMembers>>,
-	TError = Status,
->(
-	guildId: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getGuildMembers>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getGuildMembers>>,
-					TError,
-					Awaited<ReturnType<typeof getGuildMembers>>
-				>,
-				"initialData"
-			>;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
-export function useGetGuildMembers<
-	TData = Awaited<ReturnType<typeof getGuildMembers>>,
-	TError = Status,
->(
-	guildId: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getGuildMembers>>,
-				TError,
-				TData
-			>
-		>;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
-
-export function useGetGuildMembers<
-	TData = Awaited<ReturnType<typeof getGuildMembers>>,
-	TError = Status,
->(
-	guildId: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getGuildMembers>>,
-				TError,
-				TData
-			>
-		>;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
-	const queryOptions = getGetGuildMembersQueryOptions(guildId, options);
-
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-		TData,
-		TError
-	> & { queryKey: DataTag<QueryKey, TData> };
-
-	query.queryKey = queryOptions.queryKey;
-
-	return query;
-}
 
 export const leaveGuild = (guildId: string) => {
 	return customClient<LeaveGuildResponse>({

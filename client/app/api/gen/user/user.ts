@@ -22,38 +22,154 @@ import type {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { customClient } from "../../client";
 import type {
+	GetCurrentUserResponse,
 	GetUserByIDResponse,
 	Status,
-	UpdateUserRequest,
-	UpdateUserResponse,
+	UpdateRequest,
+	UpdateResponse,
 } from "../guildTypeProto.schemas";
 
-export const updateUser = (updateUserRequest: UpdateUserRequest) => {
-	return customClient<UpdateUserResponse>({
+export const getCurrentUser = (signal?: AbortSignal) => {
+	return customClient<GetCurrentUserResponse>({
 		url: `/api/users/me`,
-		method: "PUT",
-		headers: { "Content-Type": "application/json" },
-		data: updateUserRequest,
+		method: "GET",
+		signal,
 	});
 };
 
-export const getUpdateUserMutationOptions = <
+export const getGetCurrentUserQueryKey = () => {
+	return [`/api/users/me`] as const;
+};
+
+export const getGetCurrentUserQueryOptions = <
+	TData = Awaited<ReturnType<typeof getCurrentUser>>,
+	TError = Status,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>
+	>;
+}) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getGetCurrentUserQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getCurrentUser>>> = ({
+		signal,
+	}) => getCurrentUser(signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof getCurrentUser>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData> };
+};
+
+export type GetCurrentUserQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getCurrentUser>>
+>;
+export type GetCurrentUserQueryError = Status;
+
+export function useGetCurrentUser<
+	TData = Awaited<ReturnType<typeof getCurrentUser>>,
+	TError = Status,
+>(
+	options: {
+		query: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getCurrentUser>>,
+					TError,
+					Awaited<ReturnType<typeof getCurrentUser>>
+				>,
+				"initialData"
+			>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData>;
+};
+export function useGetCurrentUser<
+	TData = Awaited<ReturnType<typeof getCurrentUser>>,
+	TError = Status,
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getCurrentUser>>,
+					TError,
+					Awaited<ReturnType<typeof getCurrentUser>>
+				>,
+				"initialData"
+			>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useGetCurrentUser<
+	TData = Awaited<ReturnType<typeof getCurrentUser>>,
+	TError = Status,
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>
+		>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+export function useGetCurrentUser<
+	TData = Awaited<ReturnType<typeof getCurrentUser>>,
+	TError = Status,
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>
+		>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+	const queryOptions = getGetCurrentUserQueryOptions(options);
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+		TData,
+		TError
+	> & { queryKey: DataTag<QueryKey, TData> };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+export const update = (updateRequest: UpdateRequest) => {
+	return customClient<UpdateResponse>({
+		url: `/api/users/me`,
+		method: "PUT",
+		headers: { "Content-Type": "application/json" },
+		data: updateRequest,
+	});
+};
+
+export const getUpdateMutationOptions = <
 	TError = Status,
 	TContext = unknown,
 >(options?: {
 	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof updateUser>>,
+		Awaited<ReturnType<typeof update>>,
 		TError,
-		{ data: UpdateUserRequest },
+		{ data: UpdateRequest },
 		TContext
 	>;
 }): UseMutationOptions<
-	Awaited<ReturnType<typeof updateUser>>,
+	Awaited<ReturnType<typeof update>>,
 	TError,
-	{ data: UpdateUserRequest },
+	{ data: UpdateRequest },
 	TContext
 > => {
-	const mutationKey = ["updateUser"];
+	const mutationKey = ["update"];
 	const { mutation: mutationOptions } = options
 		? options.mutation &&
 			"mutationKey" in options.mutation &&
@@ -63,40 +179,40 @@ export const getUpdateUserMutationOptions = <
 		: { mutation: { mutationKey } };
 
 	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof updateUser>>,
-		{ data: UpdateUserRequest }
+		Awaited<ReturnType<typeof update>>,
+		{ data: UpdateRequest }
 	> = (props) => {
 		const { data } = props ?? {};
 
-		return updateUser(data);
+		return update(data);
 	};
 
 	return { mutationFn, ...mutationOptions };
 };
 
-export type UpdateUserMutationResult = NonNullable<
-	Awaited<ReturnType<typeof updateUser>>
+export type UpdateMutationResult = NonNullable<
+	Awaited<ReturnType<typeof update>>
 >;
-export type UpdateUserMutationBody = UpdateUserRequest;
-export type UpdateUserMutationError = Status;
+export type UpdateMutationBody = UpdateRequest;
+export type UpdateMutationError = Status;
 
-export const useUpdateUser = <TError = Status, TContext = unknown>(
+export const useUpdate = <TError = Status, TContext = unknown>(
 	options?: {
 		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof updateUser>>,
+			Awaited<ReturnType<typeof update>>,
 			TError,
-			{ data: UpdateUserRequest },
+			{ data: UpdateRequest },
 			TContext
 		>;
 	},
 	queryClient?: QueryClient,
 ): UseMutationResult<
-	Awaited<ReturnType<typeof updateUser>>,
+	Awaited<ReturnType<typeof update>>,
 	TError,
-	{ data: UpdateUserRequest },
+	{ data: UpdateRequest },
 	TContext
 > => {
-	const mutationOptions = getUpdateUserMutationOptions(options);
+	const mutationOptions = getUpdateMutationOptions(options);
 
 	return useMutation(mutationOptions, queryClient);
 };

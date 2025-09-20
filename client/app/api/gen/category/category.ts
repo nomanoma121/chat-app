@@ -6,26 +6,17 @@
  */
 
 import type {
-	DataTag,
-	DefinedInitialDataOptions,
-	DefinedUseQueryResult,
 	MutationFunction,
 	QueryClient,
-	QueryFunction,
-	QueryKey,
-	UndefinedInitialDataOptions,
 	UseMutationOptions,
 	UseMutationResult,
-	UseQueryOptions,
-	UseQueryResult,
 } from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { customClient } from "../../client";
 import type {
 	CreateCategoryBody,
 	CreateCategoryResponse,
 	DeleteCategoryResponse,
-	GetCategoriesResponse,
 	Status,
 	UpdateCategoryBody,
 	UpdateCategoryResponse,
@@ -176,133 +167,6 @@ export const useUpdateCategory = <TError = Status, TContext = unknown>(
 
 	return useMutation(mutationOptions, queryClient);
 };
-export const getCategories = (guildId: string, signal?: AbortSignal) => {
-	return customClient<GetCategoriesResponse>({
-		url: `/api/guilds/${guildId}/categories`,
-		method: "GET",
-		signal,
-	});
-};
-
-export const getGetCategoriesQueryKey = (guildId?: string) => {
-	return [`/api/guilds/${guildId}/categories`] as const;
-};
-
-export const getGetCategoriesQueryOptions = <
-	TData = Awaited<ReturnType<typeof getCategories>>,
-	TError = Status,
->(
-	guildId: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getCategories>>, TError, TData>
-		>;
-	},
-) => {
-	const { query: queryOptions } = options ?? {};
-
-	const queryKey = queryOptions?.queryKey ?? getGetCategoriesQueryKey(guildId);
-
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getCategories>>> = ({
-		signal,
-	}) => getCategories(guildId, signal);
-
-	return {
-		queryKey,
-		queryFn,
-		enabled: !!guildId,
-		...queryOptions,
-	} as UseQueryOptions<
-		Awaited<ReturnType<typeof getCategories>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData> };
-};
-
-export type GetCategoriesQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getCategories>>
->;
-export type GetCategoriesQueryError = Status;
-
-export function useGetCategories<
-	TData = Awaited<ReturnType<typeof getCategories>>,
-	TError = Status,
->(
-	guildId: string,
-	options: {
-		query: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getCategories>>, TError, TData>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getCategories>>,
-					TError,
-					Awaited<ReturnType<typeof getCategories>>
-				>,
-				"initialData"
-			>;
-	},
-	queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData>;
-};
-export function useGetCategories<
-	TData = Awaited<ReturnType<typeof getCategories>>,
-	TError = Status,
->(
-	guildId: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getCategories>>, TError, TData>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getCategories>>,
-					TError,
-					Awaited<ReturnType<typeof getCategories>>
-				>,
-				"initialData"
-			>;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
-export function useGetCategories<
-	TData = Awaited<ReturnType<typeof getCategories>>,
-	TError = Status,
->(
-	guildId: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getCategories>>, TError, TData>
-		>;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
-
-export function useGetCategories<
-	TData = Awaited<ReturnType<typeof getCategories>>,
-	TError = Status,
->(
-	guildId: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getCategories>>, TError, TData>
-		>;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
-	const queryOptions = getGetCategoriesQueryOptions(guildId, options);
-
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-		TData,
-		TError
-	> & { queryKey: DataTag<QueryKey, TData> };
-
-	query.queryKey = queryOptions.queryKey;
-
-	return query;
-}
-
 export const createCategory = (
 	guildId: string,
 	createCategoryBody: CreateCategoryBody,

@@ -10,16 +10,24 @@ export interface Any {
 }
 
 export interface AuthMeResponse {
-	user: User;
+	userId: string;
+	exp: string;
+	iat: string;
 }
 
 export interface Category {
 	id: string;
 	guildId: string;
 	name: string;
-	position?: number;
 	createdAt: string;
-	updatedAt: string;
+}
+
+export interface CategoryDetail {
+	id: string;
+	guildId: string;
+	name: string;
+	createdAt: string;
+	channels: Channel[];
 }
 
 export interface Channel {
@@ -27,7 +35,6 @@ export interface Channel {
 	categoryId: string;
 	name: string;
 	createdAt: string;
-	updatedAt: string;
 }
 
 export interface CreateCategoryBody {
@@ -57,7 +64,8 @@ export interface CreateGuildInviteResponse {
 
 export interface CreateGuildRequest {
 	name: string;
-	description?: string;
+	description: string;
+	iconUrl: string;
 }
 
 export interface CreateGuildResponse {
@@ -103,8 +111,12 @@ export interface DeleteMessageByMessageIDResponse {
 	empty: DeleteMessageByMessageIDResponseEmpty;
 }
 
-export interface GetCategoriesResponse {
-	categories: Category[];
+export interface ExistsResponse {
+	exists: boolean;
+}
+
+export interface GetCurrentUserResponse {
+	user: User;
 }
 
 export interface GetGuildByIDResponse {
@@ -115,8 +127,8 @@ export interface GetGuildInvitesResponse {
 	invites: Invite[];
 }
 
-export interface GetGuildMembersResponse {
-	members: Member[];
+export interface GetGuildOverviewResponse {
+	guild: GuildDetail;
 }
 
 export interface GetMessagesByChannelIDResponse {
@@ -134,7 +146,16 @@ export interface Guild {
 	description?: string;
 	iconUrl?: string;
 	createdAt: string;
-	updatedAt: string;
+}
+
+export interface GuildDetail {
+	id: string;
+	name: string;
+	ownerId: string;
+	description?: string;
+	iconUrl?: string;
+	createdAt: string;
+	categories: CategoryDetail[];
 }
 
 export interface Invite {
@@ -144,7 +165,6 @@ export interface Invite {
 	currentUses: number;
 	code: string;
 	expiresAt: string;
-	createdAt: string;
 }
 
 export interface JoinGuildBody {
@@ -174,14 +194,6 @@ export interface LoginResponse {
 	token: string;
 }
 
-export interface Member {
-	userId: string;
-	guildId: string;
-	nickname?: string;
-	createdAt: string;
-	updatedAt: string;
-}
-
 export interface Message {
 	id: string;
 	authorId: string;
@@ -189,7 +201,6 @@ export interface Message {
 	replyId?: string;
 	content: string;
 	createdAt: string;
-	updatedAt: string;
 }
 
 export interface RegisterRequest {
@@ -229,6 +240,7 @@ export interface UpdateChannelResponse {
 
 export interface UpdateGuildBody {
 	name?: string;
+	iconUrl?: string;
 	description?: string;
 }
 
@@ -245,14 +257,13 @@ export interface UpdateMessageByMessageIDResponse {
 	message: Message;
 }
 
-export interface UpdateUserRequest {
-	displayId?: string;
+export interface UpdateRequest {
 	name: string;
 	bio: string;
 	iconUrl: string;
 }
 
-export interface UpdateUserResponse {
+export interface UpdateResponse {
 	user: User;
 }
 
@@ -263,5 +274,4 @@ export interface User {
 	bio: string;
 	iconUrl: string;
 	createdAt: string;
-	updatedAt: string;
 }
