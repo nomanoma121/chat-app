@@ -4,26 +4,14 @@ import { css } from "styled-system/css";
 import { Category } from "~/components/features/category";
 import { Heading } from "~/components/ui/heading";
 import { IconButton } from "~/components/ui/icon-button";
-
-// Demo data
-const textChannels = [
-	{ id: "general", name: "general", isSelected: true },
-	{ id: "random", name: "random", unreadCount: 3 },
-	{ id: "announcements", name: "announcements", mentionCount: 2 },
-	{ id: "help", name: "help" },
-];
-
-const projectChannels = [
-	{ id: "dev", name: "development", mentionCount: 1 },
-	{ id: "design", name: "ui-design", unreadCount: 5 },
-	{ id: "testing", name: "testing" },
-];
+import { useOutletContext } from "react-router";
+import type { GuildsContext } from "../../layout";
 
 export const GuildPanel = () => {
-	const handleChannelSelect = (channelId: string) => {
-		console.log("Selected channel:", channelId);
-	};
+	const { guild, isPending, error } = useOutletContext<GuildsContext>();
 	const navigate = useNavigate();
+
+	console.log(guild, isPending, error);
 	return (
 		<div
 			className={css({
@@ -87,20 +75,14 @@ export const GuildPanel = () => {
 					</IconButton>
 				</div>
 			</div>
-
-			<Category onChannelSelect={handleChannelSelect}>
-				<Category.Title>Text Channels</Category.Title>
-				{textChannels.map((channel) => (
-					<Category.Channel key={channel.id} channel={channel} />
-				))}
-			</Category>
-
-			<Category onChannelSelect={handleChannelSelect}>
-				<Category.Title>Project</Category.Title>
-				{projectChannels.map((channel) => (
-					<Category.Channel key={channel.id} channel={channel} />
-				))}
-			</Category>
+			{guild?.categories?.map((category) => (
+				<Category key={category.id} onChannelSelect={() => navigate(`/servers/${guild.id}/channels/${category.id}`)}>
+					<Category.Title>{category.name}</Category.Title>
+					{category.channels.map((channel) => (
+						<Category.Channel key={channel.id} channel={channel}/>
+					))}
+				</Category>
+			))}
 		</div>
 	);
 };

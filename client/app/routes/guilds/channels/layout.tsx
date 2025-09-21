@@ -1,5 +1,12 @@
 import { Outlet, useParams } from "react-router";
 import { useGetGuildOverview } from "~/api/gen/guild/guild";
+import type { GuildDetail } from "~/api/gen/guildTypeProto.schemas";
+
+export type GuildsContext = {
+  guild: GuildDetail;
+  isPending: boolean;
+  error: unknown;
+}
 
 export default function GuildListLayout() {
   const params = useParams();
@@ -9,5 +16,5 @@ export default function GuildListLayout() {
   }
 
   const { data, isPending, error } = useGetGuildOverview(guildId);
-  return <Outlet context={{ guild: data?.guild, isPending, error }} />;
+  return <Outlet context={{ guild: data?.guild, isPending, error } } />;
 }
