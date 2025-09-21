@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type userRepository struct {
@@ -28,6 +29,7 @@ func (r *userRepository) Create(ctx context.Context, user *domain.CreateUserPara
 		PasswordHash: user.Password,
 		Bio:          user.Bio,
 		IconUrl:      user.IconURL,
+		CreatedAt:    pgtype.Timestamp{Time: user.CreatedAt, Valid: true},
 	})
 	if err != nil {
 		return nil, err

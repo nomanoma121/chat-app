@@ -101,6 +101,7 @@ func (u *userUsecase) Register(ctx context.Context, params *RegisterParams) (*do
 		Password:  string(passwordHash),
 		Bio:       params.Bio,
 		IconURL:   params.IconURL,
+		CreatedAt: time.Now(),
 	}
 
 	return u.userRepo.Create(ctx, &user)
