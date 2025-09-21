@@ -12,8 +12,8 @@ import (
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users (id, display_id, username, email, password_hash, bio, icon_url, created_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+INSERT INTO users (id, display_id, username, email, password_hash, bio, icon_url, created_at, updated_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
 RETURNING id, display_id, username, email, password_hash, bio, icon_url, created_at, updated_at
 `
 
@@ -118,7 +118,7 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (*User, error) 
 
 const updateUser = `-- name: UpdateUser :one
 UPDATE users
-SET username = $2, bio = $3, icon_url = $4
+SET username = $2, bio = $3, icon_url = $4, updated_at = NOW()
 WHERE id = $1
 RETURNING id, display_id, username, email, password_hash, bio, icon_url, created_at, updated_at
 `
