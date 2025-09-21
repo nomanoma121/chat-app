@@ -15,7 +15,7 @@ import type { GuildsContext } from "../../layout";
 export const GuildPanel = () => {
   const { guild, isPending, error } = useOutletContext<GuildsContext>();
   const [isChannelDialogOpen, setIsChannelDialogOpen] = useState(false);
-	const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
+  const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
   const [channelFormData, setChannelFormData] = useState({ name: "" });
   const [categoryFormData, setCategoryFormData] = useState({ name: "" });
   const [isHovered, setIsHovered] = useState(false);
@@ -38,16 +38,16 @@ export const GuildPanel = () => {
   };
 
   const handleChannelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setChannelFormData(prev => ({
+    setChannelFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCategoryFormData(prev => ({
+    setCategoryFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -206,7 +206,13 @@ export const GuildPanel = () => {
             </Dialog.Title>
 
             <form onSubmit={handleChannelSubmit}>
-              <div className={css({ display: "flex", flexDirection: "column", gap: "4" })}>
+              <div
+                className={css({
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "4",
+                })}
+              >
                 <Field.Root>
                   <FormLabel htmlFor={channelNameId} color="text.bright">
                     チャンネル名
@@ -227,9 +233,24 @@ export const GuildPanel = () => {
                   />
                 </Field.Root>
 
-                <div className={css({ display: "flex", gap: "3", justifyContent: "flex-end", marginTop: "4" })}>
+                <div
+                  className={css({
+                    display: "flex",
+                    gap: "3",
+                    justifyContent: "flex-end",
+                    marginTop: "4",
+                  })}
+                >
                   <Dialog.CloseTrigger asChild>
-                    <Button variant="outline" type="button">
+                    <Button
+                      variant="outline"
+                      type="button"
+                      className={css({
+                        color: "text.bright",
+                        borderColor: "border.strong",
+                        backgroundColor: "bg.tertiary",
+                      })}
+                    >
                       キャンセル
                     </Button>
                   </Dialog.CloseTrigger>
@@ -275,7 +296,13 @@ export const GuildPanel = () => {
             </Dialog.Title>
 
             <form onSubmit={handleCategorySubmit}>
-              <div className={css({ display: "flex", flexDirection: "column", gap: "4" })}>
+              <div
+                className={css({
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "4",
+                })}
+              >
                 <Field.Root>
                   <FormLabel htmlFor={categoryNameId} color="text.bright">
                     カテゴリ名
@@ -296,9 +323,24 @@ export const GuildPanel = () => {
                   />
                 </Field.Root>
 
-                <div className={css({ display: "flex", gap: "3", justifyContent: "flex-end", marginTop: "4" })}>
+                <div
+                  className={css({
+                    display: "flex",
+                    gap: "3",
+                    justifyContent: "flex-end",
+                    marginTop: "4",
+                  })}
+                >
                   <Dialog.CloseTrigger asChild>
-                    <Button variant="outline" type="button">
+                    <Button
+                      variant="outline"
+                      type="button"
+                      className={css({
+                        color: "text.bright",
+                        borderColor: "border.strong",
+                        backgroundColor: "bg.tertiary",
+                      })}
+                    >
                       キャンセル
                     </Button>
                   </Dialog.CloseTrigger>
