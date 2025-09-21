@@ -85,32 +85,19 @@ func (q *Queries) ExistsByEmail(ctx context.Context, email string) (int64, error
 	return count, err
 }
 
-const findByEmail = `-- name: FindByEmail :one
-SELECT id, display_id, username, email, bio, icon_url, created_at FROM users WHERE email = $1
+const getPasswordByEmail = `-- name: GetPasswordByEmail :one
+SELECT id, password_hash FROM users WHERE email = $1
 `
 
-type FindByEmailRow struct {
-	ID        uuid.UUID
-	DisplayID string
-	Username  string
-	Email     string
-	Bio       string
-	IconUrl   string
-	CreatedAt pgtype.Timestamp
+type GetPasswordByEmailRow struct {
+	ID           uuid.UUID
+	PasswordHash string
 }
 
-func (q *Queries) FindByEmail(ctx context.Context, email string) (*FindByEmailRow, error) {
-	row := q.db.QueryRow(ctx, findByEmail, email)
-	var i FindByEmailRow
-	err := row.Scan(
-		&i.ID,
-		&i.DisplayID,
-		&i.Username,
-		&i.Email,
-		&i.Bio,
-		&i.IconUrl,
-		&i.CreatedAt,
-	)
+func (q *Queries) GetPasswordByEmail(ctx context.Context, email string) (*GetPasswordByEmailRow, error) {
+	row := q.db.QueryRow(ctx, getPasswordByEmail, email)
+	var i GetPasswordByEmailRow
+	err := row.Scan(&i.ID, &i.PasswordHash)
 	return &i, err
 }
 

@@ -93,7 +93,7 @@ func (u *userUsecase) Register(ctx context.Context, params *RegisterParams) (*do
 		return nil, err
 	}
 
-	user := domain.User{
+	user := domain.CreateUserParams{
 		ID:        uuid.New(),
 		DisplayId: params.DisplayId,
 		Name:      params.Name,
@@ -110,17 +110,17 @@ func (u *userUsecase) Login(ctx context.Context, params *LoginParams) (*string, 
 	if err := u.validator.Struct(params); err != nil {
 		return nil, domain.ErrInvalidUserData
 	}
-	user, err := u.userRepo.FindByEmail(ctx, params.Email)
+	pwParams, err := u.userRepo.GetPasswordByEmail(ctx, params.Email)
 	if err != nil {
 		return nil, domain.ErrInvalidCredentials
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(params.Password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(pwParams.PasswordHash), []byte(params.Password)); err != nil {
 		return nil, domain.ErrInvalidCredentials
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user_id": user.ID.String(),
+		"user_id": pwParams.ID.String(),
 		"iat":     time.Now().Unix(),
 		"exp":     time.Now().Add(time.Hour * 72).Unix(),
 	})
