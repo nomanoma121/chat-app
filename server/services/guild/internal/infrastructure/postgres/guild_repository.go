@@ -63,6 +63,27 @@ func (r *guildRepository) GetByID(ctx context.Context, id uuid.UUID) (*domain.Gu
 	}, nil
 }
 
+func (r *guildRepository) GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*domain.Guild, error) {
+	dbGuilds, err := r.queries.GetMyGuilds(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	
+	guilds := make([]*domain.Guild, len(dbGuilds))
+	for i, dbGuild := range dbGuilds {
+		guilds[i] = &domain.Guild{
+			ID:               dbGuild.ID,
+			OwnerID:          dbGuild.OwnerID,
+			Name:             dbGuild.Name,
+			Description:      dbGuild.Description,
+			IconURL:          dbGuild.IconUrl,
+			DefaultChannelID: dbGuild.DefaultChannelID,
+			CreatedAt:        dbGuild.CreatedAt.Time,
+		}
+	}
+	return guilds, nil
+}
+
 func (r *guildRepository) Update(ctx context.Context, guild *domain.Guild) (*domain.Guild, error) {
 	dbGuild, err := r.queries.UpdateGuild(ctx, gen.UpdateGuildParams{
 		ID:               guild.ID,

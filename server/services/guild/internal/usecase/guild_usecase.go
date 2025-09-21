@@ -14,6 +14,7 @@ type GuildUsecase interface {
 	Update(ctx context.Context, params *UpdateGuildParams) (*domain.Guild, error)
 	GetByID(ctx context.Context, id uuid.UUID) (*domain.Guild, error)
 	GetGuildOverview(ctx context.Context, guildID uuid.UUID) (*domain.GuildOverview, error)
+	GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*domain.Guild, error)
 }
 
 type guildUsecase struct {
@@ -169,6 +170,10 @@ func (u *guildUsecase) GetGuildOverview(ctx context.Context, guildID uuid.UUID) 
 		Guild:      guild,
 		Categories: categoriesOverview,
 	}, nil
+}
+
+func (u *guildUsecase) GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*domain.Guild, error) {
+	return u.store.Guilds().GetMyGuilds(ctx, userID)
 }
 
 var _ GuildUsecase = (*guildUsecase)(nil)

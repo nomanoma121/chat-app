@@ -90,6 +90,52 @@ func (q *Queries) GetGuildByID(ctx context.Context, id uuid.UUID) (*GetGuildByID
 	return &i, err
 }
 
+const getMyGuilds = `-- name: GetMyGuilds :many
+SELECT g.id, g.owner_id, g.name, g.description, g.icon_url, g.default_channel_id, g.created_at
+FROM guilds g
+JOIN members m ON g.id = m.guild_id
+WHERE m.user_id = $1
+ORDER BY g.created_at DESC
+`
+
+type GetMyGuildsRow struct {
+	ID               uuid.UUID
+	OwnerID          uuid.UUID
+	Name             string
+	Description      string
+	IconUrl          string
+	DefaultChannelID uuid.UUID
+	CreatedAt        pgtype.Timestamp
+}
+
+func (q *Queries) GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*GetMyGuildsRow, error) {
+	rows, err := q.db.Query(ctx, getMyGuilds, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*GetMyGuildsRow
+	for rows.Next() {
+		var i GetMyGuildsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.OwnerID,
+			&i.Name,
+			&i.Description,
+			&i.IconUrl,
+			&i.DefaultChannelID,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateGuild = `-- name: UpdateGuild :one
 UPDATE guilds
 SET name = $2, description = $3, icon_url = $4, default_channel_id = $5, updated_at = NOW()

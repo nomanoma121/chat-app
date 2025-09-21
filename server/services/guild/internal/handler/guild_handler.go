@@ -202,3 +202,38 @@ func (h *guildHandler) GetGuildOverview(ctx context.Context, req *pb.GetGuildOve
 
 	return &pb.GetGuildOverviewResponse{Guild: pbGuild}, nil
 }
+
+func (h *guildHandler) GetMyGuilds(ctx context.Context, req *pb.ListMyGuildsRequest) (*pb.ListMyGuildsResponse, error) {
+	userIDStr, err := metadata.GetUserIDFromMetadata(ctx)
+	if err != nil {
+		h.logger.Warn("Failed to get user ID from metadata", "error", err)
+		return nil, status.Error(codes.Unauthenticated, "authentication required")
+	}
+
+	userID, err := uuid.Parse(userIDStr)
+	if err != nil {
+		h.logger.Warn("Invalid user ID format", "user_id", userIDStr, "error", err)
+		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidGuildData.Error())
+	}
+
+	guilds, err := h.guildUsecase.GetMyGuilds(ctx, userID)
+	if err != nil {
+		h.logger.Error("Failed to get user's guilds", "user_id", userID, "error", err)
+		return nil, status.Error(codes.Internal, domain.ErrInternalServerError.Error())
+	}
+
+	pbGuilds := make([]*pb.Guild, len(guilds))
+	for i, guild := range guilds {
+		pbGuilds[i] = &pb.Guild{
+			Id:               guild.ID.String(),
+			OwnerId:          guild.OwnerID.String(),
+			Name:             guild.Name,
+			Description:      guild.Description,
+			IconUrl:          guild.IconURL,
+			DefaultChannelId: guild.DefaultChannelID.String(),
+			CreatedAt:        timestamppb.New(guild.CreatedAt),
+		}
+	}
+
+	return &pb.ListMyGuildsResponse{Guilds: pbGuilds}, nil
+}
