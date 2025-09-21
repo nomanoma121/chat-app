@@ -25,7 +25,7 @@ export default function CreateGuild() {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isValid, touchedFields },
+		formState: { errors, isValid },
 		reset,
 	} = useForm<FormInputValues>({
 		resolver: standardSchemaResolver(CreateGuildForm),
@@ -47,7 +47,7 @@ export default function CreateGuild() {
 				}
 			});
 			reset();
-			navigate(`/guilds/${result.guild.id}`);
+			navigate(`/servers/${result.guild.id}/channels/${result.guild.defaultChannelId}`);
 		} catch (error) {
 			console.error("Error creating guild:", error);
 		}
