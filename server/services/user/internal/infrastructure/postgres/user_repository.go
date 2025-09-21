@@ -3,24 +3,24 @@ package postgres
 import (
 	"context"
 	"user-service/internal/domain"
-	"user-service/internal/infrastructure/postgres/generated"
+	"user-service/internal/infrastructure/postgres/gen"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 )
 
 type userRepository struct {
-	queries *generated.Queries
+	queries *gen.Queries
 }
 
-func NewPostgresUserRepository(queries *generated.Queries) *userRepository {
+func NewPostgresUserRepository(queries *gen.Queries) *userRepository {
 	return &userRepository{
 		queries: queries,
 	}
 }
 
 func (r *userRepository) Create(ctx context.Context, user *domain.User) (*domain.User, error) {
-	dbUser, err := r.queries.CreateUser(ctx, generated.CreateUserParams{
+	dbUser, err := r.queries.CreateUser(ctx, gen.CreateUserParams{
 		ID:           user.ID,
 		DisplayID:    user.DisplayId,
 		Username:     user.Name,
@@ -37,7 +37,6 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) (*domain
 		DisplayId: dbUser.DisplayID,
 		Name:      dbUser.Username,
 		Email:     dbUser.Email,
-		Password:  dbUser.PasswordHash,
 		Bio:       dbUser.Bio,
 		IconURL:   dbUser.IconUrl,
 		CreatedAt: dbUser.CreatedAt.Time,

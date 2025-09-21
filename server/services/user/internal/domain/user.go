@@ -12,6 +12,16 @@ type User struct {
 	DisplayId string
 	Name      string
 	Email     string
+	Bio       string
+	IconURL   string
+	CreatedAt time.Time
+}
+
+type CreateUserParams struct {
+	ID        uuid.UUID
+	DisplayId string
+	Name      string
+	Email     string
 	Password  string
 	Bio       string
 	IconURL   string
@@ -19,10 +29,9 @@ type User struct {
 }
 
 type UserRepository interface {
-	Create(ctx context.Context, user *User) (*User, error)
+	Create(ctx context.Context, params CreateUserParams) (*User, error)
 	FindByEmail(ctx context.Context, email string) (*User, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (*User, error)
-	ExistsByEmail(ctx context.Context, email string) (bool, error)
 	ExistsByDisplayId(ctx context.Context, displayId string) (bool, error)
 	Update(ctx context.Context, user *User) (*User, error)
 }
