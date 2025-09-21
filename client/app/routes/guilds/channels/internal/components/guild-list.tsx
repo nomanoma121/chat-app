@@ -3,44 +3,11 @@ import { useNavigate } from "react-router";
 import { css } from "styled-system/css";
 import { GuildIcon } from "~/components/ui/guild-icon";
 import { IconButton } from "~/components/ui/icon-button";
+import { useListMyGuilds } from "~/api/gen/guild/guild";
 
 export const GuildList = () => {
+	const { data, isPending, error } = useListMyGuilds();
 	const navigate = useNavigate();
-	const demoGuilds = [
-		// 実際のサーバーにありそうな感じでいろんな風景の画像を設定
-		{
-			name: "Nature Lovers",
-			src: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=48&q=80",
-		},
-		{
-			name: "Tech Geeks",
-			src: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=48&q=80",
-		},
-		{
-			name: "Foodies",
-			src: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=48&q=80",
-		},
-		{
-			name: "Travel Enthusiasts",
-			src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=48&q=80",
-		},
-		{
-			name: "Art & Design",
-			src: "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=48&q=80",
-		},
-		{
-			name: "Music Fans",
-			src: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=48&q=80",
-		},
-		{
-			name: "Fitness Freaks",
-			src: "https://images.unsplash.com/photo-1554284126-4c2b6f3b3f0b?auto=format&fit=crop&w=48&q=80",
-		},
-		{
-			name: "Book Club",
-			src: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=48&q=80",
-		},
-	];
 	return (
 		<div
 			className={css({
@@ -80,17 +47,17 @@ export const GuildList = () => {
 					<MoveLeft size={20} />
 				</IconButton>
 			</div>
-			{demoGuilds.map((guild, index) => (
+			{data?.guilds.map((guild, index) => (
 				<div
 					key={index}
 					className={css({
 						marginTop: index === 0 ? "16px" : "8px",
-						marginBottom: index === demoGuilds.length - 1 ? "16px" : "0",
+						marginBottom: index === data.guilds.length - 1 ? "16px" : "0",
 						position: "relative",
 					})}
 				>
 					<GuildIcon
-						src={guild.src}
+						src={guild.iconUrl}
 						name={guild.name}
 						alt={guild.name}
 						size={48}
