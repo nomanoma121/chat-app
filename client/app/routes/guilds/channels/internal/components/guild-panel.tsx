@@ -11,28 +11,57 @@ import { FormLabel } from "~/components/ui/form-label";
 import { Button } from "~/components/ui/button";
 import { useOutletContext } from "react-router";
 import type { GuildsContext } from "../../layout";
+import { useCreateCategory } from "~/api/gen/category/category";
+import { useCreateChannel } from "~/api/gen/channel/channel";
+
+interface ChannelFormData {
+  name: string;
+  categoryId: string;
+}
 
 export const GuildPanel = () => {
-  const { guild, isPending, error } = useOutletContext<GuildsContext>();
+  const { guild, refetch } = useOutletContext<GuildsContext>();
+  const { mutateAsync: createCategory } = useCreateCategory();
+  const { mutateAsync: createChannel } = useCreateChannel();
   const [isChannelDialogOpen, setIsChannelDialogOpen] = useState(false);
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
-  const [channelFormData, setChannelFormData] = useState({ name: "" });
+  // TODO: useFormとかにする
+  const [channelFormData, setChannelFormData] = useState<ChannelFormData>({
+    name: "",
+    categoryId: "",
+  });
   const [categoryFormData, setCategoryFormData] = useState({ name: "" });
   const [isHovered, setIsHovered] = useState(false);
-  const channelNameId = useId();
-  const categoryNameId = useId();
   const navigate = useNavigate();
 
-  const handleChannelSubmit = (e: React.FormEvent) => {
+  const handleChannelSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Creating channel:", channelFormData);
+
+    await createChannel({
+      categoryId: channelFormData.categoryId,
+      data: {
+        name: channelFormData.name,
+      },
+    });
+
+		refetch();
+
     setIsChannelDialogOpen(false);
-    setChannelFormData({ name: "" });
+    setChannelFormData({ name: "", categoryId: "" });
   };
 
-  const handleCategorySubmit = (e: React.FormEvent) => {
+  const handleCategorySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Creating category:", categoryFormData);
+
+    await createCategory({
+      guildId: guild.id,
+      data: {
+        name: categoryFormData.name,
+      },
+    });
+
+		refetch();
+
     setIsCategoryDialogOpen(false);
     setCategoryFormData({ name: "" });
   };
@@ -51,7 +80,6 @@ export const GuildPanel = () => {
     }));
   };
 
-  console.log(guild, isPending, error);
   return (
     <div
       className={css({
@@ -121,18 +149,23 @@ export const GuildPanel = () => {
       {guild?.categories?.map((category) => (
         <Category
           key={category.id}
-          onChannelSelect={() =>
-            navigate(`/servers/${guild.id}/channels/${category.id}`)
-          }
-          onAddChannel={() =>
+          onAddChannel={() => {
             setIsChannelDialogOpen(
               (isChannelDialogOpen) => !isChannelDialogOpen
-            )
-          }
+            );
+            setChannelFormData((prev) => ({
+              ...prev,
+              categoryId: category.id,
+            }));
+          }}
         >
           <Category.Title>{category.name}</Category.Title>
           {category.channels.map((channel) => (
-            <Category.Channel key={channel.id} channel={channel} />
+            <Category.Channel
+              key={channel.id}
+              channel={channel}
+              onSelect={() => navigate(`/servers/${guild.id}/channels/${channel.id}`)}
+            />
           ))}
         </Category>
       ))}
@@ -214,11 +247,8 @@ export const GuildPanel = () => {
                 })}
               >
                 <Field.Root>
-                  <FormLabel htmlFor={channelNameId} color="text.bright">
-                    チャンネル名
-                  </FormLabel>
+                  <FormLabel color="text.bright">チャンネル名</FormLabel>
                   <Field.Input
-                    id={channelNameId}
                     name="name"
                     type="text"
                     required
@@ -304,11 +334,8 @@ export const GuildPanel = () => {
                 })}
               >
                 <Field.Root>
-                  <FormLabel htmlFor={categoryNameId} color="text.bright">
-                    カテゴリ名
-                  </FormLabel>
+                  <FormLabel color="text.bright">カテゴリ名</FormLabel>
                   <Field.Input
-                    id={categoryNameId}
                     name="name"
                     type="text"
                     required
@@ -344,7 +371,10 @@ export const GuildPanel = () => {
                       キャンセル
                     </Button>
                   </Dialog.CloseTrigger>
-                  <Button type="submit" disabled={!categoryFormData.name.trim()}>
+                  <Button
+                    type="submit"
+                    disabled={!categoryFormData.name.trim()}
+                  >
                     作成
                   </Button>
                 </div>

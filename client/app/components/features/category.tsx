@@ -13,8 +13,6 @@ import { Channel, type ChannelData, type ChannelProps } from "./channel";
 interface CategoryContextValue {
 	isExpanded: boolean;
 	onToggle: () => void;
-	selectedChannelId?: string;
-	onChannelSelect?: (channelId: string) => void;
 	onAddChannel?: () => void;
 }
 
@@ -42,7 +40,6 @@ const categoryStyles = cva({
 interface CategoryProps {
 	children: ReactNode;
 	defaultExpanded?: boolean;
-	onChannelSelect?: (channelId: string) => void;
 	onAddChannel?: () => void;
 	className?: string;
 }
@@ -51,7 +48,6 @@ const CategoryRoot = forwardRef<HTMLDivElement, CategoryProps>((props, ref) => {
 	const {
 		children,
 		defaultExpanded = true,
-		onChannelSelect,
 		onAddChannel,
 		className,
 	} = props;
@@ -64,7 +60,6 @@ const CategoryRoot = forwardRef<HTMLDivElement, CategoryProps>((props, ref) => {
 	const contextValue: CategoryContextValue = {
 		isExpanded,
 		onToggle: handleToggle,
-		onChannelSelect,
 		onAddChannel,
 	};
 
@@ -197,14 +192,14 @@ const Title = forwardRef<HTMLDivElement, TitleProps>((props, ref) => {
 Title.displayName = "Category.Title";
 
 // Category Channel wrapper
-interface CategoryChannelProps extends Omit<ChannelProps, "onSelect"> {
+interface CategoryChannelProps extends ChannelProps {
 	children?: never; // Prevent children since Channel manages its own content
 }
 
 const CategoryChannel = forwardRef<HTMLDivElement, CategoryChannelProps>(
 	(props, ref) => {
-		const { channel, className, ...rest } = props;
-		const { isExpanded, onChannelSelect } = useCategoryContext();
+		const { channel, onSelect, className, ...rest } = props;
+		const { isExpanded } = useCategoryContext();
 
 		if (!isExpanded) {
 			return null;
@@ -214,7 +209,7 @@ const CategoryChannel = forwardRef<HTMLDivElement, CategoryChannelProps>(
 			<Channel
 				ref={ref}
 				channel={channel}
-				onSelect={onChannelSelect}
+				onSelect={onSelect}
 				className={className}
 				{...rest}
 			/>

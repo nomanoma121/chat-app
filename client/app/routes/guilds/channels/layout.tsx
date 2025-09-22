@@ -4,6 +4,7 @@ import type { GuildDetail } from "~/api/gen/guildTypeProto.schemas";
 
 export type GuildsContext = {
   guild: GuildDetail;
+  refetch: () => void;
   isPending: boolean;
   error: unknown;
 }
@@ -15,6 +16,6 @@ export default function GuildListLayout() {
     return <div>Server ID is missing</div>;
   }
 
-  const { data, isPending, error } = useGetGuildOverview(guildId);
-  return <Outlet context={{ guild: data?.guild, isPending, error } } />;
+  const { data, isPending, error, refetch } = useGetGuildOverview(guildId);
+  return <Outlet context={{ guild: data?.guild, refetch, isPending, error } } />;
 }
