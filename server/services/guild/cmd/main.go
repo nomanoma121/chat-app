@@ -22,9 +22,7 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var (
-	db *pgxpool.Pool
-)
+var db *pgxpool.Pool
 
 func init() {
 	_ = godotenv.Load()

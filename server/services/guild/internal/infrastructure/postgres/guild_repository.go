@@ -53,13 +53,13 @@ func (r *guildRepository) GetByID(ctx context.Context, id uuid.UUID) (*domain.Gu
 		return nil, err
 	}
 	return &domain.Guild{
-		ID:          dbGuild.ID,
-		OwnerID:     dbGuild.OwnerID,
-		Name:        dbGuild.Name,
-		Description: dbGuild.Description,
-		IconURL:     dbGuild.IconUrl,
+		ID:               dbGuild.ID,
+		OwnerID:          dbGuild.OwnerID,
+		Name:             dbGuild.Name,
+		Description:      dbGuild.Description,
+		IconURL:          dbGuild.IconUrl,
 		DefaultChannelID: dbGuild.DefaultChannelID,
-		CreatedAt:   dbGuild.CreatedAt.Time,
+		CreatedAt:        dbGuild.CreatedAt.Time,
 	}, nil
 }
 
@@ -68,7 +68,7 @@ func (r *guildRepository) GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]
 	if err != nil {
 		return nil, err
 	}
-	
+
 	guilds := make([]*domain.Guild, len(dbGuilds))
 	for i, dbGuild := range dbGuilds {
 		guilds[i] = &domain.Guild{
@@ -96,13 +96,13 @@ func (r *guildRepository) Update(ctx context.Context, guild *domain.Guild) (*dom
 		return nil, err
 	}
 	return &domain.Guild{
-		ID:          dbGuild.ID,
-		OwnerID:     dbGuild.OwnerID,
-		Name:        dbGuild.Name,
-		Description: dbGuild.Description,
-		IconURL:     dbGuild.IconUrl,
+		ID:               dbGuild.ID,
+		OwnerID:          dbGuild.OwnerID,
+		Name:             dbGuild.Name,
+		Description:      dbGuild.Description,
+		IconURL:          dbGuild.IconUrl,
 		DefaultChannelID: dbGuild.DefaultChannelID,
-		CreatedAt:   dbGuild.CreatedAt.Time,
+		CreatedAt:        dbGuild.CreatedAt.Time,
 	}, nil
 }
 
