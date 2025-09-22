@@ -8,12 +8,13 @@ import (
 )
 
 type Guild struct {
-	ID          uuid.UUID
-	OwnerID     uuid.UUID
-	Name        string
-	Description string
-	IconURL     string
-	CreatedAt   time.Time
+	ID               uuid.UUID
+	OwnerID          uuid.UUID
+	Name             string
+	Description      string
+	IconURL          string
+	DefaultChannelID uuid.UUID
+	CreatedAt        time.Time
 }
 
 type GuildOverview struct {
@@ -24,5 +25,6 @@ type GuildOverview struct {
 type IGuildRepository interface {
 	Create(ctx context.Context, guild *Guild) (*Guild, error)
 	GetByID(ctx context.Context, id uuid.UUID) (*Guild, error)
+	GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*Guild, error)
 	Update(ctx context.Context, guild *Guild) (*Guild, error)
 }

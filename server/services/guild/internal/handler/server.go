@@ -35,6 +35,10 @@ func (h *GuildServiceHandler) GetGuildByID(ctx context.Context, req *pb.GetGuild
 	return h.guildHandler.GetGuildByID(ctx, req)
 }
 
+func (h *GuildServiceHandler) ListMyGuilds(ctx context.Context, req *pb.ListMyGuildsRequest) (*pb.ListMyGuildsResponse, error) {
+	return h.guildHandler.GetMyGuilds(ctx, req)
+}
+
 func (h *GuildServiceHandler) UpdateGuild(ctx context.Context, req *pb.UpdateGuildRequest) (*pb.UpdateGuildResponse, error) {
 	return h.guildHandler.UpdateGuild(ctx, req)
 }

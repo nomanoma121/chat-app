@@ -1,16 +1,13 @@
 import { Settings } from "lucide-react";
 import { useNavigate } from "react-router";
 import { css } from "styled-system/css";
+import { useGetCurrentUser } from "~/api/gen/user/user";
 import { Avatar } from "~/components/ui/avatar";
 import { Card } from "~/components/ui/card";
 import { Text } from "~/components/ui/text";
 
-interface UserPanelProps {
-	name?: string;
-	iconUrl?: string;
-}
-
-export const UserPanel = ({ name, iconUrl }: UserPanelProps) => {
+export const UserPanel = () => {
+	const { data } = useGetCurrentUser();
 	const navigate = useNavigate();
 	return (
 		<Card.Root
@@ -47,7 +44,7 @@ export const UserPanel = ({ name, iconUrl }: UserPanelProps) => {
 					})}
 				>
 					<Avatar
-						src={iconUrl}
+						src={data?.user.iconUrl}
 						name="User Avatar"
 						className={css({
 							width: "7",
@@ -60,7 +57,7 @@ export const UserPanel = ({ name, iconUrl }: UserPanelProps) => {
 							color: "text.bright",
 						})}
 					>
-						{name ?? "Unknown User"}
+						{data?.user.name ?? "Unknown User"}
 					</Text>
 				</div>
 				<div className={css({ display: "flex", alignItems: "center" })}>

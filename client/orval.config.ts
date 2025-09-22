@@ -17,17 +17,4 @@ export default {
       afterAllFilesWrite: "pnpm biome:check",
     },
   },
-  zod: {
-    input: {
-      target: '../docs/openapi.swagger.json',
-    },
-    output: {
-      mode: 'tags-split',
-      client: 'zod',
-      target: 'app/schema/gen',
-    },
-    hooks: {
-      afterAllFilesWrite: "pnpm biome:check",
-    }
-  },
 };

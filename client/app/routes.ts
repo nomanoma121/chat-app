@@ -18,10 +18,12 @@ export default [
 				route("new", "routes/guilds/new/page.tsx"),
 			]),
 			...prefix(":serverId", [
-				route("settings", "routes/guilds/settings/page.tsx"),
-				route("invite", "routes/guilds/invite/page.tsx"),
-				...prefix("channels", [
-					route(":channelId", "routes/guilds/channels/page.tsx"),
+				layout("routes/guilds/channels/layout.tsx", [
+					route("settings", "routes/guilds/settings/page.tsx"),
+					route("invite", "routes/guilds/invite/page.tsx"),
+					...prefix("channels", [
+						route(":channelId", "routes/guilds/channels/page.tsx"),
+					]),
 				]),
 			]),
 		]),

@@ -6,18 +6,18 @@ import (
 	"guild-service/internal/domain"
 	"guild-service/internal/infrastructure/postgres/gen" // sqlcが生成したパッケージ
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type PostgresStore struct {
-	db         *pgx.Conn
+	db         *pgxpool.Pool
 	guilds     domain.IGuildRepository
 	channels   domain.IChannelRepository
 	categories domain.ICategoryRepository
 	members    domain.IMemberRepository
 }
 
-func NewPostgresStore(db *pgx.Conn) domain.IStore {
+func NewPostgresStore(db *pgxpool.Pool) domain.IStore {
 	q := gen.New(db)
 
 	return &PostgresStore{

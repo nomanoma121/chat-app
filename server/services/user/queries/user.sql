@@ -1,13 +1,13 @@
 -- name: CreateUser :one
-INSERT INTO users (id, display_id, username, email, password_hash, bio, icon_url, created_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
-RETURNING *;
+INSERT INTO users (id, display_id, username, email, password_hash, bio, icon_url, created_at, updated_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
+RETURNING id, display_id, username, email, bio, icon_url, created_at;
 
--- name: FindByEmail :one
-SELECT * FROM users WHERE email = $1;
+-- name: GetPasswordByEmail :one
+SELECT id, password_hash FROM users WHERE email = $1;
 
 -- name: GetUserByID :one
-SELECT * FROM users WHERE id = $1;
+SELECT id, display_id, username, email, bio, icon_url, created_at FROM users WHERE id = $1;
 
 -- name: ExistsByEmail :one
 SELECT COUNT(*) FROM users WHERE email = $1;
@@ -17,6 +17,6 @@ SELECT COUNT(*) FROM users WHERE display_id = $1;
 
 -- name: UpdateUser :one
 UPDATE users
-SET username = $2, bio = $3, icon_url = $4
+SET username = $2, bio = $3, icon_url = $4, updated_at = NOW()
 WHERE id = $1
-RETURNING *;
+RETURNING id, display_id, username, email, bio, icon_url, created_at;

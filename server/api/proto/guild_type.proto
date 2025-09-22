@@ -10,7 +10,7 @@ import "protoc-gen-openapiv2/options/annotations.proto";
 message Guild {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
-      required: ["id", "name", "owner_id", "created_at"]
+      required: ["id", "name", "owner_id", "description", "default_channel_id", "icon_url", "created_at"]
     };
   };
   string id = 1;
@@ -18,13 +18,14 @@ message Guild {
   string owner_id = 3;
   string description = 4;
   string icon_url = 5;
+  string default_channel_id = 7;
   google.protobuf.Timestamp created_at = 6;
 }
 
 message GuildDetail {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
-      required: ["id", "name", "owner_id", "created_at", "categories"]
+      required: ["id", "name", "owner_id", "description", "default_channel_id", "icon_url", "created_at", "categories"]
     };
   };
   string id = 1;
@@ -32,6 +33,7 @@ message GuildDetail {
   string owner_id = 3;
   string description = 4;
   string icon_url = 5;
+  string default_channel_id = 8;
   google.protobuf.Timestamp created_at = 6;
   repeated CategoryDetail categories = 7;
 }

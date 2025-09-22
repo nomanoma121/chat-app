@@ -706,7 +706,7 @@ var File_user_message_proto protoreflect.FileDescriptor
 
 const file_user_message_proto_rawDesc = "" +
 	"\n" +
-	"\x12user_message.proto\x12\x04user\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x0fuser_type.proto\"\xd1\x01\n" +
+	"\x12user_message.proto\x12\x04user\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x0fuser_type.proto\"\xe2\x01\n" +
 	"\x0fRegisterRequest\x12\x1d\n" +
 	"\n" +
 	"display_id\x18\x01 \x01(\tR\tdisplayId\x12\x1a\n" +
@@ -714,9 +714,9 @@ const file_user_message_proto_rawDesc = "" +
 	"\x05email\x18\x03 \x01(\tR\x05email\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12\x10\n" +
 	"\x03bio\x18\x05 \x01(\tR\x03bio\x12\x19\n" +
-	"\bicon_url\x18\x06 \x01(\tR\aiconUrl:,\x92A)\n" +
-	"'\xd2\x01\n" +
-	"display_id\xd2\x01\bpassword\xd2\x01\x05email\xd2\x01\x04name\"@\n" +
+	"\bicon_url\x18\x06 \x01(\tR\aiconUrl:=\x92A:\n" +
+	"8\xd2\x01\n" +
+	"display_id\xd2\x01\bpassword\xd2\x01\x05email\xd2\x01\x04name\xd2\x01\x03bio\xd2\x01\bicon_url\"@\n" +
 	"\x10RegisterResponse\x12\x1e\n" +
 	"\x04user\x18\x01 \x01(\v2\n" +
 	".user.UserR\x04user:\f\x92A\t\n" +

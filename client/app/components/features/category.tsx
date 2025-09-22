@@ -1,4 +1,4 @@
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Plus } from "lucide-react";
 import {
 	createContext,
 	forwardRef,
@@ -13,8 +13,7 @@ import { Channel, type ChannelData, type ChannelProps } from "./channel";
 interface CategoryContextValue {
 	isExpanded: boolean;
 	onToggle: () => void;
-	selectedChannelId?: string;
-	onChannelSelect?: (channelId: string) => void;
+	onAddChannel?: () => void;
 }
 
 const CategoryContext = createContext<CategoryContextValue | undefined>(
@@ -41,17 +40,12 @@ const categoryStyles = cva({
 interface CategoryProps {
 	children: ReactNode;
 	defaultExpanded?: boolean;
-	onChannelSelect?: (channelId: string) => void;
+	onAddChannel?: () => void;
 	className?: string;
 }
 
 const CategoryRoot = forwardRef<HTMLDivElement, CategoryProps>((props, ref) => {
-	const {
-		children,
-		defaultExpanded = true,
-		onChannelSelect,
-		className,
-	} = props;
+	const { children, defaultExpanded = true, onAddChannel, className } = props;
 	const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
 	const handleToggle = () => {
@@ -61,7 +55,7 @@ const CategoryRoot = forwardRef<HTMLDivElement, CategoryProps>((props, ref) => {
 	const contextValue: CategoryContextValue = {
 		isExpanded,
 		onToggle: handleToggle,
-		onChannelSelect,
+		onAddChannel,
 	};
 
 	return (
@@ -83,17 +77,52 @@ const titleStyles = cva({
 	base: {
 		display: "flex",
 		alignItems: "center",
+		justifyContent: "space-between",
 		gap: "4px",
 		padding: "6px 8px",
-		cursor: "pointer",
 		fontSize: "xs",
 		fontWeight: "bold",
 		color: "text.medium",
 		textTransform: "uppercase",
 		letterSpacing: "0.5px",
 		transition: "all 0.1s ease",
+	},
+});
+
+const titleLeftStyles = cva({
+	base: {
+		display: "flex",
+		alignItems: "center",
+		gap: "4px",
+		cursor: "pointer",
+		transition: "all 0.1s ease",
 		_hover: {
 			color: "text.bright",
+		},
+	},
+});
+
+const addButtonStyles = cva({
+	base: {
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+		width: "18px",
+		height: "18px",
+		borderRadius: "2px",
+		cursor: "pointer",
+		opacity: "0",
+		transition: "all 0.1s ease",
+		_hover: {
+			bgColor: "bg.tertiary",
+			color: "text.bright",
+		},
+	},
+	variants: {
+		visible: {
+			true: {
+				opacity: "1",
+			},
 		},
 	},
 });
@@ -119,18 +148,35 @@ interface TitleProps {
 
 const Title = forwardRef<HTMLDivElement, TitleProps>((props, ref) => {
 	const { children, className } = props;
-	const { isExpanded, onToggle } = useCategoryContext();
+	const { isExpanded, onToggle, onAddChannel } = useCategoryContext();
+	const [isHovered, setIsHovered] = useState(false);
+
+	const handleAddChannel = (e: React.MouseEvent) => {
+		e.stopPropagation();
+		onAddChannel?.();
+	};
 
 	return (
 		<div
 			ref={ref}
 			className={[titleStyles(), className].filter(Boolean).join(" ")}
-			onClick={onToggle}
+			onMouseEnter={() => setIsHovered(true)}
+			onMouseLeave={() => setIsHovered(false)}
 		>
-			<div className={chevronStyles({ expanded: isExpanded })}>
-				<ChevronRight size={14} />
+			<div className={titleLeftStyles()} onClick={onToggle}>
+				<div className={chevronStyles({ expanded: isExpanded })}>
+					<ChevronRight size={14} />
+				</div>
+				<span>{children}</span>
 			</div>
-			<span>{children}</span>
+			{onAddChannel && (
+				<div
+					className={addButtonStyles({ visible: isHovered })}
+					onClick={handleAddChannel}
+				>
+					<Plus size={16} />
+				</div>
+			)}
 		</div>
 	);
 });
@@ -138,14 +184,14 @@ const Title = forwardRef<HTMLDivElement, TitleProps>((props, ref) => {
 Title.displayName = "Category.Title";
 
 // Category Channel wrapper
-interface CategoryChannelProps extends Omit<ChannelProps, "onSelect"> {
+interface CategoryChannelProps extends ChannelProps {
 	children?: never; // Prevent children since Channel manages its own content
 }
 
 const CategoryChannel = forwardRef<HTMLDivElement, CategoryChannelProps>(
 	(props, ref) => {
-		const { channel, className, ...rest } = props;
-		const { isExpanded, onChannelSelect } = useCategoryContext();
+		const { channel, onSelect, className, ...rest } = props;
+		const { isExpanded } = useCategoryContext();
 
 		if (!isExpanded) {
 			return null;
@@ -155,7 +201,7 @@ const CategoryChannel = forwardRef<HTMLDivElement, CategoryChannelProps>(
 			<Channel
 				ref={ref}
 				channel={channel}
-				onSelect={onChannelSelect}
+				onSelect={onSelect}
 				className={className}
 				{...rest}
 			/>

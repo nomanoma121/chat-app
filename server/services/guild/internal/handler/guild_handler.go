@@ -59,12 +59,13 @@ func (h *guildHandler) CreateGuild(ctx context.Context, req *pb.CreateGuildReque
 	}
 
 	pbGuild := &pb.Guild{
-		Id:          guild.ID.String(),
-		OwnerId:     guild.OwnerID.String(),
-		Name:        guild.Name,
-		Description: guild.Description,
-		IconUrl:     guild.IconURL,
-		CreatedAt:   timestamppb.New(guild.CreatedAt),
+		Id:               guild.ID.String(),
+		OwnerId:          guild.OwnerID.String(),
+		Name:             guild.Name,
+		Description:      guild.Description,
+		IconUrl:          guild.IconURL,
+		DefaultChannelId: guild.DefaultChannelID.String(),
+		CreatedAt:        timestamppb.New(guild.CreatedAt),
 	}
 	return &pb.CreateGuildResponse{Guild: pbGuild}, nil
 }
@@ -89,12 +90,13 @@ func (h *guildHandler) GetGuildByID(ctx context.Context, req *pb.GetGuildByIDReq
 	}
 
 	pbGuild := &pb.Guild{
-		Id:          guild.ID.String(),
-		OwnerId:     guild.OwnerID.String(),
-		Name:        guild.Name,
-		Description: guild.Description,
-		IconUrl:     guild.IconURL,
-		CreatedAt:   timestamppb.New(guild.CreatedAt),
+		Id:               guild.ID.String(),
+		OwnerId:          guild.OwnerID.String(),
+		Name:             guild.Name,
+		Description:      guild.Description,
+		IconUrl:          guild.IconURL,
+		DefaultChannelId: guild.DefaultChannelID.String(),
+		CreatedAt:        timestamppb.New(guild.CreatedAt),
 	}
 	return &pb.GetGuildByIDResponse{Guild: pbGuild}, nil
 }
@@ -105,12 +107,18 @@ func (h *guildHandler) UpdateGuild(ctx context.Context, req *pb.UpdateGuildReque
 		h.logger.Warn("Invalid guild ID format", "guild_id", req.GuildId, "error", err)
 		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidGuildID.Error())
 	}
+	defaultChannelID, err := uuid.Parse(req.DefaultChannelId)
+	if err != nil {
+		h.logger.Warn("Invalid default channel ID format", "default_channel_id", req.DefaultChannelId, "error", err)
+		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidChannelID.Error())
+	}
 
 	usecaseReq := &usecase.UpdateGuildParams{
-		ID:          guildID,
-		Name:        req.Name,
-		Description: req.Description,
-		IconURL:     req.IconUrl,
+		ID:               guildID,
+		Name:             req.Name,
+		Description:      req.Description,
+		IconURL:          req.IconUrl,
+		DefaultChannelID: defaultChannelID,
 	}
 
 	updatedGuild, err := h.guildUsecase.Update(ctx, usecaseReq)
@@ -129,12 +137,13 @@ func (h *guildHandler) UpdateGuild(ctx context.Context, req *pb.UpdateGuildReque
 	}
 
 	pbGuild := &pb.Guild{
-		Id:          updatedGuild.ID.String(),
-		OwnerId:     updatedGuild.OwnerID.String(),
-		Name:        updatedGuild.Name,
-		Description: updatedGuild.Description,
-		IconUrl:     updatedGuild.IconURL,
-		CreatedAt:   timestamppb.New(updatedGuild.CreatedAt),
+		Id:               updatedGuild.ID.String(),
+		OwnerId:          updatedGuild.OwnerID.String(),
+		Name:             updatedGuild.Name,
+		Description:      updatedGuild.Description,
+		IconUrl:          updatedGuild.IconURL,
+		DefaultChannelId: updatedGuild.DefaultChannelID.String(),
+		CreatedAt:        timestamppb.New(updatedGuild.CreatedAt),
 	}
 
 	return &pb.UpdateGuildResponse{Guild: pbGuild}, nil
@@ -181,14 +190,50 @@ func (h *guildHandler) GetGuildOverview(ctx context.Context, req *pb.GetGuildOve
 	}
 
 	pbGuild := &pb.GuildDetail{
-		Id:          guildOverview.ID.String(),
-		OwnerId:     guildOverview.OwnerID.String(),
-		Name:        guildOverview.Name,
-		Description: guildOverview.Description,
-		IconUrl:     guildOverview.IconURL,
-		CreatedAt:   timestamppb.New(guildOverview.CreatedAt),
-		Categories:  pbCategories,
+		Id:               guildOverview.ID.String(),
+		OwnerId:          guildOverview.OwnerID.String(),
+		Name:             guildOverview.Name,
+		Description:      guildOverview.Description,
+		IconUrl:          guildOverview.IconURL,
+		DefaultChannelId: guildOverview.DefaultChannelID.String(),
+		CreatedAt:        timestamppb.New(guildOverview.CreatedAt),
+		Categories:       pbCategories,
 	}
 
 	return &pb.GetGuildOverviewResponse{Guild: pbGuild}, nil
+}
+
+func (h *guildHandler) GetMyGuilds(ctx context.Context, req *pb.ListMyGuildsRequest) (*pb.ListMyGuildsResponse, error) {
+	userIDStr, err := metadata.GetUserIDFromMetadata(ctx)
+	if err != nil {
+		h.logger.Warn("Failed to get user ID from metadata", "error", err)
+		return nil, status.Error(codes.Unauthenticated, "authentication required")
+	}
+
+	userID, err := uuid.Parse(userIDStr)
+	if err != nil {
+		h.logger.Warn("Invalid user ID format", "user_id", userIDStr, "error", err)
+		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidGuildData.Error())
+	}
+
+	guilds, err := h.guildUsecase.GetMyGuilds(ctx, userID)
+	if err != nil {
+		h.logger.Error("Failed to get user's guilds", "user_id", userID, "error", err)
+		return nil, status.Error(codes.Internal, domain.ErrInternalServerError.Error())
+	}
+
+	pbGuilds := make([]*pb.Guild, len(guilds))
+	for i, guild := range guilds {
+		pbGuilds[i] = &pb.Guild{
+			Id:               guild.ID.String(),
+			OwnerId:          guild.OwnerID.String(),
+			Name:             guild.Name,
+			Description:      guild.Description,
+			IconUrl:          guild.IconURL,
+			DefaultChannelId: guild.DefaultChannelID.String(),
+			CreatedAt:        timestamppb.New(guild.CreatedAt),
+		}
+	}
+
+	return &pb.ListMyGuildsResponse{Guilds: pbGuilds}, nil
 }

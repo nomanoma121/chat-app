@@ -14,6 +14,7 @@ type GuildUsecase interface {
 	Update(ctx context.Context, params *UpdateGuildParams) (*domain.Guild, error)
 	GetByID(ctx context.Context, id uuid.UUID) (*domain.Guild, error)
 	GetGuildOverview(ctx context.Context, guildID uuid.UUID) (*domain.GuildOverview, error)
+	GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*domain.Guild, error)
 }
 
 type guildUsecase struct {
@@ -50,13 +51,16 @@ func (u *guildUsecase) Create(ctx context.Context, params *CreateGuildParams) (*
 		return nil, domain.ErrUserNotFound
 	}
 
+	channelId := uuid.New()
+
 	guild := &domain.Guild{
-		ID:          uuid.New(),
-		OwnerID:     params.OwnerID,
-		Name:        params.Name,
-		Description: params.Description,
-		IconURL:     params.IconURL,
-		CreatedAt:   time.Now(),
+		ID:               uuid.New(),
+		OwnerID:          params.OwnerID,
+		Name:             params.Name,
+		Description:      params.Description,
+		IconURL:          params.IconURL,
+		DefaultChannelID: channelId,
+		CreatedAt:        time.Now(),
 	}
 
 	category := &domain.Category{
@@ -67,7 +71,7 @@ func (u *guildUsecase) Create(ctx context.Context, params *CreateGuildParams) (*
 	}
 
 	channel := &domain.Channel{
-		ID:         uuid.New(),
+		ID:         channelId,
 		CategoryID: category.ID,
 		Name:       domain.DefaultChannelName,
 		CreatedAt:  time.Now(),
@@ -113,10 +117,11 @@ func (u *guildUsecase) Create(ctx context.Context, params *CreateGuildParams) (*
 }
 
 type UpdateGuildParams struct {
-	ID          uuid.UUID `validate:"required"`
-	Name        string    `validate:"required,min=2,max=20"`
-	Description string    `validate:"required,max=200"`
-	IconURL     string    `validate:"required,url"`
+	ID               uuid.UUID `validate:"required"`
+	Name             string    `validate:"required,min=2,max=20"`
+	Description      string    `validate:"required,max=200"`
+	IconURL          string    `validate:"required,url"`
+	DefaultChannelID uuid.UUID `validate:"required"`
 }
 
 func (u *guildUsecase) Update(ctx context.Context, params *UpdateGuildParams) (*domain.Guild, error) {
@@ -125,10 +130,11 @@ func (u *guildUsecase) Update(ctx context.Context, params *UpdateGuildParams) (*
 	}
 
 	return u.store.Guilds().Update(ctx, &domain.Guild{
-		ID:          params.ID,
-		Name:        params.Name,
-		Description: params.Description,
-		IconURL:     params.IconURL,
+		ID:               params.ID,
+		Name:             params.Name,
+		Description:      params.Description,
+		IconURL:          params.IconURL,
+		DefaultChannelID: params.DefaultChannelID,
 	})
 }
 
@@ -164,6 +170,10 @@ func (u *guildUsecase) GetGuildOverview(ctx context.Context, guildID uuid.UUID) 
 		Guild:      guild,
 		Categories: categoriesOverview,
 	}, nil
+}
+
+func (u *guildUsecase) GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*domain.Guild, error) {
+	return u.store.Guilds().GetMyGuilds(ctx, userID)
 }
 
 var _ GuildUsecase = (*guildUsecase)(nil)

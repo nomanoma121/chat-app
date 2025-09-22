@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import { css } from "styled-system/css";
 import { Center, styled } from "styled-system/jsx";
 import { Spinner } from "./spinner";
 import {
@@ -13,14 +14,33 @@ interface ButtonLoadingProps {
 
 export interface ButtonProps extends StyledButtonProps, ButtonLoadingProps {}
 
+const disabledStyles = css({
+	"&:disabled": {
+		backgroundColor: "accent.default !important",
+		color: "accent.subtle !important",
+		opacity: 0.7,
+		cursor: "not-allowed",
+		"&:hover": {
+			backgroundColor: "accent.default !important",
+			color: "accent.subtle !important",
+		},
+	},
+});
+
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	(props, ref) => {
-		const { loading, disabled, loadingText, children, ...rest } = props;
+		const { loading, disabled, loadingText, children, className, ...rest } =
+			props;
 
 		const trulyDisabled = loading || disabled;
 
 		return (
-			<StyledButton disabled={trulyDisabled} ref={ref} {...rest}>
+			<StyledButton
+				disabled={trulyDisabled}
+				ref={ref}
+				className={`${className || ""} ${disabledStyles}`}
+				{...rest}
+			>
 				{loading && !loadingText ? (
 					<>
 						<ButtonSpinner />

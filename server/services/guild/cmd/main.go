@@ -16,15 +16,13 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/joho/godotenv"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 )
 
-var (
-	db   *pgx.Conn
-	opts []grpc.DialOption
-)
+var db *pgxpool.Pool
 
 func init() {
 	_ = godotenv.Load()
@@ -35,7 +33,7 @@ func init() {
 	log.Info("Connecting to database...")
 	var err error
 	for i := 0; i < 30; i++ {
-		db, err = pgx.Connect(context.Background(), dsn)
+		db, err = pgxpool.New(context.Background(), dsn)
 		if err == nil {
 			break
 		}
@@ -52,15 +50,13 @@ func init() {
 func main() {
 	log := logger.Default("guild-service")
 	defer func() {
-		if err := db.Close(context.Background()); err != nil {
-			log.Error("Failed to close database connection", "error", err)
-		}
+		db.Close()
 	}()
 
 	validate := validator.New()
 
 	userServiceURL := os.Getenv("USER_SERVICE_URL")
-	userConn, err := grpc.NewClient(userServiceURL, opts...)
+	userConn, err := grpc.NewClient(userServiceURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Error("Failed to connect to user service", "error", err)
 		os.Exit(1)

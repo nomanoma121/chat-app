@@ -8,7 +8,7 @@ import (
 	"time"
 	"user-service/internal/handler"
 	"user-service/internal/infrastructure/postgres"
-	"user-service/internal/infrastructure/postgres/generated"
+	"user-service/internal/infrastructure/postgres/gen"
 	"user-service/internal/usecase"
 
 	pb "chat-app-proto/gen/user"
@@ -53,7 +53,7 @@ func main() {
 			log.Error("Failed to close database connection", "error", err)
 		}
 	}()
-	userRepo := postgres.NewPostgresUserRepository(generated.New(db))
+	userRepo := postgres.NewPostgresUserRepository(gen.New(db))
 	validate := validator.New()
 	userUsecase := usecase.NewUserUsecase(userRepo, usecase.Config{
 		JWTSecret: os.Getenv("JWT_SECRET"),

@@ -1,12 +1,12 @@
 import { defineConfig } from "@pandacss/dev";
 import { createPreset } from "@park-ui/panda-preset";
-import violet from "@park-ui/panda-preset/colors/violet";
+import green from "@park-ui/panda-preset/colors/green";
 import slate from "@park-ui/panda-preset/colors/slate";
 
 export default defineConfig({
   preflight: true,
   presets: [
-    createPreset({ accentColor: violet, grayColor: slate, radius: "md" }),
+    createPreset({ accentColor: green, grayColor: slate, radius: "md" }),
   ],
   include: ["./app/**/*.{js,jsx,ts,tsx,vue}"],
   jsxFramework: "react",
@@ -15,18 +15,18 @@ export default defineConfig({
     extend: {
       tokens: {
         colors: {
-          // Midnight Violet Theme - ミッドナイトバイオレット系
+          // Midnight Green Theme - 深夜の森（ニュートラル背景版）
           bg: {
-            primary: { value: "#1a1a20" },      // 深い紫の夜
-            secondary: { value: "#202027" },    // 夜のラベンダー
-            tertiary: { value: "#27273a" },     // 濃い紫の影
-            quaternary: { value: "#2e2e44" },   // ダークバイオレット
-            emphasized: { value: "#3a3a50" },   // 夜のアメジスト
+            primary: { value: "#0d1117" },      // ニュートラルダークグレー
+            secondary: { value: "#161b22" },    // 濃いスレートグレー
+            tertiary: { value: "#21262d" },     // ダークグレー
+            quaternary: { value: "#30363d" },   // ミディアムグレー
+            emphasized: { value: "#484f58" },   // ライトグレー
           },
           accent: {
-            default: { value: "#8b5cf6" },      // violet.9 - メインのバイオレット色
-            emphasized: { value: "#a855f7" },   // violet.10 - 強調されたバイオレット
-            subtle: { value: "#c4b5fd" },       // violet.11 - 薄いバイオレット
+            default: { value: "#22c55e" },      // 鮮やかなグリーン（green.500）
+            emphasized: { value: "#16a34a" },   // 深いグリーン（green.600）
+            subtle: { value: "#bbf7d0" },       // 薄いグリーン（green.200）
           },
           danger: {
             default: { value: "#ef4444" },      // red.500 - メインの警告色
@@ -34,14 +34,14 @@ export default defineConfig({
             subtle: { value: "#fca5a5" },       // red.300 - 薄い警告色
           },
           border: {
-            soft: { value: "#373745" },         // 薄い紫グレーの境界
-            subtle: { value: "#44444f" },       // 紫がかったグレーの縁
-            default: { value: "#525266" },      // バイオレットグレーの輝き
+            soft: { value: "#30363d" },         // ニュートラル境界
+            subtle: { value: "#484f58" },       // グレーの縁
+            strong: { value: "#6e7681" },       // 明るいグレー境界
           },
           text: {
-            soft: { value: "#737391" },         // 薄い紫グレー
-            medium: { value: "#9c9cb8" },       // 中間の紫グレー
-            bright: { value: "#d4d4e8" },       // 明るい紫グレー
+            soft: { value: "#7d8590" },         // 薄いグレー
+            medium: { value: "#c9d1d9" },       // 中間のグレー
+            bright: { value: "#f0f6fc" },       // 明るいホワイト
           },
         }
       }
