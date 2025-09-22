@@ -55,6 +55,7 @@ export const GuildList = () => {
 						marginBottom: index === data.guilds.length - 1 ? "16px" : "0",
 						position: "relative",
 					})}
+					onClick={() => navigate(`/servers/${guild.id}/channels/${guild.defaultChannelId}`)}
 				>
 					<GuildIcon
 						src={guild.iconUrl}
