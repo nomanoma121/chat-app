@@ -45,7 +45,7 @@ service UserService {
 
   rpc GetCurrentUser(GetCurrentUserRequest) returns (GetCurrentUserResponse) {
     option (google.api.http) = {
-      get: "/api/users/me"
+      get: "/api/user/current"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "User"

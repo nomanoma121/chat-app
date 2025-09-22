@@ -26,16 +26,16 @@ var File_user_service_proto protoreflect.FileDescriptor
 
 const file_user_service_proto_rawDesc = "" +
 	"\n" +
-	"\x12user_service.proto\x12\x04user\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x12user_message.proto2\xa2\x05\n" +
+	"\x12user_service.proto\x12\x04user\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x12user_message.proto2\xa6\x05\n" +
 	"\vUserService\x12a\n" +
 	"\bRegister\x12\x15.user.RegisterRequest\x1a\x16.user.RegisterResponse\"&\x92A\x06\n" +
 	"\x04Auth\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/auth/register\x12U\n" +
 	"\x05Login\x12\x12.user.LoginRequest\x1a\x13.user.LoginResponse\"#\x92A\x06\n" +
 	"\x04Auth\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/auth/login\x12R\n" +
 	"\x06AuthMe\x12\x13.user.AuthMeRequest\x1a\x14.user.AuthMeResponse\"\x1d\x92A\x06\n" +
-	"\x04Auth\x82\xd3\xe4\x93\x02\x0e\x12\f/api/auth/me\x12k\n" +
-	"\x0eGetCurrentUser\x12\x1b.user.GetCurrentUserRequest\x1a\x1c.user.GetCurrentUserResponse\"\x1e\x92A\x06\n" +
-	"\x04User\x82\xd3\xe4\x93\x02\x0f\x12\r/api/users/me\x12d\n" +
+	"\x04Auth\x82\xd3\xe4\x93\x02\x0e\x12\f/api/auth/me\x12o\n" +
+	"\x0eGetCurrentUser\x12\x1b.user.GetCurrentUserRequest\x1a\x1c.user.GetCurrentUserResponse\"\"\x92A\x06\n" +
+	"\x04User\x82\xd3\xe4\x93\x02\x13\x12\x11/api/user/current\x12d\n" +
 	"\vGetUserByID\x12\x18.user.GetUserByIDRequest\x1a\x19.user.GetUserByIDResponse\" \x92A\x06\n" +
 	"\x04User\x82\xd3\xe4\x93\x02\x11\x12\x0f/api/users/{id}\x12V\n" +
 	"\x06Update\x12\x13.user.UpdateRequest\x1a\x14.user.UpdateResponse\"!\x92A\x06\n" +
