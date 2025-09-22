@@ -44,10 +44,12 @@ export default function CreateGuild() {
 					name: data.name,
 					description: data.description ?? "",
 					iconUrl: data.iconUrl,
-				}
+				},
 			});
 			reset();
-			navigate(`/servers/${result.guild.id}/channels/${result.guild.defaultChannelId}`);
+			navigate(
+				`/servers/${result.guild.id}/channels/${result.guild.defaultChannelId}`,
+			);
 		} catch (error) {
 			console.error("Error creating guild:", error);
 		}
@@ -91,7 +93,10 @@ export default function CreateGuild() {
 							gap: "20px",
 						})}
 					>
-						<Field.Root className={css({ width: "100%" })} invalid={!!errors.name}>
+						<Field.Root
+							className={css({ width: "100%" })}
+							invalid={!!errors.name}
+						>
 							<FormLabel color="text.bright">サーバー名</FormLabel>
 							<Field.Input
 								{...register("name")}
@@ -103,12 +108,13 @@ export default function CreateGuild() {
 								})}
 							/>
 							{errors.name && (
-								<Field.ErrorText>
-									{errors.name.message}
-								</Field.ErrorText>
+								<Field.ErrorText>{errors.name.message}</Field.ErrorText>
 							)}
 						</Field.Root>
-						<Field.Root className={css({ width: "100%" })} invalid={!!errors.description}>
+						<Field.Root
+							className={css({ width: "100%" })}
+							invalid={!!errors.description}
+						>
 							<FormLabel color="text.bright">サーバーの説明</FormLabel>
 							<Field.Textarea
 								{...register("description")}
@@ -120,12 +126,13 @@ export default function CreateGuild() {
 								})}
 							/>
 							{errors.description && (
-								<Field.ErrorText>
-									{errors.description.message}
-								</Field.ErrorText>
+								<Field.ErrorText>{errors.description.message}</Field.ErrorText>
 							)}
 						</Field.Root>
-						<Field.Root className={css({ width: "100%" })} invalid={!!errors.iconUrl}>
+						<Field.Root
+							className={css({ width: "100%" })}
+							invalid={!!errors.iconUrl}
+						>
 							<FormLabel color="text.bright">アイコンURL</FormLabel>
 							<Field.Input
 								{...register("iconUrl")}
@@ -137,9 +144,7 @@ export default function CreateGuild() {
 								})}
 							/>
 							{errors.iconUrl && (
-								<Field.ErrorText>
-									{errors.iconUrl.message}
-								</Field.ErrorText>
+								<Field.ErrorText>{errors.iconUrl.message}</Field.ErrorText>
 							)}
 						</Field.Root>
 						<Button

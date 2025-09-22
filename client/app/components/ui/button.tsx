@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
-import { Center, styled } from "styled-system/jsx";
 import { css } from "styled-system/css";
+import { Center, styled } from "styled-system/jsx";
 import { Spinner } from "./spinner";
 import {
 	Button as StyledButton,
@@ -23,13 +23,14 @@ const disabledStyles = css({
 		"&:hover": {
 			backgroundColor: "accent.default !important",
 			color: "accent.subtle !important",
-		}
-	}
+		},
+	},
 });
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	(props, ref) => {
-		const { loading, disabled, loadingText, children, className, ...rest } = props;
+		const { loading, disabled, loadingText, children, className, ...rest } =
+			props;
 
 		const trulyDisabled = loading || disabled;
 
@@ -37,7 +38,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 			<StyledButton
 				disabled={trulyDisabled}
 				ref={ref}
-				className={`${className || ''} ${disabledStyles}`}
+				className={`${className || ""} ${disabledStyles}`}
 				{...rest}
 			>
 				{loading && !loadingText ? (

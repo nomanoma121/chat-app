@@ -143,9 +143,9 @@ export interface Guild {
 	id: string;
 	name: string;
 	ownerId: string;
-	description?: string;
-	iconUrl?: string;
-	defaultChannelId?: string;
+	description: string;
+	iconUrl: string;
+	defaultChannelId: string;
 	createdAt: string;
 }
 
@@ -153,9 +153,9 @@ export interface GuildDetail {
 	id: string;
 	name: string;
 	ownerId: string;
-	description?: string;
-	iconUrl?: string;
-	defaultChannelId?: string;
+	description: string;
+	iconUrl: string;
+	defaultChannelId: string;
 	createdAt: string;
 	categories: CategoryDetail[];
 }
@@ -210,8 +210,8 @@ export interface RegisterRequest {
 	password: string;
 	email: string;
 	name: string;
-	bio?: string;
-	iconUrl?: string;
+	bio: string;
+	iconUrl: string;
 }
 
 export interface RegisterResponse {
@@ -241,10 +241,10 @@ export interface UpdateChannelResponse {
 }
 
 export interface UpdateGuildBody {
-	name?: string;
-	iconUrl?: string;
-	description?: string;
-	defaultChannelId?: string;
+	name: string;
+	iconUrl: string;
+	description: string;
+	defaultChannelId: string;
 }
 
 export interface UpdateGuildResponse {

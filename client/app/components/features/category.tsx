@@ -45,12 +45,7 @@ interface CategoryProps {
 }
 
 const CategoryRoot = forwardRef<HTMLDivElement, CategoryProps>((props, ref) => {
-	const {
-		children,
-		defaultExpanded = true,
-		onAddChannel,
-		className,
-	} = props;
+	const { children, defaultExpanded = true, onAddChannel, className } = props;
 	const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
 	const handleToggle = () => {
@@ -168,10 +163,7 @@ const Title = forwardRef<HTMLDivElement, TitleProps>((props, ref) => {
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
 		>
-			<div
-				className={titleLeftStyles()}
-				onClick={onToggle}
-			>
+			<div className={titleLeftStyles()} onClick={onToggle}>
 				<div className={chevronStyles({ expanded: isExpanded })}>
 					<ChevronRight size={14} />
 				</div>
