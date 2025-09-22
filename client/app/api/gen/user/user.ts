@@ -31,14 +31,14 @@ import type {
 
 export const getCurrentUser = (signal?: AbortSignal) => {
 	return customClient<GetCurrentUserResponse>({
-		url: `/api/user/current`,
+		url: `/api/user/me`,
 		method: "GET",
 		signal,
 	});
 };
 
 export const getGetCurrentUserQueryKey = () => {
-	return [`/api/user/current`] as const;
+	return [`/api/user/me`] as const;
 };
 
 export const getGetCurrentUserQueryOptions = <
