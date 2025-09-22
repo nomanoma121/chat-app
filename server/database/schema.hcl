@@ -82,8 +82,8 @@ table "messages" {
   primary_key {
     columns = [column.id]
   }
-  foreign_key "author" {
-    columns = [column.author_id]
+  foreign_key "sender" {
+    columns = [column.sender_id]
     ref_columns = [table.users.column.id]
     on_delete = NO_ACTION
   }

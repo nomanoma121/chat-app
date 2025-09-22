@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"context"
 	"time"
 
 	"github.com/google/uuid"
@@ -13,4 +14,9 @@ type Message struct {
 	Content   string
 	ReplyID   *uuid.UUID
 	CreatedAt time.Time
+}
+
+type IMessageRepository interface {
+	Create(ctx context.Context, message *Message) (*Message, error)
+	GetMessagesByChannelID(ctx context.Context, channelID uuid.UUID, limit, offset int) ([]*Message, error)
 }

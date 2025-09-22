@@ -12,75 +12,44 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type UserUsecase interface {
-	Register(ctx context.Context, params *RegisterParams) (*domain.User, error)
-	Login(ctx context.Context, params *LoginParams) (*string, error)
-	GetUserByID(ctx context.Context, id uuid.UUID) (*domain.User, error)
-	Update(ctx context.Context, params *UpdateParams) (*domain.User, error)
+type MessageUsecase interface {
+	Create(ctx context.Context, params *CreateParams) (*domain.Message, error)
+	GetMessagesByChannelID(ctx context.Context, channelID uuid.UUID, limit, offset int) ([]*domain.Message, error)
 }
 
-type Config struct {
-	JWTSecret string
+type CreateParams struct {
+	ChannelID uuid.UUID `validate:"required"`
+	SenderID  uuid.UUID `validate:"required"`
+	Content   string    `validate:"required,min=1,max=500"`
+	ReplyID   *uuid.UUID `validate:"omitempty"`
+}
+type messageUsecase struct {
+	messageRepo domain.IMessageRepository
+	validator   *validator.Validate
 }
 
-type RegisterParams struct {
-	DisplayId string `validate:"required,min=3,max=20,display_id"`
-	Name      string `validate:"required,min=1,max=15"`
-	Email     string `validate:"required,email"`
-	Password  string `validate:"required,min=8"`
-	Bio       string `validate:"omitempty,max=500"`
-	IconURL   string `validate:"omitempty,url"`
-}
-
-type LoginParams struct {
-	Email    string `validate:"required,email"`
-	Password string `validate:"required,min=8"`
-}
-
-type UpdateParams struct {
-	ID      uuid.UUID `validate:"required"`
-	Name    string    `validate:"required,min=1,max=15"`
-	Bio     string    `validate:"omitempty,max=500"`
-	IconURL string    `validate:"omitempty,url"`
-}
-
-type userUsecase struct {
-	userRepo  domain.UserRepository
-	config    Config
-	validator *validator.Validate
-}
-
-func validateDisplayId(fl validator.FieldLevel) bool {
-	// 英数字、ドット、アンダースコア、ハイフン
-	matched, _ := regexp.MatchString(`^[a-zA-Z0-9_.-]+$`, fl.Field().String())
-	return matched
-}
-
-func NewUserUsecase(userRepo domain.UserRepository, config Config, validator *validator.Validate) UserUsecase {
-	// TODO: もうちょいいい書き方ありそう
-	err := validator.RegisterValidation("display_id", validateDisplayId)
+func NewMessageUsecase(messageRepo domain.IMessageRepository, validator *validator.Validate) MessageUsecase {
 	if err != nil {
 		return nil
 	}
-	return &userUsecase{
-		userRepo:  userRepo,
-		config:    config,
+	return &messageUsecase{
+		messageRepo: messageRepo,
 		validator: validator,
 	}
 }
 
-func (u *userUsecase) Register(ctx context.Context, params *RegisterParams) (*domain.User, error) {
+func (u *messageUsecase) Register(ctx context.Context, params *RegisterParams) (*domain.Message, error) {
 	if err := u.validator.Struct(params); err != nil {
 		return nil, domain.ErrInvalidUserData
 	}
-	exists, err := u.userRepo.ExistsByEmail(ctx, params.Email)
+	exists, err := u.messageRepo.ExistsByEmail(ctx, params.Email)
 	if err != nil {
 		return nil, err
 	}
 	if exists {
 		return nil, domain.ErrEmailAlreadyExists
 	}
-	exists, err = u.userRepo.ExistsByDisplayId(ctx, params.DisplayId)
+	exists, err = u.messageRepo.ExistsByDisplayId(ctx, params.DisplayId)
 	if err != nil {
 		return nil, err
 	}
@@ -93,66 +62,16 @@ func (u *userUsecase) Register(ctx context.Context, params *RegisterParams) (*do
 		return nil, err
 	}
 
-	user := domain.CreateUserParams{
+	message := domain.Message{
 		ID:        uuid.New(),
-		DisplayId: params.DisplayId,
-		Name:      params.Name,
-		Email:     params.Email,
-		Password:  string(passwordHash),
-		Bio:       params.Bio,
-		IconURL:   params.IconURL,
+		ChannelID: params.ChannelID,
+		SenderID:  params.SenderID,
+		Content:   params.Content,
+		ReplyID:   params.ReplyID,
 		CreatedAt: time.Now(),
 	}
 
-	return u.userRepo.Create(ctx, &user)
+	return u.messageRepo.Create(ctx, &message)
 }
 
-func (u *userUsecase) Login(ctx context.Context, params *LoginParams) (*string, error) {
-	if err := u.validator.Struct(params); err != nil {
-		return nil, domain.ErrInvalidUserData
-	}
-	pwParams, err := u.userRepo.GetPasswordByEmail(ctx, params.Email)
-	if err != nil {
-		return nil, domain.ErrInvalidCredentials
-	}
-
-	if err := bcrypt.CompareHashAndPassword([]byte(pwParams.PasswordHash), []byte(params.Password)); err != nil {
-		return nil, domain.ErrInvalidCredentials
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user_id": pwParams.ID.String(),
-		"iat":     time.Now().Unix(),
-		"exp":     time.Now().Add(time.Hour * 72).Unix(),
-	})
-
-	tokenString, err := token.SignedString([]byte(u.config.JWTSecret))
-	if err != nil {
-		return nil, err
-	}
-
-	return &tokenString, nil
-}
-
-func (u *userUsecase) Update(ctx context.Context, params *UpdateParams) (*domain.User, error) {
-	if err := u.validator.Struct(params); err != nil {
-		return nil, domain.ErrInvalidUserData
-	}
-
-	return u.userRepo.Update(ctx, &domain.User{
-		ID:      params.ID,
-		Name:    params.Name,
-		Bio:     params.Bio,
-		IconURL: params.IconURL,
-	})
-}
-
-func (u *userUsecase) GetUserByID(ctx context.Context, id uuid.UUID) (*domain.User, error) {
-	user, err := u.userRepo.GetUserByID(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
-}
-
-var _ UserUsecase = (*userUsecase)(nil)
+var _ MessageUsecase = (*messageUsecase)(nil)

@@ -56,7 +56,7 @@ type Member struct {
 
 type Message struct {
 	ID        uuid.UUID
-	AuthorID  uuid.UUID
+	SenderID  uuid.UUID
 	ChannelID uuid.UUID
 	Content   string
 	ReplyID   pgtype.UUID
