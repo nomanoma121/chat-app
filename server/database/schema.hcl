@@ -55,7 +55,7 @@ table "messages" {
     null = false
     type = uuid
   }
-  column "author_id" {
+  column "sender_id" {
     null = false
     type = uuid
   }
