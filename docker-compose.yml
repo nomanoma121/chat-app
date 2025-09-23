@@ -48,6 +48,23 @@ services:
       - postgres
       - user
 
+  message:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: message
+    ports:
+      - "50053:50053"
+    environment:
+      - DATABASE_URL=postgres://user:password@postgres:5432/chat_app?sslmode=disable
+      - USER_SERVICE_URL=user:50051
+      - GUILD_SERVICE_URL=guild:50052
+    depends_on:
+      - postgres
+      - user
+      - guild
+      
   api-gateway:
     build:
       context: ./server
