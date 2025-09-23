@@ -77,9 +77,11 @@ services:
       - JWT_SECRET=your-secret-key-here
       - USER_SERVICE_URL=user:50051
       - GUILD_SERVICE_URL=guild:50052
+      - MESSAGE_SERVICE_URL=message:50053
     depends_on:
       - user
       - guild
+      - message
 
 volumes:
   postgres_data:
