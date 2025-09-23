@@ -16,7 +16,7 @@ message CreateMessageRequest {
   };
   string channel_id = 1;
   string content = 2;
-  string reply_id = 3;
+  optional string reply_id = 3;
 }
 
 message CreateMessageResponse {
@@ -54,7 +54,7 @@ message UpdateMessageByMessageIDRequest {
   };
   string message_id = 1;
   string content = 2;
-  string reply_id = 3;
+  optional string reply_id = 3;
 }
 
 message UpdateMessageByMessageIDResponse {
