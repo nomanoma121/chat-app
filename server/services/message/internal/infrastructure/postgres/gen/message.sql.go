@@ -23,7 +23,7 @@ type CreateMessageParams struct {
 	ChannelID uuid.UUID
 	SenderID  uuid.UUID
 	Content   string
-	ReplyID   pgtype.UUID
+	ReplyID   *uuid.UUID
 	CreatedAt pgtype.Timestamp
 }
 
@@ -32,7 +32,7 @@ type CreateMessageRow struct {
 	ChannelID uuid.UUID
 	SenderID  uuid.UUID
 	Content   string
-	ReplyID   pgtype.UUID
+	ReplyID   *uuid.UUID
 	CreatedAt pgtype.Timestamp
 }
 
@@ -69,7 +69,7 @@ type GetMessagesByChannelIDRow struct {
 	ChannelID uuid.UUID
 	SenderID  uuid.UUID
 	Content   string
-	ReplyID   pgtype.UUID
+	ReplyID   *uuid.UUID
 	CreatedAt pgtype.Timestamp
 }
 

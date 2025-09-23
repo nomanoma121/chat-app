@@ -5,6 +5,7 @@ import (
 	"message-service/internal/domain"
 	"message-service/internal/infrastructure/postgres/gen"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -35,9 +36,29 @@ func (r *messageRepository) Create(ctx context.Context, message *domain.Message)
 		ChannelID: dbMessage.ChannelID,
 		SenderID:  dbMessage.SenderID,
 		Content:   dbMessage.Content,
-		ReplyID:   &dbMessage.ReplyID,
-		CreatedAt: pgtype.Timestamp{Time: dbMessage.CreatedAt.Time, Valid: true},
+		ReplyID:   dbMessage.ReplyID,
+		CreatedAt: dbMessage.CreatedAt.Time,
 	}, nil
+}
+
+func (r *messageRepository) GetByChannelID(ctx context.Context, channelID uuid.UUID) ([]*domain.Message, error) {
+	dbMessages, err := r.queries.GetMessagesByChannelID(ctx, channelID)
+	if err != nil {
+		return nil, err
+	}
+
+	messages := make([]*domain.Message, len(dbMessages))
+	for i, dbMessage := range dbMessages {
+		messages[i] = &domain.Message{
+			ID:        dbMessage.ID,
+			ChannelID: dbMessage.ChannelID,
+			SenderID:  dbMessage.SenderID,
+			Content:   dbMessage.Content,
+			ReplyID:   dbMessage.ReplyID,
+			CreatedAt: dbMessage.CreatedAt.Time,
+		}
+	}
+	return messages, nil
 }
 
 var _ domain.IMessageRepository = (*messageRepository)(nil)

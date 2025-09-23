@@ -59,7 +59,7 @@ type Message struct {
 	SenderID  uuid.UUID
 	ChannelID uuid.UUID
 	Content   string
-	ReplyID   pgtype.UUID
+	ReplyID   *uuid.UUID
 	CreatedAt pgtype.Timestamp
 	UpdatedAt pgtype.Timestamp
 }

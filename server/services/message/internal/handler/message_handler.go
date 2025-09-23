@@ -45,11 +45,21 @@ func (h *MessageHandler) Create(ctx context.Context, req *pb.CreateMessageReques
 		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserData.Error())
 	}
 
+	var replyID *uuid.UUID
+	if req.ReplyId != nil {
+		parsedReplyID, err := uuid.Parse(*req.ReplyId)
+		if err != nil {
+			h.logger.Warn("Invalid reply ID format", "reply_id", *req.ReplyId, "error", err)
+			return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserData.Error())
+		}
+		replyID = &parsedReplyID
+	}
+
 	usecaseParams := &usecase.CreateParams{
 		ChannelID: channelID,
 		SenderID:  senderID,
 		Content:   req.Content,
-		ReplyID:   req.ReplyId,
+		ReplyID:   replyID,
 	}
 
 	message, err := h.messageUsecase.Create(ctx, usecaseParams)
@@ -69,9 +79,14 @@ func (h *MessageHandler) Create(ctx context.Context, req *pb.CreateMessageReques
 		ChannelId: message.ChannelID.String(),
 		SenderId:  message.SenderID.String(),
 		Content:   message.Content,
-		ReplyId:   message.ReplyID.String(),
 		CreatedAt: timestamppb.New(message.CreatedAt),
 	}
+
+	if message.ReplyID != nil {
+		replyIDStr := message.ReplyID.String()
+		pbMessage.ReplyId = &replyIDStr
+	}
+
 	return &pb.CreateMessageResponse{Message: pbMessage}, nil
 }
 
@@ -94,9 +109,14 @@ func (h *MessageHandler) GetByChannelID(ctx context.Context, req *pb.GetMessages
 			ChannelId: message.ChannelID.String(),
 			SenderId:  message.SenderID.String(),
 			Content:   message.Content,
-			ReplyId:   message.ReplyID.String(),
 			CreatedAt: timestamppb.New(message.CreatedAt),
 		}
+
+		if message.ReplyID != nil {
+			replyIDStr := message.ReplyID.String()
+			pbMessages[i].ReplyId = &replyIDStr
+		}
 	}
+
 	return &pb.GetMessagesByChannelIDResponse{Messages: pbMessages}, nil
 }
