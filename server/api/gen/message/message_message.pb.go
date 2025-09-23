@@ -27,7 +27,7 @@ type CreateMessageRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ChannelId     string                 `protobuf:"bytes,1,opt,name=channel_id,json=channelId,proto3" json:"channel_id,omitempty"`
 	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
-	ReplyId       string                 `protobuf:"bytes,3,opt,name=reply_id,json=replyId,proto3" json:"reply_id,omitempty"`
+	ReplyId       *string                `protobuf:"bytes,3,opt,name=reply_id,json=replyId,proto3,oneof" json:"reply_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -77,8 +77,8 @@ func (x *CreateMessageRequest) GetContent() string {
 }
 
 func (x *CreateMessageRequest) GetReplyId() string {
-	if x != nil {
-		return x.ReplyId
+	if x != nil && x.ReplyId != nil {
+		return *x.ReplyId
 	}
 	return ""
 }
@@ -219,7 +219,7 @@ type UpdateMessageByMessageIDRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	MessageId     string                 `protobuf:"bytes,1,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
 	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
-	ReplyId       string                 `protobuf:"bytes,3,opt,name=reply_id,json=replyId,proto3" json:"reply_id,omitempty"`
+	ReplyId       *string                `protobuf:"bytes,3,opt,name=reply_id,json=replyId,proto3,oneof" json:"reply_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -269,8 +269,8 @@ func (x *UpdateMessageByMessageIDRequest) GetContent() string {
 }
 
 func (x *UpdateMessageByMessageIDRequest) GetReplyId() string {
-	if x != nil {
-		return x.ReplyId
+	if x != nil && x.ReplyId != nil {
+		return *x.ReplyId
 	}
 	return ""
 }
@@ -411,14 +411,15 @@ var File_message_message_proto protoreflect.FileDescriptor
 
 const file_message_message_proto_rawDesc = "" +
 	"\n" +
-	"\x15message_message.proto\x12\x03msg\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x12message_type.proto\"\x88\x01\n" +
+	"\x15message_message.proto\x12\x03msg\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x12message_type.proto\"\x9a\x01\n" +
 	"\x14CreateMessageRequest\x12\x1d\n" +
 	"\n" +
 	"channel_id\x18\x01 \x01(\tR\tchannelId\x12\x18\n" +
-	"\acontent\x18\x02 \x01(\tR\acontent\x12\x19\n" +
-	"\breply_id\x18\x03 \x01(\tR\areplyId:\x1c\x92A\x19\n" +
+	"\acontent\x18\x02 \x01(\tR\acontent\x12\x1e\n" +
+	"\breply_id\x18\x03 \x01(\tH\x00R\areplyId\x88\x01\x01:\x1c\x92A\x19\n" +
 	"\x17\xd2\x01\n" +
-	"channel_id\xd2\x01\acontent\"P\n" +
+	"channel_id\xd2\x01\acontentB\v\n" +
+	"\t_reply_id\"P\n" +
 	"\x15CreateMessageResponse\x12&\n" +
 	"\amessage\x18\x01 \x01(\v2\f.msg.MessageR\amessage:\x0f\x92A\f\n" +
 	"\n" +
@@ -430,14 +431,15 @@ const file_message_message_proto_rawDesc = "" +
 	"channel_id\"\\\n" +
 	"\x1eGetMessagesByChannelIDResponse\x12(\n" +
 	"\bmessages\x18\x01 \x03(\v2\f.msg.MessageR\bmessages:\x10\x92A\r\n" +
-	"\v\xd2\x01\bmessages\"\x93\x01\n" +
+	"\v\xd2\x01\bmessages\"\xa5\x01\n" +
 	"\x1fUpdateMessageByMessageIDRequest\x12\x1d\n" +
 	"\n" +
 	"message_id\x18\x01 \x01(\tR\tmessageId\x12\x18\n" +
-	"\acontent\x18\x02 \x01(\tR\acontent\x12\x19\n" +
-	"\breply_id\x18\x03 \x01(\tR\areplyId:\x1c\x92A\x19\n" +
+	"\acontent\x18\x02 \x01(\tR\acontent\x12\x1e\n" +
+	"\breply_id\x18\x03 \x01(\tH\x00R\areplyId\x88\x01\x01:\x1c\x92A\x19\n" +
 	"\x17\xd2\x01\n" +
-	"message_id\xd2\x01\acontent\"[\n" +
+	"message_id\xd2\x01\acontentB\v\n" +
+	"\t_reply_id\"[\n" +
 	" UpdateMessageByMessageIDResponse\x12&\n" +
 	"\amessage\x18\x01 \x01(\v2\f.msg.MessageR\amessage:\x0f\x92A\f\n" +
 	"\n" +
@@ -496,6 +498,8 @@ func file_message_message_proto_init() {
 		return
 	}
 	file_message_type_proto_init()
+	file_message_message_proto_msgTypes[0].OneofWrappers = []any{}
+	file_message_message_proto_msgTypes[4].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

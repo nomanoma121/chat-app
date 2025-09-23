@@ -28,7 +28,7 @@ type Message struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	SenderId      string                 `protobuf:"bytes,2,opt,name=sender_id,json=senderId,proto3" json:"sender_id,omitempty"`
 	ChannelId     string                 `protobuf:"bytes,3,opt,name=channel_id,json=channelId,proto3" json:"channel_id,omitempty"`
-	ReplyId       string                 `protobuf:"bytes,4,opt,name=reply_id,json=replyId,proto3" json:"reply_id,omitempty"`
+	ReplyId       *string                `protobuf:"bytes,4,opt,name=reply_id,json=replyId,proto3,oneof" json:"reply_id,omitempty"`
 	Content       string                 `protobuf:"bytes,5,opt,name=content,proto3" json:"content,omitempty"`
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -87,8 +87,8 @@ func (x *Message) GetChannelId() string {
 }
 
 func (x *Message) GetReplyId() string {
-	if x != nil {
-		return x.ReplyId
+	if x != nil && x.ReplyId != nil {
+		return *x.ReplyId
 	}
 	return ""
 }
@@ -111,20 +111,20 @@ var File_message_type_proto protoreflect.FileDescriptor
 
 const file_message_type_proto_rawDesc = "" +
 	"\n" +
-	"\x12message_type.proto\x12\x03msg\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\x8e\x02\n" +
+	"\x12message_type.proto\x12\x03msg\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\x93\x02\n" +
 	"\aMessage\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
 	"\tsender_id\x18\x02 \x01(\tR\bsenderId\x12\x1d\n" +
 	"\n" +
-	"channel_id\x18\x03 \x01(\tR\tchannelId\x12\x19\n" +
-	"\breply_id\x18\x04 \x01(\tR\areplyId\x12\x18\n" +
+	"channel_id\x18\x03 \x01(\tR\tchannelId\x12\x1e\n" +
+	"\breply_id\x18\x04 \x01(\tH\x00R\areplyId\x88\x01\x01\x12\x18\n" +
 	"\acontent\x18\x05 \x01(\tR\acontent\x129\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:G\x92AD\n" +
-	"B\xd2\x01\x02id\xd2\x01\tsender_id\xd2\x01\n" +
+	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt::\x92A7\n" +
+	"5\xd2\x01\x02id\xd2\x01\tsender_id\xd2\x01\n" +
 	"channel_id\xd2\x01\acontent\xd2\x01\n" +
-	"created_at\xd2\x01\n" +
-	"updated_atB\\\n" +
+	"created_atB\v\n" +
+	"\t_reply_idB\\\n" +
 	"\acom.msgB\x10MessageTypeProtoP\x01Z\x13./message;messagepb\xa2\x02\x03MXX\xaa\x02\x03Msg\xca\x02\x03Msg\xe2\x02\x0fMsg\\GPBMetadata\xea\x02\x03Msgb\x06proto3"
 
 var (
@@ -158,6 +158,7 @@ func file_message_type_proto_init() {
 	if File_message_type_proto != nil {
 		return
 	}
+	file_message_type_proto_msgTypes[0].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
