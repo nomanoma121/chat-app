@@ -28,7 +28,7 @@ func NewMessageHandler(messageUsecase usecase.MessageUsecase, logger *slog.Logge
 	}
 }
 
-func (h *MessageHandler) Create(ctx context.Context, req *pb.CreateMessageRequest) (*pb.CreateMessageResponse, error) {
+func (h *MessageHandler) Create(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error) {
 	senderIDStr, err := metadata.GetUserIDFromMetadata(ctx)
 	if err != nil {
 		h.logger.Warn("Failed to get user ID from metadata", "error", err)
@@ -87,10 +87,10 @@ func (h *MessageHandler) Create(ctx context.Context, req *pb.CreateMessageReques
 		pbMessage.ReplyId = &replyIDStr
 	}
 
-	return &pb.CreateMessageResponse{Message: pbMessage}, nil
+	return &pb.CreateResponse{Message: pbMessage}, nil
 }
 
-func (h *MessageHandler) GetByChannelID(ctx context.Context, req *pb.GetMessagesByChannelIDRequest) (*pb.GetMessagesByChannelIDResponse, error) {
+func (h *MessageHandler) GetByChannelID(ctx context.Context, req *pb.GetByChannelIDRequest) (*pb.GetByChannelIDResponse, error) {
 	channelID, err := uuid.Parse(req.ChannelId)
 	if err != nil {
 		h.logger.Warn("Invalid channel ID format", "channel_id", req.ChannelId, "error", err)
@@ -118,5 +118,5 @@ func (h *MessageHandler) GetByChannelID(ctx context.Context, req *pb.GetMessages
 		}
 	}
 
-	return &pb.GetMessagesByChannelIDResponse{Messages: pbMessages}, nil
+	return &pb.GetByChannelIDResponse{Messages: pbMessages}, nil
 }

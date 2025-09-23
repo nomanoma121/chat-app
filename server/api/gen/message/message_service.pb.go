@@ -26,38 +26,38 @@ var File_message_service_proto protoreflect.FileDescriptor
 
 const file_message_service_proto_rawDesc = "" +
 	"\n" +
-	"\x15message_service.proto\x12\x03msg\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x15message_message.proto2\x96\x05\n" +
-	"\x0eMessageService\x12\x82\x01\n" +
-	"\rCreateMessage\x12\x19.msg.CreateMessageRequest\x1a\x1a.msg.CreateMessageResponse\":\x92A\t\n" +
-	"\aMessage\x82\xd3\xe4\x93\x02(:\x01*\"#/api/channels/{channel_id}/messages\x12\x9a\x01\n" +
-	"\x16GetMessagesByChannelID\x12\".msg.GetMessagesByChannelIDRequest\x1a#.msg.GetMessagesByChannelIDResponse\"7\x92A\t\n" +
-	"\aMessage\x82\xd3\xe4\x93\x02%\x12#/api/channels/{channel_id}/messages\x12\x9a\x01\n" +
-	"\x18UpdateMessageByMessageID\x12$.msg.UpdateMessageByMessageIDRequest\x1a%.msg.UpdateMessageByMessageIDResponse\"1\x92A\t\n" +
-	"\aMessage\x82\xd3\xe4\x93\x02\x1f:\x01*\x1a\x1a/api/messages/{message_id}\x12\x97\x01\n" +
-	"\x18DeleteMessageByMessageID\x12$.msg.DeleteMessageByMessageIDRequest\x1a%.msg.DeleteMessageByMessageIDResponse\".\x92A\t\n" +
+	"\x15message_service.proto\x12\x03msg\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x15message_message.proto2\xbe\x04\n" +
+	"\x0eMessageService\x12m\n" +
+	"\x06Create\x12\x12.msg.CreateRequest\x1a\x13.msg.CreateResponse\":\x92A\t\n" +
+	"\aMessage\x82\xd3\xe4\x93\x02(:\x01*\"#/api/channels/{channel_id}/messages\x12\x82\x01\n" +
+	"\x0eGetByChannelID\x12\x1a.msg.GetByChannelIDRequest\x1a\x1b.msg.GetByChannelIDResponse\"7\x92A\t\n" +
+	"\aMessage\x82\xd3\xe4\x93\x02%\x12#/api/channels/{channel_id}/messages\x12\x85\x01\n" +
+	"\x11UpdateByMessageID\x12\x1d.msg.UpdateByMessageIDRequest\x1a\x1e.msg.UpdateByMessageIDResponse\"1\x92A\t\n" +
+	"\aMessage\x82\xd3\xe4\x93\x02\x1f:\x01*\x1a\x1a/api/messages/{message_id}\x12\x82\x01\n" +
+	"\x11DeleteByMessageID\x12\x1d.msg.DeleteByMessageIDRequest\x1a\x1e.msg.DeleteByMessageIDResponse\".\x92A\t\n" +
 	"\aMessage\x82\xd3\xe4\x93\x02\x1c*\x1a/api/messages/{message_id}\x1a+\x92A(\n" +
 	"\aMessage\x12\x1dMessage management operationsB_\n" +
 	"\acom.msgB\x13MessageServiceProtoP\x01Z\x13./message;messagepb\xa2\x02\x03MXX\xaa\x02\x03Msg\xca\x02\x03Msg\xe2\x02\x0fMsg\\GPBMetadata\xea\x02\x03Msgb\x06proto3"
 
 var file_message_service_proto_goTypes = []any{
-	(*CreateMessageRequest)(nil),             // 0: msg.CreateMessageRequest
-	(*GetMessagesByChannelIDRequest)(nil),    // 1: msg.GetMessagesByChannelIDRequest
-	(*UpdateMessageByMessageIDRequest)(nil),  // 2: msg.UpdateMessageByMessageIDRequest
-	(*DeleteMessageByMessageIDRequest)(nil),  // 3: msg.DeleteMessageByMessageIDRequest
-	(*CreateMessageResponse)(nil),            // 4: msg.CreateMessageResponse
-	(*GetMessagesByChannelIDResponse)(nil),   // 5: msg.GetMessagesByChannelIDResponse
-	(*UpdateMessageByMessageIDResponse)(nil), // 6: msg.UpdateMessageByMessageIDResponse
-	(*DeleteMessageByMessageIDResponse)(nil), // 7: msg.DeleteMessageByMessageIDResponse
+	(*CreateRequest)(nil),             // 0: msg.CreateRequest
+	(*GetByChannelIDRequest)(nil),     // 1: msg.GetByChannelIDRequest
+	(*UpdateByMessageIDRequest)(nil),  // 2: msg.UpdateByMessageIDRequest
+	(*DeleteByMessageIDRequest)(nil),  // 3: msg.DeleteByMessageIDRequest
+	(*CreateResponse)(nil),            // 4: msg.CreateResponse
+	(*GetByChannelIDResponse)(nil),    // 5: msg.GetByChannelIDResponse
+	(*UpdateByMessageIDResponse)(nil), // 6: msg.UpdateByMessageIDResponse
+	(*DeleteByMessageIDResponse)(nil), // 7: msg.DeleteByMessageIDResponse
 }
 var file_message_service_proto_depIdxs = []int32{
-	0, // 0: msg.MessageService.CreateMessage:input_type -> msg.CreateMessageRequest
-	1, // 1: msg.MessageService.GetMessagesByChannelID:input_type -> msg.GetMessagesByChannelIDRequest
-	2, // 2: msg.MessageService.UpdateMessageByMessageID:input_type -> msg.UpdateMessageByMessageIDRequest
-	3, // 3: msg.MessageService.DeleteMessageByMessageID:input_type -> msg.DeleteMessageByMessageIDRequest
-	4, // 4: msg.MessageService.CreateMessage:output_type -> msg.CreateMessageResponse
-	5, // 5: msg.MessageService.GetMessagesByChannelID:output_type -> msg.GetMessagesByChannelIDResponse
-	6, // 6: msg.MessageService.UpdateMessageByMessageID:output_type -> msg.UpdateMessageByMessageIDResponse
-	7, // 7: msg.MessageService.DeleteMessageByMessageID:output_type -> msg.DeleteMessageByMessageIDResponse
+	0, // 0: msg.MessageService.Create:input_type -> msg.CreateRequest
+	1, // 1: msg.MessageService.GetByChannelID:input_type -> msg.GetByChannelIDRequest
+	2, // 2: msg.MessageService.UpdateByMessageID:input_type -> msg.UpdateByMessageIDRequest
+	3, // 3: msg.MessageService.DeleteByMessageID:input_type -> msg.DeleteByMessageIDRequest
+	4, // 4: msg.MessageService.Create:output_type -> msg.CreateResponse
+	5, // 5: msg.MessageService.GetByChannelID:output_type -> msg.GetByChannelIDResponse
+	6, // 6: msg.MessageService.UpdateByMessageID:output_type -> msg.UpdateByMessageIDResponse
+	7, // 7: msg.MessageService.DeleteByMessageID:output_type -> msg.DeleteByMessageIDResponse
 	4, // [4:8] is the sub-list for method output_type
 	0, // [0:4] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
