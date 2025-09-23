@@ -16,12 +16,12 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/joho/godotenv"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
-var db *pgx.Conn
+var db *pgxpool.Pool
 
 func init() {
 	_ = godotenv.Load()
@@ -32,7 +32,7 @@ func init() {
 	log.Info("Connecting to database...")
 	var err error
 	for i := 0; i < 30; i++ {
-		db, err = pgx.Connect(context.Background(), dsn)
+		db, err = pgxpool.New(context.Background(), dsn)
 		if err == nil {
 			break
 		}
@@ -49,9 +49,7 @@ func init() {
 func main() {
 	log := logger.Default("user-service")
 	defer func() {
-		if err := db.Close(context.Background()); err != nil {
-			log.Error("Failed to close database connection", "error", err)
-		}
+		db.Close()
 	}()
 	userRepo := postgres.NewPostgresUserRepository(gen.New(db))
 	validate := validator.New()
