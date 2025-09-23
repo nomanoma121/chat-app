@@ -7,4 +7,4 @@ RETURNING id, channel_id, sender_id, content, reply_id, created_at;
 SELECT id, channel_id, sender_id, content, reply_id, created_at
 FROM messages
 WHERE channel_id = $1
-ORDER BY created_at DESC;
+ORDER BY created_at ASC;
