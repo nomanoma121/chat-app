@@ -2,16 +2,16 @@ package main
 
 import (
 	"context"
+	"message-service/internal/handler"
+	"message-service/internal/infrastructure/postgres"
+	"message-service/internal/infrastructure/postgres/gen"
+	"message-service/internal/usecase"
 	"net"
 	"os"
 	"shared/logger"
 	"time"
-	"user-service/internal/handler"
-	"user-service/internal/infrastructure/postgres"
-	"user-service/internal/infrastructure/postgres/gen"
-	"user-service/internal/usecase"
 
-	pb "chat-app-proto/gen/user"
+	pb "chat-app-proto/gen/message"
 
 	"github.com/go-playground/validator"
 	"github.com/joho/godotenv"
@@ -53,15 +53,12 @@ func main() {
 			log.Error("Failed to close database connection", "error", err)
 		}
 	}()
-	userRepo := postgres.NewPostgresUserRepository(gen.New(db))
+	messageRepo := postgres.NewPostgresMessageRepository(gen.New(db))
 	validate := validator.New()
-	userUsecase := usecase.NewUserUsecase(userRepo, usecase.Config{
-		JWTSecret: os.Getenv("JWT_SECRET"),
-	}, validate)
-	userHandler := handler.NewUserHandler(userUsecase, log)
-
+	messageUsecase := usecase.NewMessageUsecase(messageRepo, validate)
+	messageHandler := handler.NewMessageHandler(messageUsecase, log)
 	server := grpc.NewServer()
-	pb.RegisterUserServiceServer(server, userHandler)
+	pb.RegisterMessageServiceServer(server, messageHandler)
 	reflection.Register(server)
 
 	port := 50051
