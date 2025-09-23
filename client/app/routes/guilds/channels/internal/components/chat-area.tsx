@@ -7,18 +7,24 @@ import {
   useCreateMessage,
   useGetMessagesByChannelID,
 } from "~/api/gen/message/message";
-import { useParams } from "react-router";
+import { useOutletContext, useParams } from "react-router";
+import type { GuildsContext } from "../../layout";
 
 export const ChatArea = () => {
-	const { channelId } = useParams<{ channelId: string }>();
-	if (!channelId) {
-		return <div>Channel ID is missing</div>;
-	}
+  const { channelId } = useParams<{ channelId: string }>();
+  if (!channelId) {
+    return <div>Channel ID is missing</div>;
+  }
+  const { guild } = useOutletContext<GuildsContext>();
   const { data: messagesData, refetch } = useGetMessagesByChannelID(channelId);
-	const { mutateAsync: createMessage } = useCreateMessage();
+  const { mutateAsync: createMessage } = useCreateMessage();
   const messages = messagesData?.messages || [];
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+
+  const channelName = guild?.categories.map((category) => {
+    return category.channels.find((channel) => channel?.id === channelId)?.name;
+  });
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -28,24 +34,16 @@ export const ChatArea = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleReply = (messageId: string) => {
-    console.log("Reply to message:", messageId);
+  const handleSendMessage = async (content: string) => {
+    if (!channelId) return;
+    try {
+      await createMessage({ channelId, data: { content } });
+      await refetch();
+      scrollToBottom();
+    } catch (error) {
+      console.error("Failed to send message:", error);
+    }
   };
-
-  const handleReact = (messageId: string, emoji: string) => {
-    console.log("React to message:", messageId, "with:", emoji);
-  };
-
-	const handleSendMessage = async (content: string) => {
-		if (!channelId) return;
-		try {
-			await createMessage({ channelId, data: { content } });
-			await refetch();
-			scrollToBottom();
-		} catch (error) {
-			console.error("Failed to send message:", error);
-		}
-	}
 
   return (
     <div
@@ -57,7 +55,6 @@ export const ChatArea = () => {
         backgroundColor: "bg.primary",
       })}
     >
-      {/* Channel Header */}
       <div
         className={css({
           display: "flex",
@@ -92,21 +89,12 @@ export const ChatArea = () => {
             className={css({
               fontSize: "lg",
               fontWeight: "semibold",
-              color: "text.bright",
+              color: "text.medium",
               margin: 0,
             })}
           >
-            general
+            {channelName}
           </Heading>
-        </div>
-        <div
-          className={css({
-            marginLeft: "16px",
-            color: "fg.subtle",
-            fontSize: "sm",
-          })}
-        >
-          Welcome to the general chat
         </div>
       </div>
 
@@ -131,8 +119,8 @@ export const ChatArea = () => {
             <Message
               key={message.id}
               message={message}
-              onReply={handleReply}
-              onReact={handleReact}
+              onReply={() => {}}
+              onReact={() => {}}
             />
           ))}
           <div ref={messagesEndRef} />
