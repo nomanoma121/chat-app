@@ -35,7 +35,7 @@ func NewMessageUsecase(messageRepo domain.IMessageRepository, validator *validat
 
 func (u *messageUsecase) Create(ctx context.Context, params *CreateParams) (*domain.Message, error) {
 	if err := u.validator.Struct(params); err != nil {
-		return nil, domain.ErrInvalidUserData
+		return nil, domain.ErrInvalidMessageData
 	}
 	message := domain.Message{
 		ID:        uuid.New(),

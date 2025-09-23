@@ -37,12 +37,12 @@ func (h *MessageHandler) Create(ctx context.Context, req *pb.CreateMessageReques
 	senderID, err := uuid.Parse(senderIDStr)
 	if err != nil {
 		h.logger.Warn("Invalid user ID format", "user_id", senderIDStr, "error", err)
-		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserData.Error())
+		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidMessageData.Error())
 	}
 	channelID, err := uuid.Parse(req.ChannelId)
 	if err != nil {
 		h.logger.Warn("Invalid channel ID format", "channel_id", req.ChannelId, "error", err)
-		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserData.Error())
+		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidMessageData.Error())
 	}
 
 	var replyID *uuid.UUID
@@ -50,7 +50,7 @@ func (h *MessageHandler) Create(ctx context.Context, req *pb.CreateMessageReques
 		parsedReplyID, err := uuid.Parse(*req.ReplyId)
 		if err != nil {
 			h.logger.Warn("Invalid reply ID format", "reply_id", *req.ReplyId, "error", err)
-			return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserData.Error())
+			return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidMessageData.Error())
 		}
 		replyID = &parsedReplyID
 	}
@@ -65,9 +65,9 @@ func (h *MessageHandler) Create(ctx context.Context, req *pb.CreateMessageReques
 	message, err := h.messageUsecase.Create(ctx, usecaseParams)
 	if err != nil {
 		switch err {
-		case domain.ErrInvalidUserData:
-			h.logger.Warn("Create message failed: invalid user data")
-			return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserData.Error())
+		case domain.ErrInvalidMessageData:
+			h.logger.Warn("Create message failed: invalid message data")
+			return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidMessageData.Error())
 		default:
 			h.logger.Error("Create message failed: unexpected error", "error", err)
 			return nil, status.Error(codes.Internal, "failed to create message")
@@ -94,7 +94,7 @@ func (h *MessageHandler) GetByChannelID(ctx context.Context, req *pb.GetMessages
 	channelID, err := uuid.Parse(req.ChannelId)
 	if err != nil {
 		h.logger.Warn("Invalid channel ID format", "channel_id", req.ChannelId, "error", err)
-		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserData.Error())
+		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidMessageData.Error())
 	}
 	messages, err := h.messageUsecase.GetByChannelID(ctx, channelID)
 	if err != nil {

@@ -61,14 +61,14 @@ func main() {
 	pb.RegisterMessageServiceServer(server, messageHandler)
 	reflection.Register(server)
 
-	port := 50051
-	lis, err := net.Listen("tcp", ":50051")
+	port := 50053
+	lis, err := net.Listen("tcp", ":50053")
 	if err != nil {
 		log.Error("Failed to listen", "port", port, "error", err)
 		os.Exit(1)
 	}
 
-	log.Info("User service starting", "port", port)
+	log.Info("Message service starting", "port", port)
 	if err := server.Serve(lis); err != nil {
 		log.Error("Failed to serve", "error", err)
 		os.Exit(1)
