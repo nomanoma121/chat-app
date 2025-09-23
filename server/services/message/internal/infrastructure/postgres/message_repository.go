@@ -5,8 +5,6 @@ import (
 	"message-service/internal/domain"
 	"message-service/internal/infrastructure/postgres/gen"
 
-	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -20,7 +18,7 @@ func NewPostgresMessageRepository(queries *gen.Queries) *messageRepository {
 	}
 }
 
-func (r *messageRepository) Create(ctx context.Context, message *domain.CreateMessageParams) (*domain.Message, error) {
+func (r *messageRepository) Create(ctx context.Context, message *domain.Message) (*domain.Message, error) {
 	dbMessage, err := r.queries.CreateMessage(ctx, gen.CreateMessageParams{
 		ID:        message.ID,
 		ChannelID: message.ChannelID,

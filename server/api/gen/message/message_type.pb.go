@@ -26,7 +26,7 @@ const (
 type Message struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	AuthorId      string                 `protobuf:"bytes,2,opt,name=author_id,json=authorId,proto3" json:"author_id,omitempty"`
+	SenderId      string                 `protobuf:"bytes,2,opt,name=sender_id,json=senderId,proto3" json:"sender_id,omitempty"`
 	ChannelId     string                 `protobuf:"bytes,3,opt,name=channel_id,json=channelId,proto3" json:"channel_id,omitempty"`
 	ReplyId       string                 `protobuf:"bytes,4,opt,name=reply_id,json=replyId,proto3" json:"reply_id,omitempty"`
 	Content       string                 `protobuf:"bytes,5,opt,name=content,proto3" json:"content,omitempty"`
@@ -72,9 +72,9 @@ func (x *Message) GetId() string {
 	return ""
 }
 
-func (x *Message) GetAuthorId() string {
+func (x *Message) GetSenderId() string {
 	if x != nil {
-		return x.AuthorId
+		return x.SenderId
 	}
 	return ""
 }
@@ -114,14 +114,14 @@ const file_message_type_proto_rawDesc = "" +
 	"\x12message_type.proto\x12\x03msg\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\x8e\x02\n" +
 	"\aMessage\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
-	"\tauthor_id\x18\x02 \x01(\tR\bauthorId\x12\x1d\n" +
+	"\tsender_id\x18\x02 \x01(\tR\bsenderId\x12\x1d\n" +
 	"\n" +
 	"channel_id\x18\x03 \x01(\tR\tchannelId\x12\x19\n" +
 	"\breply_id\x18\x04 \x01(\tR\areplyId\x12\x18\n" +
 	"\acontent\x18\x05 \x01(\tR\acontent\x129\n" +
 	"\n" +
 	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:G\x92AD\n" +
-	"B\xd2\x01\x02id\xd2\x01\tauthor_id\xd2\x01\n" +
+	"B\xd2\x01\x02id\xd2\x01\tsender_id\xd2\x01\n" +
 	"channel_id\xd2\x01\acontent\xd2\x01\n" +
 	"created_at\xd2\x01\n" +
 	"updated_atB\\\n" +

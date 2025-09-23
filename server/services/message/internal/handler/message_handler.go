@@ -3,10 +3,9 @@ package handler
 import (
 	"context"
 	"log/slog"
-	"shared/metadata"
-	"time"
 	"message-service/internal/domain"
 	"message-service/internal/usecase"
+	"shared/metadata"
 
 	pb "chat-app-proto/gen/message"
 
@@ -16,55 +15,88 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-type UserHandler struct {
+type MessageHandler struct {
 	pb.UnimplementedMessageServiceServer
-	userUsecase usecase.UserUsecase
-	logger      *slog.Logger
+	messageUsecase usecase.MessageUsecase
+	logger         *slog.Logger
 }
 
-func NewMessageHandler(userUsecase usecase.UserUsecase, logger *slog.Logger) *UserHandler {
-	return &UserHandler{
-		userUsecase: userUsecase,
-		logger:      logger,
+func NewMessageHandler(messageUsecase usecase.MessageUsecase, logger *slog.Logger) *MessageHandler {
+	return &MessageHandler{
+		messageUsecase: messageUsecase,
+		logger:         logger,
 	}
 }
 
-func (h *UserHandler) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
-	usecaseParams := &usecase.RegisterParams{
-		DisplayId: req.DisplayId,
-		Name:      req.Name,
-		Email:     req.Email,
-		Password:  req.Password,
-		Bio:       req.Bio,
-		IconURL:   req.IconUrl,
+func (h *MessageHandler) Create(ctx context.Context, req *pb.CreateMessageRequest) (*pb.CreateMessageResponse, error) {
+	senderIDStr, err := metadata.GetUserIDFromMetadata(ctx)
+	if err != nil {
+		h.logger.Warn("Failed to get user ID from metadata", "error", err)
+		return nil, status.Error(codes.Unauthenticated, "authentication required")
+	}
+	senderID, err := uuid.Parse(senderIDStr)
+	if err != nil {
+		h.logger.Warn("Invalid user ID format", "user_id", senderIDStr, "error", err)
+		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserData.Error())
+	}
+	channelID, err := uuid.Parse(req.ChannelId)
+	if err != nil {
+		h.logger.Warn("Invalid channel ID format", "channel_id", req.ChannelId, "error", err)
+		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserData.Error())
 	}
 
-	user, err := h.messageUsecase.Register(ctx, usecaseParams)
+	usecaseParams := &usecase.CreateParams{
+		ChannelID: channelID,
+		SenderID:  senderID,
+		Content:   req.Content,
+		ReplyID:   req.ReplyId,
+	}
+
+	message, err := h.messageUsecase.Create(ctx, usecaseParams)
 	if err != nil {
 		switch err {
-		case domain.ErrEmailAlreadyExists:
-			h.logger.Warn("Registration failed: email already exists")
-			return nil, status.Error(codes.AlreadyExists, domain.ErrEmailAlreadyExists.Error())
-		case domain.ErrDisplayIDAlreadyExists:
-			h.logger.Warn("Registration failed: display ID already exists")
-			return nil, status.Error(codes.AlreadyExists, domain.ErrDisplayIDAlreadyExists.Error())
 		case domain.ErrInvalidUserData:
-			h.logger.Warn("Registration failed: invalid user data")
+			h.logger.Warn("Create message failed: invalid user data")
 			return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserData.Error())
 		default:
-			h.logger.Error("Registration failed: unexpected error", "error", err)
-			return nil, status.Error(codes.Internal, "failed to register user")
+			h.logger.Error("Create message failed: unexpected error", "error", err)
+			return nil, status.Error(codes.Internal, "failed to create message")
 		}
 	}
 
-	pbUser := &pb.User{
-		Id:        user.ID.String(),
-		DisplayId: user.DisplayId,
-		Name:      user.Name,
-		Bio:       user.Bio,
-		IconUrl:   user.IconURL,
-		CreatedAt: timestamppb.New(user.CreatedAt),
+	pbMessage := &pb.Message{
+		Id:        message.ID.String(),
+		ChannelId: message.ChannelID.String(),
+		SenderId:  message.SenderID.String(),
+		Content:   message.Content,
+		ReplyId:   message.ReplyID.String(),
+		CreatedAt: timestamppb.New(message.CreatedAt),
 	}
-	return &pb.RegisterResponse{User: pbUser}, nil
+	return &pb.CreateMessageResponse{Message: pbMessage}, nil
 }
 
+func (h *MessageHandler) GetByChannelID(ctx context.Context, req *pb.GetMessagesByChannelIDRequest) (*pb.GetMessagesByChannelIDResponse, error) {
+	channelID, err := uuid.Parse(req.ChannelId)
+	if err != nil {
+		h.logger.Warn("Invalid channel ID format", "channel_id", req.ChannelId, "error", err)
+		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserData.Error())
+	}
+	messages, err := h.messageUsecase.GetByChannelID(ctx, channelID)
+	if err != nil {
+		h.logger.Error("Get messages by channel ID failed: unexpected error", "error", err)
+		return nil, status.Error(codes.Internal, "failed to get messages")
+	}
+
+	pbMessages := make([]*pb.Message, len(messages))
+	for i, message := range messages {
+		pbMessages[i] = &pb.Message{
+			Id:        message.ID.String(),
+			ChannelId: message.ChannelID.String(),
+			SenderId:  message.SenderID.String(),
+			Content:   message.Content,
+			ReplyId:   message.ReplyID.String(),
+			CreatedAt: timestamppb.New(message.CreatedAt),
+		}
+	}
+	return &pb.GetMessagesByChannelIDResponse{Messages: pbMessages}, nil
+}

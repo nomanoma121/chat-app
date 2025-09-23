@@ -18,5 +18,5 @@ type Message struct {
 
 type IMessageRepository interface {
 	Create(ctx context.Context, message *Message) (*Message, error)
-	GetMessagesByChannelID(ctx context.Context, channelID uuid.UUID, limit, offset int) ([]*Message, error)
+	GetByChannelID(ctx context.Context, channelID uuid.UUID) ([]*Message, error)
 }
