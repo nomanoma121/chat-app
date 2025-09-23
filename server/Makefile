@@ -72,14 +72,18 @@ lint-api-gateway:
 	@echo "==> Linting api-gateway..."
 	@cd services/api-gateway && golangci-lint run
 
+lint-message:
+	@echo "==> Linting message-service..."
+	@cd services/message && golangci-lint run
+
 lint-all:
 	@echo "==> Running golangci-lint on all modules..."
-	golangci-lint run ./services/user/... ./services/guild/... ./services/api-gateway/... ./shared/... ./api/...
+	golangci-lint run ./services/user/... ./services/guild/... ./services/api-gateway/... ./services/message/... ./shared/... ./api/...
 
 fix:
 	@echo "==> Auto-fixing format and lint issues..."
-	gofmt -w ./services/user/ ./services/guild/ ./services/api-gateway/ ./shared/ ./api/
-	goimports -w ./services/user/ ./services/guild/ ./services/api-gateway/ ./shared/ ./api/ || echo "goimports not found, skipping import fixes"
-	golangci-lint run --fix ./services/user/... ./services/guild/... ./services/api-gateway/... ./shared/... ./api/...
+	gofmt -w ./services/user/ ./services/guild/ ./services/api-gateway/ ./services/message/ ./shared/ ./api/
+	goimports -w ./services/user/ ./services/guild/ ./services/api-gateway/ ./services/message/... ./shared/ ./api/ || echo "goimports not found, skipping import fixes"
+	golangci-lint run --fix ./services/user/... ./services/guild/... ./services/api-gateway/... ./services/message/... ./shared/... ./api/...
 	@echo "✅ Auto-fix complete!"
 

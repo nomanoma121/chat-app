@@ -21,15 +21,15 @@ import (
 	"github.com/joho/godotenv"
 
 	guildpb "chat-app-proto/gen/guild"
-	userpb "chat-app-proto/gen/user"
 	messagepb "chat-app-proto/gen/message"
+	userpb "chat-app-proto/gen/user"
 )
 
 var (
-	USER_SERVICE_ENDPOINT  string
-	GUILD_SERVICE_ENDPOINT string
+	USER_SERVICE_ENDPOINT    string
+	GUILD_SERVICE_ENDPOINT   string
 	MESSAGE_SERVICE_ENDPOINT string
-	tokenAuth              *jwtauth.JWTAuth
+	tokenAuth                *jwtauth.JWTAuth
 )
 
 func init() {
