@@ -17,6 +17,11 @@ type Guild struct {
 	CreatedAt        time.Time
 }
 
+type GuildWithMemberCount struct {
+	*Guild
+	MemberCount int32
+}
+
 type GuildOverview struct {
 	*Guild
 	Categories []*CategoryOverview

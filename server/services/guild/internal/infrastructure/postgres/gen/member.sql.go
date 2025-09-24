@@ -48,3 +48,54 @@ func (q *Queries) AddMember(ctx context.Context, arg AddMemberParams) (*AddMembe
 	)
 	return &i, err
 }
+
+const countByGuildID = `-- name: CountByGuildID :one
+SELECT COUNT(*) AS count
+FROM members
+WHERE guild_id = $1
+`
+
+func (q *Queries) CountByGuildID(ctx context.Context, guildID uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countByGuildID, guildID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const getMembersByGuildID = `-- name: GetMembersByGuildID :many
+SELECT guild_id, user_id, nickname, joined_at
+FROM members
+WHERE guild_id = $1
+`
+
+type GetMembersByGuildIDRow struct {
+	GuildID  uuid.UUID
+	UserID   uuid.UUID
+	Nickname string
+	JoinedAt pgtype.Timestamp
+}
+
+func (q *Queries) GetMembersByGuildID(ctx context.Context, guildID uuid.UUID) ([]*GetMembersByGuildIDRow, error) {
+	rows, err := q.db.Query(ctx, getMembersByGuildID, guildID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*GetMembersByGuildIDRow
+	for rows.Next() {
+		var i GetMembersByGuildIDRow
+		if err := rows.Scan(
+			&i.GuildID,
+			&i.UserID,
+			&i.Nickname,
+			&i.JoinedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
