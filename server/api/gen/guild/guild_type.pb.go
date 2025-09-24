@@ -215,6 +215,106 @@ func (x *GuildDetail) GetCategories() []*CategoryDetail {
 	return nil
 }
 
+type GuildWithMemberCount struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	Id               string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name             string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	OwnerId          string                 `protobuf:"bytes,3,opt,name=owner_id,json=ownerId,proto3" json:"owner_id,omitempty"`
+	Description      string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	IconUrl          string                 `protobuf:"bytes,5,opt,name=icon_url,json=iconUrl,proto3" json:"icon_url,omitempty"`
+	DefaultChannelId string                 `protobuf:"bytes,7,opt,name=default_channel_id,json=defaultChannelId,proto3" json:"default_channel_id,omitempty"`
+	MemberCount      int32                  `protobuf:"varint,8,opt,name=member_count,json=memberCount,proto3" json:"member_count,omitempty"`
+	CreatedAt        *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *GuildWithMemberCount) Reset() {
+	*x = GuildWithMemberCount{}
+	mi := &file_guild_type_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GuildWithMemberCount) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GuildWithMemberCount) ProtoMessage() {}
+
+func (x *GuildWithMemberCount) ProtoReflect() protoreflect.Message {
+	mi := &file_guild_type_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GuildWithMemberCount.ProtoReflect.Descriptor instead.
+func (*GuildWithMemberCount) Descriptor() ([]byte, []int) {
+	return file_guild_type_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GuildWithMemberCount) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *GuildWithMemberCount) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *GuildWithMemberCount) GetOwnerId() string {
+	if x != nil {
+		return x.OwnerId
+	}
+	return ""
+}
+
+func (x *GuildWithMemberCount) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *GuildWithMemberCount) GetIconUrl() string {
+	if x != nil {
+		return x.IconUrl
+	}
+	return ""
+}
+
+func (x *GuildWithMemberCount) GetDefaultChannelId() string {
+	if x != nil {
+		return x.DefaultChannelId
+	}
+	return ""
+}
+
+func (x *GuildWithMemberCount) GetMemberCount() int32 {
+	if x != nil {
+		return x.MemberCount
+	}
+	return 0
+}
+
+func (x *GuildWithMemberCount) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
 type CategoryDetail struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -228,7 +328,7 @@ type CategoryDetail struct {
 
 func (x *CategoryDetail) Reset() {
 	*x = CategoryDetail{}
-	mi := &file_guild_type_proto_msgTypes[2]
+	mi := &file_guild_type_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -240,7 +340,7 @@ func (x *CategoryDetail) String() string {
 func (*CategoryDetail) ProtoMessage() {}
 
 func (x *CategoryDetail) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_type_proto_msgTypes[2]
+	mi := &file_guild_type_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -253,7 +353,7 @@ func (x *CategoryDetail) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CategoryDetail.ProtoReflect.Descriptor instead.
 func (*CategoryDetail) Descriptor() ([]byte, []int) {
-	return file_guild_type_proto_rawDescGZIP(), []int{2}
+	return file_guild_type_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *CategoryDetail) GetId() string {
@@ -305,7 +405,7 @@ type Invite struct {
 
 func (x *Invite) Reset() {
 	*x = Invite{}
-	mi := &file_guild_type_proto_msgTypes[3]
+	mi := &file_guild_type_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -317,7 +417,7 @@ func (x *Invite) String() string {
 func (*Invite) ProtoMessage() {}
 
 func (x *Invite) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_type_proto_msgTypes[3]
+	mi := &file_guild_type_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -330,7 +430,7 @@ func (x *Invite) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Invite.ProtoReflect.Descriptor instead.
 func (*Invite) Descriptor() ([]byte, []int) {
-	return file_guild_type_proto_rawDescGZIP(), []int{3}
+	return file_guild_type_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *Invite) GetGuildId() string {
@@ -387,7 +487,7 @@ type Member struct {
 
 func (x *Member) Reset() {
 	*x = Member{}
-	mi := &file_guild_type_proto_msgTypes[4]
+	mi := &file_guild_type_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -399,7 +499,7 @@ func (x *Member) String() string {
 func (*Member) ProtoMessage() {}
 
 func (x *Member) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_type_proto_msgTypes[4]
+	mi := &file_guild_type_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -412,7 +512,7 @@ func (x *Member) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Member.ProtoReflect.Descriptor instead.
 func (*Member) Descriptor() ([]byte, []int) {
-	return file_guild_type_proto_rawDescGZIP(), []int{4}
+	return file_guild_type_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *Member) GetUserId() string {
@@ -455,7 +555,7 @@ type Category struct {
 
 func (x *Category) Reset() {
 	*x = Category{}
-	mi := &file_guild_type_proto_msgTypes[5]
+	mi := &file_guild_type_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -467,7 +567,7 @@ func (x *Category) String() string {
 func (*Category) ProtoMessage() {}
 
 func (x *Category) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_type_proto_msgTypes[5]
+	mi := &file_guild_type_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -480,7 +580,7 @@ func (x *Category) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Category.ProtoReflect.Descriptor instead.
 func (*Category) Descriptor() ([]byte, []int) {
-	return file_guild_type_proto_rawDescGZIP(), []int{5}
+	return file_guild_type_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *Category) GetId() string {
@@ -523,7 +623,7 @@ type Channel struct {
 
 func (x *Channel) Reset() {
 	*x = Channel{}
-	mi := &file_guild_type_proto_msgTypes[6]
+	mi := &file_guild_type_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -535,7 +635,7 @@ func (x *Channel) String() string {
 func (*Channel) ProtoMessage() {}
 
 func (x *Channel) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_type_proto_msgTypes[6]
+	mi := &file_guild_type_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -548,7 +648,7 @@ func (x *Channel) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Channel.ProtoReflect.Descriptor instead.
 func (*Channel) Descriptor() ([]byte, []int) {
-	return file_guild_type_proto_rawDescGZIP(), []int{6}
+	return file_guild_type_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *Channel) GetId() string {
@@ -609,7 +709,19 @@ const file_guild_type_proto_rawDesc = "" +
 	"categories:d\x92Aa\n" +
 	"_\xd2\x01\x02id\xd2\x01\x04name\xd2\x01\bowner_id\xd2\x01\vdescription\xd2\x01\x12default_channel_id\xd2\x01\bicon_url\xd2\x01\n" +
 	"created_at\xd2\x01\n" +
-	"categories\"\xec\x01\n" +
+	"categories\"\x86\x03\n" +
+	"\x14GuildWithMemberCount\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x19\n" +
+	"\bowner_id\x18\x03 \x01(\tR\aownerId\x12 \n" +
+	"\vdescription\x18\x04 \x01(\tR\vdescription\x12\x19\n" +
+	"\bicon_url\x18\x05 \x01(\tR\aiconUrl\x12,\n" +
+	"\x12default_channel_id\x18\a \x01(\tR\x10defaultChannelId\x12!\n" +
+	"\fmember_count\x18\b \x01(\x05R\vmemberCount\x129\n" +
+	"\n" +
+	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:f\x92Ac\n" +
+	"a\xd2\x01\x02id\xd2\x01\x04name\xd2\x01\bowner_id\xd2\x01\vdescription\xd2\x01\x12default_channel_id\xd2\x01\bicon_url\xd2\x01\n" +
+	"created_at\xd2\x01\fmember_count\"\xec\x01\n" +
 	"\x0eCategoryDetail\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
 	"\bguild_id\x18\x02 \x01(\tR\aguildId\x12\x12\n" +
@@ -671,32 +783,34 @@ func file_guild_type_proto_rawDescGZIP() []byte {
 	return file_guild_type_proto_rawDescData
 }
 
-var file_guild_type_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_guild_type_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_guild_type_proto_goTypes = []any{
 	(*Guild)(nil),                 // 0: guild.Guild
 	(*GuildDetail)(nil),           // 1: guild.GuildDetail
-	(*CategoryDetail)(nil),        // 2: guild.CategoryDetail
-	(*Invite)(nil),                // 3: guild.Invite
-	(*Member)(nil),                // 4: guild.Member
-	(*Category)(nil),              // 5: guild.Category
-	(*Channel)(nil),               // 6: guild.Channel
-	(*timestamppb.Timestamp)(nil), // 7: google.protobuf.Timestamp
+	(*GuildWithMemberCount)(nil),  // 2: guild.GuildWithMemberCount
+	(*CategoryDetail)(nil),        // 3: guild.CategoryDetail
+	(*Invite)(nil),                // 4: guild.Invite
+	(*Member)(nil),                // 5: guild.Member
+	(*Category)(nil),              // 6: guild.Category
+	(*Channel)(nil),               // 7: guild.Channel
+	(*timestamppb.Timestamp)(nil), // 8: google.protobuf.Timestamp
 }
 var file_guild_type_proto_depIdxs = []int32{
-	7, // 0: guild.Guild.created_at:type_name -> google.protobuf.Timestamp
-	7, // 1: guild.GuildDetail.created_at:type_name -> google.protobuf.Timestamp
-	2, // 2: guild.GuildDetail.categories:type_name -> guild.CategoryDetail
-	7, // 3: guild.CategoryDetail.created_at:type_name -> google.protobuf.Timestamp
-	6, // 4: guild.CategoryDetail.channels:type_name -> guild.Channel
-	7, // 5: guild.Invite.expires_at:type_name -> google.protobuf.Timestamp
-	7, // 6: guild.Member.created_at:type_name -> google.protobuf.Timestamp
-	7, // 7: guild.Category.created_at:type_name -> google.protobuf.Timestamp
-	7, // 8: guild.Channel.created_at:type_name -> google.protobuf.Timestamp
-	9, // [9:9] is the sub-list for method output_type
-	9, // [9:9] is the sub-list for method input_type
-	9, // [9:9] is the sub-list for extension type_name
-	9, // [9:9] is the sub-list for extension extendee
-	0, // [0:9] is the sub-list for field type_name
+	8,  // 0: guild.Guild.created_at:type_name -> google.protobuf.Timestamp
+	8,  // 1: guild.GuildDetail.created_at:type_name -> google.protobuf.Timestamp
+	3,  // 2: guild.GuildDetail.categories:type_name -> guild.CategoryDetail
+	8,  // 3: guild.GuildWithMemberCount.created_at:type_name -> google.protobuf.Timestamp
+	8,  // 4: guild.CategoryDetail.created_at:type_name -> google.protobuf.Timestamp
+	7,  // 5: guild.CategoryDetail.channels:type_name -> guild.Channel
+	8,  // 6: guild.Invite.expires_at:type_name -> google.protobuf.Timestamp
+	8,  // 7: guild.Member.created_at:type_name -> google.protobuf.Timestamp
+	8,  // 8: guild.Category.created_at:type_name -> google.protobuf.Timestamp
+	8,  // 9: guild.Channel.created_at:type_name -> google.protobuf.Timestamp
+	10, // [10:10] is the sub-list for method output_type
+	10, // [10:10] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_guild_type_proto_init() }
@@ -710,7 +824,7 @@ func file_guild_type_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_guild_type_proto_rawDesc), len(file_guild_type_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
