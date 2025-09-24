@@ -12,9 +12,9 @@ import (
 type GuildUsecase interface {
 	Create(ctx context.Context, params *CreateGuildParams) (*domain.Guild, error)
 	Update(ctx context.Context, params *UpdateGuildParams) (*domain.Guild, error)
-	GetByID(ctx context.Context, id uuid.UUID) (*domain.Guild, error)
+	GetByID(ctx context.Context, id uuid.UUID) (*GetByIDResult, error)
 	GetGuildOverview(ctx context.Context, guildID uuid.UUID) (*domain.GuildOverview, error)
-	GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*domain.Guild, error)
+	GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*domain.GuildWithMemberCount, error)
 }
 
 type guildUsecase struct {
@@ -138,8 +138,33 @@ func (u *guildUsecase) Update(ctx context.Context, params *UpdateGuildParams) (*
 	})
 }
 
-func (u *guildUsecase) GetByID(ctx context.Context, id uuid.UUID) (*domain.Guild, error) {
-	return u.store.Guilds().GetByID(ctx, id)
+type GetByIDResult struct {
+	*domain.Guild
+	MemberCount int32
+	Members     []domain.Member
+}
+
+func (u *guildUsecase) GetByID(ctx context.Context, id uuid.UUID) (*GetByIDResult, error) {
+	guild, err := u.store.Guilds().GetByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	count, err := u.store.Members().CountByGuildID(ctx, guild.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	members, err := u.store.Members().GetMembersByGuildID(ctx, guild.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &GetByIDResult{
+		Guild:     guild,
+		MemberCount: count,
+		Members:     members,
+	}, nil
 }
 
 func (u *guildUsecase) GetGuildOverview(ctx context.Context, guildID uuid.UUID) (*domain.GuildOverview, error) {
@@ -172,8 +197,25 @@ func (u *guildUsecase) GetGuildOverview(ctx context.Context, guildID uuid.UUID) 
 	}, nil
 }
 
-func (u *guildUsecase) GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*domain.Guild, error) {
-	return u.store.Guilds().GetMyGuilds(ctx, userID)
+func (u *guildUsecase) GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*domain.GuildWithMemberCount, error) {
+	guilds, err := u.store.Guilds().GetMyGuilds(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	guildsWithMemberCount := make([]*domain.GuildWithMemberCount, 0, len(guilds))
+	for _, guild := range guilds {
+		count, err := u.store.Members().CountByGuildID(ctx, guild.ID)
+		if err != nil {
+			return nil, err
+		}
+		guildsWithMemberCount = append(guildsWithMemberCount, &domain.GuildWithMemberCount{
+			Guild:       guild,
+			MemberCount: count,
+		})
+	}
+
+	return guildsWithMemberCount, nil
 }
 
 var _ GuildUsecase = (*guildUsecase)(nil)

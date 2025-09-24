@@ -480,7 +480,7 @@ type Member struct {
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	GuildId       string                 `protobuf:"bytes,2,opt,name=guild_id,json=guildId,proto3" json:"guild_id,omitempty"`
 	Nickname      string                 `protobuf:"bytes,3,opt,name=nickname,proto3" json:"nickname,omitempty"`
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	JoinedAt      *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=joined_at,json=joinedAt,proto3" json:"joined_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -536,9 +536,9 @@ func (x *Member) GetNickname() string {
 	return ""
 }
 
-func (x *Member) GetCreatedAt() *timestamppb.Timestamp {
+func (x *Member) GetJoinedAt() *timestamppb.Timestamp {
 	if x != nil {
-		return x.CreatedAt
+		return x.JoinedAt
 	}
 	return nil
 }
@@ -743,13 +743,12 @@ const file_guild_type_proto_rawDesc = "" +
 	"S\xd2\x01\bguild_id\xd2\x01\n" +
 	"creator_id\xd2\x01\bmax_uses\xd2\x01\fcurrent_uses\xd2\x01\x04code\xd2\x01\n" +
 	"expires_at\xd2\x01\n" +
-	"created_at\"\xbc\x01\n" +
+	"created_at\"\xba\x01\n" +
 	"\x06Member\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x19\n" +
 	"\bguild_id\x18\x02 \x01(\tR\aguildId\x12\x1a\n" +
-	"\bnickname\x18\x03 \x01(\tR\bnickname\x129\n" +
-	"\n" +
-	"created_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:'\x92A$\n" +
+	"\bnickname\x18\x03 \x01(\tR\bnickname\x127\n" +
+	"\tjoined_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\bjoinedAt:'\x92A$\n" +
 	"\"\xd2\x01\auser_id\xd2\x01\bguild_id\xd2\x01\n" +
 	"created_at\"\xaf\x01\n" +
 	"\bCategory\x12\x0e\n" +
@@ -803,7 +802,7 @@ var file_guild_type_proto_depIdxs = []int32{
 	8,  // 4: guild.CategoryDetail.created_at:type_name -> google.protobuf.Timestamp
 	7,  // 5: guild.CategoryDetail.channels:type_name -> guild.Channel
 	8,  // 6: guild.Invite.expires_at:type_name -> google.protobuf.Timestamp
-	8,  // 7: guild.Member.created_at:type_name -> google.protobuf.Timestamp
+	8,  // 7: guild.Member.joined_at:type_name -> google.protobuf.Timestamp
 	8,  // 8: guild.Category.created_at:type_name -> google.protobuf.Timestamp
 	8,  // 9: guild.Channel.created_at:type_name -> google.protobuf.Timestamp
 	10, // [10:10] is the sub-list for method output_type

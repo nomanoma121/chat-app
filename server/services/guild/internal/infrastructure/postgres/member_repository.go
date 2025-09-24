@@ -37,7 +37,7 @@ func (r *memberRepository) Add(ctx context.Context, member *domain.Member) (*dom
 	}, nil
 }
 
-func (r *memberRepository) GetMembersByGuildID(ctx context.Context, guildID uuid.UUID) (*[]domain.Member, error) {
+func (r *memberRepository) GetMembersByGuildID(ctx context.Context, guildID uuid.UUID) ([]domain.Member, error) {
 	dbMembers, err := r.queries.GetMembersByGuildID(ctx, guildID)
 	if err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func (r *memberRepository) GetMembersByGuildID(ctx context.Context, guildID uuid
 		}
 	}
 
-	return &members, nil	
+	return members, nil
 }
 
 // TODO: N+1の原因なので、JOINとかでほかのクエリと一緒に取得するようにする
