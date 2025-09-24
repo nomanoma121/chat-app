@@ -8,7 +8,7 @@ import "protoc-gen-openapiv2/options/annotations.proto";
 import "google/protobuf/empty.proto";
 import "message_type.proto";
 
-message CreateMessageRequest {
+message CreateRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       required: ["channel_id", "content"]
@@ -16,10 +16,10 @@ message CreateMessageRequest {
   };
   string channel_id = 1;
   string content = 2;
-  string reply_id = 3;
+  optional string reply_id = 3;
 }
 
-message CreateMessageResponse {
+message CreateResponse {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       required: ["message"]
@@ -28,7 +28,7 @@ message CreateMessageResponse {
   Message message = 1;
 }
 
-message GetMessagesByChannelIDRequest {
+message GetByChannelIDRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       required: ["channel_id"]
@@ -37,7 +37,7 @@ message GetMessagesByChannelIDRequest {
   string channel_id = 1;
 }
 
-message GetMessagesByChannelIDResponse {
+message GetByChannelIDResponse {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       required: ["messages"]
@@ -46,7 +46,7 @@ message GetMessagesByChannelIDResponse {
   repeated Message messages = 1;
 }
 
-message UpdateMessageByMessageIDRequest {
+message UpdateByMessageIDRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       required: ["message_id", "content"]
@@ -54,10 +54,10 @@ message UpdateMessageByMessageIDRequest {
   };
   string message_id = 1;
   string content = 2;
-  string reply_id = 3;
+  optional string reply_id = 3;
 }
 
-message UpdateMessageByMessageIDResponse {
+message UpdateByMessageIDResponse {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       required: ["message"]
@@ -66,7 +66,7 @@ message UpdateMessageByMessageIDResponse {
   Message message = 1;
 }
 
-message DeleteMessageByMessageIDRequest {
+message DeleteByMessageIDRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       required: ["message_id"]
@@ -75,7 +75,7 @@ message DeleteMessageByMessageIDRequest {
   string message_id = 1;
 }
 
-message DeleteMessageByMessageIDResponse {
+message DeleteByMessageIDResponse {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
       required: ["empty"]

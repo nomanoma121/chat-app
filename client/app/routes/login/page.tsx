@@ -6,7 +6,7 @@ import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
-import { useLoginMutation } from "~/hooks/use-login";
+import { useLogin } from "~/hooks/use-login";
 
 export default function LoginPage() {
 	const emailId = useId();
@@ -16,7 +16,7 @@ export default function LoginPage() {
 		email: "",
 		password: "",
 	});
-	const { mutateAsync, isPending, error } = useLoginMutation();
+	const { mutateAsync, isPending, error } = useLogin();
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		try {

@@ -14,7 +14,7 @@ service MessageService {
     description: "Message management operations"
   };
 
-  rpc CreateMessage(CreateMessageRequest) returns (CreateMessageResponse) {
+  rpc Create(CreateRequest) returns (CreateResponse) {
     option (google.api.http) = {
       post: "/api/channels/{channel_id}/messages"
       body: "*"
@@ -24,7 +24,7 @@ service MessageService {
     };
   }
 
-  rpc GetMessagesByChannelID(GetMessagesByChannelIDRequest) returns (GetMessagesByChannelIDResponse) {
+  rpc GetByChannelID(GetByChannelIDRequest) returns (GetByChannelIDResponse) {
     option (google.api.http) = {
       get: "/api/channels/{channel_id}/messages"
     };
@@ -33,7 +33,7 @@ service MessageService {
     };
   }
 
-  rpc UpdateMessageByMessageID(UpdateMessageByMessageIDRequest) returns (UpdateMessageByMessageIDResponse) {
+  rpc UpdateByMessageID(UpdateByMessageIDRequest) returns (UpdateByMessageIDResponse) {
     option (google.api.http) = {
       put: "/api/messages/{message_id}"
       body: "*"
@@ -43,7 +43,7 @@ service MessageService {
     };
   }
 
-  rpc DeleteMessageByMessageID(DeleteMessageByMessageIDRequest) returns (DeleteMessageByMessageIDResponse) {
+  rpc DeleteByMessageID(DeleteByMessageIDRequest) returns (DeleteByMessageIDResponse) {
     option (google.api.http) = {
       delete: "/api/messages/{message_id}"
     };

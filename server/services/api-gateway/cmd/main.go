@@ -21,13 +21,15 @@ import (
 	"github.com/joho/godotenv"
 
 	guildpb "chat-app-proto/gen/guild"
+	messagepb "chat-app-proto/gen/message"
 	userpb "chat-app-proto/gen/user"
 )
 
 var (
-	USER_SERVICE_ENDPOINT  string
-	GUILD_SERVICE_ENDPOINT string
-	tokenAuth              *jwtauth.JWTAuth
+	USER_SERVICE_ENDPOINT    string
+	GUILD_SERVICE_ENDPOINT   string
+	MESSAGE_SERVICE_ENDPOINT string
+	tokenAuth                *jwtauth.JWTAuth
 )
 
 func init() {
@@ -35,6 +37,7 @@ func init() {
 
 	USER_SERVICE_ENDPOINT = os.Getenv("USER_SERVICE_URL")
 	GUILD_SERVICE_ENDPOINT = os.Getenv("GUILD_SERVICE_URL")
+	MESSAGE_SERVICE_ENDPOINT = os.Getenv("MESSAGE_SERVICE_URL")
 }
 
 func main() {
@@ -62,6 +65,11 @@ func main() {
 	err = guildpb.RegisterGuildServiceHandlerFromEndpoint(ctx, grpcGatewayMux, GUILD_SERVICE_ENDPOINT, opts)
 	if err != nil {
 		log.Error("Failed to register guild service handler", "error", err, "endpoint", GUILD_SERVICE_ENDPOINT)
+		os.Exit(1)
+	}
+	err = messagepb.RegisterMessageServiceHandlerFromEndpoint(ctx, grpcGatewayMux, MESSAGE_SERVICE_ENDPOINT, opts)
+	if err != nil {
+		log.Error("Failed to register message service handler", "error", err, "endpoint", MESSAGE_SERVICE_ENDPOINT)
 		os.Exit(1)
 	}
 

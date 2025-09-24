@@ -2,16 +2,16 @@ package main
 
 import (
 	"context"
+	"message-service/internal/handler"
+	"message-service/internal/infrastructure/postgres"
+	"message-service/internal/infrastructure/postgres/gen"
+	"message-service/internal/usecase"
 	"net"
 	"os"
 	"shared/logger"
 	"time"
-	"user-service/internal/handler"
-	"user-service/internal/infrastructure/postgres"
-	"user-service/internal/infrastructure/postgres/gen"
-	"user-service/internal/usecase"
 
-	pb "chat-app-proto/gen/user"
+	pb "chat-app-proto/gen/message"
 
 	"github.com/go-playground/validator"
 	"github.com/joho/godotenv"
@@ -26,7 +26,7 @@ var db *pgxpool.Pool
 func init() {
 	_ = godotenv.Load()
 
-	log := logger.Default("user-service")
+	log := logger.Default("message-service")
 	dsn := os.Getenv("DATABASE_URL")
 
 	log.Info("Connecting to database...")
@@ -51,25 +51,22 @@ func main() {
 	defer func() {
 		db.Close()
 	}()
-	userRepo := postgres.NewPostgresUserRepository(gen.New(db))
+	messageRepo := postgres.NewPostgresMessageRepository(gen.New(db))
 	validate := validator.New()
-	userUsecase := usecase.NewUserUsecase(userRepo, usecase.Config{
-		JWTSecret: os.Getenv("JWT_SECRET"),
-	}, validate)
-	userHandler := handler.NewUserHandler(userUsecase, log)
-
+	messageUsecase := usecase.NewMessageUsecase(messageRepo, validate)
+	messageHandler := handler.NewMessageHandler(messageUsecase, log)
 	server := grpc.NewServer()
-	pb.RegisterUserServiceServer(server, userHandler)
+	pb.RegisterMessageServiceServer(server, messageHandler)
 	reflection.Register(server)
 
-	port := 50051
-	lis, err := net.Listen("tcp", ":50051")
+	port := 50053
+	lis, err := net.Listen("tcp", ":50053")
 	if err != nil {
 		log.Error("Failed to listen", "port", port, "error", err)
 		os.Exit(1)
 	}
 
-	log.Info("User service starting", "port", port)
+	log.Info("Message service starting", "port", port)
 	if err := server.Serve(lis); err != nil {
 		log.Error("Failed to serve", "error", err)
 		os.Exit(1)

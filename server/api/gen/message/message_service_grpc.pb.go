@@ -19,20 +19,20 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	MessageService_CreateMessage_FullMethodName            = "/msg.MessageService/CreateMessage"
-	MessageService_GetMessagesByChannelID_FullMethodName   = "/msg.MessageService/GetMessagesByChannelID"
-	MessageService_UpdateMessageByMessageID_FullMethodName = "/msg.MessageService/UpdateMessageByMessageID"
-	MessageService_DeleteMessageByMessageID_FullMethodName = "/msg.MessageService/DeleteMessageByMessageID"
+	MessageService_Create_FullMethodName            = "/msg.MessageService/Create"
+	MessageService_GetByChannelID_FullMethodName    = "/msg.MessageService/GetByChannelID"
+	MessageService_UpdateByMessageID_FullMethodName = "/msg.MessageService/UpdateByMessageID"
+	MessageService_DeleteByMessageID_FullMethodName = "/msg.MessageService/DeleteByMessageID"
 )
 
 // MessageServiceClient is the client API for MessageService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MessageServiceClient interface {
-	CreateMessage(ctx context.Context, in *CreateMessageRequest, opts ...grpc.CallOption) (*CreateMessageResponse, error)
-	GetMessagesByChannelID(ctx context.Context, in *GetMessagesByChannelIDRequest, opts ...grpc.CallOption) (*GetMessagesByChannelIDResponse, error)
-	UpdateMessageByMessageID(ctx context.Context, in *UpdateMessageByMessageIDRequest, opts ...grpc.CallOption) (*UpdateMessageByMessageIDResponse, error)
-	DeleteMessageByMessageID(ctx context.Context, in *DeleteMessageByMessageIDRequest, opts ...grpc.CallOption) (*DeleteMessageByMessageIDResponse, error)
+	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
+	GetByChannelID(ctx context.Context, in *GetByChannelIDRequest, opts ...grpc.CallOption) (*GetByChannelIDResponse, error)
+	UpdateByMessageID(ctx context.Context, in *UpdateByMessageIDRequest, opts ...grpc.CallOption) (*UpdateByMessageIDResponse, error)
+	DeleteByMessageID(ctx context.Context, in *DeleteByMessageIDRequest, opts ...grpc.CallOption) (*DeleteByMessageIDResponse, error)
 }
 
 type messageServiceClient struct {
@@ -43,40 +43,40 @@ func NewMessageServiceClient(cc grpc.ClientConnInterface) MessageServiceClient {
 	return &messageServiceClient{cc}
 }
 
-func (c *messageServiceClient) CreateMessage(ctx context.Context, in *CreateMessageRequest, opts ...grpc.CallOption) (*CreateMessageResponse, error) {
+func (c *messageServiceClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateMessageResponse)
-	err := c.cc.Invoke(ctx, MessageService_CreateMessage_FullMethodName, in, out, cOpts...)
+	out := new(CreateResponse)
+	err := c.cc.Invoke(ctx, MessageService_Create_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *messageServiceClient) GetMessagesByChannelID(ctx context.Context, in *GetMessagesByChannelIDRequest, opts ...grpc.CallOption) (*GetMessagesByChannelIDResponse, error) {
+func (c *messageServiceClient) GetByChannelID(ctx context.Context, in *GetByChannelIDRequest, opts ...grpc.CallOption) (*GetByChannelIDResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetMessagesByChannelIDResponse)
-	err := c.cc.Invoke(ctx, MessageService_GetMessagesByChannelID_FullMethodName, in, out, cOpts...)
+	out := new(GetByChannelIDResponse)
+	err := c.cc.Invoke(ctx, MessageService_GetByChannelID_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *messageServiceClient) UpdateMessageByMessageID(ctx context.Context, in *UpdateMessageByMessageIDRequest, opts ...grpc.CallOption) (*UpdateMessageByMessageIDResponse, error) {
+func (c *messageServiceClient) UpdateByMessageID(ctx context.Context, in *UpdateByMessageIDRequest, opts ...grpc.CallOption) (*UpdateByMessageIDResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UpdateMessageByMessageIDResponse)
-	err := c.cc.Invoke(ctx, MessageService_UpdateMessageByMessageID_FullMethodName, in, out, cOpts...)
+	out := new(UpdateByMessageIDResponse)
+	err := c.cc.Invoke(ctx, MessageService_UpdateByMessageID_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *messageServiceClient) DeleteMessageByMessageID(ctx context.Context, in *DeleteMessageByMessageIDRequest, opts ...grpc.CallOption) (*DeleteMessageByMessageIDResponse, error) {
+func (c *messageServiceClient) DeleteByMessageID(ctx context.Context, in *DeleteByMessageIDRequest, opts ...grpc.CallOption) (*DeleteByMessageIDResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteMessageByMessageIDResponse)
-	err := c.cc.Invoke(ctx, MessageService_DeleteMessageByMessageID_FullMethodName, in, out, cOpts...)
+	out := new(DeleteByMessageIDResponse)
+	err := c.cc.Invoke(ctx, MessageService_DeleteByMessageID_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -87,10 +87,10 @@ func (c *messageServiceClient) DeleteMessageByMessageID(ctx context.Context, in 
 // All implementations must embed UnimplementedMessageServiceServer
 // for forward compatibility.
 type MessageServiceServer interface {
-	CreateMessage(context.Context, *CreateMessageRequest) (*CreateMessageResponse, error)
-	GetMessagesByChannelID(context.Context, *GetMessagesByChannelIDRequest) (*GetMessagesByChannelIDResponse, error)
-	UpdateMessageByMessageID(context.Context, *UpdateMessageByMessageIDRequest) (*UpdateMessageByMessageIDResponse, error)
-	DeleteMessageByMessageID(context.Context, *DeleteMessageByMessageIDRequest) (*DeleteMessageByMessageIDResponse, error)
+	Create(context.Context, *CreateRequest) (*CreateResponse, error)
+	GetByChannelID(context.Context, *GetByChannelIDRequest) (*GetByChannelIDResponse, error)
+	UpdateByMessageID(context.Context, *UpdateByMessageIDRequest) (*UpdateByMessageIDResponse, error)
+	DeleteByMessageID(context.Context, *DeleteByMessageIDRequest) (*DeleteByMessageIDResponse, error)
 	mustEmbedUnimplementedMessageServiceServer()
 }
 
@@ -101,17 +101,17 @@ type MessageServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedMessageServiceServer struct{}
 
-func (UnimplementedMessageServiceServer) CreateMessage(context.Context, *CreateMessageRequest) (*CreateMessageResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateMessage not implemented")
+func (UnimplementedMessageServiceServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedMessageServiceServer) GetMessagesByChannelID(context.Context, *GetMessagesByChannelIDRequest) (*GetMessagesByChannelIDResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetMessagesByChannelID not implemented")
+func (UnimplementedMessageServiceServer) GetByChannelID(context.Context, *GetByChannelIDRequest) (*GetByChannelIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetByChannelID not implemented")
 }
-func (UnimplementedMessageServiceServer) UpdateMessageByMessageID(context.Context, *UpdateMessageByMessageIDRequest) (*UpdateMessageByMessageIDResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateMessageByMessageID not implemented")
+func (UnimplementedMessageServiceServer) UpdateByMessageID(context.Context, *UpdateByMessageIDRequest) (*UpdateByMessageIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateByMessageID not implemented")
 }
-func (UnimplementedMessageServiceServer) DeleteMessageByMessageID(context.Context, *DeleteMessageByMessageIDRequest) (*DeleteMessageByMessageIDResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteMessageByMessageID not implemented")
+func (UnimplementedMessageServiceServer) DeleteByMessageID(context.Context, *DeleteByMessageIDRequest) (*DeleteByMessageIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteByMessageID not implemented")
 }
 func (UnimplementedMessageServiceServer) mustEmbedUnimplementedMessageServiceServer() {}
 func (UnimplementedMessageServiceServer) testEmbeddedByValue()                        {}
@@ -134,74 +134,74 @@ func RegisterMessageServiceServer(s grpc.ServiceRegistrar, srv MessageServiceSer
 	s.RegisterService(&MessageService_ServiceDesc, srv)
 }
 
-func _MessageService_CreateMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateMessageRequest)
+func _MessageService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MessageServiceServer).CreateMessage(ctx, in)
+		return srv.(MessageServiceServer).Create(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MessageService_CreateMessage_FullMethodName,
+		FullMethod: MessageService_Create_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).CreateMessage(ctx, req.(*CreateMessageRequest))
+		return srv.(MessageServiceServer).Create(ctx, req.(*CreateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MessageService_GetMessagesByChannelID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetMessagesByChannelIDRequest)
+func _MessageService_GetByChannelID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetByChannelIDRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MessageServiceServer).GetMessagesByChannelID(ctx, in)
+		return srv.(MessageServiceServer).GetByChannelID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MessageService_GetMessagesByChannelID_FullMethodName,
+		FullMethod: MessageService_GetByChannelID_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).GetMessagesByChannelID(ctx, req.(*GetMessagesByChannelIDRequest))
+		return srv.(MessageServiceServer).GetByChannelID(ctx, req.(*GetByChannelIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MessageService_UpdateMessageByMessageID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateMessageByMessageIDRequest)
+func _MessageService_UpdateByMessageID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateByMessageIDRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MessageServiceServer).UpdateMessageByMessageID(ctx, in)
+		return srv.(MessageServiceServer).UpdateByMessageID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MessageService_UpdateMessageByMessageID_FullMethodName,
+		FullMethod: MessageService_UpdateByMessageID_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).UpdateMessageByMessageID(ctx, req.(*UpdateMessageByMessageIDRequest))
+		return srv.(MessageServiceServer).UpdateByMessageID(ctx, req.(*UpdateByMessageIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MessageService_DeleteMessageByMessageID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteMessageByMessageIDRequest)
+func _MessageService_DeleteByMessageID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteByMessageIDRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MessageServiceServer).DeleteMessageByMessageID(ctx, in)
+		return srv.(MessageServiceServer).DeleteByMessageID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MessageService_DeleteMessageByMessageID_FullMethodName,
+		FullMethod: MessageService_DeleteByMessageID_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).DeleteMessageByMessageID(ctx, req.(*DeleteMessageByMessageIDRequest))
+		return srv.(MessageServiceServer).DeleteByMessageID(ctx, req.(*DeleteByMessageIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -214,20 +214,20 @@ var MessageService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MessageServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateMessage",
-			Handler:    _MessageService_CreateMessage_Handler,
+			MethodName: "Create",
+			Handler:    _MessageService_Create_Handler,
 		},
 		{
-			MethodName: "GetMessagesByChannelID",
-			Handler:    _MessageService_GetMessagesByChannelID_Handler,
+			MethodName: "GetByChannelID",
+			Handler:    _MessageService_GetByChannelID_Handler,
 		},
 		{
-			MethodName: "UpdateMessageByMessageID",
-			Handler:    _MessageService_UpdateMessageByMessageID_Handler,
+			MethodName: "UpdateByMessageID",
+			Handler:    _MessageService_UpdateByMessageID_Handler,
 		},
 		{
-			MethodName: "DeleteMessageByMessageID",
-			Handler:    _MessageService_DeleteMessageByMessageID_Handler,
+			MethodName: "DeleteByMessageID",
+			Handler:    _MessageService_DeleteByMessageID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

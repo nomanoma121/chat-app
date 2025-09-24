@@ -2,6 +2,7 @@ import { MoreHorizontal, Reply, Smile } from "lucide-react";
 import { forwardRef, useState } from "react";
 import { css, cva } from "styled-system/css";
 import { Avatar } from "~/components/ui/avatar";
+import type { Message as TMessage } from "~/api/gen/guildTypeProto.schemas";
 import { IconButton } from "~/components/ui/icon-button";
 
 const messageStyles = cva({
@@ -63,25 +64,8 @@ const messageActionsStyles = cva({
 	},
 });
 
-export interface MessageData {
-	id: string;
-	content: string;
-	author: {
-		id: string;
-		name: string;
-		avatar?: string;
-		color?: string;
-	};
-	timestamp: string;
-	replyTo?: {
-		id: string;
-		author: { name: string };
-		content: string;
-	};
-}
-
 export interface MessageProps {
-	message: MessageData;
+	message: TMessage;
 	onReply?: (messageId: string) => void;
 	onReact?: (messageId: string, emoji: string) => void;
 	className?: string;
@@ -120,14 +104,15 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>(
 			>
 				<div className={messageAvatarStyles()}>
 					<Avatar
-						name={message.author.name}
-						src={message.author.avatar}
+						name={"tmp"}
+						// name={message.author.name}
+						src="https://i.pravatar.cc/150?img=3"
 						size="sm"
 					/>
 				</div>
 
 				<div className={messageContentStyles()}>
-					{message.replyTo && (
+					{/* {message.replyTo && (
 						<div
 							className={css({
 								display: "flex",
@@ -141,19 +126,21 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>(
 							<Reply size={14} />
 							<span>Replying to {message.replyTo.author.name}</span>
 						</div>
-					)}
+					)} */}
 
 					<div className={messageHeaderStyles()}>
 						<span
 							className={css({
 								fontWeight: "semibold",
 								fontSize: "sm",
-								color: message.author.color || "text.bright",
+								// color: message.author.color || "text.bright",
+								color: "text.bright",
 								cursor: "pointer",
 								_hover: { textDecoration: "underline" },
 							})}
 						>
-							{message.author.name}
+							{/* {message.author.name} */}
+							tmp
 						</span>
 						<span
 							className={css({
@@ -162,7 +149,7 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>(
 								fontWeight: "medium",
 							})}
 						>
-							{formatTimestamp(message.timestamp)}
+							{formatTimestamp(message.createdAt)}
 						</span>
 					</div>
 

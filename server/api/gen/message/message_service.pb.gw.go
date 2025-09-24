@@ -35,9 +35,9 @@ var (
 	_ = metadata.Join
 )
 
-func request_MessageService_CreateMessage_0(ctx context.Context, marshaler runtime.Marshaler, client MessageServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_MessageService_Create_0(ctx context.Context, marshaler runtime.Marshaler, client MessageServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq CreateMessageRequest
+		protoReq CreateRequest
 		metadata runtime.ServerMetadata
 		err      error
 	)
@@ -55,13 +55,13 @@ func request_MessageService_CreateMessage_0(ctx context.Context, marshaler runti
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "channel_id", err)
 	}
-	msg, err := client.CreateMessage(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.Create(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
 
-func local_request_MessageService_CreateMessage_0(ctx context.Context, marshaler runtime.Marshaler, server MessageServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_MessageService_Create_0(ctx context.Context, marshaler runtime.Marshaler, server MessageServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq CreateMessageRequest
+		protoReq CreateRequest
 		metadata runtime.ServerMetadata
 		err      error
 	)
@@ -76,13 +76,13 @@ func local_request_MessageService_CreateMessage_0(ctx context.Context, marshaler
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "channel_id", err)
 	}
-	msg, err := server.CreateMessage(ctx, &protoReq)
+	msg, err := server.Create(ctx, &protoReq)
 	return msg, metadata, err
 }
 
-func request_MessageService_GetMessagesByChannelID_0(ctx context.Context, marshaler runtime.Marshaler, client MessageServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_MessageService_GetByChannelID_0(ctx context.Context, marshaler runtime.Marshaler, client MessageServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq GetMessagesByChannelIDRequest
+		protoReq GetByChannelIDRequest
 		metadata runtime.ServerMetadata
 		err      error
 	)
@@ -97,13 +97,13 @@ func request_MessageService_GetMessagesByChannelID_0(ctx context.Context, marsha
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "channel_id", err)
 	}
-	msg, err := client.GetMessagesByChannelID(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetByChannelID(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
 
-func local_request_MessageService_GetMessagesByChannelID_0(ctx context.Context, marshaler runtime.Marshaler, server MessageServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_MessageService_GetByChannelID_0(ctx context.Context, marshaler runtime.Marshaler, server MessageServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq GetMessagesByChannelIDRequest
+		protoReq GetByChannelIDRequest
 		metadata runtime.ServerMetadata
 		err      error
 	)
@@ -115,13 +115,13 @@ func local_request_MessageService_GetMessagesByChannelID_0(ctx context.Context, 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "channel_id", err)
 	}
-	msg, err := server.GetMessagesByChannelID(ctx, &protoReq)
+	msg, err := server.GetByChannelID(ctx, &protoReq)
 	return msg, metadata, err
 }
 
-func request_MessageService_UpdateMessageByMessageID_0(ctx context.Context, marshaler runtime.Marshaler, client MessageServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_MessageService_UpdateByMessageID_0(ctx context.Context, marshaler runtime.Marshaler, client MessageServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq UpdateMessageByMessageIDRequest
+		protoReq UpdateByMessageIDRequest
 		metadata runtime.ServerMetadata
 		err      error
 	)
@@ -139,13 +139,13 @@ func request_MessageService_UpdateMessageByMessageID_0(ctx context.Context, mars
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "message_id", err)
 	}
-	msg, err := client.UpdateMessageByMessageID(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.UpdateByMessageID(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
 
-func local_request_MessageService_UpdateMessageByMessageID_0(ctx context.Context, marshaler runtime.Marshaler, server MessageServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_MessageService_UpdateByMessageID_0(ctx context.Context, marshaler runtime.Marshaler, server MessageServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq UpdateMessageByMessageIDRequest
+		protoReq UpdateByMessageIDRequest
 		metadata runtime.ServerMetadata
 		err      error
 	)
@@ -160,13 +160,13 @@ func local_request_MessageService_UpdateMessageByMessageID_0(ctx context.Context
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "message_id", err)
 	}
-	msg, err := server.UpdateMessageByMessageID(ctx, &protoReq)
+	msg, err := server.UpdateByMessageID(ctx, &protoReq)
 	return msg, metadata, err
 }
 
-func request_MessageService_DeleteMessageByMessageID_0(ctx context.Context, marshaler runtime.Marshaler, client MessageServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_MessageService_DeleteByMessageID_0(ctx context.Context, marshaler runtime.Marshaler, client MessageServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq DeleteMessageByMessageIDRequest
+		protoReq DeleteByMessageIDRequest
 		metadata runtime.ServerMetadata
 		err      error
 	)
@@ -181,13 +181,13 @@ func request_MessageService_DeleteMessageByMessageID_0(ctx context.Context, mars
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "message_id", err)
 	}
-	msg, err := client.DeleteMessageByMessageID(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.DeleteByMessageID(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
 
-func local_request_MessageService_DeleteMessageByMessageID_0(ctx context.Context, marshaler runtime.Marshaler, server MessageServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_MessageService_DeleteByMessageID_0(ctx context.Context, marshaler runtime.Marshaler, server MessageServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq DeleteMessageByMessageIDRequest
+		protoReq DeleteByMessageIDRequest
 		metadata runtime.ServerMetadata
 		err      error
 	)
@@ -199,7 +199,7 @@ func local_request_MessageService_DeleteMessageByMessageID_0(ctx context.Context
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "message_id", err)
 	}
-	msg, err := server.DeleteMessageByMessageID(ctx, &protoReq)
+	msg, err := server.DeleteByMessageID(ctx, &protoReq)
 	return msg, metadata, err
 }
 
@@ -209,85 +209,85 @@ func local_request_MessageService_DeleteMessageByMessageID_0(ctx context.Context
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterMessageServiceHandlerFromEndpoint instead.
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterMessageServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server MessageServiceServer) error {
-	mux.Handle(http.MethodPost, pattern_MessageService_CreateMessage_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_MessageService_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/msg.MessageService/CreateMessage", runtime.WithHTTPPathPattern("/api/channels/{channel_id}/messages"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/msg.MessageService/Create", runtime.WithHTTPPathPattern("/api/channels/{channel_id}/messages"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_MessageService_CreateMessage_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_MessageService_Create_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_MessageService_CreateMessage_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MessageService_Create_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_MessageService_GetMessagesByChannelID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_MessageService_GetByChannelID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/msg.MessageService/GetMessagesByChannelID", runtime.WithHTTPPathPattern("/api/channels/{channel_id}/messages"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/msg.MessageService/GetByChannelID", runtime.WithHTTPPathPattern("/api/channels/{channel_id}/messages"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_MessageService_GetMessagesByChannelID_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_MessageService_GetByChannelID_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_MessageService_GetMessagesByChannelID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MessageService_GetByChannelID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPut, pattern_MessageService_UpdateMessageByMessageID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPut, pattern_MessageService_UpdateByMessageID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/msg.MessageService/UpdateMessageByMessageID", runtime.WithHTTPPathPattern("/api/messages/{message_id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/msg.MessageService/UpdateByMessageID", runtime.WithHTTPPathPattern("/api/messages/{message_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_MessageService_UpdateMessageByMessageID_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_MessageService_UpdateByMessageID_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_MessageService_UpdateMessageByMessageID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MessageService_UpdateByMessageID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodDelete, pattern_MessageService_DeleteMessageByMessageID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodDelete, pattern_MessageService_DeleteByMessageID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/msg.MessageService/DeleteMessageByMessageID", runtime.WithHTTPPathPattern("/api/messages/{message_id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/msg.MessageService/DeleteByMessageID", runtime.WithHTTPPathPattern("/api/messages/{message_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_MessageService_DeleteMessageByMessageID_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_MessageService_DeleteByMessageID_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_MessageService_DeleteMessageByMessageID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MessageService_DeleteByMessageID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
 	return nil
@@ -329,87 +329,87 @@ func RegisterMessageServiceHandler(ctx context.Context, mux *runtime.ServeMux, c
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "MessageServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterMessageServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client MessageServiceClient) error {
-	mux.Handle(http.MethodPost, pattern_MessageService_CreateMessage_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_MessageService_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/msg.MessageService/CreateMessage", runtime.WithHTTPPathPattern("/api/channels/{channel_id}/messages"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/msg.MessageService/Create", runtime.WithHTTPPathPattern("/api/channels/{channel_id}/messages"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_MessageService_CreateMessage_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_MessageService_Create_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_MessageService_CreateMessage_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MessageService_Create_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_MessageService_GetMessagesByChannelID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_MessageService_GetByChannelID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/msg.MessageService/GetMessagesByChannelID", runtime.WithHTTPPathPattern("/api/channels/{channel_id}/messages"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/msg.MessageService/GetByChannelID", runtime.WithHTTPPathPattern("/api/channels/{channel_id}/messages"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_MessageService_GetMessagesByChannelID_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_MessageService_GetByChannelID_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_MessageService_GetMessagesByChannelID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MessageService_GetByChannelID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPut, pattern_MessageService_UpdateMessageByMessageID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPut, pattern_MessageService_UpdateByMessageID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/msg.MessageService/UpdateMessageByMessageID", runtime.WithHTTPPathPattern("/api/messages/{message_id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/msg.MessageService/UpdateByMessageID", runtime.WithHTTPPathPattern("/api/messages/{message_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_MessageService_UpdateMessageByMessageID_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_MessageService_UpdateByMessageID_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_MessageService_UpdateMessageByMessageID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MessageService_UpdateByMessageID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodDelete, pattern_MessageService_DeleteMessageByMessageID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodDelete, pattern_MessageService_DeleteByMessageID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/msg.MessageService/DeleteMessageByMessageID", runtime.WithHTTPPathPattern("/api/messages/{message_id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/msg.MessageService/DeleteByMessageID", runtime.WithHTTPPathPattern("/api/messages/{message_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_MessageService_DeleteMessageByMessageID_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_MessageService_DeleteByMessageID_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_MessageService_DeleteMessageByMessageID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_MessageService_DeleteByMessageID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 	return nil
 }
 
 var (
-	pattern_MessageService_CreateMessage_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "channels", "channel_id", "messages"}, ""))
-	pattern_MessageService_GetMessagesByChannelID_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "channels", "channel_id", "messages"}, ""))
-	pattern_MessageService_UpdateMessageByMessageID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "messages", "message_id"}, ""))
-	pattern_MessageService_DeleteMessageByMessageID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "messages", "message_id"}, ""))
+	pattern_MessageService_Create_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "channels", "channel_id", "messages"}, ""))
+	pattern_MessageService_GetByChannelID_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "channels", "channel_id", "messages"}, ""))
+	pattern_MessageService_UpdateByMessageID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "messages", "message_id"}, ""))
+	pattern_MessageService_DeleteByMessageID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "messages", "message_id"}, ""))
 )
 
 var (
-	forward_MessageService_CreateMessage_0            = runtime.ForwardResponseMessage
-	forward_MessageService_GetMessagesByChannelID_0   = runtime.ForwardResponseMessage
-	forward_MessageService_UpdateMessageByMessageID_0 = runtime.ForwardResponseMessage
-	forward_MessageService_DeleteMessageByMessageID_0 = runtime.ForwardResponseMessage
+	forward_MessageService_Create_0            = runtime.ForwardResponseMessage
+	forward_MessageService_GetByChannelID_0    = runtime.ForwardResponseMessage
+	forward_MessageService_UpdateByMessageID_0 = runtime.ForwardResponseMessage
+	forward_MessageService_DeleteByMessageID_0 = runtime.ForwardResponseMessage
 )

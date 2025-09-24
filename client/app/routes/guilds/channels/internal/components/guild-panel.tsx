@@ -105,9 +105,9 @@ export const GuildPanel = () => {
 						fontSize: "sm",
 						color: "text.medium",
 					})}
-					onClick={() => navigate("/servers/1/settings")}
+					onClick={() => navigate(`/servers/${guild?.id}/settings`)}
 				>
-					MYSERVER
+					{guild?.name}
 				</Heading>
 				<div className={css({ display: "flex", gap: "2" })}>
 					<IconButton
@@ -123,7 +123,7 @@ export const GuildPanel = () => {
 					>
 						<UserRoundPlus
 							size={16}
-							onClick={() => navigate("/servers/1/invite")}
+							onClick={() => navigate(`/servers/${guild?.id}/invite`)}
 						/>
 					</IconButton>
 					<IconButton
@@ -139,7 +139,7 @@ export const GuildPanel = () => {
 					>
 						<Settings
 							size={16}
-							onClick={() => navigate("/servers/1/settings")}
+							onClick={() => navigate(`/servers/${guild?.id}/settings`)}
 						/>
 					</IconButton>
 				</div>

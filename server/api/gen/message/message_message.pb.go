@@ -23,29 +23,29 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type CreateMessageRequest struct {
+type CreateRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ChannelId     string                 `protobuf:"bytes,1,opt,name=channel_id,json=channelId,proto3" json:"channel_id,omitempty"`
 	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
-	ReplyId       string                 `protobuf:"bytes,3,opt,name=reply_id,json=replyId,proto3" json:"reply_id,omitempty"`
+	ReplyId       *string                `protobuf:"bytes,3,opt,name=reply_id,json=replyId,proto3,oneof" json:"reply_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CreateMessageRequest) Reset() {
-	*x = CreateMessageRequest{}
+func (x *CreateRequest) Reset() {
+	*x = CreateRequest{}
 	mi := &file_message_message_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CreateMessageRequest) String() string {
+func (x *CreateRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateMessageRequest) ProtoMessage() {}
+func (*CreateRequest) ProtoMessage() {}
 
-func (x *CreateMessageRequest) ProtoReflect() protoreflect.Message {
+func (x *CreateRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_message_message_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,53 +57,53 @@ func (x *CreateMessageRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateMessageRequest.ProtoReflect.Descriptor instead.
-func (*CreateMessageRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateRequest.ProtoReflect.Descriptor instead.
+func (*CreateRequest) Descriptor() ([]byte, []int) {
 	return file_message_message_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CreateMessageRequest) GetChannelId() string {
+func (x *CreateRequest) GetChannelId() string {
 	if x != nil {
 		return x.ChannelId
 	}
 	return ""
 }
 
-func (x *CreateMessageRequest) GetContent() string {
+func (x *CreateRequest) GetContent() string {
 	if x != nil {
 		return x.Content
 	}
 	return ""
 }
 
-func (x *CreateMessageRequest) GetReplyId() string {
-	if x != nil {
-		return x.ReplyId
+func (x *CreateRequest) GetReplyId() string {
+	if x != nil && x.ReplyId != nil {
+		return *x.ReplyId
 	}
 	return ""
 }
 
-type CreateMessageResponse struct {
+type CreateResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Message       *Message               `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CreateMessageResponse) Reset() {
-	*x = CreateMessageResponse{}
+func (x *CreateResponse) Reset() {
+	*x = CreateResponse{}
 	mi := &file_message_message_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CreateMessageResponse) String() string {
+func (x *CreateResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateMessageResponse) ProtoMessage() {}
+func (*CreateResponse) ProtoMessage() {}
 
-func (x *CreateMessageResponse) ProtoReflect() protoreflect.Message {
+func (x *CreateResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_message_message_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -115,39 +115,39 @@ func (x *CreateMessageResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateMessageResponse.ProtoReflect.Descriptor instead.
-func (*CreateMessageResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateResponse.ProtoReflect.Descriptor instead.
+func (*CreateResponse) Descriptor() ([]byte, []int) {
 	return file_message_message_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CreateMessageResponse) GetMessage() *Message {
+func (x *CreateResponse) GetMessage() *Message {
 	if x != nil {
 		return x.Message
 	}
 	return nil
 }
 
-type GetMessagesByChannelIDRequest struct {
+type GetByChannelIDRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ChannelId     string                 `protobuf:"bytes,1,opt,name=channel_id,json=channelId,proto3" json:"channel_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetMessagesByChannelIDRequest) Reset() {
-	*x = GetMessagesByChannelIDRequest{}
+func (x *GetByChannelIDRequest) Reset() {
+	*x = GetByChannelIDRequest{}
 	mi := &file_message_message_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetMessagesByChannelIDRequest) String() string {
+func (x *GetByChannelIDRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetMessagesByChannelIDRequest) ProtoMessage() {}
+func (*GetByChannelIDRequest) ProtoMessage() {}
 
-func (x *GetMessagesByChannelIDRequest) ProtoReflect() protoreflect.Message {
+func (x *GetByChannelIDRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_message_message_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -159,39 +159,39 @@ func (x *GetMessagesByChannelIDRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetMessagesByChannelIDRequest.ProtoReflect.Descriptor instead.
-func (*GetMessagesByChannelIDRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetByChannelIDRequest.ProtoReflect.Descriptor instead.
+func (*GetByChannelIDRequest) Descriptor() ([]byte, []int) {
 	return file_message_message_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *GetMessagesByChannelIDRequest) GetChannelId() string {
+func (x *GetByChannelIDRequest) GetChannelId() string {
 	if x != nil {
 		return x.ChannelId
 	}
 	return ""
 }
 
-type GetMessagesByChannelIDResponse struct {
+type GetByChannelIDResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Messages      []*Message             `protobuf:"bytes,1,rep,name=messages,proto3" json:"messages,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetMessagesByChannelIDResponse) Reset() {
-	*x = GetMessagesByChannelIDResponse{}
+func (x *GetByChannelIDResponse) Reset() {
+	*x = GetByChannelIDResponse{}
 	mi := &file_message_message_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetMessagesByChannelIDResponse) String() string {
+func (x *GetByChannelIDResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetMessagesByChannelIDResponse) ProtoMessage() {}
+func (*GetByChannelIDResponse) ProtoMessage() {}
 
-func (x *GetMessagesByChannelIDResponse) ProtoReflect() protoreflect.Message {
+func (x *GetByChannelIDResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_message_message_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -203,41 +203,41 @@ func (x *GetMessagesByChannelIDResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetMessagesByChannelIDResponse.ProtoReflect.Descriptor instead.
-func (*GetMessagesByChannelIDResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetByChannelIDResponse.ProtoReflect.Descriptor instead.
+func (*GetByChannelIDResponse) Descriptor() ([]byte, []int) {
 	return file_message_message_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *GetMessagesByChannelIDResponse) GetMessages() []*Message {
+func (x *GetByChannelIDResponse) GetMessages() []*Message {
 	if x != nil {
 		return x.Messages
 	}
 	return nil
 }
 
-type UpdateMessageByMessageIDRequest struct {
+type UpdateByMessageIDRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	MessageId     string                 `protobuf:"bytes,1,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
 	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
-	ReplyId       string                 `protobuf:"bytes,3,opt,name=reply_id,json=replyId,proto3" json:"reply_id,omitempty"`
+	ReplyId       *string                `protobuf:"bytes,3,opt,name=reply_id,json=replyId,proto3,oneof" json:"reply_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *UpdateMessageByMessageIDRequest) Reset() {
-	*x = UpdateMessageByMessageIDRequest{}
+func (x *UpdateByMessageIDRequest) Reset() {
+	*x = UpdateByMessageIDRequest{}
 	mi := &file_message_message_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *UpdateMessageByMessageIDRequest) String() string {
+func (x *UpdateByMessageIDRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UpdateMessageByMessageIDRequest) ProtoMessage() {}
+func (*UpdateByMessageIDRequest) ProtoMessage() {}
 
-func (x *UpdateMessageByMessageIDRequest) ProtoReflect() protoreflect.Message {
+func (x *UpdateByMessageIDRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_message_message_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -249,53 +249,53 @@ func (x *UpdateMessageByMessageIDRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UpdateMessageByMessageIDRequest.ProtoReflect.Descriptor instead.
-func (*UpdateMessageByMessageIDRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use UpdateByMessageIDRequest.ProtoReflect.Descriptor instead.
+func (*UpdateByMessageIDRequest) Descriptor() ([]byte, []int) {
 	return file_message_message_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *UpdateMessageByMessageIDRequest) GetMessageId() string {
+func (x *UpdateByMessageIDRequest) GetMessageId() string {
 	if x != nil {
 		return x.MessageId
 	}
 	return ""
 }
 
-func (x *UpdateMessageByMessageIDRequest) GetContent() string {
+func (x *UpdateByMessageIDRequest) GetContent() string {
 	if x != nil {
 		return x.Content
 	}
 	return ""
 }
 
-func (x *UpdateMessageByMessageIDRequest) GetReplyId() string {
-	if x != nil {
-		return x.ReplyId
+func (x *UpdateByMessageIDRequest) GetReplyId() string {
+	if x != nil && x.ReplyId != nil {
+		return *x.ReplyId
 	}
 	return ""
 }
 
-type UpdateMessageByMessageIDResponse struct {
+type UpdateByMessageIDResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Message       *Message               `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *UpdateMessageByMessageIDResponse) Reset() {
-	*x = UpdateMessageByMessageIDResponse{}
+func (x *UpdateByMessageIDResponse) Reset() {
+	*x = UpdateByMessageIDResponse{}
 	mi := &file_message_message_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *UpdateMessageByMessageIDResponse) String() string {
+func (x *UpdateByMessageIDResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UpdateMessageByMessageIDResponse) ProtoMessage() {}
+func (*UpdateByMessageIDResponse) ProtoMessage() {}
 
-func (x *UpdateMessageByMessageIDResponse) ProtoReflect() protoreflect.Message {
+func (x *UpdateByMessageIDResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_message_message_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -307,39 +307,39 @@ func (x *UpdateMessageByMessageIDResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UpdateMessageByMessageIDResponse.ProtoReflect.Descriptor instead.
-func (*UpdateMessageByMessageIDResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use UpdateByMessageIDResponse.ProtoReflect.Descriptor instead.
+func (*UpdateByMessageIDResponse) Descriptor() ([]byte, []int) {
 	return file_message_message_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *UpdateMessageByMessageIDResponse) GetMessage() *Message {
+func (x *UpdateByMessageIDResponse) GetMessage() *Message {
 	if x != nil {
 		return x.Message
 	}
 	return nil
 }
 
-type DeleteMessageByMessageIDRequest struct {
+type DeleteByMessageIDRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	MessageId     string                 `protobuf:"bytes,1,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DeleteMessageByMessageIDRequest) Reset() {
-	*x = DeleteMessageByMessageIDRequest{}
+func (x *DeleteByMessageIDRequest) Reset() {
+	*x = DeleteByMessageIDRequest{}
 	mi := &file_message_message_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DeleteMessageByMessageIDRequest) String() string {
+func (x *DeleteByMessageIDRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DeleteMessageByMessageIDRequest) ProtoMessage() {}
+func (*DeleteByMessageIDRequest) ProtoMessage() {}
 
-func (x *DeleteMessageByMessageIDRequest) ProtoReflect() protoreflect.Message {
+func (x *DeleteByMessageIDRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_message_message_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -351,39 +351,39 @@ func (x *DeleteMessageByMessageIDRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DeleteMessageByMessageIDRequest.ProtoReflect.Descriptor instead.
-func (*DeleteMessageByMessageIDRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use DeleteByMessageIDRequest.ProtoReflect.Descriptor instead.
+func (*DeleteByMessageIDRequest) Descriptor() ([]byte, []int) {
 	return file_message_message_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *DeleteMessageByMessageIDRequest) GetMessageId() string {
+func (x *DeleteByMessageIDRequest) GetMessageId() string {
 	if x != nil {
 		return x.MessageId
 	}
 	return ""
 }
 
-type DeleteMessageByMessageIDResponse struct {
+type DeleteByMessageIDResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Empty         *emptypb.Empty         `protobuf:"bytes,1,opt,name=empty,proto3" json:"empty,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DeleteMessageByMessageIDResponse) Reset() {
-	*x = DeleteMessageByMessageIDResponse{}
+func (x *DeleteByMessageIDResponse) Reset() {
+	*x = DeleteByMessageIDResponse{}
 	mi := &file_message_message_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DeleteMessageByMessageIDResponse) String() string {
+func (x *DeleteByMessageIDResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DeleteMessageByMessageIDResponse) ProtoMessage() {}
+func (*DeleteByMessageIDResponse) ProtoMessage() {}
 
-func (x *DeleteMessageByMessageIDResponse) ProtoReflect() protoreflect.Message {
+func (x *DeleteByMessageIDResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_message_message_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -395,12 +395,12 @@ func (x *DeleteMessageByMessageIDResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DeleteMessageByMessageIDResponse.ProtoReflect.Descriptor instead.
-func (*DeleteMessageByMessageIDResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use DeleteByMessageIDResponse.ProtoReflect.Descriptor instead.
+func (*DeleteByMessageIDResponse) Descriptor() ([]byte, []int) {
 	return file_message_message_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *DeleteMessageByMessageIDResponse) GetEmpty() *emptypb.Empty {
+func (x *DeleteByMessageIDResponse) GetEmpty() *emptypb.Empty {
 	if x != nil {
 		return x.Empty
 	}
@@ -411,43 +411,45 @@ var File_message_message_proto protoreflect.FileDescriptor
 
 const file_message_message_proto_rawDesc = "" +
 	"\n" +
-	"\x15message_message.proto\x12\x03msg\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x12message_type.proto\"\x88\x01\n" +
-	"\x14CreateMessageRequest\x12\x1d\n" +
+	"\x15message_message.proto\x12\x03msg\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x12message_type.proto\"\x93\x01\n" +
+	"\rCreateRequest\x12\x1d\n" +
 	"\n" +
 	"channel_id\x18\x01 \x01(\tR\tchannelId\x12\x18\n" +
-	"\acontent\x18\x02 \x01(\tR\acontent\x12\x19\n" +
-	"\breply_id\x18\x03 \x01(\tR\areplyId:\x1c\x92A\x19\n" +
+	"\acontent\x18\x02 \x01(\tR\acontent\x12\x1e\n" +
+	"\breply_id\x18\x03 \x01(\tH\x00R\areplyId\x88\x01\x01:\x1c\x92A\x19\n" +
 	"\x17\xd2\x01\n" +
-	"channel_id\xd2\x01\acontent\"P\n" +
-	"\x15CreateMessageResponse\x12&\n" +
+	"channel_id\xd2\x01\acontentB\v\n" +
+	"\t_reply_id\"I\n" +
+	"\x0eCreateResponse\x12&\n" +
 	"\amessage\x18\x01 \x01(\v2\f.msg.MessageR\amessage:\x0f\x92A\f\n" +
 	"\n" +
-	"\xd2\x01\amessage\"R\n" +
-	"\x1dGetMessagesByChannelIDRequest\x12\x1d\n" +
+	"\xd2\x01\amessage\"J\n" +
+	"\x15GetByChannelIDRequest\x12\x1d\n" +
 	"\n" +
 	"channel_id\x18\x01 \x01(\tR\tchannelId:\x12\x92A\x0f\n" +
 	"\r\xd2\x01\n" +
-	"channel_id\"\\\n" +
-	"\x1eGetMessagesByChannelIDResponse\x12(\n" +
+	"channel_id\"T\n" +
+	"\x16GetByChannelIDResponse\x12(\n" +
 	"\bmessages\x18\x01 \x03(\v2\f.msg.MessageR\bmessages:\x10\x92A\r\n" +
-	"\v\xd2\x01\bmessages\"\x93\x01\n" +
-	"\x1fUpdateMessageByMessageIDRequest\x12\x1d\n" +
+	"\v\xd2\x01\bmessages\"\x9e\x01\n" +
+	"\x18UpdateByMessageIDRequest\x12\x1d\n" +
 	"\n" +
 	"message_id\x18\x01 \x01(\tR\tmessageId\x12\x18\n" +
-	"\acontent\x18\x02 \x01(\tR\acontent\x12\x19\n" +
-	"\breply_id\x18\x03 \x01(\tR\areplyId:\x1c\x92A\x19\n" +
+	"\acontent\x18\x02 \x01(\tR\acontent\x12\x1e\n" +
+	"\breply_id\x18\x03 \x01(\tH\x00R\areplyId\x88\x01\x01:\x1c\x92A\x19\n" +
 	"\x17\xd2\x01\n" +
-	"message_id\xd2\x01\acontent\"[\n" +
-	" UpdateMessageByMessageIDResponse\x12&\n" +
+	"message_id\xd2\x01\acontentB\v\n" +
+	"\t_reply_id\"T\n" +
+	"\x19UpdateByMessageIDResponse\x12&\n" +
 	"\amessage\x18\x01 \x01(\v2\f.msg.MessageR\amessage:\x0f\x92A\f\n" +
 	"\n" +
-	"\xd2\x01\amessage\"T\n" +
-	"\x1fDeleteMessageByMessageIDRequest\x12\x1d\n" +
+	"\xd2\x01\amessage\"M\n" +
+	"\x18DeleteByMessageIDRequest\x12\x1d\n" +
 	"\n" +
 	"message_id\x18\x01 \x01(\tR\tmessageId:\x12\x92A\x0f\n" +
 	"\r\xd2\x01\n" +
-	"message_id\"_\n" +
-	" DeleteMessageByMessageIDResponse\x12,\n" +
+	"message_id\"X\n" +
+	"\x19DeleteByMessageIDResponse\x12,\n" +
 	"\x05empty\x18\x01 \x01(\v2\x16.google.protobuf.EmptyR\x05empty:\r\x92A\n" +
 	"\n" +
 	"\b\xd2\x01\x05emptyB_\n" +
@@ -467,22 +469,22 @@ func file_message_message_proto_rawDescGZIP() []byte {
 
 var file_message_message_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_message_message_proto_goTypes = []any{
-	(*CreateMessageRequest)(nil),             // 0: msg.CreateMessageRequest
-	(*CreateMessageResponse)(nil),            // 1: msg.CreateMessageResponse
-	(*GetMessagesByChannelIDRequest)(nil),    // 2: msg.GetMessagesByChannelIDRequest
-	(*GetMessagesByChannelIDResponse)(nil),   // 3: msg.GetMessagesByChannelIDResponse
-	(*UpdateMessageByMessageIDRequest)(nil),  // 4: msg.UpdateMessageByMessageIDRequest
-	(*UpdateMessageByMessageIDResponse)(nil), // 5: msg.UpdateMessageByMessageIDResponse
-	(*DeleteMessageByMessageIDRequest)(nil),  // 6: msg.DeleteMessageByMessageIDRequest
-	(*DeleteMessageByMessageIDResponse)(nil), // 7: msg.DeleteMessageByMessageIDResponse
-	(*Message)(nil),                          // 8: msg.Message
-	(*emptypb.Empty)(nil),                    // 9: google.protobuf.Empty
+	(*CreateRequest)(nil),             // 0: msg.CreateRequest
+	(*CreateResponse)(nil),            // 1: msg.CreateResponse
+	(*GetByChannelIDRequest)(nil),     // 2: msg.GetByChannelIDRequest
+	(*GetByChannelIDResponse)(nil),    // 3: msg.GetByChannelIDResponse
+	(*UpdateByMessageIDRequest)(nil),  // 4: msg.UpdateByMessageIDRequest
+	(*UpdateByMessageIDResponse)(nil), // 5: msg.UpdateByMessageIDResponse
+	(*DeleteByMessageIDRequest)(nil),  // 6: msg.DeleteByMessageIDRequest
+	(*DeleteByMessageIDResponse)(nil), // 7: msg.DeleteByMessageIDResponse
+	(*Message)(nil),                   // 8: msg.Message
+	(*emptypb.Empty)(nil),             // 9: google.protobuf.Empty
 }
 var file_message_message_proto_depIdxs = []int32{
-	8, // 0: msg.CreateMessageResponse.message:type_name -> msg.Message
-	8, // 1: msg.GetMessagesByChannelIDResponse.messages:type_name -> msg.Message
-	8, // 2: msg.UpdateMessageByMessageIDResponse.message:type_name -> msg.Message
-	9, // 3: msg.DeleteMessageByMessageIDResponse.empty:type_name -> google.protobuf.Empty
+	8, // 0: msg.CreateResponse.message:type_name -> msg.Message
+	8, // 1: msg.GetByChannelIDResponse.messages:type_name -> msg.Message
+	8, // 2: msg.UpdateByMessageIDResponse.message:type_name -> msg.Message
+	9, // 3: msg.DeleteByMessageIDResponse.empty:type_name -> google.protobuf.Empty
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name
@@ -496,6 +498,8 @@ func file_message_message_proto_init() {
 		return
 	}
 	file_message_type_proto_init()
+	file_message_message_proto_msgTypes[0].OneofWrappers = []any{}
+	file_message_message_proto_msgTypes[4].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
