@@ -38,10 +38,27 @@ message GuildDetail {
   repeated CategoryDetail categories = 7;
 }
 
+message GuildWithMembers {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "name", "owner_id", "description", "default_channel_id", "icon_url", "member_count", "members", "created_at"]
+    };
+  };
+  string id = 1;
+  string name = 2;
+  string owner_id = 3;
+  string description = 4;
+  string icon_url = 5;
+  string default_channel_id = 7;
+  int32 member_count = 8;
+  repeated Member members = 9;
+  google.protobuf.Timestamp created_at = 6;
+}
+
 message GuildWithMemberCount {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
-      required: ["id", "name", "owner_id", "description", "default_channel_id", "icon_url", "created_at", "member_count"]
+      required: ["id", "name", "owner_id", "description", "default_channel_id", "icon_url", "member_count", "created_at"]
     };
   };
   string id = 1;

@@ -62,8 +62,7 @@ message GetGuildByIDResponse {
       required: ["guild"]
     };
   };
-  GuildWithMemberCount guild = 1;
-  repeated Member members = 3;
+  GuildWithMembers guild = 1;
 }
 
 message ListMyGuildsRequest {

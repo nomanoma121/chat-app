@@ -89,17 +89,6 @@ func (h *guildHandler) GetGuildByID(ctx context.Context, req *pb.GetGuildByIDReq
 		}
 	}
 
-	pbGuild := &pb.GuildWithMemberCount{
-		Id:               guild.ID.String(),
-		OwnerId:          guild.OwnerID.String(),
-		Name:             guild.Name,
-		Description:      guild.Description,
-		IconUrl:          guild.IconURL,
-		MemberCount:      guild.MemberCount,
-		DefaultChannelId: guild.DefaultChannelID.String(),
-		CreatedAt:        timestamppb.New(guild.CreatedAt),
-	}
-
 	pbMembers := make([]*pb.Member, len(guild.Members))
 	for i, member := range guild.Members {
 		pbMembers[i] = &pb.Member{
@@ -109,7 +98,20 @@ func (h *guildHandler) GetGuildByID(ctx context.Context, req *pb.GetGuildByIDReq
 			JoinedAt: timestamppb.New(member.JoinedAt),
 		}
 	}
-	return &pb.GetGuildByIDResponse{Guild: pbGuild, Members: pbMembers}, nil
+
+	pbGuild := &pb.GuildWithMembers{
+		Id:               guild.ID.String(),
+		OwnerId:          guild.OwnerID.String(),
+		Name:             guild.Name,
+		Description:      guild.Description,
+		IconUrl:          guild.IconURL,
+		MemberCount:      guild.MemberCount,
+		Members:          pbMembers,
+		DefaultChannelId: guild.DefaultChannelID.String(),
+		CreatedAt:        timestamppb.New(guild.CreatedAt),
+	}
+
+	return &pb.GetGuildByIDResponse{Guild: pbGuild}, nil
 }
 
 func (h *guildHandler) UpdateGuild(ctx context.Context, req *pb.UpdateGuildRequest) (*pb.UpdateGuildResponse, error) {

@@ -262,8 +262,7 @@ func (x *GetGuildByIDRequest) GetGuildId() string {
 
 type GetGuildByIDResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Guild         *GuildWithMemberCount  `protobuf:"bytes,1,opt,name=guild,proto3" json:"guild,omitempty"`
-	Members       []*Member              `protobuf:"bytes,3,rep,name=members,proto3" json:"members,omitempty"`
+	Guild         *GuildWithMembers      `protobuf:"bytes,1,opt,name=guild,proto3" json:"guild,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -298,16 +297,9 @@ func (*GetGuildByIDResponse) Descriptor() ([]byte, []int) {
 	return file_guild_message_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *GetGuildByIDResponse) GetGuild() *GuildWithMemberCount {
+func (x *GetGuildByIDResponse) GetGuild() *GuildWithMembers {
 	if x != nil {
 		return x.Guild
-	}
-	return nil
-}
-
-func (x *GetGuildByIDResponse) GetMembers() []*Member {
-	if x != nil {
-		return x.Members
 	}
 	return nil
 }
@@ -1647,10 +1639,9 @@ const file_guild_message_proto_rawDesc = "" +
 	"categories\"B\n" +
 	"\x13GetGuildByIDRequest\x12\x19\n" +
 	"\bguild_id\x18\x01 \x01(\tR\aguildId:\x10\x92A\r\n" +
-	"\v\xd2\x01\bguild_id\"\x81\x01\n" +
-	"\x14GetGuildByIDResponse\x121\n" +
-	"\x05guild\x18\x01 \x01(\v2\x1b.guild.GuildWithMemberCountR\x05guild\x12'\n" +
-	"\amembers\x18\x03 \x03(\v2\r.guild.MemberR\amembers:\r\x92A\n" +
+	"\v\xd2\x01\bguild_id\"T\n" +
+	"\x14GetGuildByIDResponse\x12-\n" +
+	"\x05guild\x18\x01 \x01(\v2\x17.guild.GuildWithMembersR\x05guild:\r\x92A\n" +
 	"\n" +
 	"\b\xd2\x01\x05guild\"\x1c\n" +
 	"\x13ListMyGuildsRequest:\x05\x92A\x02\n" +
@@ -1818,8 +1809,8 @@ var file_guild_message_proto_goTypes = []any{
 	(*DeleteChannelResponse)(nil),     // 33: guild.DeleteChannelResponse
 	(*Guild)(nil),                     // 34: guild.Guild
 	(*GuildDetail)(nil),               // 35: guild.GuildDetail
-	(*GuildWithMemberCount)(nil),      // 36: guild.GuildWithMemberCount
-	(*Member)(nil),                    // 37: guild.Member
+	(*GuildWithMembers)(nil),          // 36: guild.GuildWithMembers
+	(*GuildWithMemberCount)(nil),      // 37: guild.GuildWithMemberCount
 	(*emptypb.Empty)(nil),             // 38: google.protobuf.Empty
 	(*Invite)(nil),                    // 39: guild.Invite
 	(*Category)(nil),                  // 40: guild.Category
@@ -1828,27 +1819,26 @@ var file_guild_message_proto_goTypes = []any{
 var file_guild_message_proto_depIdxs = []int32{
 	34, // 0: guild.CreateGuildResponse.guild:type_name -> guild.Guild
 	35, // 1: guild.GetGuildOverviewResponse.guild:type_name -> guild.GuildDetail
-	36, // 2: guild.GetGuildByIDResponse.guild:type_name -> guild.GuildWithMemberCount
-	37, // 3: guild.GetGuildByIDResponse.members:type_name -> guild.Member
-	36, // 4: guild.ListMyGuildsResponse.guilds:type_name -> guild.GuildWithMemberCount
-	34, // 5: guild.UpdateGuildResponse.guild:type_name -> guild.Guild
-	38, // 6: guild.DeleteGuildMemberResponse.empty:type_name -> google.protobuf.Empty
-	38, // 7: guild.LeaveGuildResponse.empty:type_name -> google.protobuf.Empty
-	39, // 8: guild.GetGuildInvitesResponse.invites:type_name -> guild.Invite
-	39, // 9: guild.CreateGuildInviteResponse.invite:type_name -> guild.Invite
-	38, // 10: guild.DeleteGuildInviteResponse.empty:type_name -> google.protobuf.Empty
-	34, // 11: guild.JoinGuildResponse.guild:type_name -> guild.Guild
-	40, // 12: guild.CreateCategoryResponse.category:type_name -> guild.Category
-	40, // 13: guild.UpdateCategoryResponse.category:type_name -> guild.Category
-	38, // 14: guild.DeleteCategoryResponse.empty:type_name -> google.protobuf.Empty
-	41, // 15: guild.CreateChannelResponse.channel:type_name -> guild.Channel
-	41, // 16: guild.UpdateChannelResponse.channel:type_name -> guild.Channel
-	38, // 17: guild.DeleteChannelResponse.empty:type_name -> google.protobuf.Empty
-	18, // [18:18] is the sub-list for method output_type
-	18, // [18:18] is the sub-list for method input_type
-	18, // [18:18] is the sub-list for extension type_name
-	18, // [18:18] is the sub-list for extension extendee
-	0,  // [0:18] is the sub-list for field type_name
+	36, // 2: guild.GetGuildByIDResponse.guild:type_name -> guild.GuildWithMembers
+	37, // 3: guild.ListMyGuildsResponse.guilds:type_name -> guild.GuildWithMemberCount
+	34, // 4: guild.UpdateGuildResponse.guild:type_name -> guild.Guild
+	38, // 5: guild.DeleteGuildMemberResponse.empty:type_name -> google.protobuf.Empty
+	38, // 6: guild.LeaveGuildResponse.empty:type_name -> google.protobuf.Empty
+	39, // 7: guild.GetGuildInvitesResponse.invites:type_name -> guild.Invite
+	39, // 8: guild.CreateGuildInviteResponse.invite:type_name -> guild.Invite
+	38, // 9: guild.DeleteGuildInviteResponse.empty:type_name -> google.protobuf.Empty
+	34, // 10: guild.JoinGuildResponse.guild:type_name -> guild.Guild
+	40, // 11: guild.CreateCategoryResponse.category:type_name -> guild.Category
+	40, // 12: guild.UpdateCategoryResponse.category:type_name -> guild.Category
+	38, // 13: guild.DeleteCategoryResponse.empty:type_name -> google.protobuf.Empty
+	41, // 14: guild.CreateChannelResponse.channel:type_name -> guild.Channel
+	41, // 15: guild.UpdateChannelResponse.channel:type_name -> guild.Channel
+	38, // 16: guild.DeleteChannelResponse.empty:type_name -> google.protobuf.Empty
+	17, // [17:17] is the sub-list for method output_type
+	17, // [17:17] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_guild_message_proto_init() }
