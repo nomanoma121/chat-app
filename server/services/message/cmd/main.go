@@ -26,7 +26,7 @@ var db *pgxpool.Pool
 func init() {
 	_ = godotenv.Load()
 
-	log := logger.Default("user-service")
+	log := logger.Default("message-service")
 	dsn := os.Getenv("DATABASE_URL")
 
 	log.Info("Connecting to database...")

@@ -83,7 +83,7 @@ lint-all:
 fix:
 	@echo "==> Auto-fixing format and lint issues..."
 	gofmt -w ./services/user/ ./services/guild/ ./services/api-gateway/ ./services/message/ ./shared/ ./api/
-	goimports -w ./services/user/ ./services/guild/ ./services/api-gateway/ ./services/message/... ./shared/ ./api/ || echo "goimports not found, skipping import fixes"
+	goimports -w ./services/user/ ./services/guild/ ./services/api-gateway/ ./services/message/ ./shared/ ./api/ || echo "goimports not found, skipping import fixes"
 	golangci-lint run --fix ./services/user/... ./services/guild/... ./services/api-gateway/... ./services/message/... ./shared/... ./api/...
 	@echo "✅ Auto-fix complete!"
 
