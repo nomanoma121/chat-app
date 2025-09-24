@@ -1,7 +1,5 @@
 # Chat App
 
-Discord Likeなチャットアプリケーション（の予定）
-
 ```bash
 # 依存関係のインストール
 pnpm i
