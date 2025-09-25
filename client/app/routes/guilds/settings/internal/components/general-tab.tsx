@@ -1,5 +1,6 @@
 import { Settings, Upload } from "lucide-react";
 import { css } from "styled-system/css";
+import { useUpdateGuild } from "~/api/gen/guild/guild";
 import type { GuildWithMembers } from "~/api/gen/guildTypeProto.schemas";
 import { Avatar } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
@@ -8,12 +9,15 @@ import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
 import { Heading } from "~/components/ui/heading";
 import { Text } from "~/components/ui/text";
+import { useForm } from "react-hook-form";
 
 interface GeneralTabProps {
-	guild?: GuildWithMembers;
+	guild: GuildWithMembers;
 }
 
 export const GeneralTab = ({ guild }: GeneralTabProps) => {
+	const { mutateAsync: updateGuild } = useUpdateGuild();
+	const { register, handleSubmit } = useForm();
 	return (
 		<div
 			className={css({

@@ -6,6 +6,7 @@ import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
+import { Spinner } from "~/components/ui/spinner";
 import { useLogin } from "~/hooks/use-login";
 
 export default function LoginPage() {
@@ -125,8 +126,13 @@ export default function LoginPage() {
 							className={css({
 								width: "100%",
 								marginTop: "10px",
+								display: "flex",
+								alignItems: "center",
+								gap: "2",
+								justifyContent: "center",
 							})}
 						>
+							{isPending && <Spinner size="sm" />}
 							{isPending ? "ログイン中..." : "ログイン"}
 						</Button>
 
@@ -137,7 +143,7 @@ export default function LoginPage() {
 							})}
 						>
 							<a
-								href="/signup"
+								href="/register"
 								className={css({
 									fontWeight: "medium",
 									color: "accent.default",

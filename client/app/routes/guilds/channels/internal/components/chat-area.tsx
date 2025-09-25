@@ -8,6 +8,8 @@ import {
 import { Message } from "~/components/features/message";
 import { MessageInput } from "~/components/features/message-input";
 import { Heading } from "~/components/ui/heading";
+import { Spinner } from "~/components/ui/spinner";
+import { Text } from "~/components/ui/text";
 import type { GuildsContext } from "../../layout";
 
 export const ChatArea = () => {
@@ -16,7 +18,7 @@ export const ChatArea = () => {
 		return <div>Channel ID is missing</div>;
 	}
 	const { guild } = useOutletContext<GuildsContext>();
-	const { data: messagesData, refetch } = useGetByChannelID(channelId);
+	const { data: messagesData, refetch, isLoading } = useGetByChannelID(channelId);
 	const { mutateAsync: createMessage } = useCreate();
 	const messages = messagesData?.messages || [];
 	const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -44,6 +46,27 @@ export const ChatArea = () => {
 			console.error("Failed to send message:", error);
 		}
 	};
+
+	if (isLoading) {
+		return (
+			<div
+				className={css({
+					flex: 1,
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center",
+					justifyContent: "center",
+					height: "100vh",
+					backgroundColor: "bg.primary",
+				})}
+			>
+				<Spinner size="lg" />
+				<Text className={css({ mt: "4", color: "text.medium" })}>
+					メッセージを読み込み中...
+				</Text>
+			</div>
+		);
+	}
 
 	return (
 		<div

@@ -7,6 +7,7 @@ import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
+import { Spinner } from "~/components/ui/spinner";
 import { useLogin } from "~/hooks/use-login";
 
 export default function RegisterPage() {
@@ -201,8 +202,13 @@ export default function RegisterPage() {
 							className={css({
 								width: "100%",
 								marginTop: "10px",
+								display: "flex",
+								alignItems: "center",
+								gap: "2",
+								justifyContent: "center",
 							})}
 						>
+							{isPending && <Spinner size="sm" />}
 							{isPending ? "登録中..." : "新規登録"}
 						</Button>
 

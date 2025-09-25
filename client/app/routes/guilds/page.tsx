@@ -4,6 +4,8 @@ import { css } from "styled-system/css/css";
 import { useListMyGuilds } from "~/api/gen/guild/guild";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
+import { Spinner } from "~/components/ui/spinner";
+import { Text } from "~/components/ui/text";
 
 export default function Guild() {
 	const { data, isPending, error } = useListMyGuilds();
@@ -14,12 +16,16 @@ export default function Guild() {
 			<div
 				className={css({
 					display: "flex",
+					flexDirection: "column",
 					justifyContent: "center",
 					alignItems: "center",
-					minHeight: "200px",
+					minHeight: "400px",
 				})}
 			>
-				<p>読み込み中...</p>
+				<Spinner size="lg" />
+				<Text className={css({ mt: "4", color: "text.medium" })}>
+					サーバー一覧を読み込み中...
+				</Text>
 			</div>
 		);
 	}
