@@ -9,6 +9,7 @@ import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
 import { Spinner } from "~/components/ui/spinner";
 import { useLogin } from "~/hooks/use-login";
+import { useToast } from "~/hooks/use-toast";
 import { UserSchema } from "~/schema/user";
 
 const LoginForm = v.object({
@@ -21,6 +22,7 @@ type FormInputValues = v.InferInput<typeof LoginForm>;
 export default function LoginPage() {
   const navigate = useNavigate();
   const { mutateAsync, isPending, error } = useLogin();
+  const toast = useToast();
 
   const {
     register,
@@ -41,9 +43,10 @@ export default function LoginPage() {
         email: data.email,
         password: data.password,
       });
+      toast.success("ログインしました");
       navigate("/servers");
     } catch (_error) {
-      // エラーはerror stateで表示される
+      toast.error("ログインに失敗しました", "メールアドレスまたはパスワードを確認してください");
     }
   };
 

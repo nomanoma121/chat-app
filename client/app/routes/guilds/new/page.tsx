@@ -8,6 +8,7 @@ import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
+import { useToast } from "~/hooks/use-toast";
 import { GuildSchema } from "~/schema/guild";
 
 const CreateGuildForm = v.object({
@@ -21,6 +22,7 @@ type FormInputValues = v.InferInput<typeof CreateGuildForm>;
 export default function CreateGuild() {
 	const navigate = useNavigate();
 	const { mutateAsync, isPending } = useCreateGuild();
+	const toast = useToast();
 
 	const {
 		register,
@@ -47,11 +49,13 @@ export default function CreateGuild() {
 				},
 			});
 			reset();
+			toast.success("サーバーを作成しました");
 			navigate(
 				`/servers/${result.guild.id}/channels/${result.guild.defaultChannelId}`,
 			);
 		} catch (error) {
 			console.error("Error creating guild:", error);
+			toast.error("サーバーの作成に失敗しました", "入力内容を確認してください");
 		}
 	};
 

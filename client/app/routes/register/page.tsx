@@ -9,6 +9,7 @@ import { Card } from "~/components/ui/card";
 import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
 import { useLogin } from "~/hooks/use-login";
+import { useToast } from "~/hooks/use-toast";
 import { UserSchema } from "~/schema/user";
 
 const RegisterForm = v.object({
@@ -26,6 +27,7 @@ export default function RegisterPage() {
 	const navigate = useNavigate();
 	const { mutateAsync: register, isPending, error } = useRegister();
 	const { mutateAsync: login } = useLogin();
+	const toast = useToast();
 
 	const {
 		register: registerField,
@@ -58,9 +60,11 @@ export default function RegisterPage() {
 			});
 
 			await login({ email: data.email, password: data.password });
+			toast.success("アカウントを作成しました");
 			navigate("/servers");
 		} catch (error) {
 			console.error("Registration or login error:", error);
+			toast.error("登録に失敗しました", "入力内容を確認してください");
 		}
 	};
 
