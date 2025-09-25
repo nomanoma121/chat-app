@@ -22,53 +22,46 @@ import type {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { customClient } from "../../client";
 import type {
-	CreateMessageBody,
-	CreateMessageResponse,
-	DeleteMessageByMessageIDResponse,
-	GetMessagesByChannelIDResponse,
+	CreateBody,
+	CreateResponse,
+	DeleteByMessageIDResponse,
+	GetByChannelIDResponse,
 	Status,
-	UpdateMessageByMessageIDBody,
-	UpdateMessageByMessageIDResponse,
+	UpdateByMessageIDBody,
+	UpdateByMessageIDResponse,
 } from "../guildTypeProto.schemas";
 
-export const getMessagesByChannelID = (
-	channelId: string,
-	signal?: AbortSignal,
-) => {
-	return customClient<GetMessagesByChannelIDResponse>({
+export const getByChannelID = (channelId: string, signal?: AbortSignal) => {
+	return customClient<GetByChannelIDResponse>({
 		url: `/api/channels/${channelId}/messages`,
 		method: "GET",
 		signal,
 	});
 };
 
-export const getGetMessagesByChannelIDQueryKey = (channelId?: string) => {
+export const getGetByChannelIDQueryKey = (channelId?: string) => {
 	return [`/api/channels/${channelId}/messages`] as const;
 };
 
-export const getGetMessagesByChannelIDQueryOptions = <
-	TData = Awaited<ReturnType<typeof getMessagesByChannelID>>,
+export const getGetByChannelIDQueryOptions = <
+	TData = Awaited<ReturnType<typeof getByChannelID>>,
 	TError = Status,
 >(
 	channelId: string,
 	options?: {
 		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getMessagesByChannelID>>,
-				TError,
-				TData
-			>
+			UseQueryOptions<Awaited<ReturnType<typeof getByChannelID>>, TError, TData>
 		>;
 	},
 ) => {
 	const { query: queryOptions } = options ?? {};
 
 	const queryKey =
-		queryOptions?.queryKey ?? getGetMessagesByChannelIDQueryKey(channelId);
+		queryOptions?.queryKey ?? getGetByChannelIDQueryKey(channelId);
 
-	const queryFn: QueryFunction<
-		Awaited<ReturnType<typeof getMessagesByChannelID>>
-	> = ({ signal }) => getMessagesByChannelID(channelId, signal);
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getByChannelID>>> = ({
+		signal,
+	}) => getByChannelID(channelId, signal);
 
 	return {
 		queryKey,
@@ -76,35 +69,31 @@ export const getGetMessagesByChannelIDQueryOptions = <
 		enabled: !!channelId,
 		...queryOptions,
 	} as UseQueryOptions<
-		Awaited<ReturnType<typeof getMessagesByChannelID>>,
+		Awaited<ReturnType<typeof getByChannelID>>,
 		TError,
 		TData
 	> & { queryKey: DataTag<QueryKey, TData> };
 };
 
-export type GetMessagesByChannelIDQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getMessagesByChannelID>>
+export type GetByChannelIDQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getByChannelID>>
 >;
-export type GetMessagesByChannelIDQueryError = Status;
+export type GetByChannelIDQueryError = Status;
 
-export function useGetMessagesByChannelID<
-	TData = Awaited<ReturnType<typeof getMessagesByChannelID>>,
+export function useGetByChannelID<
+	TData = Awaited<ReturnType<typeof getByChannelID>>,
 	TError = Status,
 >(
 	channelId: string,
 	options: {
 		query: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getMessagesByChannelID>>,
-				TError,
-				TData
-			>
+			UseQueryOptions<Awaited<ReturnType<typeof getByChannelID>>, TError, TData>
 		> &
 			Pick<
 				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getMessagesByChannelID>>,
+					Awaited<ReturnType<typeof getByChannelID>>,
 					TError,
-					Awaited<ReturnType<typeof getMessagesByChannelID>>
+					Awaited<ReturnType<typeof getByChannelID>>
 				>,
 				"initialData"
 			>;
@@ -113,67 +102,52 @@ export function useGetMessagesByChannelID<
 ): DefinedUseQueryResult<TData, TError> & {
 	queryKey: DataTag<QueryKey, TData>;
 };
-export function useGetMessagesByChannelID<
-	TData = Awaited<ReturnType<typeof getMessagesByChannelID>>,
+export function useGetByChannelID<
+	TData = Awaited<ReturnType<typeof getByChannelID>>,
 	TError = Status,
 >(
 	channelId: string,
 	options?: {
 		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getMessagesByChannelID>>,
-				TError,
-				TData
-			>
+			UseQueryOptions<Awaited<ReturnType<typeof getByChannelID>>, TError, TData>
 		> &
 			Pick<
 				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getMessagesByChannelID>>,
+					Awaited<ReturnType<typeof getByChannelID>>,
 					TError,
-					Awaited<ReturnType<typeof getMessagesByChannelID>>
+					Awaited<ReturnType<typeof getByChannelID>>
 				>,
 				"initialData"
 			>;
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
-export function useGetMessagesByChannelID<
-	TData = Awaited<ReturnType<typeof getMessagesByChannelID>>,
+export function useGetByChannelID<
+	TData = Awaited<ReturnType<typeof getByChannelID>>,
 	TError = Status,
 >(
 	channelId: string,
 	options?: {
 		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getMessagesByChannelID>>,
-				TError,
-				TData
-			>
+			UseQueryOptions<Awaited<ReturnType<typeof getByChannelID>>, TError, TData>
 		>;
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
 
-export function useGetMessagesByChannelID<
-	TData = Awaited<ReturnType<typeof getMessagesByChannelID>>,
+export function useGetByChannelID<
+	TData = Awaited<ReturnType<typeof getByChannelID>>,
 	TError = Status,
 >(
 	channelId: string,
 	options?: {
 		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getMessagesByChannelID>>,
-				TError,
-				TData
-			>
+			UseQueryOptions<Awaited<ReturnType<typeof getByChannelID>>, TError, TData>
 		>;
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
-	const queryOptions = getGetMessagesByChannelIDQueryOptions(
-		channelId,
-		options,
-	);
+	const queryOptions = getGetByChannelIDQueryOptions(channelId, options);
 
 	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
 		TData,
@@ -185,37 +159,37 @@ export function useGetMessagesByChannelID<
 	return query;
 }
 
-export const createMessage = (
+export const create = (
 	channelId: string,
-	createMessageBody: CreateMessageBody,
+	createBody: CreateBody,
 	signal?: AbortSignal,
 ) => {
-	return customClient<CreateMessageResponse>({
+	return customClient<CreateResponse>({
 		url: `/api/channels/${channelId}/messages`,
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
-		data: createMessageBody,
+		data: createBody,
 		signal,
 	});
 };
 
-export const getCreateMessageMutationOptions = <
+export const getCreateMutationOptions = <
 	TError = Status,
 	TContext = unknown,
 >(options?: {
 	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof createMessage>>,
+		Awaited<ReturnType<typeof create>>,
 		TError,
-		{ channelId: string; data: CreateMessageBody },
+		{ channelId: string; data: CreateBody },
 		TContext
 	>;
 }): UseMutationOptions<
-	Awaited<ReturnType<typeof createMessage>>,
+	Awaited<ReturnType<typeof create>>,
 	TError,
-	{ channelId: string; data: CreateMessageBody },
+	{ channelId: string; data: CreateBody },
 	TContext
 > => {
-	const mutationKey = ["createMessage"];
+	const mutationKey = ["create"];
 	const { mutation: mutationOptions } = options
 		? options.mutation &&
 			"mutationKey" in options.mutation &&
@@ -225,67 +199,67 @@ export const getCreateMessageMutationOptions = <
 		: { mutation: { mutationKey } };
 
 	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof createMessage>>,
-		{ channelId: string; data: CreateMessageBody }
+		Awaited<ReturnType<typeof create>>,
+		{ channelId: string; data: CreateBody }
 	> = (props) => {
 		const { channelId, data } = props ?? {};
 
-		return createMessage(channelId, data);
+		return create(channelId, data);
 	};
 
 	return { mutationFn, ...mutationOptions };
 };
 
-export type CreateMessageMutationResult = NonNullable<
-	Awaited<ReturnType<typeof createMessage>>
+export type CreateMutationResult = NonNullable<
+	Awaited<ReturnType<typeof create>>
 >;
-export type CreateMessageMutationBody = CreateMessageBody;
-export type CreateMessageMutationError = Status;
+export type CreateMutationBody = CreateBody;
+export type CreateMutationError = Status;
 
-export const useCreateMessage = <TError = Status, TContext = unknown>(
+export const useCreate = <TError = Status, TContext = unknown>(
 	options?: {
 		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof createMessage>>,
+			Awaited<ReturnType<typeof create>>,
 			TError,
-			{ channelId: string; data: CreateMessageBody },
+			{ channelId: string; data: CreateBody },
 			TContext
 		>;
 	},
 	queryClient?: QueryClient,
 ): UseMutationResult<
-	Awaited<ReturnType<typeof createMessage>>,
+	Awaited<ReturnType<typeof create>>,
 	TError,
-	{ channelId: string; data: CreateMessageBody },
+	{ channelId: string; data: CreateBody },
 	TContext
 > => {
-	const mutationOptions = getCreateMessageMutationOptions(options);
+	const mutationOptions = getCreateMutationOptions(options);
 
 	return useMutation(mutationOptions, queryClient);
 };
-export const deleteMessageByMessageID = (messageId: string) => {
-	return customClient<DeleteMessageByMessageIDResponse>({
+export const deleteByMessageID = (messageId: string) => {
+	return customClient<DeleteByMessageIDResponse>({
 		url: `/api/messages/${messageId}`,
 		method: "DELETE",
 	});
 };
 
-export const getDeleteMessageByMessageIDMutationOptions = <
+export const getDeleteByMessageIDMutationOptions = <
 	TError = Status,
 	TContext = unknown,
 >(options?: {
 	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof deleteMessageByMessageID>>,
+		Awaited<ReturnType<typeof deleteByMessageID>>,
 		TError,
 		{ messageId: string },
 		TContext
 	>;
 }): UseMutationOptions<
-	Awaited<ReturnType<typeof deleteMessageByMessageID>>,
+	Awaited<ReturnType<typeof deleteByMessageID>>,
 	TError,
 	{ messageId: string },
 	TContext
 > => {
-	const mutationKey = ["deleteMessageByMessageID"];
+	const mutationKey = ["deleteByMessageID"];
 	const { mutation: mutationOptions } = options
 		? options.mutation &&
 			"mutationKey" in options.mutation &&
@@ -295,30 +269,27 @@ export const getDeleteMessageByMessageIDMutationOptions = <
 		: { mutation: { mutationKey } };
 
 	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof deleteMessageByMessageID>>,
+		Awaited<ReturnType<typeof deleteByMessageID>>,
 		{ messageId: string }
 	> = (props) => {
 		const { messageId } = props ?? {};
 
-		return deleteMessageByMessageID(messageId);
+		return deleteByMessageID(messageId);
 	};
 
 	return { mutationFn, ...mutationOptions };
 };
 
-export type DeleteMessageByMessageIDMutationResult = NonNullable<
-	Awaited<ReturnType<typeof deleteMessageByMessageID>>
+export type DeleteByMessageIDMutationResult = NonNullable<
+	Awaited<ReturnType<typeof deleteByMessageID>>
 >;
 
-export type DeleteMessageByMessageIDMutationError = Status;
+export type DeleteByMessageIDMutationError = Status;
 
-export const useDeleteMessageByMessageID = <
-	TError = Status,
-	TContext = unknown,
->(
+export const useDeleteByMessageID = <TError = Status, TContext = unknown>(
 	options?: {
 		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof deleteMessageByMessageID>>,
+			Awaited<ReturnType<typeof deleteByMessageID>>,
 			TError,
 			{ messageId: string },
 			TContext
@@ -326,44 +297,44 @@ export const useDeleteMessageByMessageID = <
 	},
 	queryClient?: QueryClient,
 ): UseMutationResult<
-	Awaited<ReturnType<typeof deleteMessageByMessageID>>,
+	Awaited<ReturnType<typeof deleteByMessageID>>,
 	TError,
 	{ messageId: string },
 	TContext
 > => {
-	const mutationOptions = getDeleteMessageByMessageIDMutationOptions(options);
+	const mutationOptions = getDeleteByMessageIDMutationOptions(options);
 
 	return useMutation(mutationOptions, queryClient);
 };
-export const updateMessageByMessageID = (
+export const updateByMessageID = (
 	messageId: string,
-	updateMessageByMessageIDBody: UpdateMessageByMessageIDBody,
+	updateByMessageIDBody: UpdateByMessageIDBody,
 ) => {
-	return customClient<UpdateMessageByMessageIDResponse>({
+	return customClient<UpdateByMessageIDResponse>({
 		url: `/api/messages/${messageId}`,
 		method: "PUT",
 		headers: { "Content-Type": "application/json" },
-		data: updateMessageByMessageIDBody,
+		data: updateByMessageIDBody,
 	});
 };
 
-export const getUpdateMessageByMessageIDMutationOptions = <
+export const getUpdateByMessageIDMutationOptions = <
 	TError = Status,
 	TContext = unknown,
 >(options?: {
 	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof updateMessageByMessageID>>,
+		Awaited<ReturnType<typeof updateByMessageID>>,
 		TError,
-		{ messageId: string; data: UpdateMessageByMessageIDBody },
+		{ messageId: string; data: UpdateByMessageIDBody },
 		TContext
 	>;
 }): UseMutationOptions<
-	Awaited<ReturnType<typeof updateMessageByMessageID>>,
+	Awaited<ReturnType<typeof updateByMessageID>>,
 	TError,
-	{ messageId: string; data: UpdateMessageByMessageIDBody },
+	{ messageId: string; data: UpdateByMessageIDBody },
 	TContext
 > => {
-	const mutationKey = ["updateMessageByMessageID"];
+	const mutationKey = ["updateByMessageID"];
 	const { mutation: mutationOptions } = options
 		? options.mutation &&
 			"mutationKey" in options.mutation &&
@@ -373,43 +344,40 @@ export const getUpdateMessageByMessageIDMutationOptions = <
 		: { mutation: { mutationKey } };
 
 	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof updateMessageByMessageID>>,
-		{ messageId: string; data: UpdateMessageByMessageIDBody }
+		Awaited<ReturnType<typeof updateByMessageID>>,
+		{ messageId: string; data: UpdateByMessageIDBody }
 	> = (props) => {
 		const { messageId, data } = props ?? {};
 
-		return updateMessageByMessageID(messageId, data);
+		return updateByMessageID(messageId, data);
 	};
 
 	return { mutationFn, ...mutationOptions };
 };
 
-export type UpdateMessageByMessageIDMutationResult = NonNullable<
-	Awaited<ReturnType<typeof updateMessageByMessageID>>
+export type UpdateByMessageIDMutationResult = NonNullable<
+	Awaited<ReturnType<typeof updateByMessageID>>
 >;
-export type UpdateMessageByMessageIDMutationBody = UpdateMessageByMessageIDBody;
-export type UpdateMessageByMessageIDMutationError = Status;
+export type UpdateByMessageIDMutationBody = UpdateByMessageIDBody;
+export type UpdateByMessageIDMutationError = Status;
 
-export const useUpdateMessageByMessageID = <
-	TError = Status,
-	TContext = unknown,
->(
+export const useUpdateByMessageID = <TError = Status, TContext = unknown>(
 	options?: {
 		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof updateMessageByMessageID>>,
+			Awaited<ReturnType<typeof updateByMessageID>>,
 			TError,
-			{ messageId: string; data: UpdateMessageByMessageIDBody },
+			{ messageId: string; data: UpdateByMessageIDBody },
 			TContext
 		>;
 	},
 	queryClient?: QueryClient,
 ): UseMutationResult<
-	Awaited<ReturnType<typeof updateMessageByMessageID>>,
+	Awaited<ReturnType<typeof updateByMessageID>>,
 	TError,
-	{ messageId: string; data: UpdateMessageByMessageIDBody },
+	{ messageId: string; data: UpdateByMessageIDBody },
 	TContext
 > => {
-	const mutationOptions = getUpdateMessageByMessageIDMutationOptions(options);
+	const mutationOptions = getUpdateByMessageIDMutationOptions(options);
 
 	return useMutation(mutationOptions, queryClient);
 };

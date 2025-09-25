@@ -1,6 +1,7 @@
 import { UserRoundPlus, Users } from "lucide-react";
 import { useNavigate } from "react-router";
 import { css } from "styled-system/css";
+import type { GuildWithMembers } from "~/api/gen/guildTypeProto.schemas";
 import { Avatar } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -9,42 +10,11 @@ import { Heading } from "~/components/ui/heading";
 import { Input } from "~/components/ui/input";
 import { Text } from "~/components/ui/text";
 
-const mockMembers = [
-	{
-		id: "1",
-		name: "管理者",
-		role: "admin",
-		avatar:
-			"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face",
-		joinedAt: "2024/1/10",
-	},
-	{
-		id: "2",
-		name: "開発者A",
-		role: "member",
-		avatar:
-			"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop&crop=face",
-		joinedAt: "2024/1/15",
-	},
-	{
-		id: "3",
-		name: "デザイナーB",
-		role: "member",
-		avatar:
-			"https://images.unsplash.com/photo-1494790108755-2616b9b8d85d?w=32&h=32&fit=crop&crop=face",
-		joinedAt: "2024/1/20",
-	},
-	{
-		id: "4",
-		name: "テスターC",
-		role: "member",
-		avatar:
-			"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=32&h=32&fit=crop&crop=face",
-		joinedAt: "2024/1/25",
-	},
-];
+interface MembersTabProps {
+	guild?: GuildWithMembers;
+}
 
-export const MembersTab = () => {
+export const MembersTab = ({ guild }: MembersTabProps) => {
 	const navigate = useNavigate();
 	return (
 		<div
@@ -115,9 +85,9 @@ export const MembersTab = () => {
 					</div>
 				</Card.Header>
 				<Card.Body>
-					{mockMembers.map((member) => (
+					{guild?.members.map((member) => (
 						<Card.Root
-							key={member.id}
+							key={member.userId}
 							className={css({
 								display: "flex",
 								height: "20",
@@ -141,8 +111,8 @@ export const MembersTab = () => {
 							>
 								<div className={css({ display: "flex", alignItems: "center" })}>
 									<Avatar
-										name={member.name}
-										src={member.avatar}
+										name={member.nickname}
+										src={""}
 										size="sm"
 										className={css({
 											width: "32px",
@@ -164,9 +134,9 @@ export const MembersTab = () => {
 											size="sm"
 											fontWeight="medium"
 										>
-											{member.name}
+											{member.nickname}
 										</Text>
-										{member.role === "admin" ? (
+										{member.userId === guild.ownerId ? (
 											<Badge
 												className={css({
 													marginLeft: "8px",

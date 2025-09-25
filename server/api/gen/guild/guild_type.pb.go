@@ -864,14 +864,13 @@ const file_guild_type_proto_rawDesc = "" +
 	"S\xd2\x01\bguild_id\xd2\x01\n" +
 	"creator_id\xd2\x01\bmax_uses\xd2\x01\fcurrent_uses\xd2\x01\x04code\xd2\x01\n" +
 	"expires_at\xd2\x01\n" +
-	"created_at\"\xba\x01\n" +
+	"created_at\"\xc4\x01\n" +
 	"\x06Member\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x19\n" +
 	"\bguild_id\x18\x02 \x01(\tR\aguildId\x12\x1a\n" +
 	"\bnickname\x18\x03 \x01(\tR\bnickname\x127\n" +
-	"\tjoined_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\bjoinedAt:'\x92A$\n" +
-	"\"\xd2\x01\auser_id\xd2\x01\bguild_id\xd2\x01\n" +
-	"created_at\"\xaf\x01\n" +
+	"\tjoined_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\bjoinedAt:1\x92A.\n" +
+	",\xd2\x01\auser_id\xd2\x01\bguild_id\xd2\x01\bnickname\xd2\x01\tjoined_at\"\xaf\x01\n" +
 	"\bCategory\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
 	"\bguild_id\x18\x02 \x01(\tR\aguildId\x12\x12\n" +

@@ -101,7 +101,7 @@ message Invite {
 message Member {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
-      required: ["user_id", "guild_id", "created_at"]
+      required: ["user_id", "guild_id", "nickname", "joined_at"]
     };
   };
   string user_id = 1;

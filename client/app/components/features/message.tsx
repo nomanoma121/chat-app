@@ -1,8 +1,8 @@
 import { MoreHorizontal, Reply, Smile } from "lucide-react";
 import { forwardRef, useState } from "react";
 import { css, cva } from "styled-system/css";
-import { Avatar } from "~/components/ui/avatar";
 import type { Message as TMessage } from "~/api/gen/guildTypeProto.schemas";
+import { Avatar } from "~/components/ui/avatar";
 import { IconButton } from "~/components/ui/icon-button";
 
 const messageStyles = cva({

@@ -1,5 +1,6 @@
 import { Settings, Upload } from "lucide-react";
 import { css } from "styled-system/css";
+import type { GuildWithMembers } from "~/api/gen/guildTypeProto.schemas";
 import { Avatar } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
@@ -8,7 +9,11 @@ import { FormLabel } from "~/components/ui/form-label";
 import { Heading } from "~/components/ui/heading";
 import { Text } from "~/components/ui/text";
 
-export const GeneralTab = () => {
+interface GeneralTabProps {
+	guild?: GuildWithMembers;
+}
+
+export const GeneralTab = ({ guild }: GeneralTabProps) => {
 	return (
 		<div
 			className={css({
@@ -95,7 +100,7 @@ export const GeneralTab = () => {
 					<Field.Root>
 						<FormLabel color="text.bright">サーバー名</FormLabel>
 						<Field.Input
-							defaultValue="開発チーム"
+							defaultValue={guild?.name}
 							className={css({
 								borderColor: "border.soft",
 								color: "text.bright",
@@ -106,7 +111,7 @@ export const GeneralTab = () => {
 					<Field.Root>
 						<FormLabel color="text.bright">サーバー説明</FormLabel>
 						<Field.Textarea
-							defaultValue="フルスタック開発チームのサーバーです"
+							defaultValue={guild?.description}
 							rows={3}
 							className={css({
 								borderColor: "border.soft",
@@ -116,7 +121,6 @@ export const GeneralTab = () => {
 						/>
 					</Field.Root>
 
-					{/* サーバー統計 */}
 					<div
 						className={css({
 							display: "grid",
@@ -140,7 +144,7 @@ export const GeneralTab = () => {
 									color: "accent.default",
 								})}
 							>
-								42人
+								{guild?.memberCount}
 							</span>
 							<span
 								className={css({
@@ -166,7 +170,7 @@ export const GeneralTab = () => {
 									color: "text.bright",
 								})}
 							>
-								2024/1/10
+								{new Date(guild?.createdAt ?? "").toLocaleDateString()}
 							</span>
 							<span
 								className={css({

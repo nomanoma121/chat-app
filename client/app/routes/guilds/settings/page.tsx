@@ -1,6 +1,7 @@
 import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { css } from "styled-system/css";
+import { useGetGuildByID, useUpdateGuild } from "~/api/gen/guild/guild";
 import { Tabs } from "~/components/features/tabs";
 import { Button } from "~/components/ui/button";
 import { Heading } from "~/components/ui/heading";
@@ -9,7 +10,10 @@ import { GeneralTab } from "./internal/components/general-tab";
 import { MembersTab } from "./internal/components/members-tab";
 
 export default function ServerSetting() {
+	const { serverId: guildId } = useParams<{ serverId: string }>();
+	if (!guildId) throw new Error("guildId is required");
 	const navigate = useNavigate();
+	const { data } = useGetGuildByID(guildId);
 
 	return (
 		<div
@@ -53,10 +57,10 @@ export default function ServerSetting() {
 					<Tabs.Trigger value="members">メンバー</Tabs.Trigger>
 				</Tabs.List>
 				<Tabs.Content value="general">
-					<GeneralTab />
+					<GeneralTab guild={data?.guild} />
 				</Tabs.Content>
 				<Tabs.Content value="members">
-					<MembersTab />
+					<MembersTab guild={data?.guild} />
 				</Tabs.Content>
 			</Tabs.Root>
 		</div>
