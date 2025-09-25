@@ -1,49 +1,60 @@
-import { useState } from "react";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { css } from "styled-system/css";
+import * as v from "valibot";
 import { useRegister } from "~/api/gen/auth/auth";
-import type { RegisterRequest } from "~/api/gen/userProto.schemas";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
 import { Spinner } from "~/components/ui/spinner";
 import { useLogin } from "~/hooks/use-login";
+import { UserSchema } from "~/schema/user";
+
+const RegisterForm = v.object({
+	displayId: UserSchema.DisplayId,
+	name: UserSchema.Name,
+	email: UserSchema.Email,
+	password: UserSchema.Password,
+	bio: UserSchema.Bio,
+	iconUrl: UserSchema.IconUrl,
+});
+
+type FormInputValues = v.InferInput<typeof RegisterForm>;
 
 export default function RegisterPage() {
 	const navigate = useNavigate();
-
-	const [formData, setFormData] = useState<RegisterRequest>({
-		displayId: "",
-		email: "",
-		password: "",
-		name: "",
-		bio: "",
-		iconUrl: "",
-	});
 	const { mutateAsync: register, isPending, error } = useRegister();
 	const { mutateAsync: login } = useLogin();
 
-	const handleSubmit = async (e: React.FormEvent) => {
+	const {
+		register: registerField,
+		handleSubmit,
+		formState: { errors, isValid },
+	} = useForm<FormInputValues>({
+		resolver: standardSchemaResolver(RegisterForm),
+		mode: "onBlur",
+		defaultValues: {
+			displayId: "",
+			name: "",
+			email: "",
+			password: "",
+			bio: "",
+			iconUrl: "",
+		},
+	});
+
+	const onSubmit = async (data: FormInputValues) => {
 		try {
-			e.preventDefault();
-			await register({ data: formData });
+			await register({ data });
 			await login({
-				data: { email: formData.email, password: formData.password },
+				data: { email: data.email, password: data.password },
 			});
 			navigate("/servers");
 		} catch (_error) {
 			console.log(_error);
 		}
-	};
-
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-	) => {
-		setFormData((prev) => ({
-			...prev,
-			[e.target.name]: e.target.value,
-		}));
 	};
 
 	return (
@@ -71,91 +82,89 @@ export default function RegisterPage() {
 				</Card.Header>
 				<Card.Body>
 					<form
-						onSubmit={handleSubmit}
+						onSubmit={handleSubmit(onSubmit)}
 						className={css({
 							display: "flex",
 							flexDirection: "column",
 							gap: "20px",
 						})}
 					>
-						<Field.Root>
-							<FormLabel color="text.bright">displayId</FormLabel>
+						<Field.Root invalid={!!errors.displayId}>
+							<FormLabel color="text.bright">ユーザーID</FormLabel>
 							<Field.Input
-								name="displayId"
+								{...registerField("displayId")}
 								type="text"
-								required
 								placeholder="例: user123"
-								value={formData.displayId}
-								onChange={handleChange}
 								className={css({
 									background: "bg.primary",
 									border: "none",
 									color: "text.bright",
 								})}
 							/>
+							{errors.displayId && (
+								<Field.ErrorText>{errors.displayId.message}</Field.ErrorText>
+							)}
 						</Field.Root>
 
-						<Field.Root>
+						<Field.Root invalid={!!errors.name}>
 							<FormLabel color="text.bright">ニックネーム</FormLabel>
 							<Field.Input
-								name="name"
+								{...registerField("name")}
 								type="text"
-								required
 								placeholder="例: 太郎"
-								value={formData.name}
-								onChange={handleChange}
 								className={css({
 									background: "bg.primary",
 									border: "none",
 									color: "text.bright",
 								})}
 							/>
+							{errors.name && (
+								<Field.ErrorText>{errors.name.message}</Field.ErrorText>
+							)}
 						</Field.Root>
 
-						<Field.Root>
+						<Field.Root invalid={!!errors.email}>
 							<FormLabel color="text.bright">メールアドレス</FormLabel>
 							<Field.Input
-								name="email"
+								{...registerField("email")}
 								type="email"
 								autoComplete="email"
-								required
 								placeholder="例: user@example.com"
-								value={formData.email}
-								onChange={handleChange}
 								className={css({
 									background: "bg.primary",
 									border: "none",
 									color: "text.bright",
 								})}
 							/>
+							{errors.email && (
+								<Field.ErrorText>{errors.email.message}</Field.ErrorText>
+							)}
 						</Field.Root>
 
-						<Field.Root>
+						<Field.Root invalid={!!errors.password}>
 							<FormLabel color="text.bright">パスワード</FormLabel>
 							<Field.Input
-								name="password"
+								{...registerField("password")}
 								type="password"
 								autoComplete="new-password"
-								required
 								placeholder="パスワードを入力してください"
-								value={formData.password}
-								onChange={handleChange}
 								className={css({
 									background: "bg.primary",
 									border: "none",
 									color: "text.bright",
 								})}
 							/>
+							{errors.password && (
+								<Field.ErrorText>{errors.password.message}</Field.ErrorText>
+							)}
 						</Field.Root>
 
-						<Field.Root>
+						<Field.Root invalid={!!errors.bio}>
 							<FormLabel color="text.bright">自己紹介（任意）</FormLabel>
 							<Field.Textarea
-								name="bio"
+								{...registerField("bio")}
 								rows={3}
 								placeholder="自己紹介文を入力してください"
-								value={formData.bio || ""}
-								onChange={handleChange}
 								className={css({
 									background: "bg.primary",
 									border: "none",
@@ -163,22 +172,26 @@ export default function RegisterPage() {
 									resize: "none",
 								})}
 							/>
+							{errors.bio && (
+								<Field.ErrorText>{errors.bio.message}</Field.ErrorText>
+							)}
 						</Field.Root>
 
-						<Field.Root>
+						<Field.Root invalid={!!errors.iconUrl}>
 							<FormLabel color="text.bright">アイコンURL（任意）</FormLabel>
 							<Field.Input
-								name="iconUrl"
+								{...registerField("iconUrl")}
 								type="url"
 								placeholder="https://example.com/icon.jpg"
-								value={formData.iconUrl || ""}
-								onChange={handleChange}
 								className={css({
 									background: "bg.primary",
 									border: "none",
 									color: "text.bright",
 								})}
 							/>
+							{errors.iconUrl && (
+								<Field.ErrorText>{errors.iconUrl.message}</Field.ErrorText>
+							)}
 						</Field.Root>
 
 						{error && (
@@ -198,18 +211,14 @@ export default function RegisterPage() {
 
 						<Button
 							type="submit"
-							disabled={isPending}
+							disabled={!isValid || isPending}
+							loading={isPending}
 							className={css({
 								width: "100%",
 								marginTop: "10px",
-								display: "flex",
-								alignItems: "center",
-								gap: "2",
-								justifyContent: "center",
 							})}
 						>
-							{isPending && <Spinner size="sm" />}
-							{isPending ? "登録中..." : "新規登録"}
+							新規登録
 						</Button>
 
 						<div

@@ -1,39 +1,47 @@
-import { useId, useState } from "react";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { css } from "styled-system/css";
-import type { LoginRequest } from "~/api/gen/userProto.schemas";
+import * as v from "valibot";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
 import { Spinner } from "~/components/ui/spinner";
 import { useLogin } from "~/hooks/use-login";
+import { UserSchema } from "~/schema/user";
+
+const LoginForm = v.object({
+	email: UserSchema.Email,
+	password: UserSchema.Password,
+});
+
+type FormInputValues = v.InferInput<typeof LoginForm>;
 
 export default function LoginPage() {
-	const emailId = useId();
-	const passwordId = useId();
 	const navigate = useNavigate();
-	const [formData, setFormData] = useState<LoginRequest>({
-		email: "",
-		password: "",
-	});
 	const { mutateAsync, isPending, error } = useLogin();
 
-	const handleSubmit = async (e: React.FormEvent) => {
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isValid },
+	} = useForm<FormInputValues>({
+		resolver: standardSchemaResolver(LoginForm),
+		mode: "onBlur",
+		defaultValues: {
+			email: "",
+			password: "",
+		},
+	});
+
+	const onSubmit = async (data: FormInputValues) => {
 		try {
-			e.preventDefault();
-			await mutateAsync(formData);
+			await mutateAsync({ data });
 			navigate("/servers");
 		} catch (_error) {
 			// エラーはerror stateで表示される
 		}
-	};
-
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setFormData((prev) => ({
-			...prev,
-			[e.target.name]: e.target.value,
-		}));
 	};
 
 	return (
@@ -61,48 +69,46 @@ export default function LoginPage() {
 				</Card.Header>
 				<Card.Body>
 					<form
-						onSubmit={handleSubmit}
+						onSubmit={handleSubmit(onSubmit)}
 						className={css({
 							display: "flex",
 							flexDirection: "column",
 							gap: "20px",
 						})}
 					>
-						<Field.Root>
+						<Field.Root invalid={!!errors.email}>
 							<FormLabel color="text.bright">メールアドレス</FormLabel>
 							<Field.Input
-								id={emailId}
-								name="email"
+								{...register("email")}
 								type="email"
 								autoComplete="email"
-								required
 								placeholder="メールアドレスを入力してください"
-								value={formData.email}
-								onChange={handleChange}
 								className={css({
 									background: "bg.primary",
 									border: "none",
 									color: "text.bright",
 								})}
 							/>
+							{errors.email && (
+								<Field.ErrorText>{errors.email.message}</Field.ErrorText>
+							)}
 						</Field.Root>
-						<Field.Root>
+						<Field.Root invalid={!!errors.password}>
 							<FormLabel color="text.bright">パスワード</FormLabel>
 							<Field.Input
-								id={passwordId}
-								name="password"
+								{...register("password")}
 								type="password"
 								autoComplete="current-password"
-								required
 								placeholder="パスワードを入力してください"
-								value={formData.password}
-								onChange={handleChange}
 								className={css({
 									background: "bg.primary",
 									border: "none",
 									color: "text.bright",
 								})}
 							/>
+							{errors.password && (
+								<Field.ErrorText>{errors.password.message}</Field.ErrorText>
+							)}
 						</Field.Root>
 
 						{error && (
@@ -122,18 +128,14 @@ export default function LoginPage() {
 
 						<Button
 							type="submit"
-							disabled={isPending}
+							disabled={!isValid || isPending}
+							loading={isPending}
 							className={css({
 								width: "100%",
 								marginTop: "10px",
-								display: "flex",
-								alignItems: "center",
-								gap: "2",
-								justifyContent: "center",
 							})}
 						>
-							{isPending && <Spinner size="sm" />}
-							{isPending ? "ログイン中..." : "ログイン"}
+							ログイン
 						</Button>
 
 						<div
