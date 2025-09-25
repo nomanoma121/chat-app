@@ -2,8 +2,8 @@ import { useEffect, useRef } from "react";
 import { useOutletContext, useParams } from "react-router";
 import { css } from "styled-system/css";
 import {
-	useCreateMessage,
-	useGetMessagesByChannelID,
+	useCreate,
+	useGetByChannelID,
 } from "~/api/gen/message/message";
 import { Message } from "~/components/features/message";
 import { MessageInput } from "~/components/features/message-input";
@@ -16,8 +16,8 @@ export const ChatArea = () => {
 		return <div>Channel ID is missing</div>;
 	}
 	const { guild } = useOutletContext<GuildsContext>();
-	const { data: messagesData, refetch } = useGetMessagesByChannelID(channelId);
-	const { mutateAsync: createMessage } = useCreateMessage();
+	const { data: messagesData, refetch } = useGetByChannelID(channelId);
+	const { mutateAsync: createMessage } = useCreate();
 	const messages = messagesData?.messages || [];
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const messagesContainerRef = useRef<HTMLDivElement>(null);

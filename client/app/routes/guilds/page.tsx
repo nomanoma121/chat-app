@@ -97,11 +97,7 @@ export default function Guild() {
 									borderColor: "accent.default",
 								},
 							})}
-							onClick={() =>
-								navigate(
-									`/servers/${guild.id}/channels/${guild.defaultChannelId}`,
-								)
-							}
+							onClick={() => navigate(`/servers/${guild.id}/channels/${guild.defaultChannelId}`)}
 						>
 							<Card.Body
 								className={css({
