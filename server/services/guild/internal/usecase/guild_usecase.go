@@ -161,7 +161,7 @@ func (u *guildUsecase) GetByID(ctx context.Context, id uuid.UUID) (*GetByIDResul
 	}
 
 	return &GetByIDResult{
-		Guild:     guild,
+		Guild:       guild,
 		MemberCount: count,
 		Members:     members,
 	}, nil
