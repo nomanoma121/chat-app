@@ -8,7 +8,6 @@ import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
-import { Spinner } from "~/components/ui/spinner";
 import { useLogin } from "~/hooks/use-login";
 import { UserSchema } from "~/schema/user";
 
@@ -47,13 +46,21 @@ export default function RegisterPage() {
 
 	const onSubmit = async (data: FormInputValues) => {
 		try {
-			await register({ data });
-			await login({
-				data: { email: data.email, password: data.password },
+			await register({
+				data: {
+					displayId: data.displayId,
+					name: data.name,
+					email: data.email,
+					password: data.password,
+					bio: data.bio || "",
+					iconUrl: data.iconUrl || "",
+				}
 			});
+
+			await login({ email: data.email, password: data.password });
 			navigate("/servers");
-		} catch (_error) {
-			console.log(_error);
+		} catch (error) {
+			console.error("Registration or login error:", error);
 		}
 	};
 
