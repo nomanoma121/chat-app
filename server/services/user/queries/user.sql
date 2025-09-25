@@ -17,6 +17,6 @@ SELECT COUNT(*) FROM users WHERE display_id = $1;
 
 -- name: UpdateUser :one
 UPDATE users
-SET username = $2, bio = $3, icon_url = $4, updated_at = NOW()
+SET display_id = $2, username = $3, bio = $4, icon_url = $5, updated_at = NOW()
 WHERE id = $1
 RETURNING id, display_id, username, email, bio, icon_url, created_at;

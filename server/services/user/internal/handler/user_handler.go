@@ -189,10 +189,11 @@ func (h *UserHandler) Update(ctx context.Context, req *pb.UpdateRequest) (*pb.Up
 	}
 
 	usecaseParams := &usecase.UpdateParams{
-		ID:      userID,
-		Name:    req.Name,
-		Bio:     req.Bio,
-		IconURL: req.IconUrl,
+		ID:        userID,
+		DisplayID: req.DisplayId,
+		Name:      req.Name,
+		Bio:       req.Bio,
+		IconURL:   req.IconUrl,
 	}
 
 	updatedUser, err := h.userUsecase.Update(ctx, usecaseParams)

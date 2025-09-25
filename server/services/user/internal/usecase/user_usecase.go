@@ -38,10 +38,11 @@ type LoginParams struct {
 }
 
 type UpdateParams struct {
-	ID      uuid.UUID `validate:"required"`
-	Name    string    `validate:"required,min=1,max=15"`
-	Bio     string    `validate:"omitempty,max=500"`
-	IconURL string    `validate:"omitempty,url"`
+	ID        uuid.UUID `validate:"required"`
+	DisplayID string    `validate:"required,min=3,max=20,display_id"`
+	Name      string    `validate:"required,min=1,max=15"`
+	Bio       string    `validate:"omitempty,max=500"`
+	IconURL   string    `validate:"omitempty,url"`
 }
 
 type userUsecase struct {
@@ -140,10 +141,11 @@ func (u *userUsecase) Update(ctx context.Context, params *UpdateParams) (*domain
 	}
 
 	return u.userRepo.Update(ctx, &domain.User{
-		ID:      params.ID,
-		Name:    params.Name,
-		Bio:     params.Bio,
-		IconURL: params.IconURL,
+		ID:        params.ID,
+		DisplayId: params.DisplayID,
+		Name:      params.Name,
+		Bio:       params.Bio,
+		IconURL:   params.IconURL,
 	})
 }
 
