@@ -11,10 +11,10 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import { css } from "../styled-system/css";
-import stylesheet from "./app.css?url";
 import { Toast } from "~/components/ui/toast";
 import { toaster } from "~/hooks/use-toast";
+import { css } from "../styled-system/css";
+import stylesheet from "./app.css?url";
 
 export const links: Route.LinksFunction = () => [
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -77,20 +77,26 @@ export default function App() {
 							borderLeftWidth: "4px",
 							borderLeftStyle: "solid",
 							borderLeftColor:
-								toast.type === "success" ? "#22c55e" :
-								toast.type === "error" ? "#ef4444" :
-								toast.type === "warning" ? "#f59e0b" :
-								"#3b82f6",
+								toast.type === "success"
+									? "#22c55e"
+									: toast.type === "error"
+										? "#ef4444"
+										: toast.type === "warning"
+											? "#f59e0b"
+											: "#3b82f6",
 							color: "text.bright",
 						})}
 					>
 						<Toast.Title
 							className={css({
 								color:
-									toast.type === "success" ? "#22c55e" :
-									toast.type === "error" ? "#ef4444" :
-									toast.type === "warning" ? "#f59e0b" :
-									"#3b82f6",
+									toast.type === "success"
+										? "#22c55e"
+										: toast.type === "error"
+											? "#ef4444"
+											: toast.type === "warning"
+												? "#f59e0b"
+												: "#3b82f6",
 							})}
 						>
 							{toast.title}

@@ -56,7 +56,7 @@ export default function RegisterPage() {
 					password: data.password,
 					bio: data.bio || "",
 					iconUrl: data.iconUrl || "",
-				}
+				},
 			});
 
 			await login({ email: data.email, password: data.password });

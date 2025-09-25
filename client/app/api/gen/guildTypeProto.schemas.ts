@@ -291,6 +291,7 @@ export interface UpdateGuildResponse {
 }
 
 export interface UpdateRequest {
+	displayId: string;
 	name: string;
 	bio: string;
 	iconUrl: string;

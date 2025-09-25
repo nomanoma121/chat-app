@@ -5,10 +5,10 @@ import { useGetGuildByID, useUpdateGuild } from "~/api/gen/guild/guild";
 import { Tabs } from "~/components/features/tabs";
 import { Button } from "~/components/ui/button";
 import { Heading } from "~/components/ui/heading";
+import { Spinner } from "~/components/ui/spinner";
 import { Text } from "~/components/ui/text";
 import { GeneralTab } from "./internal/components/general-tab";
 import { MembersTab } from "./internal/components/members-tab";
-import { Spinner } from "~/components/ui/spinner";
 
 export default function ServerSetting() {
 	const { serverId: guildId } = useParams<{ serverId: string }>();
