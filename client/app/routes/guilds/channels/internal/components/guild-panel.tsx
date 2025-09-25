@@ -21,7 +21,7 @@ const ChannelForm = v.object({
 	name: v.pipe(
 		v.string(),
 		v.minLength(1, "チャンネル名は必須です"),
-		v.maxLength(50, "チャンネル名は50文字以内で入力してください")
+		v.maxLength(50, "チャンネル名は50文字以内で入力してください"),
 	),
 });
 
@@ -29,7 +29,7 @@ const CategoryForm = v.object({
 	name: v.pipe(
 		v.string(),
 		v.minLength(1, "カテゴリ名は必須です"),
-		v.maxLength(30, "カテゴリ名は30文字以内で入力してください")
+		v.maxLength(30, "カテゴリ名は30文字以内で入力してください"),
 	),
 });
 
@@ -38,8 +38,10 @@ type CategoryFormValues = v.InferInput<typeof CategoryForm>;
 
 export const GuildPanel = () => {
 	const { guild, refetch } = useOutletContext<GuildsContext>();
-	const { mutateAsync: createCategory, isPending: isCategoryPending } = useCreateCategory();
-	const { mutateAsync: createChannel, isPending: isChannelPending } = useCreateChannel();
+	const { mutateAsync: createCategory, isPending: isCategoryPending } =
+		useCreateCategory();
+	const { mutateAsync: createChannel, isPending: isChannelPending } =
+		useCreateChannel();
 	const toast = useToast();
 
 	const [isChannelDialogOpen, setIsChannelDialogOpen] = useState(false);
@@ -304,7 +306,9 @@ export const GuildPanel = () => {
 									</Dialog.CloseTrigger>
 									<Button
 										type="submit"
-										disabled={!channelForm.formState.isValid || isChannelPending}
+										disabled={
+											!channelForm.formState.isValid || isChannelPending
+										}
 										loading={isChannelPending}
 									>
 										作成
@@ -396,7 +400,9 @@ export const GuildPanel = () => {
 									</Dialog.CloseTrigger>
 									<Button
 										type="submit"
-										disabled={!categoryForm.formState.isValid || isCategoryPending}
+										disabled={
+											!categoryForm.formState.isValid || isCategoryPending
+										}
 										loading={isCategoryPending}
 									>
 										作成

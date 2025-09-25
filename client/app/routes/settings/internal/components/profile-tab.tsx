@@ -160,7 +160,10 @@ export const ProfileTab = () => {
 										marginBottom: "12px",
 									})}
 								>
-									参加日: {data?.user.createdAt ? new Date(data.user.createdAt).toLocaleDateString() : "不明"}
+									参加日:{" "}
+									{data?.user.createdAt
+										? new Date(data.user.createdAt).toLocaleDateString()
+										: "不明"}
 								</p>
 								<Button
 									type="button"
