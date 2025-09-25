@@ -74,16 +74,6 @@ export default function App() {
 							bg: "bg.secondary",
 							border: "1px solid",
 							borderColor: "border.soft",
-							borderLeftWidth: "4px",
-							borderLeftStyle: "solid",
-							borderLeftColor:
-								toast.type === "success"
-									? "#22c55e"
-									: toast.type === "error"
-										? "#ef4444"
-										: toast.type === "warning"
-											? "#f59e0b"
-											: "#3b82f6",
 							color: "text.bright",
 						})}
 					>
