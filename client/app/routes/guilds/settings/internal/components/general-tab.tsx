@@ -13,6 +13,7 @@ import { Text } from "~/components/ui/text";
 import { useForm } from "react-hook-form";
 import * as v from "valibot";
 import { GuildSchema } from "~/schema/guild";
+import { useToast } from "~/hooks/use-toast";
 
 interface GeneralTabProps {
   guild: GuildWithMembers;
@@ -27,6 +28,7 @@ type UpdateGuildFormValues = v.InferInput<typeof UpdateGuildForm>;
 
 export const GeneralTab = ({ guild }: GeneralTabProps) => {
   const { mutateAsync: updateGuild } = useUpdateGuild();
+  const toast = useToast();
   const {
     register,
     handleSubmit,
@@ -51,8 +53,10 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 					defaultChannelId: guild.defaultChannelId,
 				},
 			});
+			toast.success("サーバー情報を更新しました");
 		} catch (error) {
 			console.error("サーバー情報の更新中にエラーが発生しました:", error);
+			toast.error("サーバー情報の更新に失敗しました");
 		}
 	}
 
