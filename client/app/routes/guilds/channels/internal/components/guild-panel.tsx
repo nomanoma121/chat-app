@@ -1,7 +1,10 @@
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Plus, Settings, UserRoundPlus } from "lucide-react";
-import { useId, useState } from "react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate, useOutletContext } from "react-router";
 import { css } from "styled-system/css";
+import * as v from "valibot";
 import { useCreateCategory } from "~/api/gen/category/category";
 import { useCreateChannel } from "~/api/gen/channel/channel";
 import { Category } from "~/components/features/category";
@@ -11,72 +14,92 @@ import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
 import { Heading } from "~/components/ui/heading";
 import { IconButton } from "~/components/ui/icon-button";
+import { useToast } from "~/hooks/use-toast";
 import type { GuildsContext } from "../../layout";
 
-interface ChannelFormData {
-	name: string;
-	categoryId: string;
-}
+const ChannelForm = v.object({
+	name: v.pipe(
+		v.string(),
+		v.minLength(1, "チャンネル名は必須です"),
+		v.maxLength(50, "チャンネル名は50文字以内で入力してください"),
+	),
+});
+
+const CategoryForm = v.object({
+	name: v.pipe(
+		v.string(),
+		v.minLength(1, "カテゴリ名は必須です"),
+		v.maxLength(30, "カテゴリ名は30文字以内で入力してください"),
+	),
+});
+
+type ChannelFormValues = v.InferInput<typeof ChannelForm>;
+type CategoryFormValues = v.InferInput<typeof CategoryForm>;
 
 export const GuildPanel = () => {
 	const { guild, refetch } = useOutletContext<GuildsContext>();
-	const { mutateAsync: createCategory } = useCreateCategory();
-	const { mutateAsync: createChannel } = useCreateChannel();
+	const { mutateAsync: createCategory, isPending: isCategoryPending } =
+		useCreateCategory();
+	const { mutateAsync: createChannel, isPending: isChannelPending } =
+		useCreateChannel();
+	const toast = useToast();
+
 	const [isChannelDialogOpen, setIsChannelDialogOpen] = useState(false);
 	const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
-	// TODO: useFormとかにする
-	const [channelFormData, setChannelFormData] = useState<ChannelFormData>({
-		name: "",
-		categoryId: "",
-	});
-	const [categoryFormData, setCategoryFormData] = useState({ name: "" });
+	const [selectedCategoryId, setSelectedCategoryId] = useState("");
 	const [isHovered, setIsHovered] = useState(false);
 	const navigate = useNavigate();
 
-	const handleChannelSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
+	const channelForm = useForm<ChannelFormValues>({
+		resolver: standardSchemaResolver(ChannelForm),
+		mode: "onBlur",
+		defaultValues: {
+			name: "",
+		},
+	});
 
-		await createChannel({
-			categoryId: channelFormData.categoryId,
-			data: {
-				name: channelFormData.name,
-			},
-		});
+	const categoryForm = useForm<CategoryFormValues>({
+		resolver: standardSchemaResolver(CategoryForm),
+		mode: "onBlur",
+		defaultValues: {
+			name: "",
+		},
+	});
 
-		refetch();
-
-		setIsChannelDialogOpen(false);
-		setChannelFormData({ name: "", categoryId: "" });
+	const handleChannelSubmit = async (data: ChannelFormValues) => {
+		try {
+			await createChannel({
+				categoryId: selectedCategoryId,
+				data: {
+					name: data.name,
+				},
+			});
+			refetch();
+			toast.success("チャンネルを作成しました");
+			setIsChannelDialogOpen(false);
+			channelForm.reset();
+		} catch (error) {
+			console.error("Channel creation error:", error);
+			toast.error("チャンネルの作成に失敗しました");
+		}
 	};
 
-	const handleCategorySubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-
-		await createCategory({
-			guildId: guild.id,
-			data: {
-				name: categoryFormData.name,
-			},
-		});
-
-		refetch();
-
-		setIsCategoryDialogOpen(false);
-		setCategoryFormData({ name: "" });
-	};
-
-	const handleChannelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setChannelFormData((prev) => ({
-			...prev,
-			[e.target.name]: e.target.value,
-		}));
-	};
-
-	const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setCategoryFormData((prev) => ({
-			...prev,
-			[e.target.name]: e.target.value,
-		}));
+	const handleCategorySubmit = async (data: CategoryFormValues) => {
+		try {
+			await createCategory({
+				guildId: guild.id,
+				data: {
+					name: data.name,
+				},
+			});
+			refetch();
+			toast.success("カテゴリを作成しました");
+			setIsCategoryDialogOpen(false);
+			categoryForm.reset();
+		} catch (error) {
+			console.error("Category creation error:", error);
+			toast.error("カテゴリの作成に失敗しました");
+		}
 	};
 
 	return (
@@ -149,13 +172,8 @@ export const GuildPanel = () => {
 				<Category
 					key={category.id}
 					onAddChannel={() => {
-						setIsChannelDialogOpen(
-							(isChannelDialogOpen) => !isChannelDialogOpen,
-						);
-						setChannelFormData((prev) => ({
-							...prev,
-							categoryId: category.id,
-						}));
+						setIsChannelDialogOpen(true);
+						setSelectedCategoryId(category.id);
 					}}
 				>
 					<Category.Title>{category.name}</Category.Title>
@@ -239,7 +257,7 @@ export const GuildPanel = () => {
 							チャンネルを作成
 						</Dialog.Title>
 
-						<form onSubmit={handleChannelSubmit}>
+						<form onSubmit={channelForm.handleSubmit(handleChannelSubmit)}>
 							<div
 								className={css({
 									display: "flex",
@@ -247,21 +265,22 @@ export const GuildPanel = () => {
 									gap: "4",
 								})}
 							>
-								<Field.Root>
+								<Field.Root invalid={!!channelForm.formState.errors.name}>
 									<FormLabel color="text.bright">チャンネル名</FormLabel>
 									<Field.Input
-										name="name"
-										type="text"
-										required
+										{...channelForm.register("name")}
 										placeholder="チャンネル名を入力してください"
-										value={channelFormData.name}
-										onChange={handleChannelChange}
 										className={css({
 											background: "bg.primary",
 											border: "none",
 											color: "text.bright",
 										})}
 									/>
+									{channelForm.formState.errors.name && (
+										<Field.ErrorText>
+											{channelForm.formState.errors.name.message}
+										</Field.ErrorText>
+									)}
 								</Field.Root>
 
 								<div
@@ -285,7 +304,13 @@ export const GuildPanel = () => {
 											キャンセル
 										</Button>
 									</Dialog.CloseTrigger>
-									<Button type="submit" disabled={!channelFormData.name.trim()}>
+									<Button
+										type="submit"
+										disabled={
+											!channelForm.formState.isValid || isChannelPending
+										}
+										loading={isChannelPending}
+									>
 										作成
 									</Button>
 								</div>
@@ -326,7 +351,7 @@ export const GuildPanel = () => {
 							カテゴリを作成
 						</Dialog.Title>
 
-						<form onSubmit={handleCategorySubmit}>
+						<form onSubmit={categoryForm.handleSubmit(handleCategorySubmit)}>
 							<div
 								className={css({
 									display: "flex",
@@ -334,21 +359,22 @@ export const GuildPanel = () => {
 									gap: "4",
 								})}
 							>
-								<Field.Root>
+								<Field.Root invalid={!!categoryForm.formState.errors.name}>
 									<FormLabel color="text.bright">カテゴリ名</FormLabel>
 									<Field.Input
-										name="name"
-										type="text"
-										required
+										{...categoryForm.register("name")}
 										placeholder="カテゴリ名を入力してください"
-										value={categoryFormData.name}
-										onChange={handleCategoryChange}
 										className={css({
 											background: "bg.primary",
 											border: "none",
 											color: "text.bright",
 										})}
 									/>
+									{categoryForm.formState.errors.name && (
+										<Field.ErrorText>
+											{categoryForm.formState.errors.name.message}
+										</Field.ErrorText>
+									)}
 								</Field.Root>
 
 								<div
@@ -374,7 +400,10 @@ export const GuildPanel = () => {
 									</Dialog.CloseTrigger>
 									<Button
 										type="submit"
-										disabled={!categoryFormData.name.trim()}
+										disabled={
+											!categoryForm.formState.isValid || isCategoryPending
+										}
+										loading={isCategoryPending}
 									>
 										作成
 									</Button>

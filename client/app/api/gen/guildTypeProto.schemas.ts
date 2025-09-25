@@ -37,6 +37,11 @@ export interface Channel {
 	createdAt: string;
 }
 
+export interface CreateBody {
+	content: string;
+	replyId?: string;
+}
+
 export interface CreateCategoryBody {
 	name: string;
 }
@@ -72,13 +77,14 @@ export interface CreateGuildResponse {
 	guild: Guild;
 }
 
-export interface CreateMessageBody {
-	content: string;
-	replyId?: string;
+export interface CreateResponse {
+	message: Message;
 }
 
-export interface CreateMessageResponse {
-	message: Message;
+export type DeleteByMessageIDResponseEmpty = { [key: string]: unknown };
+
+export interface DeleteByMessageIDResponse {
+	empty: DeleteByMessageIDResponseEmpty;
 }
 
 export type DeleteCategoryResponseEmpty = { [key: string]: unknown };
@@ -105,14 +111,12 @@ export interface DeleteGuildMemberResponse {
 	empty: DeleteGuildMemberResponseEmpty;
 }
 
-export type DeleteMessageByMessageIDResponseEmpty = { [key: string]: unknown };
-
-export interface DeleteMessageByMessageIDResponse {
-	empty: DeleteMessageByMessageIDResponseEmpty;
-}
-
 export interface ExistsResponse {
 	exists: boolean;
+}
+
+export interface GetByChannelIDResponse {
+	messages: Message[];
 }
 
 export interface GetCurrentUserResponse {
@@ -120,7 +124,7 @@ export interface GetCurrentUserResponse {
 }
 
 export interface GetGuildByIDResponse {
-	guild: Guild;
+	guild: GuildWithMembers;
 }
 
 export interface GetGuildInvitesResponse {
@@ -129,10 +133,6 @@ export interface GetGuildInvitesResponse {
 
 export interface GetGuildOverviewResponse {
 	guild: GuildDetail;
-}
-
-export interface GetMessagesByChannelIDResponse {
-	messages: Message[];
 }
 
 export interface GetUserByIDResponse {
@@ -160,6 +160,29 @@ export interface GuildDetail {
 	categories: CategoryDetail[];
 }
 
+export interface GuildWithMemberCount {
+	id: string;
+	name: string;
+	ownerId: string;
+	description: string;
+	iconUrl: string;
+	defaultChannelId: string;
+	memberCount: number;
+	createdAt: string;
+}
+
+export interface GuildWithMembers {
+	id: string;
+	name: string;
+	ownerId: string;
+	description: string;
+	iconUrl: string;
+	defaultChannelId: string;
+	memberCount: number;
+	members: Member[];
+	createdAt: string;
+}
+
 export interface Invite {
 	guildId: string;
 	creatorId: string;
@@ -184,7 +207,7 @@ export interface LeaveGuildResponse {
 }
 
 export interface ListMyGuildsResponse {
-	guilds: Guild[];
+	guilds: GuildWithMemberCount[];
 }
 
 export interface LoginRequest {
@@ -196,9 +219,16 @@ export interface LoginResponse {
 	token: string;
 }
 
+export interface Member {
+	userId: string;
+	guildId: string;
+	nickname: string;
+	joinedAt: string;
+}
+
 export interface Message {
 	id: string;
-	authorId: string;
+	senderId: string;
 	channelId: string;
 	replyId?: string;
 	content: string;
@@ -222,6 +252,15 @@ export interface Status {
 	code?: number;
 	message?: string;
 	details?: Any[];
+}
+
+export interface UpdateByMessageIDBody {
+	content: string;
+	replyId?: string;
+}
+
+export interface UpdateByMessageIDResponse {
+	message: Message;
 }
 
 export interface UpdateCategoryBody {
@@ -251,16 +290,8 @@ export interface UpdateGuildResponse {
 	guild: Guild;
 }
 
-export interface UpdateMessageByMessageIDBody {
-	content: string;
-	replyId?: string;
-}
-
-export interface UpdateMessageByMessageIDResponse {
-	message: Message;
-}
-
 export interface UpdateRequest {
+	displayId: string;
 	name: string;
 	bio: string;
 	iconUrl: string;

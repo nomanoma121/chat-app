@@ -89,15 +89,28 @@ func (h *guildHandler) GetGuildByID(ctx context.Context, req *pb.GetGuildByIDReq
 		}
 	}
 
-	pbGuild := &pb.Guild{
+	pbMembers := make([]*pb.Member, len(guild.Members))
+	for i, member := range guild.Members {
+		pbMembers[i] = &pb.Member{
+			UserId:   member.UserID.String(),
+			GuildId:  member.GuildID.String(),
+			Nickname: member.Nickname,
+			JoinedAt: timestamppb.New(member.JoinedAt),
+		}
+	}
+
+	pbGuild := &pb.GuildWithMembers{
 		Id:               guild.ID.String(),
 		OwnerId:          guild.OwnerID.String(),
 		Name:             guild.Name,
 		Description:      guild.Description,
 		IconUrl:          guild.IconURL,
+		MemberCount:      guild.MemberCount,
+		Members:          pbMembers,
 		DefaultChannelId: guild.DefaultChannelID.String(),
 		CreatedAt:        timestamppb.New(guild.CreatedAt),
 	}
+
 	return &pb.GetGuildByIDResponse{Guild: pbGuild}, nil
 }
 
@@ -222,15 +235,16 @@ func (h *guildHandler) GetMyGuilds(ctx context.Context, req *pb.ListMyGuildsRequ
 		return nil, status.Error(codes.Internal, domain.ErrInternalServerError.Error())
 	}
 
-	pbGuilds := make([]*pb.Guild, len(guilds))
+	pbGuilds := make([]*pb.GuildWithMemberCount, len(guilds))
 	for i, guild := range guilds {
-		pbGuilds[i] = &pb.Guild{
+		pbGuilds[i] = &pb.GuildWithMemberCount{
 			Id:               guild.ID.String(),
 			OwnerId:          guild.OwnerID.String(),
 			Name:             guild.Name,
 			Description:      guild.Description,
 			IconUrl:          guild.IconURL,
 			DefaultChannelId: guild.DefaultChannelID.String(),
+			MemberCount:      guild.MemberCount,
 			CreatedAt:        timestamppb.New(guild.CreatedAt),
 		}
 	}

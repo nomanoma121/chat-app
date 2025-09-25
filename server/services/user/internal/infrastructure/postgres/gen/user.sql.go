@@ -132,16 +132,17 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (*GetUserByIDRo
 
 const updateUser = `-- name: UpdateUser :one
 UPDATE users
-SET username = $2, bio = $3, icon_url = $4, updated_at = NOW()
+SET display_id = $2, username = $3, bio = $4, icon_url = $5, updated_at = NOW()
 WHERE id = $1
 RETURNING id, display_id, username, email, bio, icon_url, created_at
 `
 
 type UpdateUserParams struct {
-	ID       uuid.UUID
-	Username string
-	Bio      string
-	IconUrl  string
+	ID        uuid.UUID
+	DisplayID string
+	Username  string
+	Bio       string
+	IconUrl   string
 }
 
 type UpdateUserRow struct {
@@ -157,6 +158,7 @@ type UpdateUserRow struct {
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (*UpdateUserRow, error) {
 	row := q.db.QueryRow(ctx, updateUser,
 		arg.ID,
+		arg.DisplayID,
 		arg.Username,
 		arg.Bio,
 		arg.IconUrl,

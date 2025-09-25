@@ -1,5 +1,10 @@
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Settings, Upload } from "lucide-react";
+import { useForm } from "react-hook-form";
 import { css } from "styled-system/css";
+import * as v from "valibot";
+import { useUpdateGuild } from "~/api/gen/guild/guild";
+import type { GuildWithMembers } from "~/api/gen/guildTypeProto.schemas";
 import { Avatar } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
@@ -7,8 +12,54 @@ import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
 import { Heading } from "~/components/ui/heading";
 import { Text } from "~/components/ui/text";
+import { useToast } from "~/hooks/use-toast";
+import { GuildSchema } from "~/schema/guild";
 
-export const GeneralTab = () => {
+interface GeneralTabProps {
+	guild: GuildWithMembers;
+}
+
+const UpdateGuildForm = v.object({
+	name: GuildSchema.Name,
+	description: GuildSchema.Description,
+});
+
+type UpdateGuildFormValues = v.InferInput<typeof UpdateGuildForm>;
+
+export const GeneralTab = ({ guild }: GeneralTabProps) => {
+	const { mutateAsync: updateGuild } = useUpdateGuild();
+	const toast = useToast();
+	const {
+		register,
+		handleSubmit,
+		formState: { isValid, errors },
+	} = useForm<UpdateGuildFormValues>({
+		resolver: standardSchemaResolver(UpdateGuildForm),
+		mode: "onBlur",
+		defaultValues: {
+			name: guild?.name,
+			description: guild?.description,
+		},
+	});
+
+	const onSubmit = async (data: UpdateGuildFormValues) => {
+		try {
+			await updateGuild({
+				guildId: guild.id,
+				data: {
+					name: data.name,
+					description: data.description || "",
+					iconUrl: guild.iconUrl,
+					defaultChannelId: guild.defaultChannelId,
+				},
+			});
+			toast.success("サーバー情報を更新しました");
+		} catch (error) {
+			console.error("サーバー情報の更新中にエラーが発生しました:", error);
+			toast.error("サーバー情報の更新に失敗しました");
+		}
+	};
+
 	return (
 		<div
 			className={css({
@@ -46,147 +97,156 @@ export const GeneralTab = () => {
 					</Text>
 				</Card.Header>
 
-				<Card.Body
-					className={css({
-						display: "flex",
-						flexDirection: "column",
-						gap: "20px",
-					})}
-				>
-					{/* サーバーアイコン */}
-					<div
+				<Card.Body>
+					<form
+						onSubmit={handleSubmit(onSubmit)}
 						className={css({
 							display: "flex",
-							alignItems: "center",
-							gap: "16px",
+							flexDirection: "column",
+							gap: "20px",
 						})}
 					>
-						<Avatar
-							name="開発チーム"
-							size="lg"
+						<div
 							className={css({
-								width: "64px",
-								height: "64px",
+								display: "flex",
+								alignItems: "center",
+								gap: "16px",
 							})}
-						/>
+						>
+							<Avatar
+								name={guild?.name || "サーバー"}
+								size="lg"
+								className={css({
+									width: "64px",
+									height: "64px",
+								})}
+							/>
+							<Button
+								type="button"
+								variant="outline"
+								className={css({
+									display: "flex",
+									alignItems: "center",
+									bgColor: "bg.tertiary",
+									color: "text.medium",
+									_hover: {
+										bgColor: "bg.quaternary",
+										color: "text.bright",
+									},
+									paddingX: "12px",
+									paddingY: "8px",
+									fontSize: "sm",
+									gap: "8px",
+								})}
+							>
+								<Upload size={16} />
+								アイコンを変更
+							</Button>
+						</div>
+
+						<Field.Root invalid={!!errors.name}>
+							<FormLabel color="text.bright">サーバー名</FormLabel>
+							<Field.Input
+								{...register("name")}
+								className={css({
+									borderColor: "border.soft",
+									color: "text.bright",
+								})}
+							/>
+							{errors.name && (
+								<Field.ErrorText>{errors.name.message}</Field.ErrorText>
+							)}
+						</Field.Root>
+
+						<Field.Root invalid={!!errors.description}>
+							<FormLabel color="text.bright">サーバー説明</FormLabel>
+							<Field.Textarea
+								{...register("description")}
+								rows={3}
+								className={css({
+									borderColor: "border.soft",
+									color: "text.bright",
+									resize: "none",
+								})}
+							/>
+							{errors.description && (
+								<Field.ErrorText>{errors.description.message}</Field.ErrorText>
+							)}
+						</Field.Root>
+
+						<div
+							className={css({
+								display: "grid",
+								gridTemplateColumns: "repeat(2, 1fr)",
+								gap: "16px",
+								marginTop: "8px",
+							})}
+						>
+							<div
+								className={css({
+									display: "flex",
+									flexDirection: "column",
+									alignItems: "center",
+									padding: "16px",
+								})}
+							>
+								<span
+									className={css({
+										fontSize: "2xl",
+										fontWeight: "bold",
+										color: "accent.default",
+									})}
+								>
+									{guild?.memberCount}
+								</span>
+								<span
+									className={css({
+										fontSize: "sm",
+										color: "text.medium",
+									})}
+								>
+									メンバー数
+								</span>
+							</div>
+							<div
+								className={css({
+									display: "flex",
+									flexDirection: "column",
+									alignItems: "center",
+									padding: "16px",
+								})}
+							>
+								<span
+									className={css({
+										fontSize: "2xl",
+										fontWeight: "bold",
+										color: "text.bright",
+									})}
+								>
+									{new Date(guild?.createdAt ?? "").toLocaleDateString()}
+								</span>
+								<span
+									className={css({
+										fontSize: "sm",
+										color: "text.medium",
+									})}
+								>
+									作成日
+								</span>
+							</div>
+						</div>
+
 						<Button
-							variant="outline"
+							type="submit"
+							disabled={!isValid}
 							className={css({
-								display: "flex",
-								alignItems: "center",
-								bgColor: "bg.tertiary",
-								color: "text.medium",
-								_hover: {
-									bgColor: "bg.quaternary",
-									color: "text.bright",
-								},
-								paddingX: "12px",
-								paddingY: "8px",
-								fontSize: "sm",
-								gap: "8px",
+								marginTop: "8px",
+								alignSelf: "flex-end",
 							})}
 						>
-							<Upload size={16} />
-							アイコンを変更
+							変更を保存
 						</Button>
-					</div>
-
-					{/* サーバー名 */}
-					<Field.Root>
-						<FormLabel color="text.bright">サーバー名</FormLabel>
-						<Field.Input
-							defaultValue="開発チーム"
-							className={css({
-								borderColor: "border.soft",
-								color: "text.bright",
-							})}
-						/>
-					</Field.Root>
-
-					<Field.Root>
-						<FormLabel color="text.bright">サーバー説明</FormLabel>
-						<Field.Textarea
-							defaultValue="フルスタック開発チームのサーバーです"
-							rows={3}
-							className={css({
-								borderColor: "border.soft",
-								color: "text.bright",
-								resize: "none",
-							})}
-						/>
-					</Field.Root>
-
-					{/* サーバー統計 */}
-					<div
-						className={css({
-							display: "grid",
-							gridTemplateColumns: "repeat(2, 1fr)",
-							gap: "16px",
-							marginTop: "8px",
-						})}
-					>
-						<div
-							className={css({
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "center",
-								padding: "16px",
-							})}
-						>
-							<span
-								className={css({
-									fontSize: "2xl",
-									fontWeight: "bold",
-									color: "accent.default",
-								})}
-							>
-								42人
-							</span>
-							<span
-								className={css({
-									fontSize: "sm",
-									color: "text.medium",
-								})}
-							>
-								メンバー数
-							</span>
-						</div>
-						<div
-							className={css({
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "center",
-								padding: "16px",
-							})}
-						>
-							<span
-								className={css({
-									fontSize: "2xl",
-									fontWeight: "bold",
-									color: "text.bright",
-								})}
-							>
-								2024/1/10
-							</span>
-							<span
-								className={css({
-									fontSize: "sm",
-									color: "text.medium",
-								})}
-							>
-								作成日
-							</span>
-						</div>
-					</div>
-
-					<Button
-						className={css({
-							marginTop: "8px",
-							alignSelf: "flex-end",
-						})}
-					>
-						変更を保存
-					</Button>
+					</form>
 				</Card.Body>
 			</Card.Root>
 

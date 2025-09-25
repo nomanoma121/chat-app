@@ -11,6 +11,8 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { Toast } from "~/components/ui/toast";
+import { toaster } from "~/hooks/use-toast";
 import { css } from "../styled-system/css";
 import stylesheet from "./app.css?url";
 
@@ -64,6 +66,49 @@ export default function App() {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<Outlet />
+			<Toast.Toaster toaster={toaster}>
+				{(toast) => (
+					<Toast.Root
+						key={toast.id}
+						className={css({
+							bg: "bg.secondary",
+							border: "1px solid",
+							borderColor: "border.soft",
+							color: "text.bright",
+						})}
+					>
+						<Toast.Title
+							className={css({
+								color:
+									toast.type === "success"
+										? "#22c55e"
+										: toast.type === "error"
+											? "#ef4444"
+											: toast.type === "warning"
+												? "#f59e0b"
+												: "#3b82f6",
+							})}
+						>
+							{toast.title}
+						</Toast.Title>
+						<Toast.Description
+							className={css({
+								color: "text.medium",
+							})}
+						>
+							{toast.description}
+						</Toast.Description>
+						<Toast.CloseTrigger
+							className={css({
+								color: "text.medium",
+								_hover: {
+									color: "text.bright",
+								},
+							})}
+						/>
+					</Toast.Root>
+				)}
+			</Toast.Toaster>
 		</QueryClientProvider>
 	);
 }

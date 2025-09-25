@@ -1,15 +1,81 @@
 import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { css } from "styled-system/css";
+import { useGetGuildByID, useUpdateGuild } from "~/api/gen/guild/guild";
 import { Tabs } from "~/components/features/tabs";
 import { Button } from "~/components/ui/button";
 import { Heading } from "~/components/ui/heading";
+import { Spinner } from "~/components/ui/spinner";
 import { Text } from "~/components/ui/text";
 import { GeneralTab } from "./internal/components/general-tab";
 import { MembersTab } from "./internal/components/members-tab";
 
 export default function ServerSetting() {
+	const { serverId: guildId } = useParams<{ serverId: string }>();
+	if (!guildId) throw new Error("guildId is required");
 	const navigate = useNavigate();
+	const { data, isLoading } = useGetGuildByID(guildId);
+
+	if (isLoading) {
+		return (
+			<div
+				className={css({
+					height: "100vh",
+					width: "800",
+					margin: "0 auto",
+					background: "bg.primary",
+					paddingY: "10",
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center",
+					justifyContent: "center",
+				})}
+			>
+				<Spinner size="lg" />
+				<Text className={css({ mt: "4", color: "text.medium" })}>
+					サーバー設定を読み込み中...
+				</Text>
+			</div>
+		);
+	}
+
+	if (!data?.guild) {
+		return (
+			<div
+				className={css({
+					height: "100vh",
+					width: "800",
+					margin: "0 auto",
+					background: "bg.primary",
+					paddingY: "10",
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center",
+					justifyContent: "center",
+				})}
+			>
+				<Text className={css({ color: "text.bright", fontSize: "lg" })}>
+					サーバーが見つかりません
+				</Text>
+				<Button
+					variant="ghost"
+					size="sm"
+					onClick={() => navigate(-1)}
+					className={css({
+						mt: "4",
+						color: "text.medium",
+						_hover: {
+							color: "text.bright",
+							background: "accent.default",
+						},
+					})}
+				>
+					<ArrowLeft size={18} />
+					<Text className={css({ ml: "2" })}>戻る</Text>
+				</Button>
+			</div>
+		);
+	}
 
 	return (
 		<div
@@ -53,10 +119,10 @@ export default function ServerSetting() {
 					<Tabs.Trigger value="members">メンバー</Tabs.Trigger>
 				</Tabs.List>
 				<Tabs.Content value="general">
-					<GeneralTab />
+					<GeneralTab guild={data.guild} />
 				</Tabs.Content>
 				<Tabs.Content value="members">
-					<MembersTab />
+					<MembersTab guild={data.guild} />
 				</Tabs.Content>
 			</Tabs.Root>
 		</div>

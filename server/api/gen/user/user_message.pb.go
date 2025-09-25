@@ -512,6 +512,7 @@ func (x *GetUserByIDResponse) GetUser() *User {
 
 type UpdateRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	DisplayId     string                 `protobuf:"bytes,1,opt,name=display_id,json=displayId,proto3" json:"display_id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Bio           string                 `protobuf:"bytes,3,opt,name=bio,proto3" json:"bio,omitempty"`
 	IconUrl       string                 `protobuf:"bytes,4,opt,name=icon_url,json=iconUrl,proto3" json:"icon_url,omitempty"`
@@ -547,6 +548,13 @@ func (x *UpdateRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use UpdateRequest.ProtoReflect.Descriptor instead.
 func (*UpdateRequest) Descriptor() ([]byte, []int) {
 	return file_user_message_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *UpdateRequest) GetDisplayId() string {
+	if x != nil {
+		return x.DisplayId
+	}
+	return ""
 }
 
 func (x *UpdateRequest) GetName() string {
@@ -749,12 +757,15 @@ const file_user_message_proto_rawDesc = "" +
 	"\x13GetUserByIDResponse\x12\x1e\n" +
 	"\x04user\x18\x01 \x01(\v2\n" +
 	".user.UserR\x04user:\f\x92A\t\n" +
-	"\a\xd2\x01\x04user\"o\n" +
-	"\rUpdateRequest\x12\x12\n" +
+	"\a\xd2\x01\x04user\"\x9b\x01\n" +
+	"\rUpdateRequest\x12\x1d\n" +
+	"\n" +
+	"display_id\x18\x01 \x01(\tR\tdisplayId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x10\n" +
 	"\x03bio\x18\x03 \x01(\tR\x03bio\x12\x19\n" +
-	"\bicon_url\x18\x04 \x01(\tR\aiconUrl:\x1d\x92A\x1a\n" +
-	"\x18\xd2\x01\x04name\xd2\x01\x03bio\xd2\x01\bicon_url\">\n" +
+	"\bicon_url\x18\x04 \x01(\tR\aiconUrl:*\x92A'\n" +
+	"%\xd2\x01\n" +
+	"display_id\xd2\x01\x04name\xd2\x01\x03bio\xd2\x01\bicon_url\">\n" +
 	"\x0eUpdateResponse\x12\x1e\n" +
 	"\x04user\x18\x01 \x01(\v2\n" +
 	".user.UserR\x04user:\f\x92A\t\n" +

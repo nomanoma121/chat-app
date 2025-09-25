@@ -4,6 +4,8 @@ import { css } from "styled-system/css/css";
 import { useListMyGuilds } from "~/api/gen/guild/guild";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
+import { Spinner } from "~/components/ui/spinner";
+import { Text } from "~/components/ui/text";
 
 export default function Guild() {
 	const { data, isPending, error } = useListMyGuilds();
@@ -14,12 +16,16 @@ export default function Guild() {
 			<div
 				className={css({
 					display: "flex",
+					flexDirection: "column",
 					justifyContent: "center",
 					alignItems: "center",
-					minHeight: "200px",
+					minHeight: "400px",
 				})}
 			>
-				<p>読み込み中...</p>
+				<Spinner size="lg" />
+				<Text className={css({ mt: "4", color: "text.medium" })}>
+					サーバー一覧を読み込み中...
+				</Text>
 			</div>
 		);
 	}
@@ -83,54 +89,62 @@ export default function Guild() {
 						</p>
 					</div>
 				)}
-				{data.guilds.length > 0 &&
-					data.guilds.map((guild) => (
-						<Card.Root
-							key={guild.id}
-							className={css({
-								marginBottom: "4",
-								cursor: "pointer",
-								background: "bg.secondary",
-								width: "50%",
-								_hover: {
-									background: "bg.quaternary",
-									borderColor: "accent.default",
-								},
-							})}
-							onClick={() =>
-								navigate(
-									`/servers/${guild.id}/channels/${guild.defaultChannelId}`,
-								)
-							}
-						>
-							<Card.Body
+				<div
+					className={css({
+						display: "grid",
+						gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+						gap: "4",
+					})}
+				>
+					{data.guilds.length > 0 &&
+						data.guilds.map((guild) => (
+							<Card.Root
+								key={guild.id}
 								className={css({
-									display: "flex",
-									alignItems: "center",
-									padding: "4",
-									gap: "4",
+									cursor: "pointer",
+									background: "bg.secondary",
+									_hover: {
+										background: "bg.quaternary",
+										borderColor: "accent.default",
+									},
 								})}
+								onClick={() =>
+									navigate(
+										`/servers/${guild.id}/channels/${guild.defaultChannelId}`,
+									)
+								}
 							>
-								<div>
-									<h2
+								<Card.Body
+									className={css({
+										display: "flex",
+										alignItems: "center",
+										padding: "4",
+										gap: "4",
+									})}
+								>
+									<div>
+										<h2
+											className={css({
+												fontSize: "xl",
+												fontWeight: "bold",
+											})}
+										>
+											{guild.name}
+										</h2>
+									</div>
+									<div
 										className={css({
-											fontSize: "xl",
-											fontWeight: "bold",
+											display: "flex",
+											alignItems: "center",
 										})}
 									>
-										{guild.name}
-									</h2>
-									<p
-										className={css({
-											color: "text.secondary",
-										})}
-									>
-										<Users /> 12 のメンバー
-									</p>
-								</div>
-							</Card.Body>
-						</Card.Root>
-					))}
+										<Users className={css({ marginRight: "2" })} />{" "}
+										{guild.memberCount} のメンバー
+									</div>
+								</Card.Body>
+							</Card.Root>
+						))}
+				</div>
 			</div>
 		</div>
 	);
