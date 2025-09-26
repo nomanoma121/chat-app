@@ -505,7 +505,7 @@ type Invite struct {
 	CreatorId     string                 `protobuf:"bytes,2,opt,name=creator_id,json=creatorId,proto3" json:"creator_id,omitempty"`
 	MaxUses       int32                  `protobuf:"varint,3,opt,name=max_uses,json=maxUses,proto3" json:"max_uses,omitempty"`
 	CurrentUses   int32                  `protobuf:"varint,4,opt,name=current_uses,json=currentUses,proto3" json:"current_uses,omitempty"`
-	Code          string                 `protobuf:"bytes,5,opt,name=code,proto3" json:"code,omitempty"`
+	InviteCode    string                 `protobuf:"bytes,5,opt,name=invite_code,json=inviteCode,proto3" json:"invite_code,omitempty"`
 	ExpiresAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -570,9 +570,9 @@ func (x *Invite) GetCurrentUses() int32 {
 	return 0
 }
 
-func (x *Invite) GetCode() string {
+func (x *Invite) GetInviteCode() string {
 	if x != nil {
-		return x.Code
+		return x.InviteCode
 	}
 	return ""
 }
@@ -859,14 +859,15 @@ const file_guild_type_proto_rawDesc = "" +
 	"created_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12*\n" +
 	"\bchannels\x18\x05 \x03(\v2\x0e.guild.ChannelR\bchannels:4\x92A1\n" +
 	"/\xd2\x01\x02id\xd2\x01\bguild_id\xd2\x01\x04name\xd2\x01\n" +
-	"created_at\xd2\x01\bchannels\"\xe4\x02\n" +
+	"created_at\xd2\x01\bchannels\"\xf1\x02\n" +
 	"\x06Invite\x12\x19\n" +
 	"\bguild_id\x18\x01 \x01(\tR\aguildId\x12\x1d\n" +
 	"\n" +
 	"creator_id\x18\x02 \x01(\tR\tcreatorId\x12\x19\n" +
 	"\bmax_uses\x18\x03 \x01(\x05R\amaxUses\x12!\n" +
-	"\fcurrent_uses\x18\x04 \x01(\x05R\vcurrentUses\x12\x12\n" +
-	"\x04code\x18\x05 \x01(\tR\x04code\x129\n" +
+	"\fcurrent_uses\x18\x04 \x01(\x05R\vcurrentUses\x12\x1f\n" +
+	"\vinvite_code\x18\x05 \x01(\tR\n" +
+	"inviteCode\x129\n" +
 	"\n" +
 	"expires_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\texpiresAt\x129\n" +
 	"\n" +

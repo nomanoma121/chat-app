@@ -779,8 +779,8 @@ func (x *GetGuildInvitesResponse) GetInvites() []*Invite {
 type CreateGuildInviteRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	GuildId       string                 `protobuf:"bytes,1,opt,name=guild_id,json=guildId,proto3" json:"guild_id,omitempty"`
-	MaxUses       int32                  `protobuf:"varint,2,opt,name=max_uses,json=maxUses,proto3" json:"max_uses,omitempty"`
-	Expires       int32                  `protobuf:"varint,3,opt,name=expires,proto3" json:"expires,omitempty"`
+	MaxUses       *int32                 `protobuf:"varint,2,opt,name=max_uses,json=maxUses,proto3,oneof" json:"max_uses,omitempty"`
+	ExpiresAt     *int32                 `protobuf:"varint,3,opt,name=expires_at,json=expiresAt,proto3,oneof" json:"expires_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -823,15 +823,15 @@ func (x *CreateGuildInviteRequest) GetGuildId() string {
 }
 
 func (x *CreateGuildInviteRequest) GetMaxUses() int32 {
-	if x != nil {
-		return x.MaxUses
+	if x != nil && x.MaxUses != nil {
+		return *x.MaxUses
 	}
 	return 0
 }
 
-func (x *CreateGuildInviteRequest) GetExpires() int32 {
-	if x != nil {
-		return x.Expires
+func (x *CreateGuildInviteRequest) GetExpiresAt() int32 {
+	if x != nil && x.ExpiresAt != nil {
+		return *x.ExpiresAt
 	}
 	return 0
 }
@@ -1681,13 +1681,16 @@ const file_guild_message_proto_rawDesc = "" +
 	"\x17GetGuildInvitesResponse\x12'\n" +
 	"\ainvites\x18\x01 \x03(\v2\r.guild.InviteR\ainvites:\x0f\x92A\f\n" +
 	"\n" +
-	"\xd2\x01\ainvites\"\x94\x01\n" +
+	"\xd2\x01\ainvites\"\xbf\x01\n" +
 	"\x18CreateGuildInviteRequest\x12\x19\n" +
-	"\bguild_id\x18\x01 \x01(\tR\aguildId\x12\x19\n" +
-	"\bmax_uses\x18\x02 \x01(\x05R\amaxUses\x12\x18\n" +
-	"\aexpires\x18\x03 \x01(\x05R\aexpires:(\x92A%\n" +
+	"\bguild_id\x18\x01 \x01(\tR\aguildId\x12\x1e\n" +
+	"\bmax_uses\x18\x02 \x01(\x05H\x00R\amaxUses\x88\x01\x01\x12\"\n" +
+	"\n" +
+	"expires_at\x18\x03 \x01(\x05H\x01R\texpiresAt\x88\x01\x01:(\x92A%\n" +
 	"#\xd2\x01\bguild_id\xd2\x01\bmax_uses\xd2\x01\n" +
-	"expires_at\"R\n" +
+	"expires_atB\v\n" +
+	"\t_max_usesB\r\n" +
+	"\v_expires_at\"R\n" +
 	"\x19CreateGuildInviteResponse\x12%\n" +
 	"\x06invite\x18\x01 \x01(\v2\r.guild.InviteR\x06invite:\x0e\x92A\v\n" +
 	"\t\xd2\x01\x06invite\"P\n" +
@@ -1848,6 +1851,7 @@ func file_guild_message_proto_init() {
 		return
 	}
 	file_guild_type_proto_init()
+	file_guild_message_proto_msgTypes[16].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

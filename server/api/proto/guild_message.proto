@@ -166,8 +166,8 @@ message CreateGuildInviteRequest {
     };
   };
   string guild_id = 1;
-  int32 max_uses = 2;
-  int32 expires = 3;
+  optional int32 max_uses = 2;
+  optional int32 expires_at = 3;
 }
 
 message CreateGuildInviteResponse {
