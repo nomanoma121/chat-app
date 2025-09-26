@@ -17,7 +17,7 @@ type Invite struct {
 }
 
 type IInviteRepository interface {
-	Create(cxt context.Context, invite *Invite) error
+	Create(cxt context.Context, invite *Invite) (*Invite, error)
 	GetByGuildID(cxt context.Context, guildID uuid.UUID) ([]*Invite, error)
 	IncrementUses(cxt context.Context, code string) error
 }
