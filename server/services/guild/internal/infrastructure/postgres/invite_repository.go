@@ -21,17 +21,17 @@ func NewPostgresInviteRepository(queries *gen.Queries) *inviteRepository {
 
 func (r *inviteRepository) Create(ctx context.Context, invite *domain.Invite) (*domain.Invite, error) {
 	dbInvite, err := r.queries.CreateGuildInvite(ctx, gen.CreateGuildInviteParams{
+		InviteCode:  invite.InviteCode,
 		GuildID:     invite.GuildID,
 		CreatorID:   invite.CreatorID,
-		InviteCode:  invite.InviteCode,
 		MaxUses:     invite.MaxUses,
 		CurrentUses: invite.CurrentUses,
 		ExpiresAt:   pgtype.Timestamp{Time: invite.ExpiresAt, Valid: true},
-		CreatedAt:   pgtype.Timestamp{Time: invite.CreatedAt, Valid: true},
 	})
 	if err != nil {
 		return nil, err
 	}
+
 	return &domain.Invite{
 		GuildID:     dbInvite.GuildID,
 		CreatorID:   dbInvite.CreatorID,
@@ -41,7 +41,6 @@ func (r *inviteRepository) Create(ctx context.Context, invite *domain.Invite) (*
 		ExpiresAt:   dbInvite.ExpiresAt.Time,
 		CreatedAt:   dbInvite.CreatedAt.Time,
 	}, nil
-
 }
 
 func (r *inviteRepository) GetByGuildID(ctx context.Context, guildID uuid.UUID) ([]*domain.Invite, error) {

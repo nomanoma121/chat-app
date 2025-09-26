@@ -11,9 +11,9 @@ type Invite struct {
 	InviteCode  string
 	GuildID     uuid.UUID
 	CreatorID   uuid.UUID
-	MaxUses     int32
+	MaxUses     *int32
 	CurrentUses int32
-	ExpiresAt   time.Time
+	ExpiresAt   *time.Time
 	CreatedAt   time.Time
 }
 
@@ -22,3 +22,4 @@ type IInviteRepository interface {
 	GetByGuildID(cxt context.Context, guildID uuid.UUID) ([]*Invite, error)
 	IncrementUses(cxt context.Context, code string) error
 }
+
