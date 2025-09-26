@@ -7,7 +7,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type guildRepository struct {
@@ -28,7 +27,7 @@ func (r *guildRepository) Create(ctx context.Context, guild *domain.Guild) (*dom
 		Description:      guild.Description,
 		IconUrl:          guild.IconURL,
 		DefaultChannelID: guild.DefaultChannelID,
-		CreatedAt:        pgtype.Timestamp{Time: guild.CreatedAt, Valid: true},
+		CreatedAt:        guild.CreatedAt,
 	})
 	if err != nil {
 		return nil, err
@@ -40,7 +39,7 @@ func (r *guildRepository) Create(ctx context.Context, guild *domain.Guild) (*dom
 		Description:      dbGuild.Description,
 		IconURL:          dbGuild.IconUrl,
 		DefaultChannelID: dbGuild.DefaultChannelID,
-		CreatedAt:        dbGuild.CreatedAt.Time,
+		CreatedAt:        dbGuild.CreatedAt,
 	}, nil
 }
 
@@ -59,7 +58,7 @@ func (r *guildRepository) GetByID(ctx context.Context, id uuid.UUID) (*domain.Gu
 		Description:      dbGuild.Description,
 		IconURL:          dbGuild.IconUrl,
 		DefaultChannelID: dbGuild.DefaultChannelID,
-		CreatedAt:        dbGuild.CreatedAt.Time,
+		CreatedAt:        dbGuild.CreatedAt,
 	}, nil
 }
 
@@ -78,7 +77,7 @@ func (r *guildRepository) GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]
 			Description:      dbGuild.Description,
 			IconURL:          dbGuild.IconUrl,
 			DefaultChannelID: dbGuild.DefaultChannelID,
-			CreatedAt:        dbGuild.CreatedAt.Time,
+			CreatedAt:        dbGuild.CreatedAt,
 		}
 	}
 	return guilds, nil
@@ -102,7 +101,7 @@ func (r *guildRepository) Update(ctx context.Context, guild *domain.Guild) (*dom
 		Description:      dbGuild.Description,
 		IconURL:          dbGuild.IconUrl,
 		DefaultChannelID: dbGuild.DefaultChannelID,
-		CreatedAt:        dbGuild.CreatedAt.Time,
+		CreatedAt:        dbGuild.CreatedAt,
 	}, nil
 }
 

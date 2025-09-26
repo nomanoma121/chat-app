@@ -7,9 +7,9 @@ package gen
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const addMember = `-- name: AddMember :one
@@ -22,14 +22,14 @@ type AddMemberParams struct {
 	GuildID  uuid.UUID
 	UserID   uuid.UUID
 	Nickname string
-	JoinedAt pgtype.Timestamp
+	JoinedAt time.Time
 }
 
 type AddMemberRow struct {
 	GuildID  uuid.UUID
 	UserID   uuid.UUID
 	Nickname string
-	JoinedAt pgtype.Timestamp
+	JoinedAt time.Time
 }
 
 func (q *Queries) AddMember(ctx context.Context, arg AddMemberParams) (*AddMemberRow, error) {
@@ -72,7 +72,7 @@ type GetMembersByGuildIDRow struct {
 	GuildID  uuid.UUID
 	UserID   uuid.UUID
 	Nickname string
-	JoinedAt pgtype.Timestamp
+	JoinedAt time.Time
 }
 
 func (q *Queries) GetMembersByGuildID(ctx context.Context, guildID uuid.UUID) ([]*GetMembersByGuildIDRow, error) {

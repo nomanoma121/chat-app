@@ -5,6 +5,8 @@
 package gen
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
@@ -13,16 +15,16 @@ type Category struct {
 	ID        uuid.UUID
 	GuildID   uuid.UUID
 	Name      string
-	CreatedAt pgtype.Timestamp
-	UpdatedAt pgtype.Timestamp
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type Channel struct {
 	ID         uuid.UUID
 	Name       string
 	CategoryID uuid.UUID
-	CreatedAt  pgtype.Timestamp
-	UpdatedAt  pgtype.Timestamp
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 type Guild struct {
@@ -32,8 +34,8 @@ type Guild struct {
 	Description      string
 	IconUrl          string
 	DefaultChannelID uuid.UUID
-	CreatedAt        pgtype.Timestamp
-	UpdatedAt        pgtype.Timestamp
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
 }
 
 type Invite struct {
@@ -42,16 +44,16 @@ type Invite struct {
 	GuildID     uuid.UUID
 	MaxUses     *int32
 	CurrentUses int32
-	ExpiresAt   pgtype.Timestamp
-	CreatedAt   pgtype.Timestamp
+	ExpiresAt   *time.Time
+	CreatedAt   time.Time
 }
 
 type Member struct {
 	UserID    uuid.UUID
 	GuildID   uuid.UUID
 	Nickname  string
-	JoinedAt  pgtype.Timestamp
-	UpdatedAt pgtype.Timestamp
+	JoinedAt  time.Time
+	UpdatedAt time.Time
 }
 
 type Message struct {
@@ -60,8 +62,8 @@ type Message struct {
 	ChannelID uuid.UUID
 	Content   string
 	ReplyID   pgtype.UUID
-	CreatedAt pgtype.Timestamp
-	UpdatedAt pgtype.Timestamp
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type User struct {
@@ -72,6 +74,6 @@ type User struct {
 	PasswordHash string
 	Bio          string
 	IconUrl      string
-	CreatedAt    pgtype.Timestamp
-	UpdatedAt    pgtype.Timestamp
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }

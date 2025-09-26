@@ -7,9 +7,9 @@ package gen
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createGuild = `-- name: CreateGuild :one
@@ -25,7 +25,7 @@ type CreateGuildParams struct {
 	Description      string
 	IconUrl          string
 	DefaultChannelID uuid.UUID
-	CreatedAt        pgtype.Timestamp
+	CreatedAt        time.Time
 }
 
 type CreateGuildRow struct {
@@ -35,7 +35,7 @@ type CreateGuildRow struct {
 	Description      string
 	IconUrl          string
 	DefaultChannelID uuid.UUID
-	CreatedAt        pgtype.Timestamp
+	CreatedAt        time.Time
 }
 
 func (q *Queries) CreateGuild(ctx context.Context, arg CreateGuildParams) (*CreateGuildRow, error) {
@@ -72,7 +72,7 @@ type GetGuildByIDRow struct {
 	Description      string
 	IconUrl          string
 	DefaultChannelID uuid.UUID
-	CreatedAt        pgtype.Timestamp
+	CreatedAt        time.Time
 }
 
 func (q *Queries) GetGuildByID(ctx context.Context, id uuid.UUID) (*GetGuildByIDRow, error) {
@@ -105,7 +105,7 @@ type GetMyGuildsRow struct {
 	Description      string
 	IconUrl          string
 	DefaultChannelID uuid.UUID
-	CreatedAt        pgtype.Timestamp
+	CreatedAt        time.Time
 }
 
 func (q *Queries) GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*GetMyGuildsRow, error) {
@@ -158,7 +158,7 @@ type UpdateGuildRow struct {
 	Description      string
 	IconUrl          string
 	DefaultChannelID uuid.UUID
-	CreatedAt        pgtype.Timestamp
+	CreatedAt        time.Time
 }
 
 func (q *Queries) UpdateGuild(ctx context.Context, arg UpdateGuildParams) (*UpdateGuildRow, error) {

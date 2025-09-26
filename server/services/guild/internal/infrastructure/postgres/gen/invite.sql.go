@@ -7,9 +7,9 @@ package gen
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createGuildInvite = `-- name: CreateGuildInvite :one
@@ -24,8 +24,8 @@ type CreateGuildInviteParams struct {
 	InviteCode  string
 	MaxUses     *int32
 	CurrentUses int32
-	ExpiresAt   pgtype.Timestamp
-	CreatedAt   pgtype.Timestamp
+	ExpiresAt   *time.Time
+	CreatedAt   time.Time
 }
 
 type CreateGuildInviteRow struct {
@@ -34,8 +34,8 @@ type CreateGuildInviteRow struct {
 	InviteCode  string
 	MaxUses     *int32
 	CurrentUses int32
-	ExpiresAt   pgtype.Timestamp
-	CreatedAt   pgtype.Timestamp
+	ExpiresAt   *time.Time
+	CreatedAt   time.Time
 }
 
 func (q *Queries) CreateGuildInvite(ctx context.Context, arg CreateGuildInviteParams) (*CreateGuildInviteRow, error) {
@@ -73,8 +73,8 @@ type GetGuildInvitesByGuildIDRow struct {
 	InviteCode  string
 	MaxUses     *int32
 	CurrentUses int32
-	ExpiresAt   pgtype.Timestamp
-	CreatedAt   pgtype.Timestamp
+	ExpiresAt   *time.Time
+	CreatedAt   time.Time
 }
 
 func (q *Queries) GetGuildInvitesByGuildID(ctx context.Context, guildID uuid.UUID) ([]*GetGuildInvitesByGuildIDRow, error) {

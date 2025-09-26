@@ -6,7 +6,6 @@ import (
 	"guild-service/internal/infrastructure/postgres/gen"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type inviteRepository struct {
@@ -26,7 +25,7 @@ func (r *inviteRepository) Create(ctx context.Context, invite *domain.Invite) (*
 		CreatorID:   invite.CreatorID,
 		MaxUses:     invite.MaxUses,
 		CurrentUses: invite.CurrentUses,
-		ExpiresAt:   pgtype.Timestamp{Time: invite.ExpiresAt, Valid: true},
+		ExpiresAt:   invite.ExpiresAt,
 	})
 	if err != nil {
 		return nil, err
@@ -38,8 +37,8 @@ func (r *inviteRepository) Create(ctx context.Context, invite *domain.Invite) (*
 		InviteCode:  dbInvite.InviteCode,
 		MaxUses:     dbInvite.MaxUses,
 		CurrentUses: dbInvite.CurrentUses,
-		ExpiresAt:   dbInvite.ExpiresAt.Time,
-		CreatedAt:   dbInvite.CreatedAt.Time,
+		ExpiresAt:   dbInvite.ExpiresAt,
+		CreatedAt:   dbInvite.CreatedAt,
 	}, nil
 }
 
@@ -56,8 +55,8 @@ func (r *inviteRepository) GetByGuildID(ctx context.Context, guildID uuid.UUID) 
 			InviteCode:  dbInvite.InviteCode,
 			MaxUses:     dbInvite.MaxUses,
 			CurrentUses: dbInvite.CurrentUses,
-			ExpiresAt:   dbInvite.ExpiresAt.Time,
-			CreatedAt:   dbInvite.CreatedAt.Time,
+			ExpiresAt:   dbInvite.ExpiresAt,
+			CreatedAt:   dbInvite.CreatedAt,
 		}
 	}
 	return invites, nil
