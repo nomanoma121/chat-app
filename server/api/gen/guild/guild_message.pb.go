@@ -11,6 +11,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -780,7 +781,7 @@ type CreateGuildInviteRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	GuildId       string                 `protobuf:"bytes,1,opt,name=guild_id,json=guildId,proto3" json:"guild_id,omitempty"`
 	MaxUses       *int32                 `protobuf:"varint,2,opt,name=max_uses,json=maxUses,proto3,oneof" json:"max_uses,omitempty"`
-	ExpiresAt     *int32                 `protobuf:"varint,3,opt,name=expires_at,json=expiresAt,proto3,oneof" json:"expires_at,omitempty"`
+	ExpiresAt     *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=expires_at,json=expiresAt,proto3,oneof" json:"expires_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -829,11 +830,11 @@ func (x *CreateGuildInviteRequest) GetMaxUses() int32 {
 	return 0
 }
 
-func (x *CreateGuildInviteRequest) GetExpiresAt() int32 {
-	if x != nil && x.ExpiresAt != nil {
-		return *x.ExpiresAt
+func (x *CreateGuildInviteRequest) GetExpiresAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.ExpiresAt
 	}
-	return 0
+	return nil
 }
 
 type CreateGuildInviteResponse struct {
@@ -1620,7 +1621,7 @@ var File_guild_message_proto protoreflect.FileDescriptor
 
 const file_guild_message_proto_rawDesc = "" +
 	"\n" +
-	"\x13guild_message.proto\x12\x05guild\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x10guild_type.proto\"\x8c\x01\n" +
+	"\x13guild_message.proto\x12\x05guild\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x10guild_type.proto\"\x8c\x01\n" +
 	"\x12CreateGuildRequest\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x19\n" +
@@ -1681,12 +1682,12 @@ const file_guild_message_proto_rawDesc = "" +
 	"\x17GetGuildInvitesResponse\x12'\n" +
 	"\ainvites\x18\x01 \x03(\v2\r.guild.InviteR\ainvites:\x0f\x92A\f\n" +
 	"\n" +
-	"\xd2\x01\ainvites\"\xbf\x01\n" +
+	"\xd2\x01\ainvites\"\xdb\x01\n" +
 	"\x18CreateGuildInviteRequest\x12\x19\n" +
 	"\bguild_id\x18\x01 \x01(\tR\aguildId\x12\x1e\n" +
-	"\bmax_uses\x18\x02 \x01(\x05H\x00R\amaxUses\x88\x01\x01\x12\"\n" +
+	"\bmax_uses\x18\x02 \x01(\x05H\x00R\amaxUses\x88\x01\x01\x12>\n" +
 	"\n" +
-	"expires_at\x18\x03 \x01(\x05H\x01R\texpiresAt\x88\x01\x01:(\x92A%\n" +
+	"expires_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampH\x01R\texpiresAt\x88\x01\x01:(\x92A%\n" +
 	"#\xd2\x01\bguild_id\xd2\x01\bmax_uses\xd2\x01\n" +
 	"expires_atB\v\n" +
 	"\t_max_usesB\r\n" +
@@ -1817,8 +1818,9 @@ var file_guild_message_proto_goTypes = []any{
 	(*GuildWithMemberCount)(nil),      // 37: guild.GuildWithMemberCount
 	(*emptypb.Empty)(nil),             // 38: google.protobuf.Empty
 	(*Invite)(nil),                    // 39: guild.Invite
-	(*Category)(nil),                  // 40: guild.Category
-	(*Channel)(nil),                   // 41: guild.Channel
+	(*timestamppb.Timestamp)(nil),     // 40: google.protobuf.Timestamp
+	(*Category)(nil),                  // 41: guild.Category
+	(*Channel)(nil),                   // 42: guild.Channel
 }
 var file_guild_message_proto_depIdxs = []int32{
 	34, // 0: guild.CreateGuildResponse.guild:type_name -> guild.Guild
@@ -1829,20 +1831,21 @@ var file_guild_message_proto_depIdxs = []int32{
 	38, // 5: guild.DeleteGuildMemberResponse.empty:type_name -> google.protobuf.Empty
 	38, // 6: guild.LeaveGuildResponse.empty:type_name -> google.protobuf.Empty
 	39, // 7: guild.GetGuildInvitesResponse.invites:type_name -> guild.Invite
-	39, // 8: guild.CreateGuildInviteResponse.invite:type_name -> guild.Invite
-	38, // 9: guild.DeleteGuildInviteResponse.empty:type_name -> google.protobuf.Empty
-	34, // 10: guild.JoinGuildResponse.guild:type_name -> guild.Guild
-	40, // 11: guild.CreateCategoryResponse.category:type_name -> guild.Category
-	40, // 12: guild.UpdateCategoryResponse.category:type_name -> guild.Category
-	38, // 13: guild.DeleteCategoryResponse.empty:type_name -> google.protobuf.Empty
-	41, // 14: guild.CreateChannelResponse.channel:type_name -> guild.Channel
-	41, // 15: guild.UpdateChannelResponse.channel:type_name -> guild.Channel
-	38, // 16: guild.DeleteChannelResponse.empty:type_name -> google.protobuf.Empty
-	17, // [17:17] is the sub-list for method output_type
-	17, // [17:17] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	40, // 8: guild.CreateGuildInviteRequest.expires_at:type_name -> google.protobuf.Timestamp
+	39, // 9: guild.CreateGuildInviteResponse.invite:type_name -> guild.Invite
+	38, // 10: guild.DeleteGuildInviteResponse.empty:type_name -> google.protobuf.Empty
+	34, // 11: guild.JoinGuildResponse.guild:type_name -> guild.Guild
+	41, // 12: guild.CreateCategoryResponse.category:type_name -> guild.Category
+	41, // 13: guild.UpdateCategoryResponse.category:type_name -> guild.Category
+	38, // 14: guild.DeleteCategoryResponse.empty:type_name -> google.protobuf.Empty
+	42, // 15: guild.CreateChannelResponse.channel:type_name -> guild.Channel
+	42, // 16: guild.UpdateChannelResponse.channel:type_name -> guild.Channel
+	38, // 17: guild.DeleteChannelResponse.empty:type_name -> google.protobuf.Empty
+	18, // [18:18] is the sub-list for method output_type
+	18, // [18:18] is the sub-list for method input_type
+	18, // [18:18] is the sub-list for extension type_name
+	18, // [18:18] is the sub-list for extension extendee
+	0,  // [0:18] is the sub-list for field type_name
 }
 
 func init() { file_guild_message_proto_init() }

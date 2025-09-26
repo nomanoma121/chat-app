@@ -22,7 +22,7 @@ type CreateGuildInviteParams struct {
 	GuildID     uuid.UUID
 	CreatorID   uuid.UUID
 	InviteCode  string
-	MaxUses     int32
+	MaxUses     *int32
 	CurrentUses int32
 	ExpiresAt   pgtype.Timestamp
 	CreatedAt   pgtype.Timestamp
@@ -32,7 +32,7 @@ type CreateGuildInviteRow struct {
 	GuildID     uuid.UUID
 	CreatorID   uuid.UUID
 	InviteCode  string
-	MaxUses     int32
+	MaxUses     *int32
 	CurrentUses int32
 	ExpiresAt   pgtype.Timestamp
 	CreatedAt   pgtype.Timestamp
@@ -71,7 +71,7 @@ type GetGuildInvitesByGuildIDRow struct {
 	GuildID     uuid.UUID
 	CreatorID   uuid.UUID
 	InviteCode  string
-	MaxUses     int32
+	MaxUses     *int32
 	CurrentUses int32
 	ExpiresAt   pgtype.Timestamp
 	CreatedAt   pgtype.Timestamp
