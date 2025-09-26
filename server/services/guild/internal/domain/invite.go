@@ -2,18 +2,19 @@ package domain
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
 
 type Invite struct {
-	ID          string
-	GuildID     string
-	CreatorID   string
+	InviteCode  string
+	GuildID     uuid.UUID
+	CreatorID   uuid.UUID
 	MaxUses     int32
 	CurrentUses int32
-	ExpiresAt   int32
-	Code        string
+	ExpiresAt   time.Time
+	CreatedAt   time.Time
 }
 
 type IInviteRepository interface {
