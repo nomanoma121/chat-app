@@ -777,12 +777,12 @@ func (x *GetGuildInvitesResponse) GetInvites() []*Invite {
 }
 
 type CreateGuildInviteRequest struct {
-	state            protoimpl.MessageState `protogen:"open.v1"`
-	GuildId          string                 `protobuf:"bytes,1,opt,name=guild_id,json=guildId,proto3" json:"guild_id,omitempty"`
-	MaxUses          int32                  `protobuf:"varint,2,opt,name=max_uses,json=maxUses,proto3" json:"max_uses,omitempty"`
-	ExpiresInSeconds int32                  `protobuf:"varint,3,opt,name=expires_in_seconds,json=expiresInSeconds,proto3" json:"expires_in_seconds,omitempty"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	GuildId       string                 `protobuf:"bytes,1,opt,name=guild_id,json=guildId,proto3" json:"guild_id,omitempty"`
+	MaxUses       int32                  `protobuf:"varint,2,opt,name=max_uses,json=maxUses,proto3" json:"max_uses,omitempty"`
+	Expires       int32                  `protobuf:"varint,3,opt,name=expires,proto3" json:"expires,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CreateGuildInviteRequest) Reset() {
@@ -829,9 +829,9 @@ func (x *CreateGuildInviteRequest) GetMaxUses() int32 {
 	return 0
 }
 
-func (x *CreateGuildInviteRequest) GetExpiresInSeconds() int32 {
+func (x *CreateGuildInviteRequest) GetExpires() int32 {
 	if x != nil {
-		return x.ExpiresInSeconds
+		return x.Expires
 	}
 	return 0
 }
@@ -1681,12 +1681,13 @@ const file_guild_message_proto_rawDesc = "" +
 	"\x17GetGuildInvitesResponse\x12'\n" +
 	"\ainvites\x18\x01 \x03(\v2\r.guild.InviteR\ainvites:\x0f\x92A\f\n" +
 	"\n" +
-	"\xd2\x01\ainvites\"\xb0\x01\n" +
+	"\xd2\x01\ainvites\"\x94\x01\n" +
 	"\x18CreateGuildInviteRequest\x12\x19\n" +
 	"\bguild_id\x18\x01 \x01(\tR\aguildId\x12\x19\n" +
-	"\bmax_uses\x18\x02 \x01(\x05R\amaxUses\x12,\n" +
-	"\x12expires_in_seconds\x18\x03 \x01(\x05R\x10expiresInSeconds:0\x92A-\n" +
-	"+\xd2\x01\bguild_id\xd2\x01\bmax_uses\xd2\x01\x12expires_in_seconds\"R\n" +
+	"\bmax_uses\x18\x02 \x01(\x05R\amaxUses\x12\x18\n" +
+	"\aexpires\x18\x03 \x01(\x05R\aexpires:(\x92A%\n" +
+	"#\xd2\x01\bguild_id\xd2\x01\bmax_uses\xd2\x01\n" +
+	"expires_at\"R\n" +
 	"\x19CreateGuildInviteResponse\x12%\n" +
 	"\x06invite\x18\x01 \x01(\v2\r.guild.InviteR\x06invite:\x0e\x92A\v\n" +
 	"\t\xd2\x01\x06invite\"P\n" +
