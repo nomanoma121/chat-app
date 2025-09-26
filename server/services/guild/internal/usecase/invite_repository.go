@@ -31,7 +31,7 @@ type CreateInviteParams struct {
 	CreatorID uuid.UUID `validate:"required"`
 	GuildID   uuid.UUID `validate:"required"`
 	MaxUses   *int32    `validate:"omitempty,gt=0"`
-	ExpiresAt time.Time `validate:"required"`
+	ExpiresAt *time.Time `validate:"omitempty"`
 }
 
 func (u *inviteUsecase) Create(ctx context.Context, params *CreateInviteParams) (*domain.Invite, error) {
@@ -45,7 +45,7 @@ func (u *inviteUsecase) Create(ctx context.Context, params *CreateInviteParams) 
 		CreatorID:   params.CreatorID,
 		MaxUses:     params.MaxUses,
 		CurrentUses: 0,
-		ExpiresAt:   time.Now().Add(24 * time.Hour),
+		ExpiresAt:   params.ExpiresAt,
 		CreatedAt:   time.Now(),
 	}
 
