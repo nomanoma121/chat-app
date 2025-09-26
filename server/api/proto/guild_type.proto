@@ -96,6 +96,7 @@ message Invite {
   int32 current_uses = 4;
   string code = 5;
   google.protobuf.Timestamp expires_at = 6;
+  google.protobuf.Timestamp created_at = 7;
 }
 
 message Member {
