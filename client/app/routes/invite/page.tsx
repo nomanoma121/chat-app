@@ -25,7 +25,7 @@ export default function InvitePage() {
 		try {
 			await joinGuild({ inviteCode, data: {} });
 			toast.success("サーバーに参加しました");
-			navigate("/guilds");
+			navigate(`/servers/${data?.invite?.guild?.id}/channels/${data?.invite?.guild?.defaultChannelId}`);
 		} catch (err) {
 			toast.error("サーバーへの参加に失敗しました");
 		}
@@ -262,7 +262,7 @@ export default function InvitePage() {
 						</Button>
 						<Button
 							variant="outline"
-							onClick={() => navigate("/guilds")}
+							onClick={() => navigate("/servers")}
 							size="lg"
 							className={css({
 								width: "100%",
