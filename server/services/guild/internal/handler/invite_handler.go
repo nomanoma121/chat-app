@@ -178,6 +178,7 @@ func (h *inviteHandler) GetGuildByInviteCode(ctx context.Context, req *pb.GetGui
 			OwnerId:     invite.Guild.OwnerID.String(),
 			Name:        invite.Guild.Name,
 			Description: invite.Guild.Description,
+			DefaultChannelId: invite.Guild.DefaultChannelID.String(),
 			IconUrl:     invite.Guild.IconURL,
 			CreatedAt:   timestamppb.New(invite.Guild.CreatedAt),
 		},

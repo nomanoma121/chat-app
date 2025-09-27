@@ -17,7 +17,7 @@ RETURNING guild_id, creator_id, invite_code, max_uses, current_uses, expires_at,
 -- name: GetInviteByInviteCode :one
 -- GuildをJoinして取得
 SELECT
-  i.guild_id, i.creator_id, i.invite_code, i.max_uses, i.current_uses, i.expires_at, i.created_at, g.name AS "guild.name", g.description AS "guild.description", g.icon_url AS "guild.icon_url", g.owner_id AS "guild.owner_id", g.created_at AS "guild.created_at"
+  i.guild_id, i.creator_id, i.invite_code, i.max_uses, i.current_uses, i.expires_at, i.created_at, g.name AS "guild.name", g.description AS "guild.description", g.icon_url AS "guild.icon_url", g.owner_id AS "guild.owner_id", g.default_channel_id AS "guild.default_channel_id", g.created_at AS "guild.created_at"
 FROM invites i
 JOIN guilds g ON i.guild_id = g.id
 WHERE i.invite_code = $1;

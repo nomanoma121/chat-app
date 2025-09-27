@@ -91,6 +91,7 @@ func (r *inviteRepository) GetByInviteCode(ctx context.Context, inviteCode strin
 			Name:      dbInvite.GuildName,
 			IconURL:   dbInvite.GuildIconUrl,
 			Description: dbInvite.GuildDescription,
+			DefaultChannelID: dbInvite.GuildDefaultChannelID,
 			OwnerID:   dbInvite.GuildOwnerID,
 			CreatedAt: dbInvite.GuildCreatedAt,
 		},
