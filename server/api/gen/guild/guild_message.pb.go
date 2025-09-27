@@ -1015,7 +1015,7 @@ func (x *JoinGuildRequest) GetInviteCode() string {
 
 type JoinGuildResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Guild         *Guild                 `protobuf:"bytes,1,opt,name=guild,proto3" json:"guild,omitempty"`
+	Member        *Member                `protobuf:"bytes,1,opt,name=member,proto3" json:"member,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1050,9 +1050,9 @@ func (*JoinGuildResponse) Descriptor() ([]byte, []int) {
 	return file_guild_message_proto_rawDescGZIP(), []int{21}
 }
 
-func (x *JoinGuildResponse) GetGuild() *Guild {
+func (x *JoinGuildResponse) GetMember() *Member {
 	if x != nil {
-		return x.Guild
+		return x.Member
 	}
 	return nil
 }
@@ -1706,9 +1706,9 @@ const file_guild_message_proto_rawDesc = "" +
 	"\x10JoinGuildRequest\x12\x1f\n" +
 	"\vinvite_code\x18\x01 \x01(\tR\n" +
 	"inviteCode:\x13\x92A\x10\n" +
-	"\x0e\xd2\x01\vinvite_code\"F\n" +
-	"\x11JoinGuildResponse\x12\"\n" +
-	"\x05guild\x18\x01 \x01(\v2\f.guild.GuildR\x05guild:\r\x92A\n" +
+	"\x0e\xd2\x01\vinvite_code\"I\n" +
+	"\x11JoinGuildResponse\x12%\n" +
+	"\x06member\x18\x01 \x01(\v2\r.guild.MemberR\x06member:\r\x92A\n" +
 	"\n" +
 	"\b\xd2\x01\x05guild\"_\n" +
 	"\x15CreateCategoryRequest\x12\x19\n" +
@@ -1819,8 +1819,9 @@ var file_guild_message_proto_goTypes = []any{
 	(*emptypb.Empty)(nil),             // 38: google.protobuf.Empty
 	(*Invite)(nil),                    // 39: guild.Invite
 	(*timestamppb.Timestamp)(nil),     // 40: google.protobuf.Timestamp
-	(*Category)(nil),                  // 41: guild.Category
-	(*Channel)(nil),                   // 42: guild.Channel
+	(*Member)(nil),                    // 41: guild.Member
+	(*Category)(nil),                  // 42: guild.Category
+	(*Channel)(nil),                   // 43: guild.Channel
 }
 var file_guild_message_proto_depIdxs = []int32{
 	34, // 0: guild.CreateGuildResponse.guild:type_name -> guild.Guild
@@ -1834,12 +1835,12 @@ var file_guild_message_proto_depIdxs = []int32{
 	40, // 8: guild.CreateGuildInviteRequest.expires_at:type_name -> google.protobuf.Timestamp
 	39, // 9: guild.CreateGuildInviteResponse.invite:type_name -> guild.Invite
 	38, // 10: guild.DeleteGuildInviteResponse.empty:type_name -> google.protobuf.Empty
-	34, // 11: guild.JoinGuildResponse.guild:type_name -> guild.Guild
-	41, // 12: guild.CreateCategoryResponse.category:type_name -> guild.Category
-	41, // 13: guild.UpdateCategoryResponse.category:type_name -> guild.Category
+	41, // 11: guild.JoinGuildResponse.member:type_name -> guild.Member
+	42, // 12: guild.CreateCategoryResponse.category:type_name -> guild.Category
+	42, // 13: guild.UpdateCategoryResponse.category:type_name -> guild.Category
 	38, // 14: guild.DeleteCategoryResponse.empty:type_name -> google.protobuf.Empty
-	42, // 15: guild.CreateChannelResponse.channel:type_name -> guild.Channel
-	42, // 16: guild.UpdateChannelResponse.channel:type_name -> guild.Channel
+	43, // 15: guild.CreateChannelResponse.channel:type_name -> guild.Channel
+	43, // 16: guild.UpdateChannelResponse.channel:type_name -> guild.Channel
 	38, // 17: guild.DeleteChannelResponse.empty:type_name -> google.protobuf.Empty
 	18, // [18:18] is the sub-list for method output_type
 	18, // [18:18] is the sub-list for method input_type

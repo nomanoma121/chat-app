@@ -16,7 +16,7 @@ const (
 type InviteUsecase interface {
 	Create(ctx context.Context, params *CreateInviteParams) (*domain.Invite, error)
 	GetByGuildID(ctx context.Context, guildID uuid.UUID) ([]*domain.Invite, error)
-	JoinGuild(ctx context.Context, inviteCode string) (*domain.Guild, error)
+	JoinGuild(ctx context.Context, params *JoinGuildParams) (*domain.Member, error)
 }
 
 type inviteUsecase struct {
@@ -69,31 +69,41 @@ type JoinGuildParams struct {
 	UserID     uuid.UUID `validate:"required"`
 }
 
-func (u *inviteUsecase) JoinGuild(ctx context.Context, params JoinGuildParams) (*domain.Guild, error) {
+func (u *inviteUsecase) JoinGuild(ctx context.Context, params *JoinGuildParams) (*domain.Member, error) {
+	if err := u.validator.Struct(params); err != nil {
+		return nil, domain.ErrInvalidChannelData
+	}
 	if !domain.ValidateInviteCode(params.InviteCode) {
 		return nil, domain.ErrInvalidInviteCode
 	}
 
+	var member *domain.Member
 	err := u.store.ExecTx(ctx, func(tx domain.IStore) error {
 		invite, err := tx.Invites().IncrementUses(ctx, params.InviteCode)
 		if err != nil {
 			return err
 		}
-		_, err = tx.Members().Add(
+
+		member, err = tx.Members().Add(
 			ctx,
 			&domain.Member{
 				GuildID:  invite.GuildID,
 				UserID:   params.UserID,
-				Nickname: params.
+				Nickname: "",
 				JoinedAt: time.Now(),
 			},
 		)
+		if err != nil {
+			return err
+		}
+
 		return nil
 	})
 	if err != nil {
 		return nil, err
 	}
-	return nil, nil
+
+	return member, nil
 }
 
 var _ InviteUsecase = (*inviteUsecase)(nil)

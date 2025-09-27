@@ -23,6 +23,7 @@ var (
 	ErrInvalidCategoryID = errors.New("invalid category ID")
 	ErrInvalidChannelID  = errors.New("invalid channel ID")
 	ErrInvalidMemberID   = errors.New("invalid member ID")
+	ErrInvalidInviteCode = errors.New("invalid invite code")
 
 	// Internal Server Error
 	ErrInternalServerError = errors.New("internal server error")

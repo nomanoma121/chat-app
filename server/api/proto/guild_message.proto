@@ -213,7 +213,7 @@ message JoinGuildResponse {
       required: ["guild"]
     };
   };
-  Guild guild = 1;
+  Member member = 1;
 }
 
 message CreateCategoryRequest {

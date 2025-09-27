@@ -92,7 +92,21 @@ func (h *inviteHandler) GetGuildInvites(ctx context.Context, req *pb.GetGuildInv
 }
 
 func (h *inviteHandler) JoinGuild(ctx context.Context, req *pb.JoinGuildRequest) (*pb.JoinGuildResponse, error) {
-	guild, err := h.inviteUsecase.JoinGuild(ctx, req.InviteCode)
+	userIDStr, err := metadata.GetUserIDFromMetadata(ctx)
+	if err != nil {
+		h.logger.Warn("Failed to get user ID from metadata", "error", err)
+		return nil, err
+	}
+
+	userID, err := uuid.Parse(userIDStr)
+	if err != nil {
+		h.logger.Warn("Invalid user ID format", "user_id", userIDStr, "error", err)
+		return nil, err
+	}
+	guild, err := h.inviteUsecase.JoinGuild(ctx, &usecase.JoinGuildParams{
+		InviteCode: req.InviteCode,
+		UserID:     userID,
+	})
 	if err != nil {
 		h.logger.Error("Failed to join guild", "code", req.InviteCode, "error", err)
 		return nil, err
