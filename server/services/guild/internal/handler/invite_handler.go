@@ -44,16 +44,17 @@ func (h *inviteHandler) CreateGuildInvite(ctx context.Context, req *pb.CreateGui
 		return nil, err
 	}
 
-	var expiresAt time.Time
+	var expiresAt *time.Time
 	if req.ExpiresAt != nil {
-		expiresAt = req.ExpiresAt.AsTime()
+		t := req.ExpiresAt.AsTime()
+		expiresAt = &t
 	}
 
 	invite, err := h.inviteUsecase.Create(ctx, &usecase.CreateInviteParams{
 		CreatorID: creatorID,
 		GuildID:   guildID,
 		MaxUses:   req.MaxUses,
-		ExpiresAt: &expiresAt,
+		ExpiresAt: expiresAt,
 	})
 	if err != nil {
 		h.logger.Error("Failed to create invite", "creator_id", creatorID, "error", err)

@@ -102,7 +102,7 @@ type JoinGuildParams struct {
 
 func (u *inviteUsecase) JoinGuild(ctx context.Context, params *JoinGuildParams) (*domain.Member, error) {
 	if err := u.validator.Struct(params); err != nil {
-		return nil, domain.ErrInvalidChannelData
+		return nil, domain.ErrInvalidInviteData
 	}
 	if !domain.ValidateInviteCode(params.InviteCode) {
 		return nil, domain.ErrInvalidInviteCode
