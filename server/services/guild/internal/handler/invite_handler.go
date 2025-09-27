@@ -38,6 +38,12 @@ func (h *inviteHandler) CreateGuildInvite(ctx context.Context, req *pb.CreateGui
 		return nil, err
 	}
 
+	guildID, err := uuid.Parse(req.GuildId)
+	if err != nil {
+		h.logger.Warn("Invalid guild ID format", "guild_id", req.GuildId, "error", err)
+		return nil, err
+	}
+
 	var expiresAt time.Time
 	if req.ExpiresAt != nil {
 		expiresAt = req.ExpiresAt.AsTime()
@@ -45,7 +51,7 @@ func (h *inviteHandler) CreateGuildInvite(ctx context.Context, req *pb.CreateGui
 
 	invite, err := h.inviteUsecase.Create(ctx, &usecase.CreateInviteParams{
 		CreatorID: creatorID,
-		GuildID:   uuid.MustParse(req.GuildId),
+		GuildID:   guildID,
 		MaxUses:   req.MaxUses,
 		ExpiresAt: &expiresAt,
 	})
@@ -73,7 +79,13 @@ func (h *inviteHandler) CreateGuildInvite(ctx context.Context, req *pb.CreateGui
 }
 
 func (h *inviteHandler) GetGuildInvites(ctx context.Context, req *pb.GetGuildInvitesRequest) (*pb.GetGuildInvitesResponse, error) {
-	invites, err := h.inviteUsecase.GetByGuildID(ctx, uuid.MustParse(req.GuildId))
+	guildID, err := uuid.Parse(req.GuildId)
+	if err != nil {
+		h.logger.Warn("Invalid guild ID format", "guild_id", req.GuildId, "error", err)
+		return nil, err
+	}
+
+	invites, err := h.inviteUsecase.GetByGuildID(ctx, guildID)
 	if err != nil {
 		h.logger.Error("Failed to get invites", "guild_id", req.GuildId, "error", err)
 		return nil, err
