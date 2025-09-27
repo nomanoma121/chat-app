@@ -153,4 +153,39 @@ func (h *inviteHandler) JoinGuild(ctx context.Context, req *pb.JoinGuildRequest)
 	}, nil
 }
 
+func (h *inviteHandler) GetGuildByInviteCode(ctx context.Context, req *pb.GetGuildByInviteCodeRequest) (*pb.GetGuildByInviteCodeResponse, error) {
+	invite, err := h.inviteUsecase.GetByInviteCode(ctx, req.InviteCode)
+	if err != nil {
+		h.logger.Error("Failed to get invite by code", "code", req.InviteCode, "error", err)
+		return nil, err
+	}
+
+	var expiresAtPb *timestamppb.Timestamp
+	if invite.ExpiresAt != nil {
+		expiresAtPb = timestamppb.New(*invite.ExpiresAt)
+	}
+
+	pbInvite := &pb.Invite{
+		InviteCode:  invite.InviteCode,
+		GuildId:     invite.GuildID.String(),
+		CreatorId:   invite.CreatorID.String(),
+		MaxUses:     invite.MaxUses,
+		CurrentUses: invite.CurrentUses,
+		ExpiresAt:   expiresAtPb,
+		CreatedAt:   timestamppb.New(invite.CreatedAt),
+		Guild: &pb.Guild{
+			Id:          invite.Guild.ID.String(),
+			OwnerId:     invite.Guild.OwnerID.String(),
+			Name:        invite.Guild.Name,
+			Description: invite.Guild.Description,
+			IconUrl:     invite.Guild.IconURL,
+			CreatedAt:   timestamppb.New(invite.Guild.CreatedAt),
+		},
+	}
+
+	return &pb.GetGuildByInviteCodeResponse{
+		Invite: pbInvite,
+	}, nil
+}
+
 var _ pb.GuildServiceServer = (*inviteHandler)(nil)

@@ -16,6 +16,7 @@ const (
 type InviteUsecase interface {
 	Create(ctx context.Context, params *CreateInviteParams) (*domain.Invite, error)
 	GetByGuildID(ctx context.Context, guildID uuid.UUID) ([]*domain.Invite, error)
+	GetByInviteCode(ctx context.Context, inviteCode string) (*domain.Invite, error)
 	JoinGuild(ctx context.Context, params *JoinGuildParams) (*domain.Member, error)
 }
 
@@ -133,6 +134,25 @@ func (u *inviteUsecase) JoinGuild(ctx context.Context, params *JoinGuildParams) 
 	}
 
 	return member, nil
+}
+
+func (u *inviteUsecase) GetByInviteCode(ctx context.Context, inviteCode string) (*domain.Invite, error) {
+	if !domain.ValidateInviteCode(inviteCode) {
+		return nil, domain.ErrInvalidInviteCode
+	}
+
+	invite, err := u.store.Invites().GetByInviteCode(ctx, inviteCode)
+	if err != nil {
+		return nil, err
+	}
+
+	creator, err := u.userSvc.GetUserByID(invite.CreatorID)
+	if err != nil {
+		return nil, err
+	}
+	invite.Creator = &creator
+
+	return invite, nil
 }
 
 var _ InviteUsecase = (*inviteUsecase)(nil)

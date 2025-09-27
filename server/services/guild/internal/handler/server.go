@@ -70,5 +70,8 @@ func (h *GuildServiceHandler) JoinGuild(ctx context.Context, req *pb.JoinGuildRe
 	return h.inviteHandler.JoinGuild(ctx, req)
 }
 
+func (h *GuildServiceHandler) GetGuildByInviteCode(ctx context.Context, req *pb.GetGuildByInviteCodeRequest) (*pb.GetGuildByInviteCodeResponse, error) {
+	return h.inviteHandler.GetGuildByInviteCode(ctx, req)
+}
 
 var _ pb.GuildServiceServer = (*GuildServiceHandler)(nil)

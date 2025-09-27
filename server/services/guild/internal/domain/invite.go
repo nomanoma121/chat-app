@@ -19,6 +19,7 @@ const (
 type Invite struct {
 	InviteCode  string
 	GuildID     uuid.UUID
+	Guild       *Guild
 	CreatorID   uuid.UUID
 	Creator     *User
 	MaxUses     *int32
@@ -30,6 +31,7 @@ type Invite struct {
 type IInviteRepository interface {
 	Create(cxt context.Context, invite *Invite) (*Invite, error)
 	GetByGuildID(cxt context.Context, guildID uuid.UUID) ([]*Invite, error)
+	GetByInviteCode(cxt context.Context, inviteCode string) (*Invite, error)
 	IncrementUses(cxt context.Context, code string) (*Invite, error)
 }
 
