@@ -166,21 +166,27 @@ func (h *inviteHandler) GetGuildByInviteCode(ctx context.Context, req *pb.GetGui
 	}
 
 	pbInvite := &pb.Invite{
-		InviteCode: invite.InviteCode,
-		GuildId:    invite.GuildID.String(),
-		CreatorId:  invite.CreatorID.String(),
-		Creator: &pb.User{
+		InviteCode:  invite.InviteCode,
+		GuildId:     invite.GuildID.String(),
+		CreatorId:   invite.CreatorID.String(),
+		MaxUses:     invite.MaxUses,
+		CurrentUses: invite.CurrentUses,
+		ExpiresAt:   expiresAtPb,
+		CreatedAt:   timestamppb.New(invite.CreatedAt),
+	}
+
+	if invite.Creator != nil {
+		pbInvite.Creator = &pb.User{
 			Id:        invite.Creator.ID.String(),
 			Name:      invite.Creator.Name,
 			DisplayId: invite.Creator.DisplayId,
 			IconUrl:   invite.Creator.IconURL,
 			CreatedAt: timestamppb.New(invite.Creator.CreatedAt),
-		},
-		MaxUses:     invite.MaxUses,
-		CurrentUses: invite.CurrentUses,
-		ExpiresAt:   expiresAtPb,
-		CreatedAt:   timestamppb.New(invite.CreatedAt),
-		Guild: &pb.Guild{
+		}
+	}
+
+	if invite.Guild != nil {
+		pbInvite.Guild = &pb.Guild{
 			Id:               invite.Guild.ID.String(),
 			OwnerId:          invite.Guild.OwnerID.String(),
 			Name:             invite.Guild.Name,
@@ -189,7 +195,7 @@ func (h *inviteHandler) GetGuildByInviteCode(ctx context.Context, req *pb.GetGui
 			MemberCount:      invite.Guild.MemberCount,
 			IconUrl:          invite.Guild.IconURL,
 			CreatedAt:        timestamppb.New(invite.Guild.CreatedAt),
-		},
+		}
 	}
 
 	return &pb.GetGuildByInviteCodeResponse{
