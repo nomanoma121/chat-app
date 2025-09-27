@@ -127,6 +127,10 @@ export interface GetGuildByIDResponse {
 	guild: GuildWithMembers;
 }
 
+export interface GetGuildByInviteCodeResponse {
+	invite: Invite;
+}
+
 export interface GetGuildInvitesResponse {
 	invites: Invite[];
 }
@@ -189,6 +193,7 @@ export interface GuildWithMembers {
 
 export interface Invite {
 	guildId: string;
+	guild?: Guild;
 	creatorId: string;
 	creator?: GuildUser;
 	maxUses?: number;

@@ -14,7 +14,7 @@ export default function InvitePage() {
 	if (!inviteCode) {
 		return null;
 	}
-	const { data: inviteData } = useGetGuildInvites(inviteCode);
+	// const { data: inviteData } = useGetGuildInvites(inviteCode);
 	const [isJoining, setIsJoining] = useState(false);
 
 	const handleJoinGuild = async () => {
