@@ -26,6 +26,7 @@ const (
 	UserService_GetUserByID_FullMethodName    = "/user.UserService/GetUserByID"
 	UserService_Update_FullMethodName         = "/user.UserService/Update"
 	UserService_Exists_FullMethodName         = "/user.UserService/Exists"
+	UserService_GetUsersByIDs_FullMethodName  = "/user.UserService/GetUsersByIDs"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -40,6 +41,7 @@ type UserServiceClient interface {
 	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 	// 内部通信用
 	Exists(ctx context.Context, in *ExistsRequest, opts ...grpc.CallOption) (*ExistsResponse, error)
+	GetUsersByIDs(ctx context.Context, in *GetUsersByIDsRequest, opts ...grpc.CallOption) (*GetUsersByIDsResponse, error)
 }
 
 type userServiceClient struct {
@@ -120,6 +122,16 @@ func (c *userServiceClient) Exists(ctx context.Context, in *ExistsRequest, opts 
 	return out, nil
 }
 
+func (c *userServiceClient) GetUsersByIDs(ctx context.Context, in *GetUsersByIDsRequest, opts ...grpc.CallOption) (*GetUsersByIDsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUsersByIDsResponse)
+	err := c.cc.Invoke(ctx, UserService_GetUsersByIDs_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
@@ -132,6 +144,7 @@ type UserServiceServer interface {
 	Update(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	// 内部通信用
 	Exists(context.Context, *ExistsRequest) (*ExistsResponse, error)
+	GetUsersByIDs(context.Context, *GetUsersByIDsRequest) (*GetUsersByIDsResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -162,6 +175,9 @@ func (UnimplementedUserServiceServer) Update(context.Context, *UpdateRequest) (*
 }
 func (UnimplementedUserServiceServer) Exists(context.Context, *ExistsRequest) (*ExistsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Exists not implemented")
+}
+func (UnimplementedUserServiceServer) GetUsersByIDs(context.Context, *GetUsersByIDsRequest) (*GetUsersByIDsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUsersByIDs not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 func (UnimplementedUserServiceServer) testEmbeddedByValue()                     {}
@@ -310,6 +326,24 @@ func _UserService_Exists_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetUsersByIDs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUsersByIDsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetUsersByIDs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetUsersByIDs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetUsersByIDs(ctx, req.(*GetUsersByIDsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -344,6 +378,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Exists",
 			Handler:    _UserService_Exists_Handler,
+		},
+		{
+			MethodName: "GetUsersByIDs",
+			Handler:    _UserService_GetUsersByIDs_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -7,45 +7,33 @@ package gen
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const addMember = `-- name: AddMember :one
-INSERT INTO members (guild_id, user_id, nickname, joined_at, updated_at)
-VALUES ($1, $2, $3, $4, NOW())
-RETURNING guild_id, user_id, nickname, joined_at
+INSERT INTO members (guild_id, user_id, joined_at, updated_at)
+VALUES ($1, $2, $3, NOW())
+RETURNING guild_id, user_id, joined_at
 `
 
 type AddMemberParams struct {
 	GuildID  uuid.UUID
 	UserID   uuid.UUID
-	Nickname string
-	JoinedAt pgtype.Timestamp
+	JoinedAt time.Time
 }
 
 type AddMemberRow struct {
 	GuildID  uuid.UUID
 	UserID   uuid.UUID
-	Nickname string
-	JoinedAt pgtype.Timestamp
+	JoinedAt time.Time
 }
 
 func (q *Queries) AddMember(ctx context.Context, arg AddMemberParams) (*AddMemberRow, error) {
-	row := q.db.QueryRow(ctx, addMember,
-		arg.GuildID,
-		arg.UserID,
-		arg.Nickname,
-		arg.JoinedAt,
-	)
+	row := q.db.QueryRow(ctx, addMember, arg.GuildID, arg.UserID, arg.JoinedAt)
 	var i AddMemberRow
-	err := row.Scan(
-		&i.GuildID,
-		&i.UserID,
-		&i.Nickname,
-		&i.JoinedAt,
-	)
+	err := row.Scan(&i.GuildID, &i.UserID, &i.JoinedAt)
 	return &i, err
 }
 
@@ -63,7 +51,7 @@ func (q *Queries) CountByGuildID(ctx context.Context, guildID uuid.UUID) (int64,
 }
 
 const getMembersByGuildID = `-- name: GetMembersByGuildID :many
-SELECT guild_id, user_id, nickname, joined_at
+SELECT guild_id, user_id, joined_at
 FROM members
 WHERE guild_id = $1
 `
@@ -71,8 +59,7 @@ WHERE guild_id = $1
 type GetMembersByGuildIDRow struct {
 	GuildID  uuid.UUID
 	UserID   uuid.UUID
-	Nickname string
-	JoinedAt pgtype.Timestamp
+	JoinedAt time.Time
 }
 
 func (q *Queries) GetMembersByGuildID(ctx context.Context, guildID uuid.UUID) ([]*GetMembersByGuildIDRow, error) {
@@ -84,12 +71,7 @@ func (q *Queries) GetMembersByGuildID(ctx context.Context, guildID uuid.UUID) ([
 	var items []*GetMembersByGuildIDRow
 	for rows.Next() {
 		var i GetMembersByGuildIDRow
-		if err := rows.Scan(
-			&i.GuildID,
-			&i.UserID,
-			&i.Nickname,
-			&i.JoinedAt,
-		); err != nil {
+		if err := rows.Scan(&i.GuildID, &i.UserID, &i.JoinedAt); err != nil {
 			return nil, err
 		}
 		items = append(items, &i)

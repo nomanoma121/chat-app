@@ -31,6 +31,7 @@ type Guild struct {
 	Description      string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	IconUrl          string                 `protobuf:"bytes,5,opt,name=icon_url,json=iconUrl,proto3" json:"icon_url,omitempty"`
 	DefaultChannelId string                 `protobuf:"bytes,7,opt,name=default_channel_id,json=defaultChannelId,proto3" json:"default_channel_id,omitempty"`
+	MemberCount      *int32                 `protobuf:"varint,8,opt,name=member_count,json=memberCount,proto3,oneof" json:"member_count,omitempty"`
 	CreatedAt        *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
@@ -106,6 +107,13 @@ func (x *Guild) GetDefaultChannelId() string {
 		return x.DefaultChannelId
 	}
 	return ""
+}
+
+func (x *Guild) GetMemberCount() int32 {
+	if x != nil && x.MemberCount != nil {
+		return *x.MemberCount
+	}
+	return 0
 }
 
 func (x *Guild) GetCreatedAt() *timestamppb.Timestamp {
@@ -502,11 +510,14 @@ func (x *CategoryDetail) GetChannels() []*Channel {
 type Invite struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	GuildId       string                 `protobuf:"bytes,1,opt,name=guild_id,json=guildId,proto3" json:"guild_id,omitempty"`
-	CreatorId     string                 `protobuf:"bytes,2,opt,name=creator_id,json=creatorId,proto3" json:"creator_id,omitempty"`
-	MaxUses       int32                  `protobuf:"varint,3,opt,name=max_uses,json=maxUses,proto3" json:"max_uses,omitempty"`
-	CurrentUses   int32                  `protobuf:"varint,4,opt,name=current_uses,json=currentUses,proto3" json:"current_uses,omitempty"`
-	Code          string                 `protobuf:"bytes,5,opt,name=code,proto3" json:"code,omitempty"`
-	ExpiresAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`
+	Guild         *Guild                 `protobuf:"bytes,2,opt,name=guild,proto3,oneof" json:"guild,omitempty"`
+	CreatorId     string                 `protobuf:"bytes,3,opt,name=creator_id,json=creatorId,proto3" json:"creator_id,omitempty"`
+	Creator       *User                  `protobuf:"bytes,4,opt,name=creator,proto3,oneof" json:"creator,omitempty"`
+	MaxUses       *int32                 `protobuf:"varint,5,opt,name=max_uses,json=maxUses,proto3,oneof" json:"max_uses,omitempty"`
+	CurrentUses   int32                  `protobuf:"varint,6,opt,name=current_uses,json=currentUses,proto3" json:"current_uses,omitempty"`
+	InviteCode    string                 `protobuf:"bytes,7,opt,name=invite_code,json=inviteCode,proto3" json:"invite_code,omitempty"`
+	ExpiresAt     *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=expires_at,json=expiresAt,proto3,oneof" json:"expires_at,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -548,6 +559,13 @@ func (x *Invite) GetGuildId() string {
 	return ""
 }
 
+func (x *Invite) GetGuild() *Guild {
+	if x != nil {
+		return x.Guild
+	}
+	return nil
+}
+
 func (x *Invite) GetCreatorId() string {
 	if x != nil {
 		return x.CreatorId
@@ -555,9 +573,16 @@ func (x *Invite) GetCreatorId() string {
 	return ""
 }
 
-func (x *Invite) GetMaxUses() int32 {
+func (x *Invite) GetCreator() *User {
 	if x != nil {
-		return x.MaxUses
+		return x.Creator
+	}
+	return nil
+}
+
+func (x *Invite) GetMaxUses() int32 {
+	if x != nil && x.MaxUses != nil {
+		return *x.MaxUses
 	}
 	return 0
 }
@@ -569,9 +594,9 @@ func (x *Invite) GetCurrentUses() int32 {
 	return 0
 }
 
-func (x *Invite) GetCode() string {
+func (x *Invite) GetInviteCode() string {
 	if x != nil {
-		return x.Code
+		return x.InviteCode
 	}
 	return ""
 }
@@ -583,11 +608,18 @@ func (x *Invite) GetExpiresAt() *timestamppb.Timestamp {
 	return nil
 }
 
+func (x *Invite) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
 type Member struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	GuildId       string                 `protobuf:"bytes,2,opt,name=guild_id,json=guildId,proto3" json:"guild_id,omitempty"`
-	Nickname      string                 `protobuf:"bytes,3,opt,name=nickname,proto3" json:"nickname,omitempty"`
+	User          *User                  `protobuf:"bytes,3,opt,name=user,proto3,oneof" json:"user,omitempty"`
 	JoinedAt      *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=joined_at,json=joinedAt,proto3" json:"joined_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -637,11 +669,11 @@ func (x *Member) GetGuildId() string {
 	return ""
 }
 
-func (x *Member) GetNickname() string {
+func (x *Member) GetUser() *User {
 	if x != nil {
-		return x.Nickname
+		return x.User
 	}
-	return ""
+	return nil
 }
 
 func (x *Member) GetJoinedAt() *timestamppb.Timestamp {
@@ -787,22 +819,101 @@ func (x *Channel) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
+// TODO: あとからProtoをリファクタするときにuser protoのものをimportして使うようにする
+type User struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	DisplayId     string                 `protobuf:"bytes,2,opt,name=display_id,json=displayId,proto3" json:"display_id,omitempty"`
+	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	IconUrl       string                 `protobuf:"bytes,5,opt,name=icon_url,json=iconUrl,proto3" json:"icon_url,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *User) Reset() {
+	*x = User{}
+	mi := &file_guild_type_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *User) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*User) ProtoMessage() {}
+
+func (x *User) ProtoReflect() protoreflect.Message {
+	mi := &file_guild_type_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use User.ProtoReflect.Descriptor instead.
+func (*User) Descriptor() ([]byte, []int) {
+	return file_guild_type_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *User) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *User) GetDisplayId() string {
+	if x != nil {
+		return x.DisplayId
+	}
+	return ""
+}
+
+func (x *User) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *User) GetIconUrl() string {
+	if x != nil {
+		return x.IconUrl
+	}
+	return ""
+}
+
+func (x *User) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
 var File_guild_type_proto protoreflect.FileDescriptor
 
 const file_guild_type_proto_rawDesc = "" +
 	"\n" +
-	"\x10guild_type.proto\x12\x05guild\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xc5\x02\n" +
+	"\x10guild_type.proto\x12\x05guild\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xfe\x02\n" +
 	"\x05Guild\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x19\n" +
 	"\bowner_id\x18\x03 \x01(\tR\aownerId\x12 \n" +
 	"\vdescription\x18\x04 \x01(\tR\vdescription\x12\x19\n" +
 	"\bicon_url\x18\x05 \x01(\tR\aiconUrl\x12,\n" +
-	"\x12default_channel_id\x18\a \x01(\tR\x10defaultChannelId\x129\n" +
+	"\x12default_channel_id\x18\a \x01(\tR\x10defaultChannelId\x12&\n" +
+	"\fmember_count\x18\b \x01(\x05H\x00R\vmemberCount\x88\x01\x01\x129\n" +
 	"\n" +
 	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:W\x92AT\n" +
 	"R\xd2\x01\x02id\xd2\x01\x04name\xd2\x01\bowner_id\xd2\x01\vdescription\xd2\x01\x12default_channel_id\xd2\x01\bicon_url\xd2\x01\n" +
-	"created_at\"\x8f\x03\n" +
+	"created_atB\x0f\n" +
+	"\r_member_count\"\x8f\x03\n" +
 	"\vGuildDetail\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x19\n" +
@@ -851,26 +962,36 @@ const file_guild_type_proto_rawDesc = "" +
 	"created_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12*\n" +
 	"\bchannels\x18\x05 \x03(\v2\x0e.guild.ChannelR\bchannels:4\x92A1\n" +
 	"/\xd2\x01\x02id\xd2\x01\bguild_id\xd2\x01\x04name\xd2\x01\n" +
-	"created_at\xd2\x01\bchannels\"\xa9\x02\n" +
+	"created_at\xd2\x01\bchannels\"\xf1\x03\n" +
 	"\x06Invite\x12\x19\n" +
-	"\bguild_id\x18\x01 \x01(\tR\aguildId\x12\x1d\n" +
+	"\bguild_id\x18\x01 \x01(\tR\aguildId\x12'\n" +
+	"\x05guild\x18\x02 \x01(\v2\f.guild.GuildH\x00R\x05guild\x88\x01\x01\x12\x1d\n" +
 	"\n" +
-	"creator_id\x18\x02 \x01(\tR\tcreatorId\x12\x19\n" +
-	"\bmax_uses\x18\x03 \x01(\x05R\amaxUses\x12!\n" +
-	"\fcurrent_uses\x18\x04 \x01(\x05R\vcurrentUses\x12\x12\n" +
-	"\x04code\x18\x05 \x01(\tR\x04code\x129\n" +
+	"creator_id\x18\x03 \x01(\tR\tcreatorId\x12*\n" +
+	"\acreator\x18\x04 \x01(\v2\v.guild.UserH\x01R\acreator\x88\x01\x01\x12\x1e\n" +
+	"\bmax_uses\x18\x05 \x01(\x05H\x02R\amaxUses\x88\x01\x01\x12!\n" +
+	"\fcurrent_uses\x18\x06 \x01(\x05R\vcurrentUses\x12\x1f\n" +
+	"\vinvite_code\x18\a \x01(\tR\n" +
+	"inviteCode\x12>\n" +
 	"\n" +
-	"expires_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\texpiresAt:X\x92AU\n" +
-	"S\xd2\x01\bguild_id\xd2\x01\n" +
-	"creator_id\xd2\x01\bmax_uses\xd2\x01\fcurrent_uses\xd2\x01\x04code\xd2\x01\n" +
-	"expires_at\xd2\x01\n" +
-	"created_at\"\xc4\x01\n" +
+	"expires_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampH\x03R\texpiresAt\x88\x01\x01\x129\n" +
+	"\n" +
+	"created_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:G\x92AD\n" +
+	"B\xd2\x01\bguild_id\xd2\x01\n" +
+	"creator_id\xd2\x01\fcurrent_uses\xd2\x01\vinvite_code\xd2\x01\n" +
+	"created_atB\b\n" +
+	"\x06_guildB\n" +
+	"\n" +
+	"\b_creatorB\v\n" +
+	"\t_max_usesB\r\n" +
+	"\v_expires_at\"\xcc\x01\n" +
 	"\x06Member\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x19\n" +
-	"\bguild_id\x18\x02 \x01(\tR\aguildId\x12\x1a\n" +
-	"\bnickname\x18\x03 \x01(\tR\bnickname\x127\n" +
-	"\tjoined_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\bjoinedAt:1\x92A.\n" +
-	",\xd2\x01\auser_id\xd2\x01\bguild_id\xd2\x01\bnickname\xd2\x01\tjoined_at\"\xaf\x01\n" +
+	"\bguild_id\x18\x02 \x01(\tR\aguildId\x12$\n" +
+	"\x04user\x18\x03 \x01(\v2\v.guild.UserH\x00R\x04user\x88\x01\x01\x127\n" +
+	"\tjoined_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\bjoinedAt:&\x92A#\n" +
+	"!\xd2\x01\auser_id\xd2\x01\bguild_id\xd2\x01\tjoined_atB\a\n" +
+	"\x05_user\"\xaf\x01\n" +
 	"\bCategory\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
 	"\bguild_id\x18\x02 \x01(\tR\aguildId\x12\x12\n" +
@@ -887,6 +1008,17 @@ const file_guild_type_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:,\x92A)\n" +
 	"'\xd2\x01\x02id\xd2\x01\x04name\xd2\x01\vcategory_id\xd2\x01\n" +
+	"created_at\"\xd7\x01\n" +
+	"\x04User\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\n" +
+	"display_id\x18\x02 \x01(\tR\tdisplayId\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x19\n" +
+	"\bicon_url\x18\x05 \x01(\tR\aiconUrl\x129\n" +
+	"\n" +
+	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:6\x92A3\n" +
+	"1\xd2\x01\x02id\xd2\x01\n" +
+	"display_id\xd2\x01\x04name\xd2\x01\bicon_url\xd2\x01\n" +
 	"created_atB`\n" +
 	"\tcom.guildB\x0eGuildTypeProtoP\x01Z\x0f./guild;guildpb\xa2\x02\x03GXX\xaa\x02\x05Guild\xca\x02\x05Guild\xe2\x02\x11Guild\\GPBMetadata\xea\x02\x05Guildb\x06proto3"
 
@@ -902,7 +1034,7 @@ func file_guild_type_proto_rawDescGZIP() []byte {
 	return file_guild_type_proto_rawDescData
 }
 
-var file_guild_type_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_guild_type_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_guild_type_proto_goTypes = []any{
 	(*Guild)(nil),                 // 0: guild.Guild
 	(*GuildDetail)(nil),           // 1: guild.GuildDetail
@@ -913,26 +1045,32 @@ var file_guild_type_proto_goTypes = []any{
 	(*Member)(nil),                // 6: guild.Member
 	(*Category)(nil),              // 7: guild.Category
 	(*Channel)(nil),               // 8: guild.Channel
-	(*timestamppb.Timestamp)(nil), // 9: google.protobuf.Timestamp
+	(*User)(nil),                  // 9: guild.User
+	(*timestamppb.Timestamp)(nil), // 10: google.protobuf.Timestamp
 }
 var file_guild_type_proto_depIdxs = []int32{
-	9,  // 0: guild.Guild.created_at:type_name -> google.protobuf.Timestamp
-	9,  // 1: guild.GuildDetail.created_at:type_name -> google.protobuf.Timestamp
+	10, // 0: guild.Guild.created_at:type_name -> google.protobuf.Timestamp
+	10, // 1: guild.GuildDetail.created_at:type_name -> google.protobuf.Timestamp
 	4,  // 2: guild.GuildDetail.categories:type_name -> guild.CategoryDetail
 	6,  // 3: guild.GuildWithMembers.members:type_name -> guild.Member
-	9,  // 4: guild.GuildWithMembers.created_at:type_name -> google.protobuf.Timestamp
-	9,  // 5: guild.GuildWithMemberCount.created_at:type_name -> google.protobuf.Timestamp
-	9,  // 6: guild.CategoryDetail.created_at:type_name -> google.protobuf.Timestamp
+	10, // 4: guild.GuildWithMembers.created_at:type_name -> google.protobuf.Timestamp
+	10, // 5: guild.GuildWithMemberCount.created_at:type_name -> google.protobuf.Timestamp
+	10, // 6: guild.CategoryDetail.created_at:type_name -> google.protobuf.Timestamp
 	8,  // 7: guild.CategoryDetail.channels:type_name -> guild.Channel
-	9,  // 8: guild.Invite.expires_at:type_name -> google.protobuf.Timestamp
-	9,  // 9: guild.Member.joined_at:type_name -> google.protobuf.Timestamp
-	9,  // 10: guild.Category.created_at:type_name -> google.protobuf.Timestamp
-	9,  // 11: guild.Channel.created_at:type_name -> google.protobuf.Timestamp
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	0,  // 8: guild.Invite.guild:type_name -> guild.Guild
+	9,  // 9: guild.Invite.creator:type_name -> guild.User
+	10, // 10: guild.Invite.expires_at:type_name -> google.protobuf.Timestamp
+	10, // 11: guild.Invite.created_at:type_name -> google.protobuf.Timestamp
+	9,  // 12: guild.Member.user:type_name -> guild.User
+	10, // 13: guild.Member.joined_at:type_name -> google.protobuf.Timestamp
+	10, // 14: guild.Category.created_at:type_name -> google.protobuf.Timestamp
+	10, // 15: guild.Channel.created_at:type_name -> google.protobuf.Timestamp
+	10, // 16: guild.User.created_at:type_name -> google.protobuf.Timestamp
+	17, // [17:17] is the sub-list for method output_type
+	17, // [17:17] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_guild_type_proto_init() }
@@ -940,13 +1078,16 @@ func file_guild_type_proto_init() {
 	if File_guild_type_proto != nil {
 		return
 	}
+	file_guild_type_proto_msgTypes[0].OneofWrappers = []any{}
+	file_guild_type_proto_msgTypes[5].OneofWrappers = []any{}
+	file_guild_type_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_guild_type_proto_rawDesc), len(file_guild_type_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

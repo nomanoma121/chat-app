@@ -19,23 +19,24 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	GuildService_CreateGuild_FullMethodName       = "/guild.GuildService/CreateGuild"
-	GuildService_GetGuildOverview_FullMethodName  = "/guild.GuildService/GetGuildOverview"
-	GuildService_GetGuildByID_FullMethodName      = "/guild.GuildService/GetGuildByID"
-	GuildService_ListMyGuilds_FullMethodName      = "/guild.GuildService/ListMyGuilds"
-	GuildService_UpdateGuild_FullMethodName       = "/guild.GuildService/UpdateGuild"
-	GuildService_DeleteGuildMember_FullMethodName = "/guild.GuildService/DeleteGuildMember"
-	GuildService_LeaveGuild_FullMethodName        = "/guild.GuildService/LeaveGuild"
-	GuildService_GetGuildInvites_FullMethodName   = "/guild.GuildService/GetGuildInvites"
-	GuildService_CreateGuildInvite_FullMethodName = "/guild.GuildService/CreateGuildInvite"
-	GuildService_DeleteGuildInvite_FullMethodName = "/guild.GuildService/DeleteGuildInvite"
-	GuildService_JoinGuild_FullMethodName         = "/guild.GuildService/JoinGuild"
-	GuildService_CreateCategory_FullMethodName    = "/guild.GuildService/CreateCategory"
-	GuildService_UpdateCategory_FullMethodName    = "/guild.GuildService/UpdateCategory"
-	GuildService_DeleteCategory_FullMethodName    = "/guild.GuildService/DeleteCategory"
-	GuildService_CreateChannel_FullMethodName     = "/guild.GuildService/CreateChannel"
-	GuildService_UpdateChannel_FullMethodName     = "/guild.GuildService/UpdateChannel"
-	GuildService_DeleteChannel_FullMethodName     = "/guild.GuildService/DeleteChannel"
+	GuildService_CreateGuild_FullMethodName          = "/guild.GuildService/CreateGuild"
+	GuildService_GetGuildOverview_FullMethodName     = "/guild.GuildService/GetGuildOverview"
+	GuildService_GetGuildByID_FullMethodName         = "/guild.GuildService/GetGuildByID"
+	GuildService_ListMyGuilds_FullMethodName         = "/guild.GuildService/ListMyGuilds"
+	GuildService_UpdateGuild_FullMethodName          = "/guild.GuildService/UpdateGuild"
+	GuildService_DeleteGuildMember_FullMethodName    = "/guild.GuildService/DeleteGuildMember"
+	GuildService_LeaveGuild_FullMethodName           = "/guild.GuildService/LeaveGuild"
+	GuildService_GetGuildInvites_FullMethodName      = "/guild.GuildService/GetGuildInvites"
+	GuildService_GetGuildByInviteCode_FullMethodName = "/guild.GuildService/GetGuildByInviteCode"
+	GuildService_CreateGuildInvite_FullMethodName    = "/guild.GuildService/CreateGuildInvite"
+	GuildService_DeleteGuildInvite_FullMethodName    = "/guild.GuildService/DeleteGuildInvite"
+	GuildService_JoinGuild_FullMethodName            = "/guild.GuildService/JoinGuild"
+	GuildService_CreateCategory_FullMethodName       = "/guild.GuildService/CreateCategory"
+	GuildService_UpdateCategory_FullMethodName       = "/guild.GuildService/UpdateCategory"
+	GuildService_DeleteCategory_FullMethodName       = "/guild.GuildService/DeleteCategory"
+	GuildService_CreateChannel_FullMethodName        = "/guild.GuildService/CreateChannel"
+	GuildService_UpdateChannel_FullMethodName        = "/guild.GuildService/UpdateChannel"
+	GuildService_DeleteChannel_FullMethodName        = "/guild.GuildService/DeleteChannel"
 )
 
 // GuildServiceClient is the client API for GuildService service.
@@ -50,6 +51,7 @@ type GuildServiceClient interface {
 	DeleteGuildMember(ctx context.Context, in *DeleteGuildMemberRequest, opts ...grpc.CallOption) (*DeleteGuildMemberResponse, error)
 	LeaveGuild(ctx context.Context, in *LeaveGuildRequest, opts ...grpc.CallOption) (*LeaveGuildResponse, error)
 	GetGuildInvites(ctx context.Context, in *GetGuildInvitesRequest, opts ...grpc.CallOption) (*GetGuildInvitesResponse, error)
+	GetGuildByInviteCode(ctx context.Context, in *GetGuildByInviteCodeRequest, opts ...grpc.CallOption) (*GetGuildByInviteCodeResponse, error)
 	CreateGuildInvite(ctx context.Context, in *CreateGuildInviteRequest, opts ...grpc.CallOption) (*CreateGuildInviteResponse, error)
 	DeleteGuildInvite(ctx context.Context, in *DeleteGuildInviteRequest, opts ...grpc.CallOption) (*DeleteGuildInviteResponse, error)
 	JoinGuild(ctx context.Context, in *JoinGuildRequest, opts ...grpc.CallOption) (*JoinGuildResponse, error)
@@ -143,6 +145,16 @@ func (c *guildServiceClient) GetGuildInvites(ctx context.Context, in *GetGuildIn
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetGuildInvitesResponse)
 	err := c.cc.Invoke(ctx, GuildService_GetGuildInvites_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *guildServiceClient) GetGuildByInviteCode(ctx context.Context, in *GetGuildByInviteCodeRequest, opts ...grpc.CallOption) (*GetGuildByInviteCodeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetGuildByInviteCodeResponse)
+	err := c.cc.Invoke(ctx, GuildService_GetGuildByInviteCode_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -251,6 +263,7 @@ type GuildServiceServer interface {
 	DeleteGuildMember(context.Context, *DeleteGuildMemberRequest) (*DeleteGuildMemberResponse, error)
 	LeaveGuild(context.Context, *LeaveGuildRequest) (*LeaveGuildResponse, error)
 	GetGuildInvites(context.Context, *GetGuildInvitesRequest) (*GetGuildInvitesResponse, error)
+	GetGuildByInviteCode(context.Context, *GetGuildByInviteCodeRequest) (*GetGuildByInviteCodeResponse, error)
 	CreateGuildInvite(context.Context, *CreateGuildInviteRequest) (*CreateGuildInviteResponse, error)
 	DeleteGuildInvite(context.Context, *DeleteGuildInviteRequest) (*DeleteGuildInviteResponse, error)
 	JoinGuild(context.Context, *JoinGuildRequest) (*JoinGuildResponse, error)
@@ -293,6 +306,9 @@ func (UnimplementedGuildServiceServer) LeaveGuild(context.Context, *LeaveGuildRe
 }
 func (UnimplementedGuildServiceServer) GetGuildInvites(context.Context, *GetGuildInvitesRequest) (*GetGuildInvitesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGuildInvites not implemented")
+}
+func (UnimplementedGuildServiceServer) GetGuildByInviteCode(context.Context, *GetGuildByInviteCodeRequest) (*GetGuildByInviteCodeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGuildByInviteCode not implemented")
 }
 func (UnimplementedGuildServiceServer) CreateGuildInvite(context.Context, *CreateGuildInviteRequest) (*CreateGuildInviteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateGuildInvite not implemented")
@@ -482,6 +498,24 @@ func _GuildService_GetGuildInvites_Handler(srv interface{}, ctx context.Context,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GuildServiceServer).GetGuildInvites(ctx, req.(*GetGuildInvitesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GuildService_GetGuildByInviteCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGuildByInviteCodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GuildServiceServer).GetGuildByInviteCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GuildService_GetGuildByInviteCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GuildServiceServer).GetGuildByInviteCode(ctx, req.(*GetGuildByInviteCodeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -686,6 +720,10 @@ var GuildService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetGuildInvites",
 			Handler:    _GuildService_GetGuildInvites_Handler,
+		},
+		{
+			MethodName: "GetGuildByInviteCode",
+			Handler:    _GuildService_GetGuildByInviteCode_Handler,
 		},
 		{
 			MethodName: "CreateGuildInvite",

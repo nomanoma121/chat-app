@@ -40,7 +40,7 @@ type Invite struct {
 	InviteCode  string
 	CreatorID   uuid.UUID
 	GuildID     uuid.UUID
-	MaxUses     int32
+	MaxUses     *int32
 	CurrentUses int32
 	ExpiresAt   pgtype.Timestamp
 	CreatedAt   pgtype.Timestamp
@@ -49,7 +49,6 @@ type Invite struct {
 type Member struct {
 	UserID    uuid.UUID
 	GuildID   uuid.UUID
-	Nickname  string
 	JoinedAt  pgtype.Timestamp
 	UpdatedAt pgtype.Timestamp
 }

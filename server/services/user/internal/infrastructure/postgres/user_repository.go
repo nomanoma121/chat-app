@@ -117,4 +117,26 @@ func (r *userRepository) Update(ctx context.Context, user *domain.User) (*domain
 	}, nil
 }
 
+func (r *userRepository) GetUsersByIDs(ctx context.Context, ids []uuid.UUID) ([]*domain.User, error) {
+	dbUsers, err := r.queries.GetUsersByIDs(ctx, ids)
+	if err != nil {
+		return nil, err
+	}
+
+	users := make([]*domain.User, 0, len(dbUsers))
+	for _, dbUser := range dbUsers {
+		users = append(users, &domain.User{
+			ID:        dbUser.ID,
+			DisplayId: dbUser.DisplayID,
+			Name:      dbUser.Username,
+			Email:     dbUser.Email,
+			Bio:       dbUser.Bio,
+			IconURL:   dbUser.IconUrl,
+			CreatedAt: dbUser.CreatedAt.Time,
+		})
+	}
+
+	return users, nil
+}
+
 var _ domain.UserRepository = (*userRepository)(nil)

@@ -7,9 +7,9 @@ package gen
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createCategory = `-- name: CreateCategory :one
@@ -22,14 +22,14 @@ type CreateCategoryParams struct {
 	ID        uuid.UUID
 	GuildID   uuid.UUID
 	Name      string
-	CreatedAt pgtype.Timestamp
+	CreatedAt time.Time
 }
 
 type CreateCategoryRow struct {
 	ID        uuid.UUID
 	GuildID   uuid.UUID
 	Name      string
-	CreatedAt pgtype.Timestamp
+	CreatedAt time.Time
 }
 
 func (q *Queries) CreateCategory(ctx context.Context, arg CreateCategoryParams) (*CreateCategoryRow, error) {
@@ -59,7 +59,7 @@ type GetByGuildIDRow struct {
 	ID        uuid.UUID
 	GuildID   uuid.UUID
 	Name      string
-	CreatedAt pgtype.Timestamp
+	CreatedAt time.Time
 }
 
 func (q *Queries) GetByGuildID(ctx context.Context, guildID uuid.UUID) ([]*GetByGuildIDRow, error) {

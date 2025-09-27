@@ -6,7 +6,6 @@ import (
 	"guild-service/internal/infrastructure/postgres/gen"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type memberRepository struct {
@@ -23,8 +22,7 @@ func (r *memberRepository) Add(ctx context.Context, member *domain.Member) (*dom
 	dbMember, err := r.queries.AddMember(ctx, gen.AddMemberParams{
 		GuildID:  member.GuildID,
 		UserID:   member.UserID,
-		Nickname: member.Nickname,
-		JoinedAt: pgtype.Timestamp{Time: member.JoinedAt, Valid: true},
+		JoinedAt: member.JoinedAt,
 	})
 	if err != nil {
 		return nil, err
@@ -32,8 +30,7 @@ func (r *memberRepository) Add(ctx context.Context, member *domain.Member) (*dom
 	return &domain.Member{
 		GuildID:  dbMember.GuildID,
 		UserID:   dbMember.UserID,
-		Nickname: dbMember.Nickname,
-		JoinedAt: dbMember.JoinedAt.Time,
+		JoinedAt: dbMember.JoinedAt,
 	}, nil
 }
 
@@ -48,8 +45,7 @@ func (r *memberRepository) GetMembersByGuildID(ctx context.Context, guildID uuid
 		members[i] = domain.Member{
 			GuildID:  m.GuildID,
 			UserID:   m.UserID,
-			Nickname: m.Nickname,
-			JoinedAt: m.JoinedAt.Time,
+			JoinedAt: m.JoinedAt,
 		}
 	}
 

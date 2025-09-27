@@ -6,7 +6,6 @@ import (
 	"guild-service/internal/infrastructure/postgres/gen"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type categoryRepository struct {
@@ -24,7 +23,7 @@ func (r *categoryRepository) Create(ctx context.Context, category *domain.Catego
 		ID:        category.ID,
 		GuildID:   category.GuildID,
 		Name:      category.Name,
-		CreatedAt: pgtype.Timestamp{Time: category.CreatedAt, Valid: true},
+		CreatedAt: category.CreatedAt,
 	})
 	if err != nil {
 		return nil, err
@@ -33,7 +32,7 @@ func (r *categoryRepository) Create(ctx context.Context, category *domain.Catego
 		ID:        dbCategory.ID,
 		GuildID:   dbCategory.GuildID,
 		Name:      dbCategory.Name,
-		CreatedAt: dbCategory.CreatedAt.Time,
+		CreatedAt: dbCategory.CreatedAt,
 	}, nil
 }
 
@@ -48,7 +47,7 @@ func (r *categoryRepository) GetByGuildID(ctx context.Context, guildID uuid.UUID
 			ID:        dbCategory.ID,
 			GuildID:   dbCategory.GuildID,
 			Name:      dbCategory.Name,
-			CreatedAt: dbCategory.CreatedAt.Time,
+			CreatedAt: dbCategory.CreatedAt,
 		}
 	}
 	return categories, nil

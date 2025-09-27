@@ -1,82 +1,59 @@
-import { Calendar, Hash, Users } from "lucide-react";
-import { useState } from "react";
+import { Users } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 import { css } from "styled-system/css";
+import { useGetGuildByInviteCode, useJoinGuild } from "~/api/gen/invite/invite";
 import { Avatar } from "~/components/ui/avatar";
-import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
-
-// Mock data - 実際はAPIから取得
-const mockInviteData = {
-	code: "abc123xyz",
-	guild: {
-		id: "guild-1",
-		name: "開発チーム",
-		description: "フルスタック開発チームのサーバーです",
-		icon: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=64&h=64&fit=crop&crop=center",
-		memberCount: 42,
-		onlineCount: 15,
-	},
-	creator: {
-		id: "user-1",
-		name: "管理者",
-		avatar:
-			"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face",
-	},
-	maxUses: 10,
-	currentUses: 3,
-	expiresAt: "2024-02-10T10:00:00Z",
-	createdAt: "2024-01-10T10:00:00Z",
-	isValid: true,
-	channels: [
-		{ id: "1", name: "general" },
-		{ id: "2", name: "development" },
-		{ id: "3", name: "design" },
-	],
-};
+import { Spinner } from "~/components/ui/spinner";
+import { Text } from "~/components/ui/text";
+import { useToast } from "~/hooks/use-toast";
 
 export default function InvitePage() {
 	const navigate = useNavigate();
+	const toast = useToast();
 	const { inviteCode } = useParams();
-	const [isJoining, setIsJoining] = useState(false);
+
+	if (!inviteCode) {
+		return null;
+	}
+
+	const { data, isLoading, isError } = useGetGuildByInviteCode(inviteCode);
+	const { mutateAsync: joinGuild, isPending: isJoining } = useJoinGuild();
 
 	const handleJoinGuild = async () => {
-		setIsJoining(true);
 		try {
-			// 実際のAPI呼び出し
-			// await joinGuild({ inviteCode });
-
-			// モックの成功処理
-			setTimeout(() => {
-				navigate(`/servers/${mockInviteData.guild.id}/channels/1`);
-			}, 1000);
-		} catch (error) {
-			console.error("Failed to join guild:", error);
-			setIsJoining(false);
+			await joinGuild({ inviteCode, data: {} });
+			toast.success("サーバーに参加しました");
+			navigate(
+				`/servers/${data?.invite?.guild?.id}/channels/${data?.invite?.guild?.defaultChannelId}`,
+			);
+		} catch (err) {
+			toast.error("サーバーへの参加に失敗しました");
 		}
 	};
 
-	const formatDate = (dateString: string) => {
-		return new Date(dateString).toLocaleDateString("ja-JP", {
-			year: "numeric",
-			month: "short",
-			day: "numeric",
-			hour: "2-digit",
-			minute: "2-digit",
-		});
-	};
+	if (isLoading) {
+		return (
+			<div
+				className={css({
+					minHeight: "100vh",
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center",
+					justifyContent: "center",
+					background: "bg.primary",
+				})}
+			>
+				<Spinner size="lg" />
+				<Text className={css({ mt: "4", color: "text.medium" })}>
+					招待情報を読み込み中...
+				</Text>
+			</div>
+		);
+	}
 
-	const getRemainingUses = () => {
-		if (mockInviteData.maxUses === 0) return "無制限";
-		return `${mockInviteData.maxUses - mockInviteData.currentUses}回`;
-	};
-
-	const isExpired = () => {
-		return new Date(mockInviteData.expiresAt) < new Date();
-	};
-
-	if (!mockInviteData.isValid || isExpired()) {
+	if (isError || !data?.invite) {
 		return (
 			<div
 				className={css({
@@ -104,7 +81,7 @@ export default function InvitePage() {
 						>
 							😞
 						</div>
-						<h1
+						<Text
 							className={css({
 								fontSize: "xl",
 								fontWeight: "bold",
@@ -113,17 +90,17 @@ export default function InvitePage() {
 							})}
 						>
 							招待が無効です
-						</h1>
-						<p
+						</Text>
+						<Text
 							className={css({
 								color: "text.medium",
 								marginBottom: "24px",
 							})}
 						>
 							この招待リンクは期限切れか、無効になっています
-						</p>
+						</Text>
 						<Button
-							onClick={() => navigate("/servers")}
+							onClick={() => navigate("/guilds")}
 							className={css({ width: "100%" })}
 						>
 							サーバー一覧に戻る
@@ -133,6 +110,9 @@ export default function InvitePage() {
 			</div>
 		);
 	}
+
+	const invite = data.invite;
+	const guild = invite.guild;
 
 	return (
 		<div
@@ -147,8 +127,9 @@ export default function InvitePage() {
 		>
 			<Card.Root
 				className={css({
-					width: "450px",
+					width: "420px",
 					background: "bg.secondary",
+					boxShadow: "lg",
 				})}
 			>
 				<Card.Header
@@ -157,24 +138,44 @@ export default function InvitePage() {
 						padding: "30px 30px 20px 30px",
 					})}
 				>
-					<h1
+					<Text
 						className={css({
 							fontSize: "xl",
 							fontWeight: "bold",
 							color: "text.bright",
-							marginBottom: "8px",
+							marginBottom: "12px",
 						})}
 					>
 						サーバーへの招待
-					</h1>
-					<p
+					</Text>
+					<div
 						className={css({
-							color: "text.medium",
-							fontSize: "sm",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							gap: "8px",
+							marginBottom: "4px",
 						})}
 					>
-						{mockInviteData.creator.name}さんがあなたをサーバーに招待しました
-					</p>
+						<Avatar
+							name={invite.creator?.name || "Unknown"}
+							src={invite.creator?.iconUrl}
+							size="sm"
+							className={css({
+								width: "24px",
+								height: "24px",
+							})}
+						/>
+						<Text
+							className={css({
+								color: "text.medium",
+								fontSize: "sm",
+							})}
+						>
+							{invite.creator?.name || "誰か"}
+							さんがあなたをサーバーに招待しました
+						</Text>
+					</div>
 				</Card.Header>
 
 				<Card.Body
@@ -187,151 +188,58 @@ export default function InvitePage() {
 						className={css({
 							display: "flex",
 							alignItems: "center",
-							gap: "16px",
-							padding: "20px",
+							gap: "20px",
+							padding: "24px",
 							background: "bg.tertiary",
 							borderRadius: "lg",
-							marginBottom: "24px",
+							marginBottom: "32px",
 						})}
 					>
 						<Avatar
-							name={mockInviteData.guild.name}
-							src={mockInviteData.guild.icon}
+							name={guild?.name || ""}
+							src={guild?.iconUrl}
 							size="lg"
 							className={css({
-								width: "64px",
-								height: "64px",
+								width: "72px",
+								height: "72px",
 							})}
 						/>
 						<div className={css({ flex: 1 })}>
-							<h2
+							<Text
 								className={css({
-									fontSize: "lg",
-									fontWeight: "semibold",
+									fontSize: "xl",
+									fontWeight: "bold",
 									color: "text.bright",
-									marginBottom: "4px",
+									marginBottom: "6px",
 								})}
 							>
-								{mockInviteData.guild.name}
-							</h2>
-							<p
-								className={css({
-									fontSize: "sm",
-									color: "text.medium",
-									marginBottom: "8px",
-								})}
-							>
-								{mockInviteData.guild.description}
-							</p>
+								{guild?.name}
+							</Text>
+							{guild?.description && (
+								<Text
+									className={css({
+										fontSize: "sm",
+										color: "text.medium",
+										marginBottom: "12px",
+										lineHeight: "1.4",
+									})}
+								>
+									{guild?.description}
+								</Text>
+							)}
 							<div
 								className={css({
 									display: "flex",
 									alignItems: "center",
-									gap: "16px",
+									gap: "6px",
 									fontSize: "sm",
 									color: "text.medium",
 								})}
 							>
-								<div
-									className={css({
-										display: "flex",
-										alignItems: "center",
-										gap: "4px",
-									})}
-								>
-									<Users size={14} />
-									<span>{mockInviteData.guild.memberCount}人</span>
-								</div>
-								<div
-									className={css({
-										display: "flex",
-										alignItems: "center",
-										gap: "4px",
-									})}
-								>
-									<div
-										className={css({
-											width: "8px",
-											height: "8px",
-											borderRadius: "full",
-											backgroundColor: "#10b981",
-										})}
-									/>
-									<span>{mockInviteData.guild.onlineCount}人オンライン</span>
-								</div>
+								<Users size={16} />
+								<span>{guild?.memberCount || 0} メンバー</span>
 							</div>
 						</div>
-					</div>
-
-					{/* チャンネルプレビュー */}
-					<div
-						className={css({
-							marginBottom: "24px",
-						})}
-					>
-						<h3
-							className={css({
-								fontSize: "sm",
-								fontWeight: "semibold",
-								color: "text.bright",
-								marginBottom: "12px",
-							})}
-						>
-							チャンネル
-						</h3>
-						<div
-							className={css({
-								display: "flex",
-								flexDirection: "column",
-								gap: "8px",
-							})}
-						>
-							{mockInviteData.channels.map((channel) => (
-								<div
-									key={channel.id}
-									className={css({
-										display: "flex",
-										alignItems: "center",
-										gap: "8px",
-										padding: "8px 12px",
-										background: "bg.quaternary",
-										borderRadius: "md",
-										fontSize: "sm",
-										color: "text.medium",
-									})}
-								>
-									<Hash size={16} />
-									<span>{channel.name}</span>
-								</div>
-							))}
-						</div>
-					</div>
-
-					{/* 招待詳細 */}
-					<div
-						className={css({
-							display: "flex",
-							justifyContent: "space-between",
-							alignItems: "center",
-							padding: "16px",
-							background: "bg.quaternary",
-							borderRadius: "md",
-							marginBottom: "24px",
-							fontSize: "sm",
-						})}
-					>
-						<div
-							className={css({
-								display: "flex",
-								alignItems: "center",
-								gap: "4px",
-								color: "text.medium",
-							})}
-						>
-							<Calendar size={14} />
-							<span>有効期限: {formatDate(mockInviteData.expiresAt)}</span>
-						</div>
-						<Badge variant="subtle">残り{getRemainingUses()}</Badge>
 					</div>
 
 					{/* アクションボタン */}
@@ -345,19 +253,23 @@ export default function InvitePage() {
 						<Button
 							onClick={handleJoinGuild}
 							disabled={isJoining}
+							size="lg"
 							className={css({
 								width: "100%",
 								fontSize: "md",
 								fontWeight: "semibold",
+								height: "48px",
 							})}
 						>
-							{isJoining ? "参加中..." : `${mockInviteData.guild.name}に参加`}
+							{isJoining ? "参加中..." : `${guild?.name || "サーバー"}に参加`}
 						</Button>
 						<Button
 							variant="outline"
 							onClick={() => navigate("/servers")}
+							size="lg"
 							className={css({
 								width: "100%",
+								height: "48px",
 								color: "text.medium",
 								_hover: {
 									color: "text.bright",

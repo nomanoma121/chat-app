@@ -153,10 +153,6 @@ table "members" {
     null = false
     type = uuid
   }
-  column "nickname" {
-    null = false
-    type = varchar(100)
-  }
   column "joined_at" {
     null = false
     type = timestamp
@@ -259,10 +255,8 @@ table "invites" {
     type = uuid
   }
   column "max_uses" {
-    null = false
+    null = true
     type = int
-    # 無制限のときは -1
-    default = -1
   }
   column "current_uses" {
     null = false
@@ -270,7 +264,7 @@ table "invites" {
     default = 0
   }
   column "expires_at" {
-    null = false
+    null = true
     type = timestamp
   }
   column "created_at" {

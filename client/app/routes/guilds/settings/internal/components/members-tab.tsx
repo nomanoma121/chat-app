@@ -1,5 +1,5 @@
 import { UserRoundPlus, Users } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { css } from "styled-system/css";
 import type { GuildWithMembers } from "~/api/gen/guildTypeProto.schemas";
 import { Avatar } from "~/components/ui/avatar";
@@ -16,6 +16,7 @@ interface MembersTabProps {
 
 export const MembersTab = ({ guild }: MembersTabProps) => {
 	const navigate = useNavigate();
+	const { serverId: guildId } = useParams();
 	return (
 		<div
 			className={css({
@@ -77,7 +78,7 @@ export const MembersTab = ({ guild }: MembersTabProps) => {
 							className={css({
 								color: "text.bright",
 							})}
-							onClick={() => navigate("/servers/1/invite")}
+							onClick={() => navigate(`/servers/${guildId}/invite`)}
 						>
 							<UserRoundPlus size={16} />
 							新しいメンバーを招待
@@ -111,8 +112,8 @@ export const MembersTab = ({ guild }: MembersTabProps) => {
 							>
 								<div className={css({ display: "flex", alignItems: "center" })}>
 									<Avatar
-										name={member.nickname}
-										src={""}
+										name={member.user?.displayId}
+										src={member.user?.iconUrl}
 										size="sm"
 										className={css({
 											width: "32px",
@@ -134,7 +135,7 @@ export const MembersTab = ({ guild }: MembersTabProps) => {
 											size="sm"
 											fontWeight="medium"
 										>
-											{member.nickname}
+											{member.user?.name}
 										</Text>
 										{member.userId === guild.ownerId ? (
 											<Badge

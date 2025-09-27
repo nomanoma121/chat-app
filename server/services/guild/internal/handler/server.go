@@ -11,12 +11,14 @@ type GuildServiceHandler struct {
 	guildHandler    *guildHandler
 	categoryHandler *categoryHandler
 	channelHandler  *channelHandler
+	inviteHandler   *inviteHandler
 }
 
 type NewGuildServiceHandlerParams struct {
 	GuildHandler    *guildHandler
 	CategoryHandler *categoryHandler
 	ChannelHandler  *channelHandler
+	InviteHandler   *inviteHandler
 }
 
 func NewGuildServiceHandler(params *NewGuildServiceHandlerParams) *GuildServiceHandler {
@@ -24,6 +26,7 @@ func NewGuildServiceHandler(params *NewGuildServiceHandlerParams) *GuildServiceH
 		guildHandler:    params.GuildHandler,
 		categoryHandler: params.CategoryHandler,
 		channelHandler:  params.ChannelHandler,
+		inviteHandler:   params.InviteHandler,
 	}
 }
 
@@ -53,6 +56,22 @@ func (h *GuildServiceHandler) CreateCategory(ctx context.Context, req *pb.Create
 
 func (h *GuildServiceHandler) CreateChannel(ctx context.Context, req *pb.CreateChannelRequest) (*pb.CreateChannelResponse, error) {
 	return h.channelHandler.CreateChannel(ctx, req)
+}
+
+func (h *GuildServiceHandler) CreateGuildInvite(ctx context.Context, req *pb.CreateGuildInviteRequest) (*pb.CreateGuildInviteResponse, error) {
+	return h.inviteHandler.CreateGuildInvite(ctx, req)
+}
+
+func (h *GuildServiceHandler) GetGuildInvites(ctx context.Context, req *pb.GetGuildInvitesRequest) (*pb.GetGuildInvitesResponse, error) {
+	return h.inviteHandler.GetGuildInvites(ctx, req)
+}
+
+func (h *GuildServiceHandler) JoinGuild(ctx context.Context, req *pb.JoinGuildRequest) (*pb.JoinGuildResponse, error) {
+	return h.inviteHandler.JoinGuild(ctx, req)
+}
+
+func (h *GuildServiceHandler) GetGuildByInviteCode(ctx context.Context, req *pb.GetGuildByInviteCodeRequest) (*pb.GetGuildByInviteCodeResponse, error) {
+	return h.inviteHandler.GetGuildByInviteCode(ctx, req)
 }
 
 var _ pb.GuildServiceServer = (*GuildServiceHandler)(nil)

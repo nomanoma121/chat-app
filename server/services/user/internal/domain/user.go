@@ -40,4 +40,5 @@ type UserRepository interface {
 	ExistsByEmail(ctx context.Context, email string) (bool, error)
 	ExistsByDisplayId(ctx context.Context, displayId string) (bool, error)
 	Update(ctx context.Context, user *User) (*User, error)
+	GetUsersByIDs(ctx context.Context, ids []uuid.UUID) ([]*User, error)
 }

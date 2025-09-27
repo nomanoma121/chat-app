@@ -339,6 +339,45 @@ func local_request_GuildService_GetGuildInvites_0(ctx context.Context, marshaler
 	return msg, metadata, err
 }
 
+func request_GuildService_GetGuildByInviteCode_0(ctx context.Context, marshaler runtime.Marshaler, client GuildServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq GetGuildByInviteCodeRequest
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	val, ok := pathParams["invite_code"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "invite_code")
+	}
+	protoReq.InviteCode, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "invite_code", err)
+	}
+	msg, err := client.GetGuildByInviteCode(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_GuildService_GetGuildByInviteCode_0(ctx context.Context, marshaler runtime.Marshaler, server GuildServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq GetGuildByInviteCodeRequest
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	val, ok := pathParams["invite_code"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "invite_code")
+	}
+	protoReq.InviteCode, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "invite_code", err)
+	}
+	msg, err := server.GetGuildByInviteCode(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 func request_GuildService_CreateGuildInvite_0(ctx context.Context, marshaler runtime.Marshaler, client GuildServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq CreateGuildInviteRequest
@@ -892,6 +931,26 @@ func RegisterGuildServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		}
 		forward_GuildService_GetGuildInvites_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodGet, pattern_GuildService_GetGuildByInviteCode_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/guild.GuildService/GetGuildByInviteCode", runtime.WithHTTPPathPattern("/api/invites/{invite_code}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_GuildService_GetGuildByInviteCode_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_GuildService_GetGuildByInviteCode_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodPost, pattern_GuildService_CreateGuildInvite_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1248,6 +1307,23 @@ func RegisterGuildServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 		}
 		forward_GuildService_GetGuildInvites_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodGet, pattern_GuildService_GetGuildByInviteCode_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/guild.GuildService/GetGuildByInviteCode", runtime.WithHTTPPathPattern("/api/invites/{invite_code}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_GuildService_GetGuildByInviteCode_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_GuildService_GetGuildByInviteCode_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodPost, pattern_GuildService_CreateGuildInvite_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1405,41 +1481,43 @@ func RegisterGuildServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 }
 
 var (
-	pattern_GuildService_CreateGuild_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"api", "guilds"}, ""))
-	pattern_GuildService_GetGuildOverview_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "guilds", "guild_id", "overview"}, ""))
-	pattern_GuildService_GetGuildByID_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "guilds", "guild_id"}, ""))
-	pattern_GuildService_ListMyGuilds_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "users", "me", "guilds"}, ""))
-	pattern_GuildService_UpdateGuild_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "guilds", "guild_id"}, ""))
-	pattern_GuildService_DeleteGuildMember_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"api", "guilds", "guild_id", "members", "user_id"}, ""))
-	pattern_GuildService_LeaveGuild_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 4}, []string{"api", "guilds", "guild_id", "members", "me"}, ""))
-	pattern_GuildService_GetGuildInvites_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "guilds", "guild_id", "invites"}, ""))
-	pattern_GuildService_CreateGuildInvite_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "guilds", "guild_id", "invites"}, ""))
-	pattern_GuildService_DeleteGuildInvite_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "invites", "invite_code"}, ""))
-	pattern_GuildService_JoinGuild_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "invites", "invite_code", "join"}, ""))
-	pattern_GuildService_CreateCategory_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "guilds", "guild_id", "categories"}, ""))
-	pattern_GuildService_UpdateCategory_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "categories", "category_id"}, ""))
-	pattern_GuildService_DeleteCategory_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "categories", "category_id"}, ""))
-	pattern_GuildService_CreateChannel_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "categories", "category_id", "channels"}, ""))
-	pattern_GuildService_UpdateChannel_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "channels", "channel_id"}, ""))
-	pattern_GuildService_DeleteChannel_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "channels", "channel_id"}, ""))
+	pattern_GuildService_CreateGuild_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"api", "guilds"}, ""))
+	pattern_GuildService_GetGuildOverview_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "guilds", "guild_id", "overview"}, ""))
+	pattern_GuildService_GetGuildByID_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "guilds", "guild_id"}, ""))
+	pattern_GuildService_ListMyGuilds_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "users", "me", "guilds"}, ""))
+	pattern_GuildService_UpdateGuild_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "guilds", "guild_id"}, ""))
+	pattern_GuildService_DeleteGuildMember_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"api", "guilds", "guild_id", "members", "user_id"}, ""))
+	pattern_GuildService_LeaveGuild_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 4}, []string{"api", "guilds", "guild_id", "members", "me"}, ""))
+	pattern_GuildService_GetGuildInvites_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "guilds", "guild_id", "invites"}, ""))
+	pattern_GuildService_GetGuildByInviteCode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "invites", "invite_code"}, ""))
+	pattern_GuildService_CreateGuildInvite_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "guilds", "guild_id", "invites"}, ""))
+	pattern_GuildService_DeleteGuildInvite_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "invites", "invite_code"}, ""))
+	pattern_GuildService_JoinGuild_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "invites", "invite_code", "join"}, ""))
+	pattern_GuildService_CreateCategory_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "guilds", "guild_id", "categories"}, ""))
+	pattern_GuildService_UpdateCategory_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "categories", "category_id"}, ""))
+	pattern_GuildService_DeleteCategory_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "categories", "category_id"}, ""))
+	pattern_GuildService_CreateChannel_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"api", "categories", "category_id", "channels"}, ""))
+	pattern_GuildService_UpdateChannel_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "channels", "channel_id"}, ""))
+	pattern_GuildService_DeleteChannel_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "channels", "channel_id"}, ""))
 )
 
 var (
-	forward_GuildService_CreateGuild_0       = runtime.ForwardResponseMessage
-	forward_GuildService_GetGuildOverview_0  = runtime.ForwardResponseMessage
-	forward_GuildService_GetGuildByID_0      = runtime.ForwardResponseMessage
-	forward_GuildService_ListMyGuilds_0      = runtime.ForwardResponseMessage
-	forward_GuildService_UpdateGuild_0       = runtime.ForwardResponseMessage
-	forward_GuildService_DeleteGuildMember_0 = runtime.ForwardResponseMessage
-	forward_GuildService_LeaveGuild_0        = runtime.ForwardResponseMessage
-	forward_GuildService_GetGuildInvites_0   = runtime.ForwardResponseMessage
-	forward_GuildService_CreateGuildInvite_0 = runtime.ForwardResponseMessage
-	forward_GuildService_DeleteGuildInvite_0 = runtime.ForwardResponseMessage
-	forward_GuildService_JoinGuild_0         = runtime.ForwardResponseMessage
-	forward_GuildService_CreateCategory_0    = runtime.ForwardResponseMessage
-	forward_GuildService_UpdateCategory_0    = runtime.ForwardResponseMessage
-	forward_GuildService_DeleteCategory_0    = runtime.ForwardResponseMessage
-	forward_GuildService_CreateChannel_0     = runtime.ForwardResponseMessage
-	forward_GuildService_UpdateChannel_0     = runtime.ForwardResponseMessage
-	forward_GuildService_DeleteChannel_0     = runtime.ForwardResponseMessage
+	forward_GuildService_CreateGuild_0          = runtime.ForwardResponseMessage
+	forward_GuildService_GetGuildOverview_0     = runtime.ForwardResponseMessage
+	forward_GuildService_GetGuildByID_0         = runtime.ForwardResponseMessage
+	forward_GuildService_ListMyGuilds_0         = runtime.ForwardResponseMessage
+	forward_GuildService_UpdateGuild_0          = runtime.ForwardResponseMessage
+	forward_GuildService_DeleteGuildMember_0    = runtime.ForwardResponseMessage
+	forward_GuildService_LeaveGuild_0           = runtime.ForwardResponseMessage
+	forward_GuildService_GetGuildInvites_0      = runtime.ForwardResponseMessage
+	forward_GuildService_GetGuildByInviteCode_0 = runtime.ForwardResponseMessage
+	forward_GuildService_CreateGuildInvite_0    = runtime.ForwardResponseMessage
+	forward_GuildService_DeleteGuildInvite_0    = runtime.ForwardResponseMessage
+	forward_GuildService_JoinGuild_0            = runtime.ForwardResponseMessage
+	forward_GuildService_CreateCategory_0       = runtime.ForwardResponseMessage
+	forward_GuildService_UpdateCategory_0       = runtime.ForwardResponseMessage
+	forward_GuildService_DeleteCategory_0       = runtime.ForwardResponseMessage
+	forward_GuildService_CreateChannel_0        = runtime.ForwardResponseMessage
+	forward_GuildService_UpdateChannel_0        = runtime.ForwardResponseMessage
+	forward_GuildService_DeleteChannel_0        = runtime.ForwardResponseMessage
 )

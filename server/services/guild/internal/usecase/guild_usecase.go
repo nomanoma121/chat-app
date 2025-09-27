@@ -14,7 +14,7 @@ type GuildUsecase interface {
 	Update(ctx context.Context, params *UpdateGuildParams) (*domain.Guild, error)
 	GetByID(ctx context.Context, id uuid.UUID) (*GetByIDResult, error)
 	GetGuildOverview(ctx context.Context, guildID uuid.UUID) (*domain.GuildOverview, error)
-	GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*domain.GuildWithMemberCount, error)
+	GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*domain.Guild, error)
 }
 
 type guildUsecase struct {
@@ -80,7 +80,6 @@ func (u *guildUsecase) Create(ctx context.Context, params *CreateGuildParams) (*
 	member := &domain.Member{
 		GuildID:  guild.ID,
 		UserID:   params.OwnerID,
-		Nickname: params.Name,
 		JoinedAt: time.Now(),
 	}
 
@@ -160,6 +159,27 @@ func (u *guildUsecase) GetByID(ctx context.Context, id uuid.UUID) (*GetByIDResul
 		return nil, err
 	}
 
+	memberUserIDs := make([]uuid.UUID, 0, len(members))
+	for _, member := range members {
+		memberUserIDs = append(memberUserIDs, member.UserID)
+	}
+
+	users, err := u.userSvc.GetUsersByIDs(memberUserIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	userMap := make(map[uuid.UUID]*domain.User)
+	for _, user := range users {
+		userMap[user.ID] = user
+	}
+
+	for i, member := range members {
+		if user, ok := userMap[member.UserID]; ok {
+			members[i].User = user
+		}
+	}
+
 	return &GetByIDResult{
 		Guild:       guild,
 		MemberCount: count,
@@ -197,25 +217,21 @@ func (u *guildUsecase) GetGuildOverview(ctx context.Context, guildID uuid.UUID) 
 	}, nil
 }
 
-func (u *guildUsecase) GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*domain.GuildWithMemberCount, error) {
+func (u *guildUsecase) GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*domain.Guild, error) {
 	guilds, err := u.store.Guilds().GetMyGuilds(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
 
-	guildsWithMemberCount := make([]*domain.GuildWithMemberCount, 0, len(guilds))
 	for _, guild := range guilds {
 		count, err := u.store.Members().CountByGuildID(ctx, guild.ID)
 		if err != nil {
 			return nil, err
 		}
-		guildsWithMemberCount = append(guildsWithMemberCount, &domain.GuildWithMemberCount{
-			Guild:       guild,
-			MemberCount: count,
-		})
+		guild.MemberCount = &count
 	}
 
-	return guildsWithMemberCount, nil
+	return guilds, nil
 }
 
 var _ GuildUsecase = (*guildUsecase)(nil)

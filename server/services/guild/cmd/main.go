@@ -73,11 +73,13 @@ func main() {
 	guildUsecase := usecase.NewGuildUsecase(store, userClient, validate)
 	categoryUsecase := usecase.NewCategoryUsecase(store, validate)
 	channelUsecase := usecase.NewChannelUsecase(store, validate)
+	inviteUsecase := usecase.NewInviteUsecase(store, userClient, validate)
 
 	guildHandler := handler.NewGuildServiceHandler(&handler.NewGuildServiceHandlerParams{
 		GuildHandler:    handler.NewGuildHandler(guildUsecase, log),
 		CategoryHandler: handler.NewCategoryHandler(categoryUsecase, log),
 		ChannelHandler:  handler.NewChannelHandler(channelUsecase, log),
+		InviteHandler:   handler.NewInviteHandler(inviteUsecase, log),
 	})
 
 	server := grpc.NewServer()

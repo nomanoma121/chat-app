@@ -89,6 +89,15 @@ service GuildService {
     };
   }
 
+  rpc GetGuildByInviteCode(GetGuildByInviteCodeRequest) returns (GetGuildByInviteCodeResponse) {
+    option (google.api.http) = {
+      get: "/api/invites/{invite_code}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "Invite"
+    };
+  }
+
   rpc CreateGuildInvite(CreateGuildInviteRequest) returns (CreateGuildInviteResponse) {
     option (google.api.http) = {
       post: "/api/guilds/{guild_id}/invites"

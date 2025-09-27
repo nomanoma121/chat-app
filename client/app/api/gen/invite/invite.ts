@@ -25,6 +25,7 @@ import type {
 	CreateGuildInviteBody,
 	CreateGuildInviteResponse,
 	DeleteGuildInviteResponse,
+	GetGuildByInviteCodeResponse,
 	GetGuildInvitesResponse,
 	JoinGuildBody,
 	JoinGuildResponse,
@@ -256,6 +257,157 @@ export const useCreateGuildInvite = <TError = Status, TContext = unknown>(
 
 	return useMutation(mutationOptions, queryClient);
 };
+export const getGuildByInviteCode = (
+	inviteCode: string,
+	signal?: AbortSignal,
+) => {
+	return customClient<GetGuildByInviteCodeResponse>({
+		url: `/api/invites/${inviteCode}`,
+		method: "GET",
+		signal,
+	});
+};
+
+export const getGetGuildByInviteCodeQueryKey = (inviteCode?: string) => {
+	return [`/api/invites/${inviteCode}`] as const;
+};
+
+export const getGetGuildByInviteCodeQueryOptions = <
+	TData = Awaited<ReturnType<typeof getGuildByInviteCode>>,
+	TError = Status,
+>(
+	inviteCode: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getGuildByInviteCode>>,
+				TError,
+				TData
+			>
+		>;
+	},
+) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getGetGuildByInviteCodeQueryKey(inviteCode);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof getGuildByInviteCode>>
+	> = ({ signal }) => getGuildByInviteCode(inviteCode, signal);
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: !!inviteCode,
+		...queryOptions,
+	} as UseQueryOptions<
+		Awaited<ReturnType<typeof getGuildByInviteCode>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData> };
+};
+
+export type GetGuildByInviteCodeQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getGuildByInviteCode>>
+>;
+export type GetGuildByInviteCodeQueryError = Status;
+
+export function useGetGuildByInviteCode<
+	TData = Awaited<ReturnType<typeof getGuildByInviteCode>>,
+	TError = Status,
+>(
+	inviteCode: string,
+	options: {
+		query: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getGuildByInviteCode>>,
+				TError,
+				TData
+			>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getGuildByInviteCode>>,
+					TError,
+					Awaited<ReturnType<typeof getGuildByInviteCode>>
+				>,
+				"initialData"
+			>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData>;
+};
+export function useGetGuildByInviteCode<
+	TData = Awaited<ReturnType<typeof getGuildByInviteCode>>,
+	TError = Status,
+>(
+	inviteCode: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getGuildByInviteCode>>,
+				TError,
+				TData
+			>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getGuildByInviteCode>>,
+					TError,
+					Awaited<ReturnType<typeof getGuildByInviteCode>>
+				>,
+				"initialData"
+			>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useGetGuildByInviteCode<
+	TData = Awaited<ReturnType<typeof getGuildByInviteCode>>,
+	TError = Status,
+>(
+	inviteCode: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getGuildByInviteCode>>,
+				TError,
+				TData
+			>
+		>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+export function useGetGuildByInviteCode<
+	TData = Awaited<ReturnType<typeof getGuildByInviteCode>>,
+	TError = Status,
+>(
+	inviteCode: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getGuildByInviteCode>>,
+				TError,
+				TData
+			>
+		>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+	const queryOptions = getGetGuildByInviteCodeQueryOptions(inviteCode, options);
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+		TData,
+		TError
+	> & { queryKey: DataTag<QueryKey, TData> };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
 export const deleteGuildInvite = (inviteCode: string) => {
 	return customClient<DeleteGuildInviteResponse>({
 		url: `/api/invites/${inviteCode}`,

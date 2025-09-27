@@ -104,7 +104,7 @@ func (h *MessageHandler) GetByChannelID(ctx context.Context, req *pb.GetByChanne
 
 	pbMessages := make([]*pb.Message, len(messages))
 	for i, message := range messages {
-		pbMessages[i] = &pb.Message{
+		pbMessage := &pb.Message{
 			Id:        message.ID.String(),
 			ChannelId: message.ChannelID.String(),
 			SenderId:  message.SenderID.String(),
@@ -112,10 +112,22 @@ func (h *MessageHandler) GetByChannelID(ctx context.Context, req *pb.GetByChanne
 			CreatedAt: timestamppb.New(message.CreatedAt),
 		}
 
+		if message.Sender != nil {
+			pbMessage.Sender = &pb.User{
+				Id:        message.Sender.ID.String(),
+				DisplayId: message.Sender.DisplayId,
+				Name:      message.Sender.Name,
+				IconUrl:   message.Sender.IconURL,
+				CreatedAt: timestamppb.New(message.Sender.CreatedAt),
+			}
+		}
+
 		if message.ReplyID != nil {
 			replyIDStr := message.ReplyID.String()
-			pbMessages[i].ReplyId = &replyIDStr
+			pbMessage.ReplyId = &replyIDStr
 		}
+
+		pbMessages[i] = pbMessage
 	}
 
 	return &pb.GetByChannelIDResponse{Messages: pbMessages}, nil

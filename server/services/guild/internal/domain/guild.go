@@ -13,13 +13,9 @@ type Guild struct {
 	Name             string
 	Description      string
 	IconURL          string
+	MemberCount      *int32
 	DefaultChannelID uuid.UUID
 	CreatedAt        time.Time
-}
-
-type GuildWithMemberCount struct {
-	*Guild
-	MemberCount int32
 }
 
 type GuildOverview struct {

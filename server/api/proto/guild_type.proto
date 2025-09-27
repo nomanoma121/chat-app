@@ -19,6 +19,7 @@ message Guild {
   string description = 4;
   string icon_url = 5;
   string default_channel_id = 7;
+  optional int32 member_count = 8;
   google.protobuf.Timestamp created_at = 6;
 }
 
@@ -87,26 +88,29 @@ message CategoryDetail {
 message Invite {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
-      required: ["guild_id", "creator_id", "max_uses", "current_uses", "code", "expires_at", "created_at"]
+      required: ["guild_id", "creator_id", "current_uses", "invite_code", "created_at"]
     };
   };
   string guild_id = 1;
-  string creator_id = 2;
-  int32 max_uses = 3;
-  int32 current_uses = 4;
-  string code = 5;
-  google.protobuf.Timestamp expires_at = 6;
+  optional Guild guild = 2;
+  string creator_id = 3;
+  optional User creator = 4;
+  optional int32 max_uses = 5;
+  int32 current_uses = 6;
+  string invite_code = 7;
+  optional google.protobuf.Timestamp expires_at = 8; 
+  google.protobuf.Timestamp created_at = 9;
 }
 
 message Member {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
-      required: ["user_id", "guild_id", "nickname", "joined_at"]
+      required: ["user_id", "guild_id", "joined_at"]
     };
   };
   string user_id = 1;
   string guild_id = 2;
-  string nickname = 3;
+  optional User user = 3;
   google.protobuf.Timestamp joined_at = 4;
 }
 
@@ -132,4 +136,18 @@ message Channel {
   string category_id = 2;
   string name = 3;
   google.protobuf.Timestamp created_at = 4;
+}
+
+// TODO: あとからProtoをリファクタするときにuser protoのものをimportして使うようにする
+message User {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "display_id", "name", "icon_url", "created_at"]
+    };
+  };
+  string id = 1;
+  string display_id = 2;
+  string name = 3;
+  string icon_url = 5;
+  google.protobuf.Timestamp created_at = 6;
 }

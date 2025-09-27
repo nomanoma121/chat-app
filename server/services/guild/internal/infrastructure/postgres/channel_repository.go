@@ -6,7 +6,6 @@ import (
 	"guild-service/internal/infrastructure/postgres/gen"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type channelRepository struct {
@@ -24,7 +23,7 @@ func (r *channelRepository) Create(ctx context.Context, channel *domain.Channel)
 		ID:         channel.ID,
 		CategoryID: channel.CategoryID,
 		Name:       channel.Name,
-		CreatedAt:  pgtype.Timestamp{Time: channel.CreatedAt, Valid: true},
+		CreatedAt:  channel.CreatedAt,
 	})
 	if err != nil {
 		return nil, err
@@ -33,7 +32,7 @@ func (r *channelRepository) Create(ctx context.Context, channel *domain.Channel)
 		ID:         dbChannel.ID,
 		CategoryID: dbChannel.CategoryID,
 		Name:       dbChannel.Name,
-		CreatedAt:  dbChannel.CreatedAt.Time,
+		CreatedAt:  dbChannel.CreatedAt,
 	}, nil
 }
 
@@ -48,7 +47,7 @@ func (r *channelRepository) GetByCategoryID(ctx context.Context, categoryID uuid
 			ID:         dbChannel.ID,
 			CategoryID: dbChannel.CategoryID,
 			Name:       dbChannel.Name,
-			CreatedAt:  dbChannel.CreatedAt.Time,
+			CreatedAt:  dbChannel.CreatedAt,
 		}
 	}
 	return channels, nil

@@ -6,6 +6,7 @@ option go_package = "./guild;guildpb";
 
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 import "guild_type.proto";
 
 message CreateGuildRequest {
@@ -159,15 +160,33 @@ message GetGuildInvitesResponse {
   repeated Invite invites = 1;
 }
 
+message GetGuildByInviteCodeRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["invite_code"]
+    };
+  };
+  string invite_code = 1;
+}
+
+message GetGuildByInviteCodeResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["invite"]
+    };
+  };
+  Invite invite = 1;
+}
+
 message CreateGuildInviteRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
-      required: ["guild_id", "max_uses", "expires_in_seconds"]
+      required: ["guild_id"]
     };
   };
   string guild_id = 1;
-  int32 max_uses = 2;
-  int32 expires_in_seconds = 3;
+  optional int32 max_uses = 2;
+  optional google.protobuf.Timestamp expires_at = 3;
 }
 
 message CreateGuildInviteResponse {
@@ -212,7 +231,7 @@ message JoinGuildResponse {
       required: ["guild"]
     };
   };
-  Guild guild = 1;
+  Member member = 1;
 }
 
 message CreateCategoryRequest {

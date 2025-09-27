@@ -92,9 +92,15 @@ func (h *guildHandler) GetGuildByID(ctx context.Context, req *pb.GetGuildByIDReq
 	pbMembers := make([]*pb.Member, len(guild.Members))
 	for i, member := range guild.Members {
 		pbMembers[i] = &pb.Member{
-			UserId:   member.UserID.String(),
+			UserId: member.UserID.String(),
+			User: &pb.User{
+				Id:        member.User.ID.String(),
+				DisplayId: member.User.DisplayId,
+				Name:      member.User.Name,
+				IconUrl:   member.User.IconURL,
+				CreatedAt: timestamppb.New(member.User.CreatedAt),
+			},
 			GuildId:  member.GuildID.String(),
-			Nickname: member.Nickname,
 			JoinedAt: timestamppb.New(member.JoinedAt),
 		}
 	}
@@ -244,8 +250,10 @@ func (h *guildHandler) GetMyGuilds(ctx context.Context, req *pb.ListMyGuildsRequ
 			Description:      guild.Description,
 			IconUrl:          guild.IconURL,
 			DefaultChannelId: guild.DefaultChannelID.String(),
-			MemberCount:      guild.MemberCount,
 			CreatedAt:        timestamppb.New(guild.CreatedAt),
+		}
+		if guild.MemberCount != nil {
+			pbGuilds[i].MemberCount = *guild.MemberCount
 		}
 	}
 

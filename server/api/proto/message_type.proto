@@ -7,6 +7,19 @@ option go_package = "./message;messagepb";
 import "google/protobuf/timestamp.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
+message User {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "name", "display_id", "icon_url", "created_at"]
+    };
+  };
+  string id = 1;
+  string name = 2;
+  string display_id = 3;
+  string icon_url = 4;
+  google.protobuf.Timestamp created_at = 5;
+}
+
 message Message {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
@@ -15,8 +28,9 @@ message Message {
   };
   string id = 1;
   string sender_id = 2;
-  string channel_id = 3;
-  optional string reply_id = 4;
-  string content = 5;
-  google.protobuf.Timestamp created_at = 6;
+  optional User sender = 3;
+  string channel_id = 4;
+  optional string reply_id = 5;
+  string content = 6;
+  google.protobuf.Timestamp created_at = 7;
 }

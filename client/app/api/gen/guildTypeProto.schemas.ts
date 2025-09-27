@@ -59,8 +59,8 @@ export interface CreateChannelResponse {
 }
 
 export interface CreateGuildInviteBody {
-	maxUses: number;
-	expiresInSeconds: number;
+	maxUses?: number;
+	expiresAt?: string;
 }
 
 export interface CreateGuildInviteResponse {
@@ -112,7 +112,7 @@ export interface DeleteGuildMemberResponse {
 }
 
 export interface ExistsResponse {
-	exists: boolean;
+	exists?: boolean;
 }
 
 export interface GetByChannelIDResponse {
@@ -120,11 +120,15 @@ export interface GetByChannelIDResponse {
 }
 
 export interface GetCurrentUserResponse {
-	user: User;
+	user: UserUser;
 }
 
 export interface GetGuildByIDResponse {
 	guild: GuildWithMembers;
+}
+
+export interface GetGuildByInviteCodeResponse {
+	invite: Invite;
 }
 
 export interface GetGuildInvitesResponse {
@@ -136,7 +140,11 @@ export interface GetGuildOverviewResponse {
 }
 
 export interface GetUserByIDResponse {
-	user: User;
+	user: UserUser;
+}
+
+export interface GetUsersByIDsResponse {
+	users?: UserUser[];
 }
 
 export interface Guild {
@@ -146,6 +154,7 @@ export interface Guild {
 	description: string;
 	iconUrl: string;
 	defaultChannelId: string;
+	memberCount?: number;
 	createdAt: string;
 }
 
@@ -185,11 +194,14 @@ export interface GuildWithMembers {
 
 export interface Invite {
 	guildId: string;
+	guild?: Guild;
 	creatorId: string;
-	maxUses: number;
+	creator?: GuildUser;
+	maxUses?: number;
 	currentUses: number;
-	code: string;
-	expiresAt: string;
+	inviteCode: string;
+	expiresAt?: string;
+	createdAt: string;
 }
 
 export interface JoinGuildBody {
@@ -197,7 +209,7 @@ export interface JoinGuildBody {
 }
 
 export interface JoinGuildResponse {
-	guild: Guild;
+	member?: Member;
 }
 
 export type LeaveGuildResponseEmpty = { [key: string]: unknown };
@@ -222,13 +234,14 @@ export interface LoginResponse {
 export interface Member {
 	userId: string;
 	guildId: string;
-	nickname: string;
+	user?: GuildUser;
 	joinedAt: string;
 }
 
 export interface Message {
 	id: string;
 	senderId: string;
+	sender?: MsgUser;
 	channelId: string;
 	replyId?: string;
 	content: string;
@@ -245,7 +258,7 @@ export interface RegisterRequest {
 }
 
 export interface RegisterResponse {
-	user: User;
+	user: UserUser;
 }
 
 export interface Status {
@@ -298,10 +311,26 @@ export interface UpdateRequest {
 }
 
 export interface UpdateResponse {
-	user: User;
+	user: UserUser;
 }
 
-export interface User {
+export interface GuildUser {
+	id: string;
+	displayId: string;
+	name: string;
+	iconUrl: string;
+	createdAt: string;
+}
+
+export interface MsgUser {
+	id: string;
+	name: string;
+	displayId: string;
+	iconUrl: string;
+	createdAt: string;
+}
+
+export interface UserUser {
 	id: string;
 	displayId: string;
 	name: string;

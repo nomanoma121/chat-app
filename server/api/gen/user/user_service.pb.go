@@ -26,7 +26,7 @@ var File_user_service_proto protoreflect.FileDescriptor
 
 const file_user_service_proto_rawDesc = "" +
 	"\n" +
-	"\x12user_service.proto\x12\x04user\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x12user_message.proto2\xa1\x05\n" +
+	"\x12user_service.proto\x12\x04user\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x12user_message.proto2\xeb\x05\n" +
 	"\vUserService\x12a\n" +
 	"\bRegister\x12\x15.user.RegisterRequest\x1a\x16.user.RegisterResponse\"&\x92A\x06\n" +
 	"\x04Auth\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/auth/register\x12U\n" +
@@ -40,7 +40,8 @@ const file_user_service_proto_rawDesc = "" +
 	"\x04User\x82\xd3\xe4\x93\x02\x11\x12\x0f/api/users/{id}\x12V\n" +
 	"\x06Update\x12\x13.user.UpdateRequest\x1a\x14.user.UpdateResponse\"!\x92A\x06\n" +
 	"\x04User\x82\xd3\xe4\x93\x02\x12:\x01*\x1a\r/api/users/me\x123\n" +
-	"\x06Exists\x12\x13.user.ExistsRequest\x1a\x14.user.ExistsResponse\x1a%\x92A\"\n" +
+	"\x06Exists\x12\x13.user.ExistsRequest\x1a\x14.user.ExistsResponse\x12H\n" +
+	"\rGetUsersByIDs\x12\x1a.user.GetUsersByIDsRequest\x1a\x1b.user.GetUsersByIDsResponse\x1a%\x92A\"\n" +
 	"\x04User\x12\x1aUser management operationsB[\n" +
 	"\bcom.userB\x10UserServiceProtoP\x01Z\r./user;userpb\xa2\x02\x03UXX\xaa\x02\x04User\xca\x02\x04User\xe2\x02\x10User\\GPBMetadata\xea\x02\x04Userb\x06proto3"
 
@@ -52,13 +53,15 @@ var file_user_service_proto_goTypes = []any{
 	(*GetUserByIDRequest)(nil),     // 4: user.GetUserByIDRequest
 	(*UpdateRequest)(nil),          // 5: user.UpdateRequest
 	(*ExistsRequest)(nil),          // 6: user.ExistsRequest
-	(*RegisterResponse)(nil),       // 7: user.RegisterResponse
-	(*LoginResponse)(nil),          // 8: user.LoginResponse
-	(*AuthMeResponse)(nil),         // 9: user.AuthMeResponse
-	(*GetCurrentUserResponse)(nil), // 10: user.GetCurrentUserResponse
-	(*GetUserByIDResponse)(nil),    // 11: user.GetUserByIDResponse
-	(*UpdateResponse)(nil),         // 12: user.UpdateResponse
-	(*ExistsResponse)(nil),         // 13: user.ExistsResponse
+	(*GetUsersByIDsRequest)(nil),   // 7: user.GetUsersByIDsRequest
+	(*RegisterResponse)(nil),       // 8: user.RegisterResponse
+	(*LoginResponse)(nil),          // 9: user.LoginResponse
+	(*AuthMeResponse)(nil),         // 10: user.AuthMeResponse
+	(*GetCurrentUserResponse)(nil), // 11: user.GetCurrentUserResponse
+	(*GetUserByIDResponse)(nil),    // 12: user.GetUserByIDResponse
+	(*UpdateResponse)(nil),         // 13: user.UpdateResponse
+	(*ExistsResponse)(nil),         // 14: user.ExistsResponse
+	(*GetUsersByIDsResponse)(nil),  // 15: user.GetUsersByIDsResponse
 }
 var file_user_service_proto_depIdxs = []int32{
 	0,  // 0: user.UserService.Register:input_type -> user.RegisterRequest
@@ -68,15 +71,17 @@ var file_user_service_proto_depIdxs = []int32{
 	4,  // 4: user.UserService.GetUserByID:input_type -> user.GetUserByIDRequest
 	5,  // 5: user.UserService.Update:input_type -> user.UpdateRequest
 	6,  // 6: user.UserService.Exists:input_type -> user.ExistsRequest
-	7,  // 7: user.UserService.Register:output_type -> user.RegisterResponse
-	8,  // 8: user.UserService.Login:output_type -> user.LoginResponse
-	9,  // 9: user.UserService.AuthMe:output_type -> user.AuthMeResponse
-	10, // 10: user.UserService.GetCurrentUser:output_type -> user.GetCurrentUserResponse
-	11, // 11: user.UserService.GetUserByID:output_type -> user.GetUserByIDResponse
-	12, // 12: user.UserService.Update:output_type -> user.UpdateResponse
-	13, // 13: user.UserService.Exists:output_type -> user.ExistsResponse
-	7,  // [7:14] is the sub-list for method output_type
-	0,  // [0:7] is the sub-list for method input_type
+	7,  // 7: user.UserService.GetUsersByIDs:input_type -> user.GetUsersByIDsRequest
+	8,  // 8: user.UserService.Register:output_type -> user.RegisterResponse
+	9,  // 9: user.UserService.Login:output_type -> user.LoginResponse
+	10, // 10: user.UserService.AuthMe:output_type -> user.AuthMeResponse
+	11, // 11: user.UserService.GetCurrentUser:output_type -> user.GetCurrentUserResponse
+	12, // 12: user.UserService.GetUserByID:output_type -> user.GetUserByIDResponse
+	13, // 13: user.UserService.Update:output_type -> user.UpdateResponse
+	14, // 14: user.UserService.Exists:output_type -> user.ExistsResponse
+	15, // 15: user.UserService.GetUsersByIDs:output_type -> user.GetUsersByIDsResponse
+	8,  // [8:16] is the sub-list for method output_type
+	0,  // [0:8] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name

@@ -15,6 +15,7 @@ type PostgresStore struct {
 	channels   domain.IChannelRepository
 	categories domain.ICategoryRepository
 	members    domain.IMemberRepository
+	invites    domain.IInviteRepository
 }
 
 func NewPostgresStore(db *pgxpool.Pool) domain.IStore {
@@ -26,6 +27,7 @@ func NewPostgresStore(db *pgxpool.Pool) domain.IStore {
 		channels:   NewPostgresChannelRepository(q),
 		categories: NewPostgresCategoryRepository(q),
 		members:    NewPostgresMemberRepository(q),
+		invites:    NewPostgresInviteRepository(q),
 	}
 }
 
@@ -45,6 +47,10 @@ func (s *PostgresStore) Members() domain.IMemberRepository {
 	return s.members
 }
 
+func (s *PostgresStore) Invites() domain.IInviteRepository {
+	return s.invites
+}
+
 func (s *PostgresStore) ExecTx(ctx context.Context, fn func(domain.IStore) error) error {
 	tx, err := s.db.Begin(ctx)
 	if err != nil {
@@ -59,6 +65,7 @@ func (s *PostgresStore) ExecTx(ctx context.Context, fn func(domain.IStore) error
 		channels:   NewPostgresChannelRepository(txQueries),
 		categories: NewPostgresCategoryRepository(txQueries),
 		members:    NewPostgresMemberRepository(txQueries),
+		invites:    NewPostgresInviteRepository(txQueries),
 	}
 
 	err = fn(txStore)
