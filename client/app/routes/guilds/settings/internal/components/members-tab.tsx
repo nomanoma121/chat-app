@@ -112,8 +112,8 @@ export const MembersTab = ({ guild }: MembersTabProps) => {
 							>
 								<div className={css({ display: "flex", alignItems: "center" })}>
 									<Avatar
-										name={""}
-										src={""}
+										name={member.user?.displayId}
+										src={member.user?.iconUrl}
 										size="sm"
 										className={css({
 											width: "32px",
@@ -135,7 +135,7 @@ export const MembersTab = ({ guild }: MembersTabProps) => {
 											size="sm"
 											fontWeight="medium"
 										>
-											{member.nickname ?? "不明なユーザー"}
+											{member.user?.name}
 										</Text>
 										{member.userId === guild.ownerId ? (
 											<Badge

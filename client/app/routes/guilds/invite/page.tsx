@@ -391,7 +391,7 @@ export default function InvitePage() {
 										<Text
 											className={css({ fontSize: "sm", color: "text.medium" })}
 										>
-											作成者: {invite.creatorId}
+											作成者: {invite.creator?.name}
 										</Text>
 										<Text
 											className={css({ fontSize: "sm", color: "text.medium" })}
