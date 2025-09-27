@@ -40,11 +40,14 @@ type CreateInviteParams struct {
 
 func (u *inviteUsecase) Create(ctx context.Context, params *CreateInviteParams) (*domain.Invite, error) {
 	if err := u.validator.Struct(params); err != nil {
-		return nil, domain.ErrInvalidChannelData
+		return nil, domain.ErrInvalidInviteData
 	}
 	inviteCode, err := domain.GenerateInviteCode()
 	if err != nil {
 		return nil, err
+	}
+	if params.ExpiresAt != nil && params.ExpiresAt.Before(time.Now()) {
+		return nil, domain.ErrInvalidInviteData
 	}
 
 	invite := &domain.Invite{

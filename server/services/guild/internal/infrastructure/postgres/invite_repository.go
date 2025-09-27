@@ -26,6 +26,7 @@ func (r *inviteRepository) Create(ctx context.Context, invite *domain.Invite) (*
 		MaxUses:     invite.MaxUses,
 		CurrentUses: invite.CurrentUses,
 		ExpiresAt:   invite.ExpiresAt,
+		CreatedAt:   invite.CreatedAt,
 	})
 	if err != nil {
 		return nil, err
@@ -63,7 +64,7 @@ func (r *inviteRepository) GetByGuildID(ctx context.Context, guildID uuid.UUID) 
 }
 
 func (r *inviteRepository) IncrementUses(ctx context.Context, inviteCode string) (*domain.Invite, error) {
-	dbInvite , err := r.queries.IncrementInviteUses(ctx, inviteCode)
+	dbInvite, err := r.queries.IncrementInviteUses(ctx, inviteCode)
 	if err != nil {
 		return nil, err
 	}
