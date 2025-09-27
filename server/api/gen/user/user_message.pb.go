@@ -710,6 +710,94 @@ func (x *ExistsResponse) GetExists() bool {
 	return false
 }
 
+type GetUsersByIDsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserIds       []string               `protobuf:"bytes,1,rep,name=user_ids,json=userIds,proto3" json:"user_ids,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUsersByIDsRequest) Reset() {
+	*x = GetUsersByIDsRequest{}
+	mi := &file_user_message_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUsersByIDsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUsersByIDsRequest) ProtoMessage() {}
+
+func (x *GetUsersByIDsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_user_message_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUsersByIDsRequest.ProtoReflect.Descriptor instead.
+func (*GetUsersByIDsRequest) Descriptor() ([]byte, []int) {
+	return file_user_message_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *GetUsersByIDsRequest) GetUserIds() []string {
+	if x != nil {
+		return x.UserIds
+	}
+	return nil
+}
+
+type GetUsersByIDsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Users         []*User                `protobuf:"bytes,1,rep,name=users,proto3" json:"users,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUsersByIDsResponse) Reset() {
+	*x = GetUsersByIDsResponse{}
+	mi := &file_user_message_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUsersByIDsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUsersByIDsResponse) ProtoMessage() {}
+
+func (x *GetUsersByIDsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_user_message_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUsersByIDsResponse.ProtoReflect.Descriptor instead.
+func (*GetUsersByIDsResponse) Descriptor() ([]byte, []int) {
+	return file_user_message_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *GetUsersByIDsResponse) GetUsers() []*User {
+	if x != nil {
+		return x.Users
+	}
+	return nil
+}
+
 var File_user_message_proto protoreflect.FileDescriptor
 
 const file_user_message_proto_rawDesc = "" +
@@ -769,14 +857,16 @@ const file_user_message_proto_rawDesc = "" +
 	"\x0eUpdateResponse\x12\x1e\n" +
 	"\x04user\x18\x01 \x01(\v2\n" +
 	".user.UserR\x04user:\f\x92A\t\n" +
-	"\a\xd2\x01\x04user\"9\n" +
+	"\a\xd2\x01\x04user\"(\n" +
 	"\rExistsRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId:\x0f\x92A\f\n" +
-	"\n" +
-	"\xd2\x01\auser_id\"8\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\"(\n" +
 	"\x0eExistsResponse\x12\x16\n" +
-	"\x06exists\x18\x01 \x01(\bR\x06exists:\x0e\x92A\v\n" +
-	"\t\xd2\x01\x06existsB[\n" +
+	"\x06exists\x18\x01 \x01(\bR\x06exists\"1\n" +
+	"\x14GetUsersByIDsRequest\x12\x19\n" +
+	"\buser_ids\x18\x01 \x03(\tR\auserIds\"9\n" +
+	"\x15GetUsersByIDsResponse\x12 \n" +
+	"\x05users\x18\x01 \x03(\v2\n" +
+	".user.UserR\x05usersB[\n" +
 	"\bcom.userB\x10UserMessageProtoP\x01Z\r./user;userpb\xa2\x02\x03UXX\xaa\x02\x04User\xca\x02\x04User\xe2\x02\x10User\\GPBMetadata\xea\x02\x04Userb\x06proto3"
 
 var (
@@ -791,7 +881,7 @@ func file_user_message_proto_rawDescGZIP() []byte {
 	return file_user_message_proto_rawDescData
 }
 
-var file_user_message_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_user_message_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_user_message_proto_goTypes = []any{
 	(*RegisterRequest)(nil),        // 0: user.RegisterRequest
 	(*RegisterResponse)(nil),       // 1: user.RegisterResponse
@@ -807,18 +897,21 @@ var file_user_message_proto_goTypes = []any{
 	(*UpdateResponse)(nil),         // 11: user.UpdateResponse
 	(*ExistsRequest)(nil),          // 12: user.ExistsRequest
 	(*ExistsResponse)(nil),         // 13: user.ExistsResponse
-	(*User)(nil),                   // 14: user.User
+	(*GetUsersByIDsRequest)(nil),   // 14: user.GetUsersByIDsRequest
+	(*GetUsersByIDsResponse)(nil),  // 15: user.GetUsersByIDsResponse
+	(*User)(nil),                   // 16: user.User
 }
 var file_user_message_proto_depIdxs = []int32{
-	14, // 0: user.RegisterResponse.user:type_name -> user.User
-	14, // 1: user.GetCurrentUserResponse.user:type_name -> user.User
-	14, // 2: user.GetUserByIDResponse.user:type_name -> user.User
-	14, // 3: user.UpdateResponse.user:type_name -> user.User
-	4,  // [4:4] is the sub-list for method output_type
-	4,  // [4:4] is the sub-list for method input_type
-	4,  // [4:4] is the sub-list for extension type_name
-	4,  // [4:4] is the sub-list for extension extendee
-	0,  // [0:4] is the sub-list for field type_name
+	16, // 0: user.RegisterResponse.user:type_name -> user.User
+	16, // 1: user.GetCurrentUserResponse.user:type_name -> user.User
+	16, // 2: user.GetUserByIDResponse.user:type_name -> user.User
+	16, // 3: user.UpdateResponse.user:type_name -> user.User
+	16, // 4: user.GetUsersByIDsResponse.users:type_name -> user.User
+	5,  // [5:5] is the sub-list for method output_type
+	5,  // [5:5] is the sub-list for method input_type
+	5,  // [5:5] is the sub-list for extension type_name
+	5,  // [5:5] is the sub-list for extension extendee
+	0,  // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_user_message_proto_init() }
@@ -833,7 +926,7 @@ func file_user_message_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_user_message_proto_rawDesc), len(file_user_message_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   14,
+			NumMessages:   16,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

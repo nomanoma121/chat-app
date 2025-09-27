@@ -73,4 +73,6 @@ service UserService {
 
   // 内部通信用
   rpc Exists(ExistsRequest) returns (ExistsResponse);
+
+  rpc GetUsersByIDs(GetUsersByIDsRequest) returns (GetUsersByIDsResponse);
 }

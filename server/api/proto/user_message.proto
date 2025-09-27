@@ -125,19 +125,17 @@ message UpdateResponse {
 }
 
 message ExistsRequest {
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-    json_schema: {
-      required: ["user_id"]
-    };
-  };
   string user_id = 1;
 }
 
 message ExistsResponse {
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-    json_schema: {
-      required: ["exists"]
-    };
-  };
   bool exists = 1;
+}
+
+message GetUsersByIDsRequest {
+  repeated string user_ids = 1;
+}
+
+message GetUsersByIDsResponse {
+  repeated User users = 1;
 }
