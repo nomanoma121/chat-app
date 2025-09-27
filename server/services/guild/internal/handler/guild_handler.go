@@ -252,6 +252,9 @@ func (h *guildHandler) GetMyGuilds(ctx context.Context, req *pb.ListMyGuildsRequ
 			DefaultChannelId: guild.DefaultChannelID.String(),
 			CreatedAt:        timestamppb.New(guild.CreatedAt),
 		}
+		if guild.MemberCount != nil {
+			pbGuilds[i].MemberCount = *guild.MemberCount
+		}
 	}
 
 	return &pb.ListMyGuildsResponse{Guilds: pbGuilds}, nil
