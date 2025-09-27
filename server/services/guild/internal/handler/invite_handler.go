@@ -53,6 +53,12 @@ func (h *inviteHandler) CreateGuildInvite(ctx context.Context, req *pb.CreateGui
 		h.logger.Error("Failed to create invite", "creator_id", creatorID, "error", err)
 		return nil, err
 	}
+
+	var expiresAtPb *timestamppb.Timestamp
+	if invite.ExpiresAt != nil {
+		expiresAtPb = timestamppb.New(*invite.ExpiresAt)
+	}
+
 	return &pb.CreateGuildInviteResponse{
 		Invite: &pb.Invite{
 			InviteCode:  invite.InviteCode,
@@ -60,7 +66,7 @@ func (h *inviteHandler) CreateGuildInvite(ctx context.Context, req *pb.CreateGui
 			CreatorId:   invite.CreatorID.String(),
 			MaxUses:     invite.MaxUses,
 			CurrentUses: invite.CurrentUses,
-			ExpiresAt:   timestamppb.New(*invite.ExpiresAt),
+			ExpiresAt:   expiresAtPb,
 			CreatedAt:   timestamppb.New(invite.CreatedAt),
 		},
 	}, nil
@@ -75,13 +81,18 @@ func (h *inviteHandler) GetGuildInvites(ctx context.Context, req *pb.GetGuildInv
 
 	pbInvites := make([]*pb.Invite, len(invites))
 	for i, invite := range invites {
+		var expiresAt *timestamppb.Timestamp
+		if invite.ExpiresAt != nil {
+			expiresAt = timestamppb.New(*invite.ExpiresAt)
+		}
+
 		pbInvites[i] = &pb.Invite{
 			InviteCode:  invite.InviteCode,
 			GuildId:     invite.GuildID.String(),
 			CreatorId:   invite.CreatorID.String(),
 			MaxUses:     invite.MaxUses,
 			CurrentUses: invite.CurrentUses,
-			ExpiresAt:   timestamppb.New(*invite.ExpiresAt),
+			ExpiresAt:   expiresAt,
 			CreatedAt:   timestamppb.New(invite.CreatedAt),
 		}
 	}
