@@ -241,6 +241,7 @@ export interface Member {
 export interface Message {
 	id: string;
 	senderId: string;
+	sender?: MsgUser;
 	channelId: string;
 	replyId?: string;
 	content: string;
@@ -317,6 +318,14 @@ export interface GuildUser {
 	id: string;
 	displayId: string;
 	name: string;
+	iconUrl: string;
+	createdAt: string;
+}
+
+export interface MsgUser {
+	id: string;
+	name: string;
+	displayId: string;
 	iconUrl: string;
 	createdAt: string;
 }

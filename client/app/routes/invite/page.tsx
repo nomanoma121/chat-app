@@ -25,7 +25,9 @@ export default function InvitePage() {
 		try {
 			await joinGuild({ inviteCode, data: {} });
 			toast.success("サーバーに参加しました");
-			navigate(`/servers/${data?.invite?.guild?.id}/channels/${data?.invite?.guild?.defaultChannelId}`);
+			navigate(
+				`/servers/${data?.invite?.guild?.id}/channels/${data?.invite?.guild?.defaultChannelId}`,
+			);
 		} catch (err) {
 			toast.error("サーバーへの参加に失敗しました");
 		}
@@ -170,7 +172,8 @@ export default function InvitePage() {
 								fontSize: "sm",
 							})}
 						>
-							{invite.creator?.name || "誰か"}さんがあなたをサーバーに招待しました
+							{invite.creator?.name || "誰か"}
+							さんがあなたをサーバーに招待しました
 						</Text>
 					</div>
 				</Card.Header>

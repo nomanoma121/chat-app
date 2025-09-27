@@ -104,9 +104,8 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>(
 			>
 				<div className={messageAvatarStyles()}>
 					<Avatar
-						name={"tmp"}
-						// name={message.author.name}
-						src="https://i.pravatar.cc/150?img=3"
+						name={message?.sender?.name ?? "Unknown"}
+						src={message?.sender?.iconUrl ?? ""}
 						size="sm"
 					/>
 				</div>
@@ -139,8 +138,7 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>(
 								_hover: { textDecoration: "underline" },
 							})}
 						>
-							{/* {message.author.name} */}
-							tmp
+							{message?.sender?.name}
 						</span>
 						<span
 							className={css({
