@@ -11,7 +11,7 @@ type Message struct {
 	ID        uuid.UUID
 	ChannelID uuid.UUID
 	SenderID  uuid.UUID
-	Sender      *User
+	Sender    *User
 	Content   string
 	ReplyID   *uuid.UUID
 	CreatedAt time.Time

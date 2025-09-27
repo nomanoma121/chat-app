@@ -51,11 +51,11 @@ func (u *messageUsecase) Create(ctx context.Context, params *CreateParams) (*dom
 }
 
 func (u *messageUsecase) GetByChannelID(ctx context.Context, channelID uuid.UUID) ([]*domain.Message, error) {
-	messages , err := u.messageRepo.GetByChannelID(ctx, channelID)
+	messages, err := u.messageRepo.GetByChannelID(ctx, channelID)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	userIDSet := make(map[uuid.UUID]struct{})
 	for _, msg := range messages {
 		userIDSet[msg.SenderID] = struct{}{}
@@ -64,7 +64,7 @@ func (u *messageUsecase) GetByChannelID(ctx context.Context, channelID uuid.UUID
 	for id := range userIDSet {
 		userIDs = append(userIDs, id)
 	}
-	
+
 	users, err := u.userSvc.GetUsersByIDs(userIDs)
 	if err != nil {
 		return nil, err

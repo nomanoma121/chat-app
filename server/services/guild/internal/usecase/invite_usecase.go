@@ -96,7 +96,7 @@ func (u *inviteUsecase) GetByGuildID(ctx context.Context, guildID uuid.UUID) ([]
 }
 
 type JoinGuildParams struct {
-	InviteCode string `validate:"required"`
+	InviteCode string    `validate:"required"`
 	UserID     uuid.UUID `validate:"required"`
 }
 

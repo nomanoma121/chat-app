@@ -2,11 +2,10 @@ package domain
 
 import (
 	"context"
+	"crypto/rand"
 	"fmt"
 	"io"
 	"time"
-
-	"crypto/rand"
 
 	"github.com/google/uuid"
 )

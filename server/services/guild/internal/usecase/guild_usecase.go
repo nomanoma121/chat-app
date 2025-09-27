@@ -169,7 +169,7 @@ func (u *guildUsecase) GetByID(ctx context.Context, id uuid.UUID) (*GetByIDResul
 		return nil, err
 	}
 
-	var userMap = make(map[uuid.UUID]*domain.User)
+	userMap := make(map[uuid.UUID]*domain.User)
 	for _, user := range users {
 		userMap[user.ID] = user
 	}

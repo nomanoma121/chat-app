@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"message-service/internal/handler"
-	"message-service/internal/infrastructure/postgres"
 	user "message-service/internal/infrastructure/grpc"
+	"message-service/internal/infrastructure/postgres"
 	"message-service/internal/infrastructure/postgres/gen"
 	"message-service/internal/usecase"
 	"net"
@@ -60,7 +60,11 @@ func main() {
 		log.Error("Failed to connect to user service", "error", err)
 		os.Exit(1)
 	}
-	defer userConn.Close()
+	defer func() {
+		if err := userConn.Close(); err != nil {
+			log.Error("Failed to close user service connection", "error", err)
+		}
+	}()
 	log.Info("Connected to user service", "url", userServiceURL)
 
 	messageRepo := postgres.NewPostgresMessageRepository(gen.New(db))
