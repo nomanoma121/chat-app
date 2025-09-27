@@ -92,11 +92,12 @@ message Invite {
   };
   string guild_id = 1;
   string creator_id = 2;
-  optional int32 max_uses = 3;
-  int32 current_uses = 4;
-  string invite_code = 5;
-  optional google.protobuf.Timestamp expires_at = 6;
-  google.protobuf.Timestamp created_at = 7;
+  optional User creator = 3;
+  optional int32 max_uses = 4;
+  int32 current_uses = 5;
+  string invite_code = 6;
+  optional google.protobuf.Timestamp expires_at = 7;
+  google.protobuf.Timestamp created_at = 8;
 }
 
 message Member {
@@ -107,6 +108,7 @@ message Member {
   };
   string user_id = 1;
   string guild_id = 2;
+  optional User user = 3;
   google.protobuf.Timestamp joined_at = 4;
 }
 
@@ -132,4 +134,18 @@ message Channel {
   string category_id = 2;
   string name = 3;
   google.protobuf.Timestamp created_at = 4;
+}
+
+// TODO: あとからProtoをリファクタするときにuser protoのものをimportして使うようにする
+message User {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "display_id", "username", "icon_url", "created_at"]
+    };
+  };
+  string id = 1;
+  string display_id = 2;
+  string username = 3;
+  string icon_url = 5;
+  google.protobuf.Timestamp created_at = 6;
 }
