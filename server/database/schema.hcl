@@ -261,7 +261,6 @@ table "invites" {
   column "max_uses" {
     null = true
     type = int
-    default = -1
   }
   column "current_uses" {
     null = false

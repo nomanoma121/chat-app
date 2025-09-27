@@ -105,13 +105,34 @@ func (q *Queries) GetGuildInvitesByGuildID(ctx context.Context, guildID uuid.UUI
 	return items, nil
 }
 
-const incrementInviteUses = `-- name: IncrementInviteUses :exec
+const incrementInviteUses = `-- name: IncrementInviteUses :one
 UPDATE invites
 SET current_uses = current_uses + 1
 WHERE invite_code = $1 AND (max_uses IS NULL OR current_uses < max_uses) AND (expires_at IS NULL OR expires_at > NOW())
+RETURNING guild_id, creator_id, invite_code, max_uses, current_uses, expires_at, created_at
 `
 
-func (q *Queries) IncrementInviteUses(ctx context.Context, inviteCode string) error {
-	_, err := q.db.Exec(ctx, incrementInviteUses, inviteCode)
-	return err
+type IncrementInviteUsesRow struct {
+	GuildID     uuid.UUID
+	CreatorID   uuid.UUID
+	InviteCode  string
+	MaxUses     *int32
+	CurrentUses int32
+	ExpiresAt   *time.Time
+	CreatedAt   time.Time
+}
+
+func (q *Queries) IncrementInviteUses(ctx context.Context, inviteCode string) (*IncrementInviteUsesRow, error) {
+	row := q.db.QueryRow(ctx, incrementInviteUses, inviteCode)
+	var i IncrementInviteUsesRow
+	err := row.Scan(
+		&i.GuildID,
+		&i.CreatorID,
+		&i.InviteCode,
+		&i.MaxUses,
+		&i.CurrentUses,
+		&i.ExpiresAt,
+		&i.CreatedAt,
+	)
+	return &i, err
 }

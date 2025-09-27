@@ -62,8 +62,20 @@ func (r *inviteRepository) GetByGuildID(ctx context.Context, guildID uuid.UUID) 
 	return invites, nil
 }
 
-func (r *inviteRepository) IncrementUses(ctx context.Context, inviteCode string) error {
-	return r.queries.IncrementInviteUses(ctx, inviteCode)
+func (r *inviteRepository) IncrementUses(ctx context.Context, inviteCode string) (*domain.Invite, error) {
+	dbInvite , err := r.queries.IncrementInviteUses(ctx, inviteCode)
+	if err != nil {
+		return nil, err
+	}
+	return &domain.Invite{
+		GuildID:     dbInvite.GuildID,
+		CreatorID:   dbInvite.CreatorID,
+		InviteCode:  dbInvite.InviteCode,
+		MaxUses:     dbInvite.MaxUses,
+		CurrentUses: dbInvite.CurrentUses,
+		ExpiresAt:   dbInvite.ExpiresAt,
+		CreatedAt:   dbInvite.CreatedAt,
+	}, nil
 }
 
 var _ domain.IInviteRepository = (*inviteRepository)(nil)
