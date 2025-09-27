@@ -112,7 +112,7 @@ export interface DeleteGuildMemberResponse {
 }
 
 export interface ExistsResponse {
-	exists: boolean;
+	exists?: boolean;
 }
 
 export interface GetByChannelIDResponse {
@@ -120,7 +120,7 @@ export interface GetByChannelIDResponse {
 }
 
 export interface GetCurrentUserResponse {
-	user: User;
+	user: UserUser;
 }
 
 export interface GetGuildByIDResponse {
@@ -136,7 +136,11 @@ export interface GetGuildOverviewResponse {
 }
 
 export interface GetUserByIDResponse {
-	user: User;
+	user: UserUser;
+}
+
+export interface GetUsersByIDsResponse {
+	users?: UserUser[];
 }
 
 export interface Guild {
@@ -186,6 +190,7 @@ export interface GuildWithMembers {
 export interface Invite {
 	guildId: string;
 	creatorId: string;
+	creator?: GuildUser;
 	maxUses?: number;
 	currentUses: number;
 	inviteCode: string;
@@ -223,6 +228,7 @@ export interface LoginResponse {
 export interface Member {
 	userId: string;
 	guildId: string;
+	user?: GuildUser;
 	joinedAt: string;
 }
 
@@ -245,7 +251,7 @@ export interface RegisterRequest {
 }
 
 export interface RegisterResponse {
-	user: User;
+	user: UserUser;
 }
 
 export interface Status {
@@ -298,10 +304,18 @@ export interface UpdateRequest {
 }
 
 export interface UpdateResponse {
-	user: User;
+	user: UserUser;
 }
 
-export interface User {
+export interface GuildUser {
+	id: string;
+	displayId: string;
+	name: string;
+	iconUrl: string;
+	createdAt: string;
+}
+
+export interface UserUser {
 	id: string;
 	displayId: string;
 	name: string;

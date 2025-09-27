@@ -1,6 +1,5 @@
 import { UserRoundPlus, Users } from "lucide-react";
-import { useParams } from "react-router";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { css } from "styled-system/css";
 import type { GuildWithMembers } from "~/api/gen/guildTypeProto.schemas";
 import { Avatar } from "~/components/ui/avatar";
