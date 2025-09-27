@@ -777,6 +777,94 @@ func (x *GetGuildInvitesResponse) GetInvites() []*Invite {
 	return nil
 }
 
+type GetGuildByInviteCodeRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	InviteCode    string                 `protobuf:"bytes,1,opt,name=invite_code,json=inviteCode,proto3" json:"invite_code,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetGuildByInviteCodeRequest) Reset() {
+	*x = GetGuildByInviteCodeRequest{}
+	mi := &file_guild_message_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetGuildByInviteCodeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGuildByInviteCodeRequest) ProtoMessage() {}
+
+func (x *GetGuildByInviteCodeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_guild_message_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGuildByInviteCodeRequest.ProtoReflect.Descriptor instead.
+func (*GetGuildByInviteCodeRequest) Descriptor() ([]byte, []int) {
+	return file_guild_message_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *GetGuildByInviteCodeRequest) GetInviteCode() string {
+	if x != nil {
+		return x.InviteCode
+	}
+	return ""
+}
+
+type GetGuildByInviteCodeResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Invite        *Invite                `protobuf:"bytes,1,opt,name=invite,proto3" json:"invite,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetGuildByInviteCodeResponse) Reset() {
+	*x = GetGuildByInviteCodeResponse{}
+	mi := &file_guild_message_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetGuildByInviteCodeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGuildByInviteCodeResponse) ProtoMessage() {}
+
+func (x *GetGuildByInviteCodeResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_guild_message_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGuildByInviteCodeResponse.ProtoReflect.Descriptor instead.
+func (*GetGuildByInviteCodeResponse) Descriptor() ([]byte, []int) {
+	return file_guild_message_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *GetGuildByInviteCodeResponse) GetInvite() *Invite {
+	if x != nil {
+		return x.Invite
+	}
+	return nil
+}
+
 type CreateGuildInviteRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	GuildId       string                 `protobuf:"bytes,1,opt,name=guild_id,json=guildId,proto3" json:"guild_id,omitempty"`
@@ -788,7 +876,7 @@ type CreateGuildInviteRequest struct {
 
 func (x *CreateGuildInviteRequest) Reset() {
 	*x = CreateGuildInviteRequest{}
-	mi := &file_guild_message_proto_msgTypes[16]
+	mi := &file_guild_message_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -800,7 +888,7 @@ func (x *CreateGuildInviteRequest) String() string {
 func (*CreateGuildInviteRequest) ProtoMessage() {}
 
 func (x *CreateGuildInviteRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_message_proto_msgTypes[16]
+	mi := &file_guild_message_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -813,7 +901,7 @@ func (x *CreateGuildInviteRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateGuildInviteRequest.ProtoReflect.Descriptor instead.
 func (*CreateGuildInviteRequest) Descriptor() ([]byte, []int) {
-	return file_guild_message_proto_rawDescGZIP(), []int{16}
+	return file_guild_message_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *CreateGuildInviteRequest) GetGuildId() string {
@@ -846,7 +934,7 @@ type CreateGuildInviteResponse struct {
 
 func (x *CreateGuildInviteResponse) Reset() {
 	*x = CreateGuildInviteResponse{}
-	mi := &file_guild_message_proto_msgTypes[17]
+	mi := &file_guild_message_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -858,7 +946,7 @@ func (x *CreateGuildInviteResponse) String() string {
 func (*CreateGuildInviteResponse) ProtoMessage() {}
 
 func (x *CreateGuildInviteResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_message_proto_msgTypes[17]
+	mi := &file_guild_message_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -871,7 +959,7 @@ func (x *CreateGuildInviteResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateGuildInviteResponse.ProtoReflect.Descriptor instead.
 func (*CreateGuildInviteResponse) Descriptor() ([]byte, []int) {
-	return file_guild_message_proto_rawDescGZIP(), []int{17}
+	return file_guild_message_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *CreateGuildInviteResponse) GetInvite() *Invite {
@@ -890,7 +978,7 @@ type DeleteGuildInviteRequest struct {
 
 func (x *DeleteGuildInviteRequest) Reset() {
 	*x = DeleteGuildInviteRequest{}
-	mi := &file_guild_message_proto_msgTypes[18]
+	mi := &file_guild_message_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -902,7 +990,7 @@ func (x *DeleteGuildInviteRequest) String() string {
 func (*DeleteGuildInviteRequest) ProtoMessage() {}
 
 func (x *DeleteGuildInviteRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_message_proto_msgTypes[18]
+	mi := &file_guild_message_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -915,7 +1003,7 @@ func (x *DeleteGuildInviteRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteGuildInviteRequest.ProtoReflect.Descriptor instead.
 func (*DeleteGuildInviteRequest) Descriptor() ([]byte, []int) {
-	return file_guild_message_proto_rawDescGZIP(), []int{18}
+	return file_guild_message_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *DeleteGuildInviteRequest) GetInviteCode() string {
@@ -934,7 +1022,7 @@ type DeleteGuildInviteResponse struct {
 
 func (x *DeleteGuildInviteResponse) Reset() {
 	*x = DeleteGuildInviteResponse{}
-	mi := &file_guild_message_proto_msgTypes[19]
+	mi := &file_guild_message_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -946,7 +1034,7 @@ func (x *DeleteGuildInviteResponse) String() string {
 func (*DeleteGuildInviteResponse) ProtoMessage() {}
 
 func (x *DeleteGuildInviteResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_message_proto_msgTypes[19]
+	mi := &file_guild_message_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -959,7 +1047,7 @@ func (x *DeleteGuildInviteResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteGuildInviteResponse.ProtoReflect.Descriptor instead.
 func (*DeleteGuildInviteResponse) Descriptor() ([]byte, []int) {
-	return file_guild_message_proto_rawDescGZIP(), []int{19}
+	return file_guild_message_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *DeleteGuildInviteResponse) GetEmpty() *emptypb.Empty {
@@ -978,7 +1066,7 @@ type JoinGuildRequest struct {
 
 func (x *JoinGuildRequest) Reset() {
 	*x = JoinGuildRequest{}
-	mi := &file_guild_message_proto_msgTypes[20]
+	mi := &file_guild_message_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -990,7 +1078,7 @@ func (x *JoinGuildRequest) String() string {
 func (*JoinGuildRequest) ProtoMessage() {}
 
 func (x *JoinGuildRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_message_proto_msgTypes[20]
+	mi := &file_guild_message_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1003,7 +1091,7 @@ func (x *JoinGuildRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use JoinGuildRequest.ProtoReflect.Descriptor instead.
 func (*JoinGuildRequest) Descriptor() ([]byte, []int) {
-	return file_guild_message_proto_rawDescGZIP(), []int{20}
+	return file_guild_message_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *JoinGuildRequest) GetInviteCode() string {
@@ -1022,7 +1110,7 @@ type JoinGuildResponse struct {
 
 func (x *JoinGuildResponse) Reset() {
 	*x = JoinGuildResponse{}
-	mi := &file_guild_message_proto_msgTypes[21]
+	mi := &file_guild_message_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1034,7 +1122,7 @@ func (x *JoinGuildResponse) String() string {
 func (*JoinGuildResponse) ProtoMessage() {}
 
 func (x *JoinGuildResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_message_proto_msgTypes[21]
+	mi := &file_guild_message_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1047,7 +1135,7 @@ func (x *JoinGuildResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use JoinGuildResponse.ProtoReflect.Descriptor instead.
 func (*JoinGuildResponse) Descriptor() ([]byte, []int) {
-	return file_guild_message_proto_rawDescGZIP(), []int{21}
+	return file_guild_message_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *JoinGuildResponse) GetMember() *Member {
@@ -1067,7 +1155,7 @@ type CreateCategoryRequest struct {
 
 func (x *CreateCategoryRequest) Reset() {
 	*x = CreateCategoryRequest{}
-	mi := &file_guild_message_proto_msgTypes[22]
+	mi := &file_guild_message_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1079,7 +1167,7 @@ func (x *CreateCategoryRequest) String() string {
 func (*CreateCategoryRequest) ProtoMessage() {}
 
 func (x *CreateCategoryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_message_proto_msgTypes[22]
+	mi := &file_guild_message_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1092,7 +1180,7 @@ func (x *CreateCategoryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateCategoryRequest.ProtoReflect.Descriptor instead.
 func (*CreateCategoryRequest) Descriptor() ([]byte, []int) {
-	return file_guild_message_proto_rawDescGZIP(), []int{22}
+	return file_guild_message_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *CreateCategoryRequest) GetGuildId() string {
@@ -1118,7 +1206,7 @@ type CreateCategoryResponse struct {
 
 func (x *CreateCategoryResponse) Reset() {
 	*x = CreateCategoryResponse{}
-	mi := &file_guild_message_proto_msgTypes[23]
+	mi := &file_guild_message_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1130,7 +1218,7 @@ func (x *CreateCategoryResponse) String() string {
 func (*CreateCategoryResponse) ProtoMessage() {}
 
 func (x *CreateCategoryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_message_proto_msgTypes[23]
+	mi := &file_guild_message_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1143,7 +1231,7 @@ func (x *CreateCategoryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateCategoryResponse.ProtoReflect.Descriptor instead.
 func (*CreateCategoryResponse) Descriptor() ([]byte, []int) {
-	return file_guild_message_proto_rawDescGZIP(), []int{23}
+	return file_guild_message_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *CreateCategoryResponse) GetCategory() *Category {
@@ -1163,7 +1251,7 @@ type UpdateCategoryRequest struct {
 
 func (x *UpdateCategoryRequest) Reset() {
 	*x = UpdateCategoryRequest{}
-	mi := &file_guild_message_proto_msgTypes[24]
+	mi := &file_guild_message_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1175,7 +1263,7 @@ func (x *UpdateCategoryRequest) String() string {
 func (*UpdateCategoryRequest) ProtoMessage() {}
 
 func (x *UpdateCategoryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_message_proto_msgTypes[24]
+	mi := &file_guild_message_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1188,7 +1276,7 @@ func (x *UpdateCategoryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateCategoryRequest.ProtoReflect.Descriptor instead.
 func (*UpdateCategoryRequest) Descriptor() ([]byte, []int) {
-	return file_guild_message_proto_rawDescGZIP(), []int{24}
+	return file_guild_message_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *UpdateCategoryRequest) GetCategoryId() string {
@@ -1214,7 +1302,7 @@ type UpdateCategoryResponse struct {
 
 func (x *UpdateCategoryResponse) Reset() {
 	*x = UpdateCategoryResponse{}
-	mi := &file_guild_message_proto_msgTypes[25]
+	mi := &file_guild_message_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1226,7 +1314,7 @@ func (x *UpdateCategoryResponse) String() string {
 func (*UpdateCategoryResponse) ProtoMessage() {}
 
 func (x *UpdateCategoryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_message_proto_msgTypes[25]
+	mi := &file_guild_message_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1239,7 +1327,7 @@ func (x *UpdateCategoryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateCategoryResponse.ProtoReflect.Descriptor instead.
 func (*UpdateCategoryResponse) Descriptor() ([]byte, []int) {
-	return file_guild_message_proto_rawDescGZIP(), []int{25}
+	return file_guild_message_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *UpdateCategoryResponse) GetCategory() *Category {
@@ -1258,7 +1346,7 @@ type DeleteCategoryRequest struct {
 
 func (x *DeleteCategoryRequest) Reset() {
 	*x = DeleteCategoryRequest{}
-	mi := &file_guild_message_proto_msgTypes[26]
+	mi := &file_guild_message_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1270,7 +1358,7 @@ func (x *DeleteCategoryRequest) String() string {
 func (*DeleteCategoryRequest) ProtoMessage() {}
 
 func (x *DeleteCategoryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_message_proto_msgTypes[26]
+	mi := &file_guild_message_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1283,7 +1371,7 @@ func (x *DeleteCategoryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteCategoryRequest.ProtoReflect.Descriptor instead.
 func (*DeleteCategoryRequest) Descriptor() ([]byte, []int) {
-	return file_guild_message_proto_rawDescGZIP(), []int{26}
+	return file_guild_message_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *DeleteCategoryRequest) GetCategoryId() string {
@@ -1302,7 +1390,7 @@ type DeleteCategoryResponse struct {
 
 func (x *DeleteCategoryResponse) Reset() {
 	*x = DeleteCategoryResponse{}
-	mi := &file_guild_message_proto_msgTypes[27]
+	mi := &file_guild_message_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1314,7 +1402,7 @@ func (x *DeleteCategoryResponse) String() string {
 func (*DeleteCategoryResponse) ProtoMessage() {}
 
 func (x *DeleteCategoryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_message_proto_msgTypes[27]
+	mi := &file_guild_message_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1327,7 +1415,7 @@ func (x *DeleteCategoryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteCategoryResponse.ProtoReflect.Descriptor instead.
 func (*DeleteCategoryResponse) Descriptor() ([]byte, []int) {
-	return file_guild_message_proto_rawDescGZIP(), []int{27}
+	return file_guild_message_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *DeleteCategoryResponse) GetEmpty() *emptypb.Empty {
@@ -1347,7 +1435,7 @@ type CreateChannelRequest struct {
 
 func (x *CreateChannelRequest) Reset() {
 	*x = CreateChannelRequest{}
-	mi := &file_guild_message_proto_msgTypes[28]
+	mi := &file_guild_message_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1359,7 +1447,7 @@ func (x *CreateChannelRequest) String() string {
 func (*CreateChannelRequest) ProtoMessage() {}
 
 func (x *CreateChannelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_message_proto_msgTypes[28]
+	mi := &file_guild_message_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1372,7 +1460,7 @@ func (x *CreateChannelRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateChannelRequest.ProtoReflect.Descriptor instead.
 func (*CreateChannelRequest) Descriptor() ([]byte, []int) {
-	return file_guild_message_proto_rawDescGZIP(), []int{28}
+	return file_guild_message_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *CreateChannelRequest) GetCategoryId() string {
@@ -1398,7 +1486,7 @@ type CreateChannelResponse struct {
 
 func (x *CreateChannelResponse) Reset() {
 	*x = CreateChannelResponse{}
-	mi := &file_guild_message_proto_msgTypes[29]
+	mi := &file_guild_message_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1410,7 +1498,7 @@ func (x *CreateChannelResponse) String() string {
 func (*CreateChannelResponse) ProtoMessage() {}
 
 func (x *CreateChannelResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_message_proto_msgTypes[29]
+	mi := &file_guild_message_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1423,7 +1511,7 @@ func (x *CreateChannelResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateChannelResponse.ProtoReflect.Descriptor instead.
 func (*CreateChannelResponse) Descriptor() ([]byte, []int) {
-	return file_guild_message_proto_rawDescGZIP(), []int{29}
+	return file_guild_message_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *CreateChannelResponse) GetChannel() *Channel {
@@ -1443,7 +1531,7 @@ type UpdateChannelRequest struct {
 
 func (x *UpdateChannelRequest) Reset() {
 	*x = UpdateChannelRequest{}
-	mi := &file_guild_message_proto_msgTypes[30]
+	mi := &file_guild_message_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1455,7 +1543,7 @@ func (x *UpdateChannelRequest) String() string {
 func (*UpdateChannelRequest) ProtoMessage() {}
 
 func (x *UpdateChannelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_message_proto_msgTypes[30]
+	mi := &file_guild_message_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1468,7 +1556,7 @@ func (x *UpdateChannelRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateChannelRequest.ProtoReflect.Descriptor instead.
 func (*UpdateChannelRequest) Descriptor() ([]byte, []int) {
-	return file_guild_message_proto_rawDescGZIP(), []int{30}
+	return file_guild_message_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *UpdateChannelRequest) GetChannelId() string {
@@ -1494,7 +1582,7 @@ type UpdateChannelResponse struct {
 
 func (x *UpdateChannelResponse) Reset() {
 	*x = UpdateChannelResponse{}
-	mi := &file_guild_message_proto_msgTypes[31]
+	mi := &file_guild_message_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1506,7 +1594,7 @@ func (x *UpdateChannelResponse) String() string {
 func (*UpdateChannelResponse) ProtoMessage() {}
 
 func (x *UpdateChannelResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_message_proto_msgTypes[31]
+	mi := &file_guild_message_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1519,7 +1607,7 @@ func (x *UpdateChannelResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateChannelResponse.ProtoReflect.Descriptor instead.
 func (*UpdateChannelResponse) Descriptor() ([]byte, []int) {
-	return file_guild_message_proto_rawDescGZIP(), []int{31}
+	return file_guild_message_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *UpdateChannelResponse) GetChannel() *Channel {
@@ -1538,7 +1626,7 @@ type DeleteChannelRequest struct {
 
 func (x *DeleteChannelRequest) Reset() {
 	*x = DeleteChannelRequest{}
-	mi := &file_guild_message_proto_msgTypes[32]
+	mi := &file_guild_message_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1550,7 +1638,7 @@ func (x *DeleteChannelRequest) String() string {
 func (*DeleteChannelRequest) ProtoMessage() {}
 
 func (x *DeleteChannelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_message_proto_msgTypes[32]
+	mi := &file_guild_message_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1563,7 +1651,7 @@ func (x *DeleteChannelRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteChannelRequest.ProtoReflect.Descriptor instead.
 func (*DeleteChannelRequest) Descriptor() ([]byte, []int) {
-	return file_guild_message_proto_rawDescGZIP(), []int{32}
+	return file_guild_message_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *DeleteChannelRequest) GetChannelId() string {
@@ -1582,7 +1670,7 @@ type DeleteChannelResponse struct {
 
 func (x *DeleteChannelResponse) Reset() {
 	*x = DeleteChannelResponse{}
-	mi := &file_guild_message_proto_msgTypes[33]
+	mi := &file_guild_message_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1594,7 +1682,7 @@ func (x *DeleteChannelResponse) String() string {
 func (*DeleteChannelResponse) ProtoMessage() {}
 
 func (x *DeleteChannelResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_guild_message_proto_msgTypes[33]
+	mi := &file_guild_message_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1607,7 +1695,7 @@ func (x *DeleteChannelResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteChannelResponse.ProtoReflect.Descriptor instead.
 func (*DeleteChannelResponse) Descriptor() ([]byte, []int) {
-	return file_guild_message_proto_rawDescGZIP(), []int{33}
+	return file_guild_message_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *DeleteChannelResponse) GetEmpty() *emptypb.Empty {
@@ -1682,7 +1770,14 @@ const file_guild_message_proto_rawDesc = "" +
 	"\x17GetGuildInvitesResponse\x12'\n" +
 	"\ainvites\x18\x01 \x03(\v2\r.guild.InviteR\ainvites:\x0f\x92A\f\n" +
 	"\n" +
-	"\xd2\x01\ainvites\"\xc3\x01\n" +
+	"\xd2\x01\ainvites\"S\n" +
+	"\x1bGetGuildByInviteCodeRequest\x12\x1f\n" +
+	"\vinvite_code\x18\x01 \x01(\tR\n" +
+	"inviteCode:\x13\x92A\x10\n" +
+	"\x0e\xd2\x01\vinvite_code\"U\n" +
+	"\x1cGetGuildByInviteCodeResponse\x12%\n" +
+	"\x06invite\x18\x01 \x01(\v2\r.guild.InviteR\x06invite:\x0e\x92A\v\n" +
+	"\t\xd2\x01\x06invite\"\xc3\x01\n" +
 	"\x18CreateGuildInviteRequest\x12\x19\n" +
 	"\bguild_id\x18\x01 \x01(\tR\aguildId\x12\x1e\n" +
 	"\bmax_uses\x18\x02 \x01(\x05H\x00R\amaxUses\x88\x01\x01\x12>\n" +
@@ -1775,77 +1870,80 @@ func file_guild_message_proto_rawDescGZIP() []byte {
 	return file_guild_message_proto_rawDescData
 }
 
-var file_guild_message_proto_msgTypes = make([]protoimpl.MessageInfo, 34)
+var file_guild_message_proto_msgTypes = make([]protoimpl.MessageInfo, 36)
 var file_guild_message_proto_goTypes = []any{
-	(*CreateGuildRequest)(nil),        // 0: guild.CreateGuildRequest
-	(*CreateGuildResponse)(nil),       // 1: guild.CreateGuildResponse
-	(*GetGuildOverviewRequest)(nil),   // 2: guild.GetGuildOverviewRequest
-	(*GetGuildOverviewResponse)(nil),  // 3: guild.GetGuildOverviewResponse
-	(*GetGuildByIDRequest)(nil),       // 4: guild.GetGuildByIDRequest
-	(*GetGuildByIDResponse)(nil),      // 5: guild.GetGuildByIDResponse
-	(*ListMyGuildsRequest)(nil),       // 6: guild.ListMyGuildsRequest
-	(*ListMyGuildsResponse)(nil),      // 7: guild.ListMyGuildsResponse
-	(*UpdateGuildRequest)(nil),        // 8: guild.UpdateGuildRequest
-	(*UpdateGuildResponse)(nil),       // 9: guild.UpdateGuildResponse
-	(*DeleteGuildMemberRequest)(nil),  // 10: guild.DeleteGuildMemberRequest
-	(*DeleteGuildMemberResponse)(nil), // 11: guild.DeleteGuildMemberResponse
-	(*LeaveGuildRequest)(nil),         // 12: guild.LeaveGuildRequest
-	(*LeaveGuildResponse)(nil),        // 13: guild.LeaveGuildResponse
-	(*GetGuildInvitesRequest)(nil),    // 14: guild.GetGuildInvitesRequest
-	(*GetGuildInvitesResponse)(nil),   // 15: guild.GetGuildInvitesResponse
-	(*CreateGuildInviteRequest)(nil),  // 16: guild.CreateGuildInviteRequest
-	(*CreateGuildInviteResponse)(nil), // 17: guild.CreateGuildInviteResponse
-	(*DeleteGuildInviteRequest)(nil),  // 18: guild.DeleteGuildInviteRequest
-	(*DeleteGuildInviteResponse)(nil), // 19: guild.DeleteGuildInviteResponse
-	(*JoinGuildRequest)(nil),          // 20: guild.JoinGuildRequest
-	(*JoinGuildResponse)(nil),         // 21: guild.JoinGuildResponse
-	(*CreateCategoryRequest)(nil),     // 22: guild.CreateCategoryRequest
-	(*CreateCategoryResponse)(nil),    // 23: guild.CreateCategoryResponse
-	(*UpdateCategoryRequest)(nil),     // 24: guild.UpdateCategoryRequest
-	(*UpdateCategoryResponse)(nil),    // 25: guild.UpdateCategoryResponse
-	(*DeleteCategoryRequest)(nil),     // 26: guild.DeleteCategoryRequest
-	(*DeleteCategoryResponse)(nil),    // 27: guild.DeleteCategoryResponse
-	(*CreateChannelRequest)(nil),      // 28: guild.CreateChannelRequest
-	(*CreateChannelResponse)(nil),     // 29: guild.CreateChannelResponse
-	(*UpdateChannelRequest)(nil),      // 30: guild.UpdateChannelRequest
-	(*UpdateChannelResponse)(nil),     // 31: guild.UpdateChannelResponse
-	(*DeleteChannelRequest)(nil),      // 32: guild.DeleteChannelRequest
-	(*DeleteChannelResponse)(nil),     // 33: guild.DeleteChannelResponse
-	(*Guild)(nil),                     // 34: guild.Guild
-	(*GuildDetail)(nil),               // 35: guild.GuildDetail
-	(*GuildWithMembers)(nil),          // 36: guild.GuildWithMembers
-	(*GuildWithMemberCount)(nil),      // 37: guild.GuildWithMemberCount
-	(*emptypb.Empty)(nil),             // 38: google.protobuf.Empty
-	(*Invite)(nil),                    // 39: guild.Invite
-	(*timestamppb.Timestamp)(nil),     // 40: google.protobuf.Timestamp
-	(*Member)(nil),                    // 41: guild.Member
-	(*Category)(nil),                  // 42: guild.Category
-	(*Channel)(nil),                   // 43: guild.Channel
+	(*CreateGuildRequest)(nil),           // 0: guild.CreateGuildRequest
+	(*CreateGuildResponse)(nil),          // 1: guild.CreateGuildResponse
+	(*GetGuildOverviewRequest)(nil),      // 2: guild.GetGuildOverviewRequest
+	(*GetGuildOverviewResponse)(nil),     // 3: guild.GetGuildOverviewResponse
+	(*GetGuildByIDRequest)(nil),          // 4: guild.GetGuildByIDRequest
+	(*GetGuildByIDResponse)(nil),         // 5: guild.GetGuildByIDResponse
+	(*ListMyGuildsRequest)(nil),          // 6: guild.ListMyGuildsRequest
+	(*ListMyGuildsResponse)(nil),         // 7: guild.ListMyGuildsResponse
+	(*UpdateGuildRequest)(nil),           // 8: guild.UpdateGuildRequest
+	(*UpdateGuildResponse)(nil),          // 9: guild.UpdateGuildResponse
+	(*DeleteGuildMemberRequest)(nil),     // 10: guild.DeleteGuildMemberRequest
+	(*DeleteGuildMemberResponse)(nil),    // 11: guild.DeleteGuildMemberResponse
+	(*LeaveGuildRequest)(nil),            // 12: guild.LeaveGuildRequest
+	(*LeaveGuildResponse)(nil),           // 13: guild.LeaveGuildResponse
+	(*GetGuildInvitesRequest)(nil),       // 14: guild.GetGuildInvitesRequest
+	(*GetGuildInvitesResponse)(nil),      // 15: guild.GetGuildInvitesResponse
+	(*GetGuildByInviteCodeRequest)(nil),  // 16: guild.GetGuildByInviteCodeRequest
+	(*GetGuildByInviteCodeResponse)(nil), // 17: guild.GetGuildByInviteCodeResponse
+	(*CreateGuildInviteRequest)(nil),     // 18: guild.CreateGuildInviteRequest
+	(*CreateGuildInviteResponse)(nil),    // 19: guild.CreateGuildInviteResponse
+	(*DeleteGuildInviteRequest)(nil),     // 20: guild.DeleteGuildInviteRequest
+	(*DeleteGuildInviteResponse)(nil),    // 21: guild.DeleteGuildInviteResponse
+	(*JoinGuildRequest)(nil),             // 22: guild.JoinGuildRequest
+	(*JoinGuildResponse)(nil),            // 23: guild.JoinGuildResponse
+	(*CreateCategoryRequest)(nil),        // 24: guild.CreateCategoryRequest
+	(*CreateCategoryResponse)(nil),       // 25: guild.CreateCategoryResponse
+	(*UpdateCategoryRequest)(nil),        // 26: guild.UpdateCategoryRequest
+	(*UpdateCategoryResponse)(nil),       // 27: guild.UpdateCategoryResponse
+	(*DeleteCategoryRequest)(nil),        // 28: guild.DeleteCategoryRequest
+	(*DeleteCategoryResponse)(nil),       // 29: guild.DeleteCategoryResponse
+	(*CreateChannelRequest)(nil),         // 30: guild.CreateChannelRequest
+	(*CreateChannelResponse)(nil),        // 31: guild.CreateChannelResponse
+	(*UpdateChannelRequest)(nil),         // 32: guild.UpdateChannelRequest
+	(*UpdateChannelResponse)(nil),        // 33: guild.UpdateChannelResponse
+	(*DeleteChannelRequest)(nil),         // 34: guild.DeleteChannelRequest
+	(*DeleteChannelResponse)(nil),        // 35: guild.DeleteChannelResponse
+	(*Guild)(nil),                        // 36: guild.Guild
+	(*GuildDetail)(nil),                  // 37: guild.GuildDetail
+	(*GuildWithMembers)(nil),             // 38: guild.GuildWithMembers
+	(*GuildWithMemberCount)(nil),         // 39: guild.GuildWithMemberCount
+	(*emptypb.Empty)(nil),                // 40: google.protobuf.Empty
+	(*Invite)(nil),                       // 41: guild.Invite
+	(*timestamppb.Timestamp)(nil),        // 42: google.protobuf.Timestamp
+	(*Member)(nil),                       // 43: guild.Member
+	(*Category)(nil),                     // 44: guild.Category
+	(*Channel)(nil),                      // 45: guild.Channel
 }
 var file_guild_message_proto_depIdxs = []int32{
-	34, // 0: guild.CreateGuildResponse.guild:type_name -> guild.Guild
-	35, // 1: guild.GetGuildOverviewResponse.guild:type_name -> guild.GuildDetail
-	36, // 2: guild.GetGuildByIDResponse.guild:type_name -> guild.GuildWithMembers
-	37, // 3: guild.ListMyGuildsResponse.guilds:type_name -> guild.GuildWithMemberCount
-	34, // 4: guild.UpdateGuildResponse.guild:type_name -> guild.Guild
-	38, // 5: guild.DeleteGuildMemberResponse.empty:type_name -> google.protobuf.Empty
-	38, // 6: guild.LeaveGuildResponse.empty:type_name -> google.protobuf.Empty
-	39, // 7: guild.GetGuildInvitesResponse.invites:type_name -> guild.Invite
-	40, // 8: guild.CreateGuildInviteRequest.expires_at:type_name -> google.protobuf.Timestamp
-	39, // 9: guild.CreateGuildInviteResponse.invite:type_name -> guild.Invite
-	38, // 10: guild.DeleteGuildInviteResponse.empty:type_name -> google.protobuf.Empty
-	41, // 11: guild.JoinGuildResponse.member:type_name -> guild.Member
-	42, // 12: guild.CreateCategoryResponse.category:type_name -> guild.Category
-	42, // 13: guild.UpdateCategoryResponse.category:type_name -> guild.Category
-	38, // 14: guild.DeleteCategoryResponse.empty:type_name -> google.protobuf.Empty
-	43, // 15: guild.CreateChannelResponse.channel:type_name -> guild.Channel
-	43, // 16: guild.UpdateChannelResponse.channel:type_name -> guild.Channel
-	38, // 17: guild.DeleteChannelResponse.empty:type_name -> google.protobuf.Empty
-	18, // [18:18] is the sub-list for method output_type
-	18, // [18:18] is the sub-list for method input_type
-	18, // [18:18] is the sub-list for extension type_name
-	18, // [18:18] is the sub-list for extension extendee
-	0,  // [0:18] is the sub-list for field type_name
+	36, // 0: guild.CreateGuildResponse.guild:type_name -> guild.Guild
+	37, // 1: guild.GetGuildOverviewResponse.guild:type_name -> guild.GuildDetail
+	38, // 2: guild.GetGuildByIDResponse.guild:type_name -> guild.GuildWithMembers
+	39, // 3: guild.ListMyGuildsResponse.guilds:type_name -> guild.GuildWithMemberCount
+	36, // 4: guild.UpdateGuildResponse.guild:type_name -> guild.Guild
+	40, // 5: guild.DeleteGuildMemberResponse.empty:type_name -> google.protobuf.Empty
+	40, // 6: guild.LeaveGuildResponse.empty:type_name -> google.protobuf.Empty
+	41, // 7: guild.GetGuildInvitesResponse.invites:type_name -> guild.Invite
+	41, // 8: guild.GetGuildByInviteCodeResponse.invite:type_name -> guild.Invite
+	42, // 9: guild.CreateGuildInviteRequest.expires_at:type_name -> google.protobuf.Timestamp
+	41, // 10: guild.CreateGuildInviteResponse.invite:type_name -> guild.Invite
+	40, // 11: guild.DeleteGuildInviteResponse.empty:type_name -> google.protobuf.Empty
+	43, // 12: guild.JoinGuildResponse.member:type_name -> guild.Member
+	44, // 13: guild.CreateCategoryResponse.category:type_name -> guild.Category
+	44, // 14: guild.UpdateCategoryResponse.category:type_name -> guild.Category
+	40, // 15: guild.DeleteCategoryResponse.empty:type_name -> google.protobuf.Empty
+	45, // 16: guild.CreateChannelResponse.channel:type_name -> guild.Channel
+	45, // 17: guild.UpdateChannelResponse.channel:type_name -> guild.Channel
+	40, // 18: guild.DeleteChannelResponse.empty:type_name -> google.protobuf.Empty
+	19, // [19:19] is the sub-list for method output_type
+	19, // [19:19] is the sub-list for method input_type
+	19, // [19:19] is the sub-list for extension type_name
+	19, // [19:19] is the sub-list for extension extendee
+	0,  // [0:19] is the sub-list for field type_name
 }
 
 func init() { file_guild_message_proto_init() }
@@ -1854,14 +1952,14 @@ func file_guild_message_proto_init() {
 		return
 	}
 	file_guild_type_proto_init()
-	file_guild_message_proto_msgTypes[16].OneofWrappers = []any{}
+	file_guild_message_proto_msgTypes[18].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_guild_message_proto_rawDesc), len(file_guild_message_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   34,
+			NumMessages:   36,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

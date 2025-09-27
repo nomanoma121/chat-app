@@ -502,13 +502,14 @@ func (x *CategoryDetail) GetChannels() []*Channel {
 type Invite struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	GuildId       string                 `protobuf:"bytes,1,opt,name=guild_id,json=guildId,proto3" json:"guild_id,omitempty"`
-	CreatorId     string                 `protobuf:"bytes,2,opt,name=creator_id,json=creatorId,proto3" json:"creator_id,omitempty"`
-	Creator       *User                  `protobuf:"bytes,3,opt,name=creator,proto3,oneof" json:"creator,omitempty"`
-	MaxUses       *int32                 `protobuf:"varint,4,opt,name=max_uses,json=maxUses,proto3,oneof" json:"max_uses,omitempty"`
-	CurrentUses   int32                  `protobuf:"varint,5,opt,name=current_uses,json=currentUses,proto3" json:"current_uses,omitempty"`
-	InviteCode    string                 `protobuf:"bytes,6,opt,name=invite_code,json=inviteCode,proto3" json:"invite_code,omitempty"`
-	ExpiresAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=expires_at,json=expiresAt,proto3,oneof" json:"expires_at,omitempty"`
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	Guild         *Guild                 `protobuf:"bytes,2,opt,name=guild,proto3,oneof" json:"guild,omitempty"`
+	CreatorId     string                 `protobuf:"bytes,3,opt,name=creator_id,json=creatorId,proto3" json:"creator_id,omitempty"`
+	Creator       *User                  `protobuf:"bytes,4,opt,name=creator,proto3,oneof" json:"creator,omitempty"`
+	MaxUses       *int32                 `protobuf:"varint,5,opt,name=max_uses,json=maxUses,proto3,oneof" json:"max_uses,omitempty"`
+	CurrentUses   int32                  `protobuf:"varint,6,opt,name=current_uses,json=currentUses,proto3" json:"current_uses,omitempty"`
+	InviteCode    string                 `protobuf:"bytes,7,opt,name=invite_code,json=inviteCode,proto3" json:"invite_code,omitempty"`
+	ExpiresAt     *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=expires_at,json=expiresAt,proto3,oneof" json:"expires_at,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -548,6 +549,13 @@ func (x *Invite) GetGuildId() string {
 		return x.GuildId
 	}
 	return ""
+}
+
+func (x *Invite) GetGuild() *Guild {
+	if x != nil {
+		return x.Guild
+	}
+	return nil
 }
 
 func (x *Invite) GetCreatorId() string {
@@ -944,23 +952,25 @@ const file_guild_type_proto_rawDesc = "" +
 	"created_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12*\n" +
 	"\bchannels\x18\x05 \x03(\v2\x0e.guild.ChannelR\bchannels:4\x92A1\n" +
 	"/\xd2\x01\x02id\xd2\x01\bguild_id\xd2\x01\x04name\xd2\x01\n" +
-	"created_at\xd2\x01\bchannels\"\xbe\x03\n" +
+	"created_at\xd2\x01\bchannels\"\xf1\x03\n" +
 	"\x06Invite\x12\x19\n" +
-	"\bguild_id\x18\x01 \x01(\tR\aguildId\x12\x1d\n" +
+	"\bguild_id\x18\x01 \x01(\tR\aguildId\x12'\n" +
+	"\x05guild\x18\x02 \x01(\v2\f.guild.GuildH\x00R\x05guild\x88\x01\x01\x12\x1d\n" +
 	"\n" +
-	"creator_id\x18\x02 \x01(\tR\tcreatorId\x12*\n" +
-	"\acreator\x18\x03 \x01(\v2\v.guild.UserH\x00R\acreator\x88\x01\x01\x12\x1e\n" +
-	"\bmax_uses\x18\x04 \x01(\x05H\x01R\amaxUses\x88\x01\x01\x12!\n" +
-	"\fcurrent_uses\x18\x05 \x01(\x05R\vcurrentUses\x12\x1f\n" +
-	"\vinvite_code\x18\x06 \x01(\tR\n" +
+	"creator_id\x18\x03 \x01(\tR\tcreatorId\x12*\n" +
+	"\acreator\x18\x04 \x01(\v2\v.guild.UserH\x01R\acreator\x88\x01\x01\x12\x1e\n" +
+	"\bmax_uses\x18\x05 \x01(\x05H\x02R\amaxUses\x88\x01\x01\x12!\n" +
+	"\fcurrent_uses\x18\x06 \x01(\x05R\vcurrentUses\x12\x1f\n" +
+	"\vinvite_code\x18\a \x01(\tR\n" +
 	"inviteCode\x12>\n" +
 	"\n" +
-	"expires_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampH\x02R\texpiresAt\x88\x01\x01\x129\n" +
+	"expires_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampH\x03R\texpiresAt\x88\x01\x01\x129\n" +
 	"\n" +
-	"created_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:G\x92AD\n" +
+	"created_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:G\x92AD\n" +
 	"B\xd2\x01\bguild_id\xd2\x01\n" +
 	"creator_id\xd2\x01\fcurrent_uses\xd2\x01\vinvite_code\xd2\x01\n" +
-	"created_atB\n" +
+	"created_atB\b\n" +
+	"\x06_guildB\n" +
 	"\n" +
 	"\b_creatorB\v\n" +
 	"\t_max_usesB\r\n" +
@@ -1037,19 +1047,20 @@ var file_guild_type_proto_depIdxs = []int32{
 	10, // 5: guild.GuildWithMemberCount.created_at:type_name -> google.protobuf.Timestamp
 	10, // 6: guild.CategoryDetail.created_at:type_name -> google.protobuf.Timestamp
 	8,  // 7: guild.CategoryDetail.channels:type_name -> guild.Channel
-	9,  // 8: guild.Invite.creator:type_name -> guild.User
-	10, // 9: guild.Invite.expires_at:type_name -> google.protobuf.Timestamp
-	10, // 10: guild.Invite.created_at:type_name -> google.protobuf.Timestamp
-	9,  // 11: guild.Member.user:type_name -> guild.User
-	10, // 12: guild.Member.joined_at:type_name -> google.protobuf.Timestamp
-	10, // 13: guild.Category.created_at:type_name -> google.protobuf.Timestamp
-	10, // 14: guild.Channel.created_at:type_name -> google.protobuf.Timestamp
-	10, // 15: guild.User.created_at:type_name -> google.protobuf.Timestamp
-	16, // [16:16] is the sub-list for method output_type
-	16, // [16:16] is the sub-list for method input_type
-	16, // [16:16] is the sub-list for extension type_name
-	16, // [16:16] is the sub-list for extension extendee
-	0,  // [0:16] is the sub-list for field type_name
+	0,  // 8: guild.Invite.guild:type_name -> guild.Guild
+	9,  // 9: guild.Invite.creator:type_name -> guild.User
+	10, // 10: guild.Invite.expires_at:type_name -> google.protobuf.Timestamp
+	10, // 11: guild.Invite.created_at:type_name -> google.protobuf.Timestamp
+	9,  // 12: guild.Member.user:type_name -> guild.User
+	10, // 13: guild.Member.joined_at:type_name -> google.protobuf.Timestamp
+	10, // 14: guild.Category.created_at:type_name -> google.protobuf.Timestamp
+	10, // 15: guild.Channel.created_at:type_name -> google.protobuf.Timestamp
+	10, // 16: guild.User.created_at:type_name -> google.protobuf.Timestamp
+	17, // [17:17] is the sub-list for method output_type
+	17, // [17:17] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_guild_type_proto_init() }
