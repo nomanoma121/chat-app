@@ -243,3 +243,35 @@ func (h *UserHandler) Exists(ctx context.Context, req *pb.ExistsRequest) (*pb.Ex
 
 	return &pb.ExistsResponse{Exists: true}, nil
 }
+
+func (h *UserHandler) GetUsersByIDs(ctx context.Context, req *pb.GetUsersByIDsRequest) (*pb.GetUsersByIDsResponse, error) {
+	userIDs := make([]uuid.UUID, 0, len(req.UserIds))
+	for _, idStr := range req.UserIds {
+		id, err := uuid.Parse(idStr)
+		if err != nil {
+			h.logger.Warn("Invalid user ID format", "user_id", idStr, "error", err)
+			return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidUserID.Error())
+		}
+		userIDs = append(userIDs, id)
+	}
+
+	users, err := h.userUsecase.GetUsersByIDs(ctx, userIDs)
+	if err != nil {
+		h.logger.Error("Failed to get users by IDs", "error", err)
+		return nil, status.Error(codes.Internal, "failed to get users")
+	}
+
+	pbUsers := make([]*pb.User, len(users))
+	for i, user := range users {
+		pbUsers[i] = &pb.User{
+			Id:        user.ID.String(),
+			DisplayId: user.DisplayId,
+			Name:      user.Name,
+			Bio:       user.Bio,
+			IconUrl:   user.IconURL,
+			CreatedAt: timestamppb.New(user.CreatedAt),
+		}
+	}
+
+	return &pb.GetUsersByIDsResponse{Users: pbUsers}, nil
+}

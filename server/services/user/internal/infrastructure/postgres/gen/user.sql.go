@@ -130,6 +130,48 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (*GetUserByIDRo
 	return &i, err
 }
 
+const getUsersByIDs = `-- name: GetUsersByIDs :many
+SELECT id, display_id, username, email, bio, icon_url, created_at FROM users WHERE id = ANY($1::uuid[])
+`
+
+type GetUsersByIDsRow struct {
+	ID        uuid.UUID
+	DisplayID string
+	Username  string
+	Email     string
+	Bio       string
+	IconUrl   string
+	CreatedAt pgtype.Timestamp
+}
+
+func (q *Queries) GetUsersByIDs(ctx context.Context, dollar_1 []uuid.UUID) ([]*GetUsersByIDsRow, error) {
+	rows, err := q.db.Query(ctx, getUsersByIDs, dollar_1)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*GetUsersByIDsRow
+	for rows.Next() {
+		var i GetUsersByIDsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.DisplayID,
+			&i.Username,
+			&i.Email,
+			&i.Bio,
+			&i.IconUrl,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateUser = `-- name: UpdateUser :one
 UPDATE users
 SET display_id = $2, username = $3, bio = $4, icon_url = $5, updated_at = NOW()

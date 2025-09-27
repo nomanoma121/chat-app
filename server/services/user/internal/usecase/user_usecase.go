@@ -17,6 +17,7 @@ type UserUsecase interface {
 	Login(ctx context.Context, params *LoginParams) (*string, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (*domain.User, error)
 	Update(ctx context.Context, params *UpdateParams) (*domain.User, error)
+	GetUsersByIDs(ctx context.Context, ids []uuid.UUID) ([]*domain.User, error)
 }
 
 type Config struct {
@@ -155,6 +156,14 @@ func (u *userUsecase) GetUserByID(ctx context.Context, id uuid.UUID) (*domain.Us
 		return nil, err
 	}
 	return user, nil
+}
+
+func (u *userUsecase) GetUsersByIDs(ctx context.Context, ids []uuid.UUID) ([]*domain.User, error) {
+	users, err := u.userRepo.GetUsersByIDs(ctx, ids)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
 }
 
 var _ UserUsecase = (*userUsecase)(nil)

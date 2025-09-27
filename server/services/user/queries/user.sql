@@ -20,3 +20,6 @@ UPDATE users
 SET display_id = $2, username = $3, bio = $4, icon_url = $5, updated_at = NOW()
 WHERE id = $1
 RETURNING id, display_id, username, email, bio, icon_url, created_at;
+
+-- name: GetUsersByIDs :many
+SELECT id, display_id, username, email, bio, icon_url, created_at FROM users WHERE id = ANY($1::uuid[]);
