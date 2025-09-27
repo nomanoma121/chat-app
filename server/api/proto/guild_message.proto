@@ -160,6 +160,24 @@ message GetGuildInvitesResponse {
   repeated Invite invites = 1;
 }
 
+message GetGuildByInviteCodeRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["invite_code"]
+    };
+  };
+  string invite_code = 1;
+}
+
+message GetGuildByInviteCodeResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["invite"]
+    };
+  };
+  Invite invite = 1;
+}
+
 message CreateGuildInviteRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
