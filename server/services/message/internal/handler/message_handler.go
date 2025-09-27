@@ -108,6 +108,13 @@ func (h *MessageHandler) GetByChannelID(ctx context.Context, req *pb.GetByChanne
 			Id:        message.ID.String(),
 			ChannelId: message.ChannelID.String(),
 			SenderId:  message.SenderID.String(),
+			Sender: &pb.User{
+				Id:        message.Sender.ID.String(),
+				DisplayId: message.Sender.DisplayId,
+				Name:      message.Sender.Name,
+				IconUrl:   message.Sender.IconURL,
+				CreatedAt: timestamppb.New(message.Sender.CreatedAt),
+			},
 			Content:   message.Content,
 			CreatedAt: timestamppb.New(message.CreatedAt),
 		}

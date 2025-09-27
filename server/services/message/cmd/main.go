@@ -4,6 +4,7 @@ import (
 	"context"
 	"message-service/internal/handler"
 	"message-service/internal/infrastructure/postgres"
+	user "message-service/internal/infrastructure/grpc"
 	"message-service/internal/infrastructure/postgres/gen"
 	"message-service/internal/usecase"
 	"net"
@@ -18,6 +19,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -51,9 +53,20 @@ func main() {
 	defer func() {
 		db.Close()
 	}()
+
+	userServiceURL := os.Getenv("USER_SERVICE_URL")
+	userConn, err := grpc.NewClient(userServiceURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Error("Failed to connect to user service", "error", err)
+		os.Exit(1)
+	}
+	defer userConn.Close()
+	log.Info("Connected to user service", "url", userServiceURL)
+
 	messageRepo := postgres.NewPostgresMessageRepository(gen.New(db))
+	userSvc := user.NewUserServiceClient(userConn)
 	validate := validator.New()
-	messageUsecase := usecase.NewMessageUsecase(messageRepo, validate)
+	messageUsecase := usecase.NewMessageUsecase(messageRepo, userSvc, validate)
 	messageHandler := handler.NewMessageHandler(messageUsecase, log)
 	server := grpc.NewServer()
 	pb.RegisterMessageServiceServer(server, messageHandler)
