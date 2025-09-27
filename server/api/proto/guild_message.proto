@@ -163,7 +163,7 @@ message GetGuildInvitesResponse {
 message CreateGuildInviteRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
-      required: ["guild_id", "max_uses", "expires_at"]
+      required: ["guild_id"]
     };
   };
   string guild_id = 1;

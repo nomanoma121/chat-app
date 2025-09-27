@@ -1682,14 +1682,13 @@ const file_guild_message_proto_rawDesc = "" +
 	"\x17GetGuildInvitesResponse\x12'\n" +
 	"\ainvites\x18\x01 \x03(\v2\r.guild.InviteR\ainvites:\x0f\x92A\f\n" +
 	"\n" +
-	"\xd2\x01\ainvites\"\xdb\x01\n" +
+	"\xd2\x01\ainvites\"\xc3\x01\n" +
 	"\x18CreateGuildInviteRequest\x12\x19\n" +
 	"\bguild_id\x18\x01 \x01(\tR\aguildId\x12\x1e\n" +
 	"\bmax_uses\x18\x02 \x01(\x05H\x00R\amaxUses\x88\x01\x01\x12>\n" +
 	"\n" +
-	"expires_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampH\x01R\texpiresAt\x88\x01\x01:(\x92A%\n" +
-	"#\xd2\x01\bguild_id\xd2\x01\bmax_uses\xd2\x01\n" +
-	"expires_atB\v\n" +
+	"expires_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampH\x01R\texpiresAt\x88\x01\x01:\x10\x92A\r\n" +
+	"\v\xd2\x01\bguild_idB\v\n" +
 	"\t_max_usesB\r\n" +
 	"\v_expires_at\"R\n" +
 	"\x19CreateGuildInviteResponse\x12%\n" +

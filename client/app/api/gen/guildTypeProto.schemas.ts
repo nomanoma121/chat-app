@@ -59,8 +59,8 @@ export interface CreateChannelResponse {
 }
 
 export interface CreateGuildInviteBody {
-	maxUses: number;
-	expiresInSeconds: number;
+	maxUses?: number;
+	expiresAt?: string;
 }
 
 export interface CreateGuildInviteResponse {
@@ -186,10 +186,11 @@ export interface GuildWithMembers {
 export interface Invite {
 	guildId: string;
 	creatorId: string;
-	maxUses: number;
+	maxUses?: number;
 	currentUses: number;
-	code: string;
-	expiresAt: string;
+	inviteCode?: string;
+	expiresAt?: string;
+	createdAt: string;
 }
 
 export interface JoinGuildBody {
@@ -197,7 +198,7 @@ export interface JoinGuildBody {
 }
 
 export interface JoinGuildResponse {
-	guild: Guild;
+	member?: Member;
 }
 
 export type LeaveGuildResponseEmpty = { [key: string]: unknown };
@@ -222,7 +223,6 @@ export interface LoginResponse {
 export interface Member {
 	userId: string;
 	guildId: string;
-	nickname: string;
 	joinedAt: string;
 }
 
