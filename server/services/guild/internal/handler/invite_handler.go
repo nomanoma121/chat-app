@@ -103,7 +103,7 @@ func (h *inviteHandler) JoinGuild(ctx context.Context, req *pb.JoinGuildRequest)
 		h.logger.Warn("Invalid user ID format", "user_id", userIDStr, "error", err)
 		return nil, err
 	}
-	guild, err := h.inviteUsecase.JoinGuild(ctx, &usecase.JoinGuildParams{
+	member, err := h.inviteUsecase.JoinGuild(ctx, &usecase.JoinGuildParams{
 		InviteCode: req.InviteCode,
 		UserID:     userID,
 	})
@@ -112,17 +112,15 @@ func (h *inviteHandler) JoinGuild(ctx context.Context, req *pb.JoinGuildRequest)
 		return nil, err
 	}
 
-	pbGuild := &pb.Guild{
-		Id:               guild.ID.String(),
-		OwnerId:          guild.OwnerID.String(),
-		Name:             guild.Name,
-		Description:      guild.Description,
-		IconUrl:          guild.IconURL,
-		DefaultChannelId: guild.DefaultChannelID.String(),
-		CreatedAt:        timestamppb.New(guild.CreatedAt),
+	pbMember := &pb.Member{
+		GuildId:  member.GuildID.String(),
+		UserId:   member.UserID.String(),
+		JoinedAt: timestamppb.New(member.JoinedAt),
 	}
 
 	return &pb.JoinGuildResponse{
-		Guild: pbGuild,
+		Member: pbMember,
 	}, nil
 }
+
+var _ pb.GuildServiceServer = (*inviteHandler)(nil)

@@ -94,7 +94,6 @@ func (h *guildHandler) GetGuildByID(ctx context.Context, req *pb.GetGuildByIDReq
 		pbMembers[i] = &pb.Member{
 			UserId:   member.UserID.String(),
 			GuildId:  member.GuildID.String(),
-			Nickname: member.Nickname,
 			JoinedAt: timestamppb.New(member.JoinedAt),
 		}
 	}

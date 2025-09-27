@@ -10,7 +10,6 @@ import (
 type Member struct {
 	UserID   uuid.UUID
 	GuildID  uuid.UUID
-	Nickname string
 	JoinedAt time.Time
 }
 

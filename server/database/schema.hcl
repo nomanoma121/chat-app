@@ -153,10 +153,6 @@ table "members" {
     null = false
     type = uuid
   }
-  column "nickname" {
-    null = false
-    type = varchar(100)
-  }
   column "joined_at" {
     null = false
     type = timestamp

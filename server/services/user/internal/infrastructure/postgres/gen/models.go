@@ -49,7 +49,6 @@ type Invite struct {
 type Member struct {
 	UserID    uuid.UUID
 	GuildID   uuid.UUID
-	Nickname  string
 	JoinedAt  pgtype.Timestamp
 	UpdatedAt pgtype.Timestamp
 }

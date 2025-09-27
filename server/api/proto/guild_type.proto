@@ -102,12 +102,11 @@ message Invite {
 message Member {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
-      required: ["user_id", "guild_id", "nickname", "joined_at"]
+      required: ["user_id", "guild_id", "joined_at"]
     };
   };
   string user_id = 1;
   string guild_id = 2;
-  string nickname = 3;
   google.protobuf.Timestamp joined_at = 4;
 }
 

@@ -89,7 +89,6 @@ func (u *inviteUsecase) JoinGuild(ctx context.Context, params *JoinGuildParams) 
 			&domain.Member{
 				GuildID:  invite.GuildID,
 				UserID:   params.UserID,
-				Nickname: "",
 				JoinedAt: time.Now(),
 			},
 		)

@@ -80,7 +80,6 @@ func (u *guildUsecase) Create(ctx context.Context, params *CreateGuildParams) (*
 	member := &domain.Member{
 		GuildID:  guild.ID,
 		UserID:   params.OwnerID,
-		Nickname: params.Name,
 		JoinedAt: time.Now(),
 	}
 
