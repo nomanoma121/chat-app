@@ -95,6 +95,7 @@ func (h *guildHandler) GetGuildByID(ctx context.Context, req *pb.GetGuildByIDReq
 			UserId: member.UserID.String(),
 			User: &pb.User{
 				Id:        member.User.ID.String(),
+				DisplayId: member.User.DisplayId,
 				Username:  member.User.Name,
 				IconUrl:   member.User.IconURL,
 				CreatedAt: timestamppb.New(member.User.CreatedAt),

@@ -105,6 +105,7 @@ func (h *inviteHandler) GetGuildInvites(ctx context.Context, req *pb.GetGuildInv
 			Creator: &pb.User{
 				Id:        invite.Creator.ID.String(),
 				Username:  invite.Creator.Name,
+				DisplayId: invite.Creator.DisplayId,
 				IconUrl:   invite.Creator.IconURL,
 				CreatedAt: timestamppb.New(invite.Creator.CreatedAt),
 			},
