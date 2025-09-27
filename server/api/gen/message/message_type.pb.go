@@ -23,21 +23,98 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type User struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	DisplayId     string                 `protobuf:"bytes,3,opt,name=display_id,json=displayId,proto3" json:"display_id,omitempty"`
+	IconUrl       string                 `protobuf:"bytes,4,opt,name=icon_url,json=iconUrl,proto3" json:"icon_url,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *User) Reset() {
+	*x = User{}
+	mi := &file_message_type_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *User) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*User) ProtoMessage() {}
+
+func (x *User) ProtoReflect() protoreflect.Message {
+	mi := &file_message_type_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use User.ProtoReflect.Descriptor instead.
+func (*User) Descriptor() ([]byte, []int) {
+	return file_message_type_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *User) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *User) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *User) GetDisplayId() string {
+	if x != nil {
+		return x.DisplayId
+	}
+	return ""
+}
+
+func (x *User) GetIconUrl() string {
+	if x != nil {
+		return x.IconUrl
+	}
+	return ""
+}
+
+func (x *User) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
 type Message struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	SenderId      string                 `protobuf:"bytes,2,opt,name=sender_id,json=senderId,proto3" json:"sender_id,omitempty"`
-	ChannelId     string                 `protobuf:"bytes,3,opt,name=channel_id,json=channelId,proto3" json:"channel_id,omitempty"`
-	ReplyId       *string                `protobuf:"bytes,4,opt,name=reply_id,json=replyId,proto3,oneof" json:"reply_id,omitempty"`
-	Content       string                 `protobuf:"bytes,5,opt,name=content,proto3" json:"content,omitempty"`
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	Sender        *User                  `protobuf:"bytes,3,opt,name=sender,proto3,oneof" json:"sender,omitempty"`
+	ChannelId     string                 `protobuf:"bytes,4,opt,name=channel_id,json=channelId,proto3" json:"channel_id,omitempty"`
+	ReplyId       *string                `protobuf:"bytes,5,opt,name=reply_id,json=replyId,proto3,oneof" json:"reply_id,omitempty"`
+	Content       string                 `protobuf:"bytes,6,opt,name=content,proto3" json:"content,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Message) Reset() {
 	*x = Message{}
-	mi := &file_message_type_proto_msgTypes[0]
+	mi := &file_message_type_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -49,7 +126,7 @@ func (x *Message) String() string {
 func (*Message) ProtoMessage() {}
 
 func (x *Message) ProtoReflect() protoreflect.Message {
-	mi := &file_message_type_proto_msgTypes[0]
+	mi := &file_message_type_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -62,7 +139,7 @@ func (x *Message) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Message.ProtoReflect.Descriptor instead.
 func (*Message) Descriptor() ([]byte, []int) {
-	return file_message_type_proto_rawDescGZIP(), []int{0}
+	return file_message_type_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Message) GetId() string {
@@ -77,6 +154,13 @@ func (x *Message) GetSenderId() string {
 		return x.SenderId
 	}
 	return ""
+}
+
+func (x *Message) GetSender() *User {
+	if x != nil {
+		return x.Sender
+	}
+	return nil
 }
 
 func (x *Message) GetChannelId() string {
@@ -111,19 +195,32 @@ var File_message_type_proto protoreflect.FileDescriptor
 
 const file_message_type_proto_rawDesc = "" +
 	"\n" +
-	"\x12message_type.proto\x12\x03msg\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\x93\x02\n" +
+	"\x12message_type.proto\x12\x03msg\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xd7\x01\n" +
+	"\x04User\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1d\n" +
+	"\n" +
+	"display_id\x18\x03 \x01(\tR\tdisplayId\x12\x19\n" +
+	"\bicon_url\x18\x04 \x01(\tR\aiconUrl\x129\n" +
+	"\n" +
+	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:6\x92A3\n" +
+	"1\xd2\x01\x02id\xd2\x01\x04name\xd2\x01\n" +
+	"display_id\xd2\x01\bicon_url\xd2\x01\n" +
+	"created_at\"\xc6\x02\n" +
 	"\aMessage\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
-	"\tsender_id\x18\x02 \x01(\tR\bsenderId\x12\x1d\n" +
+	"\tsender_id\x18\x02 \x01(\tR\bsenderId\x12&\n" +
+	"\x06sender\x18\x03 \x01(\v2\t.msg.UserH\x00R\x06sender\x88\x01\x01\x12\x1d\n" +
 	"\n" +
-	"channel_id\x18\x03 \x01(\tR\tchannelId\x12\x1e\n" +
-	"\breply_id\x18\x04 \x01(\tH\x00R\areplyId\x88\x01\x01\x12\x18\n" +
-	"\acontent\x18\x05 \x01(\tR\acontent\x129\n" +
+	"channel_id\x18\x04 \x01(\tR\tchannelId\x12\x1e\n" +
+	"\breply_id\x18\x05 \x01(\tH\x01R\areplyId\x88\x01\x01\x12\x18\n" +
+	"\acontent\x18\x06 \x01(\tR\acontent\x129\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt::\x92A7\n" +
+	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt::\x92A7\n" +
 	"5\xd2\x01\x02id\xd2\x01\tsender_id\xd2\x01\n" +
 	"channel_id\xd2\x01\acontent\xd2\x01\n" +
-	"created_atB\v\n" +
+	"created_atB\t\n" +
+	"\a_senderB\v\n" +
 	"\t_reply_idB\\\n" +
 	"\acom.msgB\x10MessageTypeProtoP\x01Z\x13./message;messagepb\xa2\x02\x03MXX\xaa\x02\x03Msg\xca\x02\x03Msg\xe2\x02\x0fMsg\\GPBMetadata\xea\x02\x03Msgb\x06proto3"
 
@@ -139,18 +236,21 @@ func file_message_type_proto_rawDescGZIP() []byte {
 	return file_message_type_proto_rawDescData
 }
 
-var file_message_type_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_message_type_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_message_type_proto_goTypes = []any{
-	(*Message)(nil),               // 0: msg.Message
-	(*timestamppb.Timestamp)(nil), // 1: google.protobuf.Timestamp
+	(*User)(nil),                  // 0: msg.User
+	(*Message)(nil),               // 1: msg.Message
+	(*timestamppb.Timestamp)(nil), // 2: google.protobuf.Timestamp
 }
 var file_message_type_proto_depIdxs = []int32{
-	1, // 0: msg.Message.created_at:type_name -> google.protobuf.Timestamp
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2, // 0: msg.User.created_at:type_name -> google.protobuf.Timestamp
+	0, // 1: msg.Message.sender:type_name -> msg.User
+	2, // 2: msg.Message.created_at:type_name -> google.protobuf.Timestamp
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_message_type_proto_init() }
@@ -158,14 +258,14 @@ func file_message_type_proto_init() {
 	if File_message_type_proto != nil {
 		return
 	}
-	file_message_type_proto_msgTypes[0].OneofWrappers = []any{}
+	file_message_type_proto_msgTypes[1].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_message_type_proto_rawDesc), len(file_message_type_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
