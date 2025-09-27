@@ -2,43 +2,19 @@ import { Calendar, Hash, Users } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { css } from "styled-system/css";
+import { useCreateGuildInvite } from "~/api/gen/invite/invite";
 import { Avatar } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 
-// Mock data - 実際はAPIから取得
-const mockInviteData = {
-	code: "abc123xyz",
-	guild: {
-		id: "guild-1",
-		name: "開発チーム",
-		description: "フルスタック開発チームのサーバーです",
-		icon: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=64&h=64&fit=crop&crop=center",
-		memberCount: 42,
-		onlineCount: 15,
-	},
-	creator: {
-		id: "user-1",
-		name: "管理者",
-		avatar:
-			"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face",
-	},
-	maxUses: 10,
-	currentUses: 3,
-	expiresAt: "2024-02-10T10:00:00Z",
-	createdAt: "2024-01-10T10:00:00Z",
-	isValid: true,
-	channels: [
-		{ id: "1", name: "general" },
-		{ id: "2", name: "development" },
-		{ id: "3", name: "design" },
-	],
-};
-
 export default function InvitePage() {
 	const navigate = useNavigate();
-	const { inviteCode } = useParams();
+	const { inviteCode, guildId } = useParams();
+	if (!inviteCode) {
+		return null;
+	}
+	const { data: inviteData } = useGetGuildInvites(inviteCode);
 	const [isJoining, setIsJoining] = useState(false);
 
 	const handleJoinGuild = async () => {
@@ -49,7 +25,7 @@ export default function InvitePage() {
 
 			// モックの成功処理
 			setTimeout(() => {
-				navigate(`/servers/${mockInviteData.guild.id}/channels/1`);
+				navigate(`/servers/${guildId}/channels/1`);
 			}, 1000);
 		} catch (error) {
 			console.error("Failed to join guild:", error);

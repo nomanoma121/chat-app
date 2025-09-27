@@ -8,8 +8,12 @@ import {
 	Trash2,
 } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { css } from "styled-system/css";
+import {
+	useCreateGuildInvite,
+	useGetGuildInvites,
+} from "~/api/gen/invite/invite";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
@@ -20,76 +24,72 @@ import { NumberInput } from "~/components/ui/number-input";
 import { createListCollection, Select } from "~/components/ui/select";
 import { Switch } from "~/components/ui/switch";
 import { Text } from "~/components/ui/text";
+import { formatDate } from "~/constants";
+import { useToast } from "~/hooks/use-toast";
 
-const mockInvites = [
-	{
-		id: "abc123",
-		code: "abc123",
-		uses: 5,
-		maxUses: 10,
-		creator: "yamada_taro",
-		createdAt: "2025年9月11日 05:33",
-		expiresAt: "2025年9月20日 05:33",
-		temporary: false,
-	},
-	{
-		id: "xyz789",
-		code: "xyz789",
-		uses: 12,
-		maxUses: null,
-		creator: "sato_hanako",
-		createdAt: "2025年9月8日 05:33",
-		expiresAt: null,
-		temporary: false,
-	},
-];
+const SECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+
+const expiryDaysCollection = createListCollection({
+	items: [
+		{ label: "1日後", value: "1" },
+		{ label: "7日後", value: "7" },
+		{ label: "15日後", value: "15" },
+		{ label: "30日後", value: "30" },
+	],
+});
 
 export default function InvitePage() {
 	const navigate = useNavigate();
+	const { serverId: guildId } = useParams();
+	const toast = useToast();
+	if (!guildId) {
+		return <div>不正なギルドIDです</div>;
+	}
+	const { data, refetch } = useGetGuildInvites(guildId);
+	const { mutateAsync: createInvite } = useCreateGuildInvite();
 	const [inviteSettings, setInviteSettings] = useState({
-		isUnlimited: false,
-		maxUses: 10,
-		expiryDays: "7",
-		temporary: false,
+		maxUses: {
+			value: 10,
+			isUnlimited: false,
+		},
+		expiryDays: {
+			value: "7",
+			isUnlimited: false,
+		},
 	});
 
-	const handleSettingChange = (
-		key: string,
-		value: string | boolean | number,
-	) => {
-		setInviteSettings((prev) => ({
-			...prev,
-			[key]: value,
-		}));
-	};
+	const handleCreateInvite = async () => {
+		const expiresAt = new Date(
+			Date.now() + parseInt(inviteSettings.expiryDays.value, 10) * SECONDS_PER_DAY,
+		);
+		try {
+			await createInvite({
+				guildId,
+				data: {
+					maxUses: inviteSettings.maxUses.isUnlimited
+						? undefined
+						: inviteSettings.maxUses.value,
+					expiresAt: inviteSettings.expiryDays.isUnlimited
+						? undefined
+						: expiresAt.toISOString(),
+				},
+			});
 
-	const expiryDaysCollection = createListCollection({
-		items: [
-			{ label: "1日後", value: "1" },
-			{ label: "7日後", value: "7" },
-			{ label: "15日後", value: "15" },
-			{ label: "30日後", value: "30" },
-		],
-	});
-
-	const handleCreateInvite = () => {
-		console.log("Creating invite with settings:", inviteSettings);
-		// 実際のAPI呼び出し処理
+			toast.success("招待リンクを作成しました");
+			refetch();
+		} catch (err) {
+			toast.error("招待リンクの作成に失敗しました");
+		}
 	};
 
 	const handleCopyInvite = async (code: string) => {
 		const inviteUrl = `https://discord.gg/${code}`;
 		try {
 			await navigator.clipboard.writeText(inviteUrl);
-			console.log("招待リンクをコピーしました");
+			toast.success("招待リンクをコピーしました");
 		} catch (err) {
-			console.error("Failed to copy invite link:", err);
+			toast.error("招待リンクのコピーに失敗しました");
 		}
-	};
-
-	const handleDeleteInvite = (id: string) => {
-		console.log(`Deleting invite: ${id}`);
-		// 実際の削除処理
 	};
 
 	return (
@@ -251,9 +251,15 @@ export default function InvitePage() {
 							>
 								<FormLabel color="text.bright">使用回数制限</FormLabel>
 								<Switch
-									checked={inviteSettings.isUnlimited}
+									checked={inviteSettings.maxUses.isUnlimited}
 									onCheckedChange={(details) =>
-										handleSettingChange("isUnlimited", details.checked)
+										setInviteSettings((prev) => ({
+											...prev,
+											maxUses: {
+												...prev.maxUses,
+												isUnlimited: details.checked,
+											},
+										}))
 									}
 									className={css({
 										mx: "12px",
@@ -270,11 +276,17 @@ export default function InvitePage() {
 									</Text>
 								</Switch>
 							</div>
-							{!inviteSettings.isUnlimited && (
+							{!inviteSettings.maxUses.isUnlimited && (
 								<NumberInput
-									value={inviteSettings.maxUses.toString()}
+									value={inviteSettings.maxUses.value.toString()}
 									onValueChange={(details) =>
-										handleSettingChange("maxUses", parseInt(details.value))
+										setInviteSettings((prev) => ({
+											...prev,
+											maxUses: {
+												value: details.valueAsNumber,
+												isUnlimited: false,
+											},
+										}))
 									}
 									min={1}
 									max={50}
@@ -313,15 +325,15 @@ export default function InvitePage() {
 					>
 						<span className={css({ display: "flex", alignItems: "center" })}>
 							<Link2 size={20} className={css({ marginRight: "8px" })} />
-							既存の招待リンク ({mockInvites.length})
+							既存の招待リンク ({data?.invites.length})
 						</span>
 					</Heading>
 				</Card.Header>
 
 				<Card.Body className={css({ padding: "0" })}>
-					{mockInvites.map((invite) => (
+					{data?.invites.map((invite) => (
 						<div
-							key={invite.id}
+							key={invite.inviteCode}
 							className={css({
 								padding: "20px",
 							})}
@@ -353,18 +365,18 @@ export default function InvitePage() {
 												borderRadius: "sm",
 											})}
 										>
-											{invite.code}
+											{invite.inviteCode}
 										</Text>
 										<Badge
 											className={css({
 												background:
-													invite.uses >= (invite.maxUses || 999)
+													invite.currentUses >= (invite.maxUses || 999)
 														? "danger.default"
 														: "accent.default",
 												color: "text.bright",
 											})}
 										>
-											{invite.uses}回使用
+											{invite.currentUses}回使用
 										</Badge>
 									</div>
 
@@ -378,12 +390,12 @@ export default function InvitePage() {
 										<Text
 											className={css({ fontSize: "sm", color: "text.medium" })}
 										>
-											作成者: {invite.creator}
+											作成者: {invite.creatorId}
 										</Text>
 										<Text
 											className={css({ fontSize: "sm", color: "text.medium" })}
 										>
-											作成日: {invite.createdAt}
+											作成日: {formatDate(invite.createdAt)}
 										</Text>
 										{invite.expiresAt && (
 											<Text
@@ -392,7 +404,7 @@ export default function InvitePage() {
 													color: "text.medium",
 												})}
 											>
-												期限: {invite.expiresAt}
+												期限: {formatDate(invite.expiresAt)}
 											</Text>
 										)}
 										{invite.maxUses && (
@@ -418,7 +430,7 @@ export default function InvitePage() {
 									<IconButton
 										variant="outline"
 										size="sm"
-										onClick={() => handleCopyInvite(invite.code)}
+										onClick={() => handleCopyInvite(invite.inviteCode)}
 										className={css({
 											display: "flex",
 											alignItems: "center",
@@ -436,7 +448,7 @@ export default function InvitePage() {
 									<IconButton
 										variant="outline"
 										size="sm"
-										onClick={() => handleDeleteInvite(invite.id)}
+										onClick={() => {}}
 										className={css({
 											display: "flex",
 											alignItems: "center",

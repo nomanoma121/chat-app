@@ -10,7 +10,7 @@ export default [
 	index("routes/page.tsx"),
 	route("login", "routes/login/page.tsx"),
 	route("register", "routes/register/page.tsx"),
-	...prefix("invite", [route(":inviteId", "routes/invite/page.tsx")]), // UI上ではGuildのことをServerと呼ぶ
+	...prefix("invite", [route(":inviteCode", "routes/invite/page.tsx")]), // UI上ではGuildのことをServerと呼ぶ
 	layout("routes/layout.tsx", [
 		...prefix("servers", [
 			layout("routes/guilds/layout.tsx", [
