@@ -84,7 +84,7 @@ export default function InvitePage() {
 	};
 
 	const handleCopyInvite = async (code: string) => {
-		const inviteUrl = `https://localhost/${code}`;
+		const inviteUrl = `http://localhost:5173/invite/${code}`;
 		try {
 			await navigator.clipboard.writeText(inviteUrl);
 			toast.success("招待リンクをコピーしました");

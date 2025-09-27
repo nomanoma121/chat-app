@@ -154,6 +154,7 @@ export interface Guild {
 	description: string;
 	iconUrl: string;
 	defaultChannelId: string;
+	memberCount?: number;
 	createdAt: string;
 }
 
