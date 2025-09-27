@@ -21,12 +21,14 @@ type InviteUsecase interface {
 
 type inviteUsecase struct {
 	store     domain.IStore
+	userSvc   domain.IUserService
 	validator *validator.Validate
 }
 
-func NewInviteUsecase(store domain.IStore, validator *validator.Validate) InviteUsecase {
+func NewInviteUsecase(store domain.IStore, userSvc domain.IUserService, validator *validator.Validate) InviteUsecase {
 	return &inviteUsecase{
 		store:     store,
+		userSvc:   userSvc,
 		validator: validator,
 	}
 }
@@ -64,7 +66,32 @@ func (u *inviteUsecase) Create(ctx context.Context, params *CreateInviteParams) 
 }
 
 func (u *inviteUsecase) GetByGuildID(ctx context.Context, guildID uuid.UUID) ([]*domain.Invite, error) {
-	return u.store.Invites().GetByGuildID(ctx, guildID)
+	invites, err := u.store.Invites().GetByGuildID(ctx, guildID)
+	if err != nil {
+		return nil, err
+	}
+
+	creatorIDs := make([]uuid.UUID, 0, len(invites))
+	for _, invite := range invites {
+		creatorIDs = append(creatorIDs, invite.CreatorID)
+	}
+
+	users, err := u.userSvc.GetUsersByIDs(creatorIDs)
+	if err != nil {
+		return nil, err
+	}
+	userMap := make(map[uuid.UUID]*domain.User)
+	for i := range users {
+		userMap[users[i].ID] = users[i]
+	}
+
+	for i := range invites {
+		if creator, ok := userMap[invites[i].CreatorID]; ok {
+			invites[i].Creator = creator
+		}
+	}
+
+	return invites, nil
 }
 
 type JoinGuildParams struct {

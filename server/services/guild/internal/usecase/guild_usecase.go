@@ -159,6 +159,27 @@ func (u *guildUsecase) GetByID(ctx context.Context, id uuid.UUID) (*GetByIDResul
 		return nil, err
 	}
 
+	memberUserIDs := make([]uuid.UUID, 0, len(members))
+	for _, member := range members {
+		memberUserIDs = append(memberUserIDs, member.UserID)
+	}
+
+	users, err := u.userSvc.GetUsersByIDs(memberUserIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	var userMap = make(map[uuid.UUID]*domain.User)
+	for _, user := range users {
+		userMap[user.ID] = user
+	}
+
+	for i, member := range members {
+		if user, ok := userMap[member.UserID]; ok {
+			members[i].User = user
+		}
+	}
+
 	return &GetByIDResult{
 		Guild:       guild,
 		MemberCount: count,

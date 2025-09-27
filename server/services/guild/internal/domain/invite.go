@@ -20,6 +20,7 @@ type Invite struct {
 	InviteCode  string
 	GuildID     uuid.UUID
 	CreatorID   uuid.UUID
+	Creator     *User
 	MaxUses     *int32
 	CurrentUses int32
 	ExpiresAt   *time.Time

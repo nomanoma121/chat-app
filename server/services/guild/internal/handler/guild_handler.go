@@ -92,7 +92,13 @@ func (h *guildHandler) GetGuildByID(ctx context.Context, req *pb.GetGuildByIDReq
 	pbMembers := make([]*pb.Member, len(guild.Members))
 	for i, member := range guild.Members {
 		pbMembers[i] = &pb.Member{
-			UserId:   member.UserID.String(),
+			UserId: member.UserID.String(),
+			User: &pb.User{
+				Id:        member.User.ID.String(),
+				Username:  member.User.Name,
+				IconUrl:   member.User.IconURL,
+				CreatedAt: timestamppb.New(member.User.CreatedAt),
+			},
 			GuildId:  member.GuildID.String(),
 			JoinedAt: timestamppb.New(member.JoinedAt),
 		}

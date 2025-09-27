@@ -10,13 +10,7 @@ import (
 type Member struct {
 	UserID   uuid.UUID
 	GuildID  uuid.UUID
-	JoinedAt time.Time
-}
-
-type MemberDetails struct {
-	UserID   uuid.UUID
-	User     User
-	GuildID  uuid.UUID
+	User     *User
 	JoinedAt time.Time
 }
 
