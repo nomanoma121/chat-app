@@ -166,9 +166,16 @@ func (h *inviteHandler) GetGuildByInviteCode(ctx context.Context, req *pb.GetGui
 	}
 
 	pbInvite := &pb.Invite{
-		InviteCode:  invite.InviteCode,
-		GuildId:     invite.GuildID.String(),
-		CreatorId:   invite.CreatorID.String(),
+		InviteCode: invite.InviteCode,
+		GuildId:    invite.GuildID.String(),
+		CreatorId:  invite.CreatorID.String(),
+		Creator: &pb.User{
+			Id:        invite.Creator.ID.String(),
+			Name:      invite.Creator.Name,
+			DisplayId: invite.Creator.DisplayId,
+			IconUrl:   invite.Creator.IconURL,
+			CreatedAt: timestamppb.New(invite.Creator.CreatedAt),
+		},
 		MaxUses:     invite.MaxUses,
 		CurrentUses: invite.CurrentUses,
 		ExpiresAt:   expiresAtPb,
