@@ -851,7 +851,7 @@ const file_guild_type_proto_rawDesc = "" +
 	"created_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12*\n" +
 	"\bchannels\x18\x05 \x03(\v2\x0e.guild.ChannelR\bchannels:4\x92A1\n" +
 	"/\xd2\x01\x02id\xd2\x01\bguild_id\xd2\x01\x04name\xd2\x01\n" +
-	"created_at\xd2\x01\bchannels\"\xff\x02\n" +
+	"created_at\xd2\x01\bchannels\"\x86\x03\n" +
 	"\x06Invite\x12\x19\n" +
 	"\bguild_id\x18\x01 \x01(\tR\aguildId\x12\x1d\n" +
 	"\n" +
@@ -863,9 +863,9 @@ const file_guild_type_proto_rawDesc = "" +
 	"\n" +
 	"expires_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampH\x01R\texpiresAt\x88\x01\x01\x129\n" +
 	"\n" +
-	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:@\x92A=\n" +
-	";\xd2\x01\bguild_id\xd2\x01\n" +
-	"creator_id\xd2\x01\fcurrent_uses\xd2\x01\x04code\xd2\x01\n" +
+	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:G\x92AD\n" +
+	"B\xd2\x01\bguild_id\xd2\x01\n" +
+	"creator_id\xd2\x01\fcurrent_uses\xd2\x01\vinvite_code\xd2\x01\n" +
 	"created_atB\v\n" +
 	"\t_max_usesB\r\n" +
 	"\v_expires_at\"\x9d\x01\n" +

@@ -87,7 +87,7 @@ message CategoryDetail {
 message Invite {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
-      required: ["guild_id", "creator_id", "current_uses", "code", "created_at"]
+      required: ["guild_id", "creator_id", "current_uses", "invite_code", "created_at"]
     };
   };
   string guild_id = 1;

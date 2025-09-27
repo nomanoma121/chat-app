@@ -188,7 +188,7 @@ export interface Invite {
 	creatorId: string;
 	maxUses?: number;
 	currentUses: number;
-	inviteCode?: string;
+	inviteCode: string;
 	expiresAt?: string;
 	createdAt: string;
 }
