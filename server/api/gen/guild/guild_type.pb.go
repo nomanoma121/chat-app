@@ -595,7 +595,6 @@ type Member struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	GuildId       string                 `protobuf:"bytes,2,opt,name=guild_id,json=guildId,proto3" json:"guild_id,omitempty"`
-	Nickname      string                 `protobuf:"bytes,3,opt,name=nickname,proto3" json:"nickname,omitempty"`
 	JoinedAt      *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=joined_at,json=joinedAt,proto3" json:"joined_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -641,13 +640,6 @@ func (x *Member) GetUserId() string {
 func (x *Member) GetGuildId() string {
 	if x != nil {
 		return x.GuildId
-	}
-	return ""
-}
-
-func (x *Member) GetNickname() string {
-	if x != nil {
-		return x.Nickname
 	}
 	return ""
 }
@@ -877,13 +869,12 @@ const file_guild_type_proto_rawDesc = "" +
 	"expires_at\xd2\x01\n" +
 	"created_atB\v\n" +
 	"\t_max_usesB\r\n" +
-	"\v_expires_at\"\xc4\x01\n" +
+	"\v_expires_at\"\x9d\x01\n" +
 	"\x06Member\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x19\n" +
-	"\bguild_id\x18\x02 \x01(\tR\aguildId\x12\x1a\n" +
-	"\bnickname\x18\x03 \x01(\tR\bnickname\x127\n" +
-	"\tjoined_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\bjoinedAt:1\x92A.\n" +
-	",\xd2\x01\auser_id\xd2\x01\bguild_id\xd2\x01\bnickname\xd2\x01\tjoined_at\"\xaf\x01\n" +
+	"\bguild_id\x18\x02 \x01(\tR\aguildId\x127\n" +
+	"\tjoined_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\bjoinedAt:&\x92A#\n" +
+	"!\xd2\x01\auser_id\xd2\x01\bguild_id\xd2\x01\tjoined_at\"\xaf\x01\n" +
 	"\bCategory\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
 	"\bguild_id\x18\x02 \x01(\tR\aguildId\x12\x12\n" +
