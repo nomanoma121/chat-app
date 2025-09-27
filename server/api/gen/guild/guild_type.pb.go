@@ -808,7 +808,7 @@ type User struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	DisplayId     string                 `protobuf:"bytes,2,opt,name=display_id,json=displayId,proto3" json:"display_id,omitempty"`
-	Username      string                 `protobuf:"bytes,3,opt,name=username,proto3" json:"username,omitempty"`
+	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	IconUrl       string                 `protobuf:"bytes,5,opt,name=icon_url,json=iconUrl,proto3" json:"icon_url,omitempty"`
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -859,9 +859,9 @@ func (x *User) GetDisplayId() string {
 	return ""
 }
 
-func (x *User) GetUsername() string {
+func (x *User) GetName() string {
 	if x != nil {
-		return x.Username
+		return x.Name
 	}
 	return ""
 }
@@ -988,17 +988,17 @@ const file_guild_type_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:,\x92A)\n" +
 	"'\xd2\x01\x02id\xd2\x01\x04name\xd2\x01\vcategory_id\xd2\x01\n" +
-	"created_at\"\xe3\x01\n" +
+	"created_at\"\xd7\x01\n" +
 	"\x04User\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
-	"display_id\x18\x02 \x01(\tR\tdisplayId\x12\x1a\n" +
-	"\busername\x18\x03 \x01(\tR\busername\x12\x19\n" +
+	"display_id\x18\x02 \x01(\tR\tdisplayId\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x19\n" +
 	"\bicon_url\x18\x05 \x01(\tR\aiconUrl\x129\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt::\x92A7\n" +
-	"5\xd2\x01\x02id\xd2\x01\n" +
-	"display_id\xd2\x01\busername\xd2\x01\bicon_url\xd2\x01\n" +
+	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:6\x92A3\n" +
+	"1\xd2\x01\x02id\xd2\x01\n" +
+	"display_id\xd2\x01\x04name\xd2\x01\bicon_url\xd2\x01\n" +
 	"created_atB`\n" +
 	"\tcom.guildB\x0eGuildTypeProtoP\x01Z\x0f./guild;guildpb\xa2\x02\x03GXX\xaa\x02\x05Guild\xca\x02\x05Guild\xe2\x02\x11Guild\\GPBMetadata\xea\x02\x05Guildb\x06proto3"
 

@@ -99,12 +99,12 @@ func (h *inviteHandler) GetGuildInvites(ctx context.Context, req *pb.GetGuildInv
 		}
 
 		pbInvites[i] = &pb.Invite{
-			InviteCode:  invite.InviteCode,
-			GuildId:     invite.GuildID.String(),
-			CreatorId:   invite.CreatorID.String(),
+			InviteCode: invite.InviteCode,
+			GuildId:    invite.GuildID.String(),
+			CreatorId:  invite.CreatorID.String(),
 			Creator: &pb.User{
 				Id:        invite.Creator.ID.String(),
-				Username:  invite.Creator.Name,
+				Name:      invite.Creator.Name,
 				DisplayId: invite.Creator.DisplayId,
 				IconUrl:   invite.Creator.IconURL,
 				CreatedAt: timestamppb.New(invite.Creator.CreatedAt),

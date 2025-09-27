@@ -140,12 +140,12 @@ message Channel {
 message User {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
-      required: ["id", "display_id", "username", "icon_url", "created_at"]
+      required: ["id", "display_id", "name", "icon_url", "created_at"]
     };
   };
   string id = 1;
   string display_id = 2;
-  string username = 3;
+  string name = 3;
   string icon_url = 5;
   google.protobuf.Timestamp created_at = 6;
 }
