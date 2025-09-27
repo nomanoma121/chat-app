@@ -31,6 +31,7 @@ type Guild struct {
 	Description      string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	IconUrl          string                 `protobuf:"bytes,5,opt,name=icon_url,json=iconUrl,proto3" json:"icon_url,omitempty"`
 	DefaultChannelId string                 `protobuf:"bytes,7,opt,name=default_channel_id,json=defaultChannelId,proto3" json:"default_channel_id,omitempty"`
+	MemberCount      *int32                 `protobuf:"varint,8,opt,name=member_count,json=memberCount,proto3,oneof" json:"member_count,omitempty"`
 	CreatedAt        *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
@@ -106,6 +107,13 @@ func (x *Guild) GetDefaultChannelId() string {
 		return x.DefaultChannelId
 	}
 	return ""
+}
+
+func (x *Guild) GetMemberCount() int32 {
+	if x != nil && x.MemberCount != nil {
+		return *x.MemberCount
+	}
+	return 0
 }
 
 func (x *Guild) GetCreatedAt() *timestamppb.Timestamp {
@@ -892,18 +900,20 @@ var File_guild_type_proto protoreflect.FileDescriptor
 
 const file_guild_type_proto_rawDesc = "" +
 	"\n" +
-	"\x10guild_type.proto\x12\x05guild\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xc5\x02\n" +
+	"\x10guild_type.proto\x12\x05guild\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xfe\x02\n" +
 	"\x05Guild\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x19\n" +
 	"\bowner_id\x18\x03 \x01(\tR\aownerId\x12 \n" +
 	"\vdescription\x18\x04 \x01(\tR\vdescription\x12\x19\n" +
 	"\bicon_url\x18\x05 \x01(\tR\aiconUrl\x12,\n" +
-	"\x12default_channel_id\x18\a \x01(\tR\x10defaultChannelId\x129\n" +
+	"\x12default_channel_id\x18\a \x01(\tR\x10defaultChannelId\x12&\n" +
+	"\fmember_count\x18\b \x01(\x05H\x00R\vmemberCount\x88\x01\x01\x129\n" +
 	"\n" +
 	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt:W\x92AT\n" +
 	"R\xd2\x01\x02id\xd2\x01\x04name\xd2\x01\bowner_id\xd2\x01\vdescription\xd2\x01\x12default_channel_id\xd2\x01\bicon_url\xd2\x01\n" +
-	"created_at\"\x8f\x03\n" +
+	"created_atB\x0f\n" +
+	"\r_member_count\"\x8f\x03\n" +
 	"\vGuildDetail\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x19\n" +
@@ -1068,6 +1078,7 @@ func file_guild_type_proto_init() {
 	if File_guild_type_proto != nil {
 		return
 	}
+	file_guild_type_proto_msgTypes[0].OneofWrappers = []any{}
 	file_guild_type_proto_msgTypes[5].OneofWrappers = []any{}
 	file_guild_type_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}

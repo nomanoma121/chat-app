@@ -250,7 +250,6 @@ func (h *guildHandler) GetMyGuilds(ctx context.Context, req *pb.ListMyGuildsRequ
 			Description:      guild.Description,
 			IconUrl:          guild.IconURL,
 			DefaultChannelId: guild.DefaultChannelID.String(),
-			MemberCount:      guild.MemberCount,
 			CreatedAt:        timestamppb.New(guild.CreatedAt),
 		}
 	}

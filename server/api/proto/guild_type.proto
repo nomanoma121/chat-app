@@ -19,6 +19,7 @@ message Guild {
   string description = 4;
   string icon_url = 5;
   string default_channel_id = 7;
+  optional int32 member_count = 8;
   google.protobuf.Timestamp created_at = 6;
 }
 

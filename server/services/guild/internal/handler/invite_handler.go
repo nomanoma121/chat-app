@@ -174,13 +174,14 @@ func (h *inviteHandler) GetGuildByInviteCode(ctx context.Context, req *pb.GetGui
 		ExpiresAt:   expiresAtPb,
 		CreatedAt:   timestamppb.New(invite.CreatedAt),
 		Guild: &pb.Guild{
-			Id:          invite.Guild.ID.String(),
-			OwnerId:     invite.Guild.OwnerID.String(),
-			Name:        invite.Guild.Name,
-			Description: invite.Guild.Description,
+			Id:               invite.Guild.ID.String(),
+			OwnerId:          invite.Guild.OwnerID.String(),
+			Name:             invite.Guild.Name,
+			Description:      invite.Guild.Description,
 			DefaultChannelId: invite.Guild.DefaultChannelID.String(),
-			IconUrl:     invite.Guild.IconURL,
-			CreatedAt:   timestamppb.New(invite.Guild.CreatedAt),
+			MemberCount:      invite.Guild.MemberCount,
+			IconUrl:          invite.Guild.IconURL,
+			CreatedAt:        timestamppb.New(invite.Guild.CreatedAt),
 		},
 	}
 

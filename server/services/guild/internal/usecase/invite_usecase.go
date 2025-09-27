@@ -152,6 +152,12 @@ func (u *inviteUsecase) GetByInviteCode(ctx context.Context, inviteCode string) 
 	}
 	invite.Creator = &creator
 
+	memberCount, err := u.store.Members().CountByGuildID(ctx, invite.GuildID)
+	if err != nil {
+		return nil, err
+	}
+	invite.Guild.MemberCount = &memberCount
+
 	return invite, nil
 }
 
