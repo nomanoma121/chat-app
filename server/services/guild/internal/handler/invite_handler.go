@@ -26,15 +26,8 @@ func NewInviteHandler(inviteUsecase usecase.InviteUsecase, logger *slog.Logger) 
 }
 
 func (h *inviteHandler) CreateGuildInvite(ctx context.Context, req *pb.CreateGuildInviteRequest) (*pb.CreateGuildInviteResponse, error) {
-	creatorIDStr, err := metadata.GetUserIDFromMetadata(ctx)
+	creatorID, err := getUserID(ctx, h.logger)
 	if err != nil {
-		h.logger.Warn("Failed to get user ID from metadata", "error", err)
-		return nil, err
-	}
-
-	creatorID, err := uuid.Parse(creatorIDStr)
-	if err != nil {
-		h.logger.Warn("Invalid user ID format", "user_id", creatorIDStr, "error", err)
 		return nil, err
 	}
 
@@ -80,13 +73,18 @@ func (h *inviteHandler) CreateGuildInvite(ctx context.Context, req *pb.CreateGui
 }
 
 func (h *inviteHandler) GetGuildInvites(ctx context.Context, req *pb.GetGuildInvitesRequest) (*pb.GetGuildInvitesResponse, error) {
+	userID, err := getUserID(ctx, h.logger)
+	if err != nil {
+		return nil, err
+	}
+	
 	guildID, err := uuid.Parse(req.GuildId)
 	if err != nil {
 		h.logger.Warn("Invalid guild ID format", "guild_id", req.GuildId, "error", err)
 		return nil, err
 	}
 
-	invites, err := h.inviteUsecase.GetByGuildID(ctx, guildID)
+	invites, err := h.inviteUsecase.GetByGuildID(ctx, userID, guildID)
 	if err != nil {
 		h.logger.Error("Failed to get invites", "guild_id", req.GuildId, "error", err)
 		return nil, err
