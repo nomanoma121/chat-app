@@ -1,4 +1,4 @@
-import { ArrowLeft, Bell, Shield, User } from "lucide-react";
+import { ArrowLeft, Bell, User } from "lucide-react";
 import { useNavigate } from "react-router";
 import { css } from "styled-system/css";
 import { Tabs } from "~/components/features/tabs";
@@ -6,7 +6,7 @@ import { Button } from "~/components/ui/button";
 import { Heading } from "~/components/ui/heading";
 import { Text } from "~/components/ui/text";
 import { NotificationTab } from "./internal/components/notification-tab";
-import { PrivacyTab } from "./internal/components/privacy-tab";
+// import { PrivacyTab } from "./internal/components/privacy-tab";
 import { ProfileTab } from "./internal/components/profile-tab";
 
 export default function UserSetting() {
@@ -54,14 +54,14 @@ export default function UserSetting() {
 						<User size={16} className={css({ mr: "8px" })} />
 						プロフィール
 					</Tabs.Trigger>
-					<Tabs.Trigger value="notifications">
+					<Tabs.Trigger value="notifications" disabled>
 						<Bell size={16} className={css({ mr: "8px" })} />
 						通知
 					</Tabs.Trigger>
-					<Tabs.Trigger value="privacy">
+					{/* <Tabs.Trigger value="privacy">
 						<Shield size={16} className={css({ mr: "8px" })} />
 						プライバシー
-					</Tabs.Trigger>
+					</Tabs.Trigger> */}
 				</Tabs.List>
 				<Tabs.Content value="profile">
 					<ProfileTab />
@@ -69,9 +69,9 @@ export default function UserSetting() {
 				<Tabs.Content value="notifications">
 					<NotificationTab />
 				</Tabs.Content>
-				<Tabs.Content value="privacy">
+				{/* <Tabs.Content value="privacy">
 					<PrivacyTab />
-				</Tabs.Content>
+				</Tabs.Content> */}
 			</Tabs.Root>
 		</div>
 	);
