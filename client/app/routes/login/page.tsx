@@ -33,7 +33,7 @@ export default function LoginPage() {
 		formState: { errors, isValid },
 	} = useForm<FormInputValues>({
 		resolver: standardSchemaResolver(LoginForm),
-		mode: "onBlur",
+		mode: "onSubmit",
 		defaultValues: {
 			email: "",
 			password: "",
@@ -93,6 +93,7 @@ export default function LoginPage() {
 				<Card.Body>
 					<form
 						onSubmit={handleSubmit(onSubmit)}
+						noValidate
 						className={css({
 							display: "flex",
 							flexDirection: "column",
@@ -151,7 +152,7 @@ export default function LoginPage() {
 
 						<Button
 							type="submit"
-							disabled={!isValid || isPending}
+							disabled={isPending}
 							loading={isPending}
 							className={css({
 								width: "100%",

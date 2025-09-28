@@ -27,11 +27,11 @@ export default function CreateGuild() {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isValid },
+		formState: { errors },
 		reset,
 	} = useForm<FormInputValues>({
 		resolver: standardSchemaResolver(CreateGuildForm),
-		mode: "onBlur",
+		mode: "onSubmit",
 		defaultValues: {
 			name: "",
 			description: "",
@@ -90,6 +90,7 @@ export default function CreateGuild() {
 				>
 					<form
 						onSubmit={handleSubmit(onSubmit)}
+						noValidate
 						className={css({
 							width: "100%",
 							display: "flex",
@@ -155,7 +156,7 @@ export default function CreateGuild() {
 							type="submit"
 							className={css({ width: "100%", marginTop: "10px" })}
 							loading={isPending}
-							disabled={!isValid || isPending}
+							disabled={isPending}
 						>
 							サーバーを作成
 						</Button>

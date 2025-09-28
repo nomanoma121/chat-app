@@ -55,7 +55,7 @@ export const GuildPanel = () => {
 
 	const channelForm = useForm<ChannelFormValues>({
 		resolver: standardSchemaResolver(ChannelForm),
-		mode: "onBlur",
+		mode: "onSubmit",
 		defaultValues: {
 			name: "",
 		},
@@ -63,7 +63,7 @@ export const GuildPanel = () => {
 
 	const categoryForm = useForm<CategoryFormValues>({
 		resolver: standardSchemaResolver(CategoryForm),
-		mode: "onBlur",
+		mode: "onSubmit",
 		defaultValues: {
 			name: "",
 		},
@@ -265,7 +265,7 @@ export const GuildPanel = () => {
 							チャンネルを作成
 						</Dialog.Title>
 
-						<form onSubmit={channelForm.handleSubmit(handleChannelSubmit)}>
+						<form onSubmit={channelForm.handleSubmit(handleChannelSubmit)} noValidate>
 							<div
 								className={css({
 									display: "flex",
@@ -359,7 +359,7 @@ export const GuildPanel = () => {
 							カテゴリを作成
 						</Dialog.Title>
 
-						<form onSubmit={categoryForm.handleSubmit(handleCategorySubmit)}>
+						<form onSubmit={categoryForm.handleSubmit(handleCategorySubmit)} noValidate>
 							<div
 								className={css({
 									display: "flex",

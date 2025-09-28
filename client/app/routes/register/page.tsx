@@ -37,10 +37,10 @@ export default function RegisterPage() {
 	const {
 		register: registerField,
 		handleSubmit,
-		formState: { errors, isValid },
+		formState: { errors },
 	} = useForm<FormInputValues>({
 		resolver: standardSchemaResolver(RegisterForm),
-		mode: "onBlur",
+		mode: "onSubmit",
 		defaultValues: {
 			displayId: "",
 			name: "",
@@ -78,12 +78,19 @@ export default function RegisterPage() {
 	};
 
 	return (
-		<div>
+		<div
+			className={css({
+				minHeight: "100vh",
+				display: "flex",
+				alignItems: "center",
+				justifyContent: "center",
+				background: "bg.primary",
+				padding: "20px",
+			})}
+		>
 			<Card.Root
 				className={css({
 					width: "500px",
-					margin: "0 auto",
-					marginTop: "80px",
 					padding: "30px",
 					background: "bg.secondary",
 				})}
@@ -103,6 +110,7 @@ export default function RegisterPage() {
 				<Card.Body>
 					<form
 						onSubmit={handleSubmit(onSubmit)}
+						noValidate
 						className={css({
 							display: "flex",
 							flexDirection: "column",
@@ -231,7 +239,7 @@ export default function RegisterPage() {
 
 						<Button
 							type="submit"
-							disabled={!isValid || isPending}
+							disabled={isPending}
 							loading={isPending}
 							className={css({
 								width: "100%",

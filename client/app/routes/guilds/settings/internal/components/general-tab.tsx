@@ -34,10 +34,10 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 	const {
 		register,
 		handleSubmit,
-		formState: { isValid, errors },
+		formState: { errors },
 	} = useForm<UpdateGuildFormValues>({
 		resolver: standardSchemaResolver(UpdateGuildForm),
-		mode: "onBlur",
+		mode: "onSubmit",
 		defaultValues: {
 			name: guild?.name,
 			description: guild?.description,
@@ -102,6 +102,7 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 				<Card.Body>
 					<form
 						onSubmit={handleSubmit(onSubmit)}
+						noValidate
 						className={css({
 							display: "flex",
 							flexDirection: "column",
@@ -255,7 +256,7 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 
 						<Button
 							type="submit"
-							disabled={!isValid || !canEditGuild}
+							disabled={!canEditGuild}
 							className={css({
 								marginTop: "8px",
 								alignSelf: "flex-end",
