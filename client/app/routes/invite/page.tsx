@@ -4,6 +4,7 @@ import { css } from "styled-system/css";
 import { useGetGuildByInviteCode, useJoinGuild } from "~/api/gen/invite/invite";
 import { Avatar } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
+import { InviteErrorCard } from "./internal/components/invite-error-card";
 import { Card } from "~/components/ui/card";
 import { Spinner } from "~/components/ui/spinner";
 import { Text } from "~/components/ui/text";
@@ -15,7 +16,7 @@ export default function InvitePage() {
 	const { inviteCode } = useParams();
 
 	if (!inviteCode) {
-		return null;
+		return <InviteErrorCard navigate={navigate} />;
 	}
 
 	const { data, isLoading, isError } = useGetGuildByInviteCode(inviteCode);
@@ -53,65 +54,19 @@ export default function InvitePage() {
 		);
 	}
 
+	// エラーまたは招待データが存在しない場合のチェック
 	if (isError || !data?.invite) {
-		return (
-			<div
-				className={css({
-					minHeight: "100vh",
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "center",
-					background: "bg.primary",
-				})}
-			>
-				<Card.Root
-					className={css({
-						width: "400px",
-						padding: "30px",
-						background: "bg.secondary",
-						textAlign: "center",
-					})}
-				>
-					<Card.Body>
-						<div
-							className={css({
-								fontSize: "4xl",
-								marginBottom: "16px",
-							})}
-						>
-							😞
-						</div>
-						<Text
-							className={css({
-								fontSize: "xl",
-								fontWeight: "bold",
-								color: "text.bright",
-								marginBottom: "8px",
-							})}
-						>
-							招待が無効です
-						</Text>
-						<Text
-							className={css({
-								color: "text.medium",
-								marginBottom: "24px",
-							})}
-						>
-							この招待リンクは期限切れか、無効になっています
-						</Text>
-						<Button
-							onClick={() => navigate("/guilds")}
-							className={css({ width: "100%" })}
-						>
-							サーバー一覧に戻る
-						</Button>
-					</Card.Body>
-				</Card.Root>
-			</div>
-		);
+		return <InviteErrorCard navigate={navigate} />;
 	}
 
 	const invite = data.invite;
+
+	// 期限切れまたは使用回数上限チェック
+	if ((invite.expiresAt && new Date(invite.expiresAt) < new Date()) ||
+		(invite.maxUses && invite.currentUses >= invite.maxUses)) {
+		return <InviteErrorCard navigate={navigate} />;
+	}
+
 	const guild = invite.guild;
 
 	return (

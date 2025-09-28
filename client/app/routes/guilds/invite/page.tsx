@@ -14,6 +14,7 @@ import {
 	useCreateGuildInvite,
 	useGetGuildInvites,
 } from "~/api/gen/invite/invite";
+import { NotFoundPage } from "~/components/features/not-found-page";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
@@ -43,7 +44,7 @@ export default function InvitePage() {
 	const { serverId: guildId } = useParams();
 	const toast = useToast();
 	if (!guildId) {
-		return <div>不正なギルドIDです</div>;
+		return <NotFoundPage />;
 	}
 	const { data, refetch } = useGetGuildInvites(guildId);
 	const { mutateAsync: createInvite } = useCreateGuildInvite();
