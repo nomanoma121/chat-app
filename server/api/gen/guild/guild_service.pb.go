@@ -26,7 +26,7 @@ var File_guild_service_proto protoreflect.FileDescriptor
 
 const file_guild_service_proto_rawDesc = "" +
 	"\n" +
-	"\x13guild_service.proto\x12\x05guild\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x13guild_message.proto2\xd0\x12\n" +
+	"\x13guild_service.proto\x12\x05guild\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x13guild_message.proto2\xab\x13\n" +
 	"\fGuildService\x12f\n" +
 	"\vCreateGuild\x12\x19.guild.CreateGuildRequest\x1a\x1a.guild.CreateGuildResponse\" \x92A\a\n" +
 	"\x05Guild\x82\xd3\xe4\x93\x02\x10:\x01*\"\v/api/guilds\x12\x86\x01\n" +
@@ -67,7 +67,8 @@ const file_guild_service_proto_rawDesc = "" +
 	"\rUpdateChannel\x12\x1b.guild.UpdateChannelRequest\x1a\x1c.guild.UpdateChannelResponse\"1\x92A\t\n" +
 	"\aChannel\x82\xd3\xe4\x93\x02\x1f:\x01*\x1a\x1a/api/channels/{channel_id}\x12z\n" +
 	"\rDeleteChannel\x12\x1b.guild.DeleteChannelRequest\x1a\x1c.guild.DeleteChannelResponse\".\x92A\t\n" +
-	"\aChannel\x82\xd3\xe4\x93\x02\x1c*\x1a/api/channels/{channel_id}\x1a'\x92A$\n" +
+	"\aChannel\x82\xd3\xe4\x93\x02\x1c*\x1a/api/channels/{channel_id}\x12Y\n" +
+	"\x12CheckChannelAccess\x12 .guild.CheckChannelAccessRequest\x1a!.guild.CheckChannelAccessResponse\x1a'\x92A$\n" +
 	"\x05Guild\x12\x1bGuild management operationsBc\n" +
 	"\tcom.guildB\x11GuildServiceProtoP\x01Z\x0f./guild;guildpb\xa2\x02\x03GXX\xaa\x02\x05Guild\xca\x02\x05Guild\xe2\x02\x11Guild\\GPBMetadata\xea\x02\x05Guildb\x06proto3"
 
@@ -90,24 +91,26 @@ var file_guild_service_proto_goTypes = []any{
 	(*CreateChannelRequest)(nil),         // 15: guild.CreateChannelRequest
 	(*UpdateChannelRequest)(nil),         // 16: guild.UpdateChannelRequest
 	(*DeleteChannelRequest)(nil),         // 17: guild.DeleteChannelRequest
-	(*CreateGuildResponse)(nil),          // 18: guild.CreateGuildResponse
-	(*GetGuildOverviewResponse)(nil),     // 19: guild.GetGuildOverviewResponse
-	(*GetGuildByIDResponse)(nil),         // 20: guild.GetGuildByIDResponse
-	(*ListMyGuildsResponse)(nil),         // 21: guild.ListMyGuildsResponse
-	(*UpdateGuildResponse)(nil),          // 22: guild.UpdateGuildResponse
-	(*DeleteGuildMemberResponse)(nil),    // 23: guild.DeleteGuildMemberResponse
-	(*LeaveGuildResponse)(nil),           // 24: guild.LeaveGuildResponse
-	(*GetGuildInvitesResponse)(nil),      // 25: guild.GetGuildInvitesResponse
-	(*GetGuildByInviteCodeResponse)(nil), // 26: guild.GetGuildByInviteCodeResponse
-	(*CreateGuildInviteResponse)(nil),    // 27: guild.CreateGuildInviteResponse
-	(*DeleteGuildInviteResponse)(nil),    // 28: guild.DeleteGuildInviteResponse
-	(*JoinGuildResponse)(nil),            // 29: guild.JoinGuildResponse
-	(*CreateCategoryResponse)(nil),       // 30: guild.CreateCategoryResponse
-	(*UpdateCategoryResponse)(nil),       // 31: guild.UpdateCategoryResponse
-	(*DeleteCategoryResponse)(nil),       // 32: guild.DeleteCategoryResponse
-	(*CreateChannelResponse)(nil),        // 33: guild.CreateChannelResponse
-	(*UpdateChannelResponse)(nil),        // 34: guild.UpdateChannelResponse
-	(*DeleteChannelResponse)(nil),        // 35: guild.DeleteChannelResponse
+	(*CheckChannelAccessRequest)(nil),    // 18: guild.CheckChannelAccessRequest
+	(*CreateGuildResponse)(nil),          // 19: guild.CreateGuildResponse
+	(*GetGuildOverviewResponse)(nil),     // 20: guild.GetGuildOverviewResponse
+	(*GetGuildByIDResponse)(nil),         // 21: guild.GetGuildByIDResponse
+	(*ListMyGuildsResponse)(nil),         // 22: guild.ListMyGuildsResponse
+	(*UpdateGuildResponse)(nil),          // 23: guild.UpdateGuildResponse
+	(*DeleteGuildMemberResponse)(nil),    // 24: guild.DeleteGuildMemberResponse
+	(*LeaveGuildResponse)(nil),           // 25: guild.LeaveGuildResponse
+	(*GetGuildInvitesResponse)(nil),      // 26: guild.GetGuildInvitesResponse
+	(*GetGuildByInviteCodeResponse)(nil), // 27: guild.GetGuildByInviteCodeResponse
+	(*CreateGuildInviteResponse)(nil),    // 28: guild.CreateGuildInviteResponse
+	(*DeleteGuildInviteResponse)(nil),    // 29: guild.DeleteGuildInviteResponse
+	(*JoinGuildResponse)(nil),            // 30: guild.JoinGuildResponse
+	(*CreateCategoryResponse)(nil),       // 31: guild.CreateCategoryResponse
+	(*UpdateCategoryResponse)(nil),       // 32: guild.UpdateCategoryResponse
+	(*DeleteCategoryResponse)(nil),       // 33: guild.DeleteCategoryResponse
+	(*CreateChannelResponse)(nil),        // 34: guild.CreateChannelResponse
+	(*UpdateChannelResponse)(nil),        // 35: guild.UpdateChannelResponse
+	(*DeleteChannelResponse)(nil),        // 36: guild.DeleteChannelResponse
+	(*CheckChannelAccessResponse)(nil),   // 37: guild.CheckChannelAccessResponse
 }
 var file_guild_service_proto_depIdxs = []int32{
 	0,  // 0: guild.GuildService.CreateGuild:input_type -> guild.CreateGuildRequest
@@ -128,26 +131,28 @@ var file_guild_service_proto_depIdxs = []int32{
 	15, // 15: guild.GuildService.CreateChannel:input_type -> guild.CreateChannelRequest
 	16, // 16: guild.GuildService.UpdateChannel:input_type -> guild.UpdateChannelRequest
 	17, // 17: guild.GuildService.DeleteChannel:input_type -> guild.DeleteChannelRequest
-	18, // 18: guild.GuildService.CreateGuild:output_type -> guild.CreateGuildResponse
-	19, // 19: guild.GuildService.GetGuildOverview:output_type -> guild.GetGuildOverviewResponse
-	20, // 20: guild.GuildService.GetGuildByID:output_type -> guild.GetGuildByIDResponse
-	21, // 21: guild.GuildService.ListMyGuilds:output_type -> guild.ListMyGuildsResponse
-	22, // 22: guild.GuildService.UpdateGuild:output_type -> guild.UpdateGuildResponse
-	23, // 23: guild.GuildService.DeleteGuildMember:output_type -> guild.DeleteGuildMemberResponse
-	24, // 24: guild.GuildService.LeaveGuild:output_type -> guild.LeaveGuildResponse
-	25, // 25: guild.GuildService.GetGuildInvites:output_type -> guild.GetGuildInvitesResponse
-	26, // 26: guild.GuildService.GetGuildByInviteCode:output_type -> guild.GetGuildByInviteCodeResponse
-	27, // 27: guild.GuildService.CreateGuildInvite:output_type -> guild.CreateGuildInviteResponse
-	28, // 28: guild.GuildService.DeleteGuildInvite:output_type -> guild.DeleteGuildInviteResponse
-	29, // 29: guild.GuildService.JoinGuild:output_type -> guild.JoinGuildResponse
-	30, // 30: guild.GuildService.CreateCategory:output_type -> guild.CreateCategoryResponse
-	31, // 31: guild.GuildService.UpdateCategory:output_type -> guild.UpdateCategoryResponse
-	32, // 32: guild.GuildService.DeleteCategory:output_type -> guild.DeleteCategoryResponse
-	33, // 33: guild.GuildService.CreateChannel:output_type -> guild.CreateChannelResponse
-	34, // 34: guild.GuildService.UpdateChannel:output_type -> guild.UpdateChannelResponse
-	35, // 35: guild.GuildService.DeleteChannel:output_type -> guild.DeleteChannelResponse
-	18, // [18:36] is the sub-list for method output_type
-	0,  // [0:18] is the sub-list for method input_type
+	18, // 18: guild.GuildService.CheckChannelAccess:input_type -> guild.CheckChannelAccessRequest
+	19, // 19: guild.GuildService.CreateGuild:output_type -> guild.CreateGuildResponse
+	20, // 20: guild.GuildService.GetGuildOverview:output_type -> guild.GetGuildOverviewResponse
+	21, // 21: guild.GuildService.GetGuildByID:output_type -> guild.GetGuildByIDResponse
+	22, // 22: guild.GuildService.ListMyGuilds:output_type -> guild.ListMyGuildsResponse
+	23, // 23: guild.GuildService.UpdateGuild:output_type -> guild.UpdateGuildResponse
+	24, // 24: guild.GuildService.DeleteGuildMember:output_type -> guild.DeleteGuildMemberResponse
+	25, // 25: guild.GuildService.LeaveGuild:output_type -> guild.LeaveGuildResponse
+	26, // 26: guild.GuildService.GetGuildInvites:output_type -> guild.GetGuildInvitesResponse
+	27, // 27: guild.GuildService.GetGuildByInviteCode:output_type -> guild.GetGuildByInviteCodeResponse
+	28, // 28: guild.GuildService.CreateGuildInvite:output_type -> guild.CreateGuildInviteResponse
+	29, // 29: guild.GuildService.DeleteGuildInvite:output_type -> guild.DeleteGuildInviteResponse
+	30, // 30: guild.GuildService.JoinGuild:output_type -> guild.JoinGuildResponse
+	31, // 31: guild.GuildService.CreateCategory:output_type -> guild.CreateCategoryResponse
+	32, // 32: guild.GuildService.UpdateCategory:output_type -> guild.UpdateCategoryResponse
+	33, // 33: guild.GuildService.DeleteCategory:output_type -> guild.DeleteCategoryResponse
+	34, // 34: guild.GuildService.CreateChannel:output_type -> guild.CreateChannelResponse
+	35, // 35: guild.GuildService.UpdateChannel:output_type -> guild.UpdateChannelResponse
+	36, // 36: guild.GuildService.DeleteChannel:output_type -> guild.DeleteChannelResponse
+	37, // 37: guild.GuildService.CheckChannelAccess:output_type -> guild.CheckChannelAccessResponse
+	19, // [19:38] is the sub-list for method output_type
+	0,  // [0:19] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name

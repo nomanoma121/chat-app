@@ -184,4 +184,6 @@ service GuildService {
       tags: "Channel"
     };
   }
+
+  rpc CheckChannelAccess(CheckChannelAccessRequest) returns (CheckChannelAccessResponse);
 }
