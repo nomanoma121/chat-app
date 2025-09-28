@@ -46,7 +46,7 @@ func (u *inviteUsecase) Create(ctx context.Context, params *CreateInviteParams) 
 		return nil, domain.ErrInvalidInviteData
 	}
 
-	isOwner, err := u.store.Guilds().IsOwner(ctx, params.CreatorID, params.GuildID)
+	isOwner, err := u.store.Guilds().IsOwner(ctx, params.GuildID, params.CreatorID)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (u *inviteUsecase) Create(ctx context.Context, params *CreateInviteParams) 
 }
 
 func (u *inviteUsecase) GetByGuildID(ctx context.Context, userID, guildID uuid.UUID) ([]*domain.Invite, error) {
-	isMember, err := u.store.Members().IsMember(ctx, userID, guildID)
+	isMember, err := u.store.Members().IsMember(ctx, guildID, userID)
 	if err != nil {
 		return nil, err
 	}

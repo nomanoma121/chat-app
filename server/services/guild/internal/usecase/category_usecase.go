@@ -36,7 +36,7 @@ func (u *categoryUsecase) CreateCategory(ctx context.Context, params *CreateCate
 		return nil, domain.ErrInvalidCategoryData
 	}
 
-	isOwner, err := u.store.Guilds().IsOwner(ctx, params.UserID, params.GuildID)
+	isOwner, err := u.store.Guilds().IsOwner(ctx, params.GuildID, params.UserID)
 	if err != nil {
 		return nil, err
 	}

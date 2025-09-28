@@ -42,7 +42,7 @@ func (u *channelUsecase) Create(ctx context.Context, params *CreateChannelParams
 		return nil, err
 	}
 
-	isOwner, err := u.store.Guilds().IsOwner(ctx, params.UserID, guildID)
+	isOwner, err := u.store.Guilds().IsOwner(ctx, guildID, params.UserID)
 	if err != nil {
 		return nil, err
 	}
