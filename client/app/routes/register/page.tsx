@@ -49,7 +49,7 @@ export default function RegisterPage() {
       email: "",
       password: "",
       bio: "",
-      iconUrl: "",
+      iconUrl: "http://example.com/icon.png",
     },
   });
 
@@ -139,6 +139,16 @@ export default function RegisterPage() {
               このサイトは学習目的で作成されています。普段使用しているメールアドレスやパスワードは絶対に使用しないでください。
             </Text>
           </div>
+          <Text
+            className={css({
+              fontSize: "xs",
+              color: "text.disabled",
+              textAlign: "center",
+              lineHeight: "1.4",
+            })}
+          >
+            ※アイコンとメールアドレスは実在しなくても大丈夫です
+          </Text>
         </Card.Header>
         <Card.Body>
           <form
@@ -239,7 +249,7 @@ export default function RegisterPage() {
             </Field.Root>
 
             <Field.Root invalid={!!errors.iconUrl}>
-              <FormLabel color="text.bright">アイコンURL（任意）</FormLabel>
+              <FormLabel color="text.bright">アイコンURL(このままでもOK)</FormLabel>
               <Field.Input
                 {...registerField("iconUrl")}
                 type="url"
