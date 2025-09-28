@@ -5,7 +5,6 @@ import (
 	"guild-service/internal/domain"
 	"guild-service/internal/usecase"
 	"log/slog"
-	"shared/metadata"
 
 	pb "chat-app-proto/gen/guild"
 
@@ -29,16 +28,9 @@ func NewGuildHandler(guildUsecase usecase.GuildUsecase, logger *slog.Logger) *gu
 }
 
 func (h *guildHandler) CreateGuild(ctx context.Context, req *pb.CreateGuildRequest) (*pb.CreateGuildResponse, error) {
-	userIDStr, err := metadata.GetUserIDFromMetadata(ctx)
+	userID, err := getUserID(ctx, h.logger)
 	if err != nil {
-		h.logger.Warn("Failed to get user ID from metadata", "error", err)
-		return nil, status.Error(codes.Unauthenticated, "authentication required")
-	}
-
-	userID, err := uuid.Parse(userIDStr)
-	if err != nil {
-		h.logger.Warn("Invalid user ID format", "user_id", userIDStr, "error", err)
-		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidGuildData.Error())
+		return nil, err
 	}
 
 	guild, err := h.guildUsecase.Create(ctx, &usecase.CreateGuildParams{
@@ -71,13 +63,18 @@ func (h *guildHandler) CreateGuild(ctx context.Context, req *pb.CreateGuildReque
 }
 
 func (h *guildHandler) GetGuildByID(ctx context.Context, req *pb.GetGuildByIDRequest) (*pb.GetGuildByIDResponse, error) {
+	userID, err := getUserID(ctx, h.logger)
+	if err != nil {
+		return nil, err
+	}
+
 	guildID, err := uuid.Parse(req.GuildId)
 	if err != nil {
 		h.logger.Warn("Invalid UUID format", "error", err)
 		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidGuildID.Error())
 	}
 
-	guild, err := h.guildUsecase.GetByID(ctx, guildID)
+	guild, err := h.guildUsecase.GetByID(ctx, userID, guildID)
 	if err != nil {
 		switch err {
 		case domain.ErrGuildNotFound:
@@ -121,11 +118,17 @@ func (h *guildHandler) GetGuildByID(ctx context.Context, req *pb.GetGuildByIDReq
 }
 
 func (h *guildHandler) UpdateGuild(ctx context.Context, req *pb.UpdateGuildRequest) (*pb.UpdateGuildResponse, error) {
+	userID, err := getUserID(ctx, h.logger)
+	if err != nil {
+		return nil, err
+	}
+
 	guildID, err := uuid.Parse(req.GuildId)
 	if err != nil {
 		h.logger.Warn("Invalid guild ID format", "guild_id", req.GuildId, "error", err)
 		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidGuildID.Error())
 	}
+
 	defaultChannelID, err := uuid.Parse(req.DefaultChannelId)
 	if err != nil {
 		h.logger.Warn("Invalid default channel ID format", "default_channel_id", req.DefaultChannelId, "error", err)
@@ -133,6 +136,7 @@ func (h *guildHandler) UpdateGuild(ctx context.Context, req *pb.UpdateGuildReque
 	}
 
 	usecaseReq := &usecase.UpdateGuildParams{
+		UserID:           userID,
 		ID:               guildID,
 		Name:             req.Name,
 		Description:      req.Description,
@@ -149,6 +153,9 @@ func (h *guildHandler) UpdateGuild(ctx context.Context, req *pb.UpdateGuildReque
 		case domain.ErrInvalidGuildData:
 			h.logger.Warn("Invalid guild data", "guild_id", guildID)
 			return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidGuildData.Error())
+		case domain.ErrNotGuildOwner:
+			h.logger.Warn("Not guild owner", "guild_id", guildID)
+			return nil, status.Error(codes.PermissionDenied, domain.ErrNotGuildOwner.Error())
 		default:
 			h.logger.Error("Failed to update guild", "guild_id", guildID, "error", err)
 			return nil, status.Error(codes.Internal, domain.ErrInternalServerError.Error())
@@ -169,13 +176,18 @@ func (h *guildHandler) UpdateGuild(ctx context.Context, req *pb.UpdateGuildReque
 }
 
 func (h *guildHandler) GetGuildOverview(ctx context.Context, req *pb.GetGuildOverviewRequest) (*pb.GetGuildOverviewResponse, error) {
+	userID, err := getUserID(ctx, h.logger)
+	if err != nil {
+		return nil, err
+	}
+
 	guildID, err := uuid.Parse(req.GuildId)
 	if err != nil {
 		h.logger.Warn("Invalid guild ID format", "guild_id", req.GuildId, "error", err)
 		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidGuildID.Error())
 	}
 
-	guildOverview, err := h.guildUsecase.GetGuildOverview(ctx, guildID)
+	guildOverview, err := h.guildUsecase.GetGuildOverview(ctx, userID, guildID)
 	if err != nil {
 		switch err {
 		case domain.ErrGuildNotFound:
@@ -223,16 +235,9 @@ func (h *guildHandler) GetGuildOverview(ctx context.Context, req *pb.GetGuildOve
 }
 
 func (h *guildHandler) GetMyGuilds(ctx context.Context, req *pb.ListMyGuildsRequest) (*pb.ListMyGuildsResponse, error) {
-	userIDStr, err := metadata.GetUserIDFromMetadata(ctx)
+	userID, err := getUserID(ctx, h.logger)
 	if err != nil {
-		h.logger.Warn("Failed to get user ID from metadata", "error", err)
-		return nil, status.Error(codes.Unauthenticated, "authentication required")
-	}
-
-	userID, err := uuid.Parse(userIDStr)
-	if err != nil {
-		h.logger.Warn("Invalid user ID format", "user_id", userIDStr, "error", err)
-		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidGuildData.Error())
+		return nil, err
 	}
 
 	guilds, err := h.guildUsecase.GetMyGuilds(ctx, userID)

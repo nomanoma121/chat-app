@@ -12,8 +12,8 @@ import (
 type GuildUsecase interface {
 	Create(ctx context.Context, params *CreateGuildParams) (*domain.Guild, error)
 	Update(ctx context.Context, params *UpdateGuildParams) (*domain.Guild, error)
-	GetByID(ctx context.Context, id uuid.UUID) (*GetByIDResult, error)
-	GetGuildOverview(ctx context.Context, guildID uuid.UUID) (*domain.GuildOverview, error)
+	GetByID(ctx context.Context, userID, guildID uuid.UUID) (*GetByIDResult, error)
+	GetGuildOverview(ctx context.Context, userID, guildID uuid.UUID) (*domain.GuildOverview, error)
 	GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*domain.Guild, error)
 }
 
@@ -116,6 +116,7 @@ func (u *guildUsecase) Create(ctx context.Context, params *CreateGuildParams) (*
 }
 
 type UpdateGuildParams struct {
+	UserID           uuid.UUID `validate:"required"`
 	ID               uuid.UUID `validate:"required"`
 	Name             string    `validate:"required,min=2,max=20"`
 	Description      string    `validate:"required,max=200"`
@@ -126,6 +127,13 @@ type UpdateGuildParams struct {
 func (u *guildUsecase) Update(ctx context.Context, params *UpdateGuildParams) (*domain.Guild, error) {
 	if err := u.validator.Struct(params); err != nil {
 		return nil, domain.ErrInvalidGuildData
+	}
+	isOwner, err := u.store.Guilds().IsOwner(ctx, params.ID, params.UserID)
+	if err != nil {
+		return nil, err
+	}
+	if !isOwner {
+		return nil, domain.ErrNotGuildOwner
 	}
 
 	return u.store.Guilds().Update(ctx, &domain.Guild{
@@ -143,8 +151,16 @@ type GetByIDResult struct {
 	Members     []domain.Member
 }
 
-func (u *guildUsecase) GetByID(ctx context.Context, id uuid.UUID) (*GetByIDResult, error) {
-	guild, err := u.store.Guilds().GetByID(ctx, id)
+func (u *guildUsecase) GetByID(ctx context.Context, userID, guildID uuid.UUID) (*GetByIDResult, error) {
+	isMember, err := u.store.Members().IsMember(ctx, guildID, userID)
+	if err != nil {
+		return nil, err
+	}
+	if !isMember {
+		return nil, domain.ErrGuildNotFound
+	}
+
+	guild, err := u.store.Guilds().GetByID(ctx, guildID)
 	if err != nil {
 		return nil, err
 	}
@@ -187,7 +203,15 @@ func (u *guildUsecase) GetByID(ctx context.Context, id uuid.UUID) (*GetByIDResul
 	}, nil
 }
 
-func (u *guildUsecase) GetGuildOverview(ctx context.Context, guildID uuid.UUID) (*domain.GuildOverview, error) {
+func (u *guildUsecase) GetGuildOverview(ctx context.Context, userID, guildID uuid.UUID) (*domain.GuildOverview, error) {
+	isMember, err := u.store.Members().IsMember(ctx, guildID, userID)
+	if err != nil {
+		return nil, err
+	}
+	if !isMember {
+		return nil, domain.ErrGuildNotFound
+	}
+	
 	guild, err := u.store.Guilds().GetByID(ctx, guildID)
 	if err != nil {
 		return nil, err
