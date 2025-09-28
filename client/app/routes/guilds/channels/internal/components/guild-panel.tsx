@@ -314,9 +314,7 @@ export const GuildPanel = () => {
 									</Dialog.CloseTrigger>
 									<Button
 										type="submit"
-										disabled={
-											!channelForm.formState.isValid || isChannelPending
-										}
+										disabled={isChannelPending}
 										loading={isChannelPending}
 									>
 										作成
@@ -408,9 +406,7 @@ export const GuildPanel = () => {
 									</Dialog.CloseTrigger>
 									<Button
 										type="submit"
-										disabled={
-											!categoryForm.formState.isValid || isCategoryPending
-										}
+										disabled={isCategoryPending}
 										loading={isCategoryPending}
 									>
 										作成
