@@ -41,6 +41,15 @@ func (u *messageUsecase) Create(ctx context.Context, params *CreateParams) (*dom
 	if err := u.validator.Struct(params); err != nil {
 		return nil, domain.ErrInvalidMessageData
 	}
+
+	hasAccess, err := u.guildSvc.CheckChannelAccess(ctx, params.SenderID, params.ChannelID)
+	if err != nil {
+		return nil, err
+	}
+	if !hasAccess {
+		return nil, domain.ErrChannelNotFound
+	}
+
 	message := domain.Message{
 		ID:        uuid.New(),
 		ChannelID: params.ChannelID,

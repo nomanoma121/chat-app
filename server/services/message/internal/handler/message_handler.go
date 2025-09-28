@@ -62,6 +62,9 @@ func (h *MessageHandler) Create(ctx context.Context, req *pb.CreateRequest) (*pb
 		case domain.ErrInvalidMessageData:
 			h.logger.Warn("Create message failed: invalid message data")
 			return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidMessageData.Error())
+		case domain.ErrChannelNotFound:
+			h.logger.Warn("Create message failed: channel not found or access denied", "channel_id", channelID, "user_id", senderID)
+			return nil, status.Error(codes.NotFound, domain.ErrChannelNotFound.Error())
 		default:
 			h.logger.Error("Create message failed: unexpected error", "error", err)
 			return nil, status.Error(codes.Internal, "failed to create message")
@@ -97,8 +100,14 @@ func (h *MessageHandler) GetByChannelID(ctx context.Context, req *pb.GetByChanne
 	}
 	messages, err := h.messageUsecase.GetByChannelID(ctx, userID, channelID)
 	if err != nil {
-		h.logger.Error("Get messages by channel ID failed: unexpected error", "error", err)
-		return nil, status.Error(codes.Internal, "failed to get messages")
+		switch err {
+		case domain.ErrChannelNotFound:
+			h.logger.Warn("Get messages failed: channel not found or access denied", "channel_id", channelID, "user_id", userID)
+			return nil, status.Error(codes.NotFound, domain.ErrChannelNotFound.Error())
+		default:
+			h.logger.Error("Get messages failed: unexpected error", "error", err)
+			return nil, status.Error(codes.Internal, "failed to get messages")
+		}
 	}
 
 	pbMessages := make([]*pb.Message, len(messages))
