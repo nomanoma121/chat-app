@@ -108,23 +108,42 @@ export default function InvitePage() {
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
-							gap: "8px",
+							gap: "10px",
 							marginBottom: "4px",
 						})}
 					>
-						<Avatar
-							name={invite.creator?.name || "Unknown"}
-							src={invite.creator?.iconUrl}
-							size="sm"
+						<div
 							className={css({
-								width: "24px",
-								height: "24px",
+								width: "20px",
+								height: "20px",
+								borderRadius: "50%",
+								overflow: "hidden",
+								flexShrink: 0,
 							})}
-						/>
+						>
+							<Avatar
+								name={invite.creator?.name || "Unknown"}
+								src={invite.creator?.iconUrl}
+								size="sm"
+								className={css({
+									width: "100%",
+									height: "100%",
+									borderRadius: "50%",
+									"& img": {
+										width: "100%",
+										height: "100%",
+										objectFit: "cover",
+										borderRadius: "50%",
+									},
+								})}
+							/>
+						</div>
 						<Text
 							className={css({
 								color: "text.medium",
 								fontSize: "sm",
+								textAlign: "center",
+								lineHeight: "1.4",
 							})}
 						>
 							{invite.creator?.name || "誰か"}
@@ -143,22 +162,39 @@ export default function InvitePage() {
 						className={css({
 							display: "flex",
 							alignItems: "center",
-							gap: "20px",
-							padding: "24px",
+							gap: "18px",
+							padding: "20px",
 							background: "bg.tertiary",
 							borderRadius: "lg",
 							marginBottom: "32px",
 						})}
 					>
-						<Avatar
-							name={guild?.name || ""}
-							src={guild?.iconUrl}
-							size="lg"
+						<div
 							className={css({
-								width: "72px",
-								height: "72px",
+								width: "64px",
+								height: "64px",
+								borderRadius: "50%",
+								overflow: "hidden",
+								flexShrink: 0,
 							})}
-						/>
+						>
+							<Avatar
+								name={guild?.name || ""}
+								src={guild?.iconUrl}
+								size="lg"
+								className={css({
+									width: "100%",
+									height: "100%",
+									borderRadius: "50%",
+									"& img": {
+										width: "100%",
+										height: "100%",
+										objectFit: "cover",
+										borderRadius: "50%",
+									},
+								})}
+							/>
+						</div>
 						<div className={css({ flex: 1 })}>
 							<Text
 								className={css({
