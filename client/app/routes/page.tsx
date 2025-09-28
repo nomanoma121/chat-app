@@ -1,31 +1,10 @@
-import { MessageSquare, Shield, Users, Zap } from "lucide-react";
 import { useNavigate } from "react-router";
 import { css } from "styled-system/css";
 import { Button } from "~/components/ui/button";
-import { Card } from "~/components/ui/card";
-
-const features = [
-	{
-		icon: MessageSquare,
-		title: "リアルタイムチャット",
-		description: "友達やチームメンバーとリアルタイムでメッセージを交換できます",
-	},
-	{
-		icon: Users,
-		title: "サーバー管理",
-		description: "自分のコミュニティを作成し、メンバーを招待して管理できます",
-	},
-	{
-		icon: Shield,
-		title: "セキュア",
-		description: "あなたのメッセージとプライベートデータを安全に保護します",
-	},
-	{
-		icon: Zap,
-		title: "高速",
-		description: "最新の技術スタックで構築された高速で安定したプラットフォーム",
-	},
-];
+import { Github } from "lucide-react";
+import { Text } from "~/components/ui/text";
+import { Heading } from "~/components/ui/heading";
+import { Link } from "react-router";
 
 export default function Home() {
 	const navigate = useNavigate();
@@ -33,74 +12,92 @@ export default function Home() {
 	return (
 		<div
 			className={css({
-				minHeight: "100vh",
+				height: "100vh",
 				background: "bg.primary",
+				display: "flex",
+				flexDirection: "column",
 			})}
 		>
-			{/* ヒーロセクション */}
 			<div
 				className={css({
 					display: "flex",
 					flexDirection: "column",
 					alignItems: "center",
 					justifyContent: "center",
-					minHeight: "70vh",
+					flex: "1",
 					padding: "20px",
 					textAlign: "center",
 				})}
 			>
-				<h1
+				<Heading
 					className={css({
-						fontSize: { base: "3xl", md: "5xl" },
+						fontSize: { base: "2xl", md: "3xl" },
 						fontWeight: "bold",
 						color: "text.bright",
-						marginBottom: "24px",
-						lineHeight: "1.2",
+						marginBottom: "16px",
 					})}
 				>
-					新しいコミュニケーション
-					<br />
-					<span className={css({ color: "accent.default" })}>体験</span>
-				</h1>
+					チャットアプリ
+				</Heading>
 
-				<p
+				<Text
 					className={css({
-						fontSize: { base: "lg", md: "xl" },
-						color: "text.medium",
-						marginBottom: "40px",
-						maxWidth: "600px",
-						lineHeight: "1.6",
+						fontSize: "sm",
+						color: "text.disabled",
+						marginBottom: "32px",
 					})}
 				>
-					チームやコミュニティとつながり、リアルタイムでコミュニケーションを取りましょう。
-					シンプルで使いやすいチャットプラットフォーム。
-				</p>
+					このサイトは勉強用に作成されたものであり、実際のサービスではありません。
+				</Text>
+
+				<Text 
+					className={css({
+						fontSize: "medium",
+						color: "text.medium",
+						marginBottom: "16px",
+					})}
+				>
+					<Github
+						size={16}
+						className={css({
+							display: "inline",
+							verticalAlign: "middle",
+							marginRight: "8px",
+						})}
+					/>
+					リポジトリは
+					<Link
+						className={css({
+							color: "accent.default",
+							marginLeft: "4px",
+							textDecoration: "underline",
+						})}
+						to="https://github.com/nomanoma121/chat-app"
+						target="_blank"
+						rel="noopener noreferrer">こちら</Link>
+					</Text>
 
 				<div
 					className={css({
 						display: "flex",
-						gap: "16px",
+						gap: "12px",
 						flexWrap: "wrap",
 						justifyContent: "center",
 					})}
 				>
 					<Button
-						size="lg"
-						onClick={() => navigate("/signup")}
+						onClick={() => navigate("/register")}
 						className={css({
-							fontSize: "lg",
-							padding: "16px 32px",
+							padding: "12px 24px",
 						})}
 					>
-						今すぐ始める
+						新規登録
 					</Button>
 					<Button
 						variant="outline"
-						size="lg"
 						onClick={() => navigate("/login")}
 						className={css({
-							fontSize: "lg",
-							padding: "16px 32px",
+							padding: "12px 24px",
 							color: "text.bright",
 							borderColor: "border.default",
 							_hover: {
@@ -113,140 +110,23 @@ export default function Home() {
 				</div>
 			</div>
 
-			{/* 機能セクション */}
 			<div
 				className={css({
-					padding: "80px 20px",
-					background: "bg.secondary",
-				})}
-			>
-				<div
-					className={css({
-						maxWidth: "1200px",
-						margin: "0 auto",
-					})}
-				>
-					<h2
-						className={css({
-							fontSize: "3xl",
-							fontWeight: "bold",
-							color: "text.bright",
-							textAlign: "center",
-							marginBottom: "16px",
-						})}
-					>
-						なぜ選ばれるのか
-					</h2>
-					<p
-						className={css({
-							fontSize: "lg",
-							color: "text.medium",
-							textAlign: "center",
-							marginBottom: "64px",
-							maxWidth: "600px",
-							margin: "0 auto 64px",
-						})}
-					>
-						現代的なデザインと強力な機能で、コミュニケーションをもっと楽しく、効率的に。
-					</p>
-
-					<div
-						className={css({
-							display: "grid",
-							gridTemplateColumns: {
-								base: "1fr",
-								md: "repeat(2, 1fr)",
-								lg: "repeat(4, 1fr)",
-							},
-							gap: "32px",
-						})}
-					>
-						{features.map((feature, index) => (
-							<Card.Root
-								key={index}
-								className={css({
-									background: "bg.tertiary",
-									padding: "32px 24px",
-									textAlign: "center",
-									border: "1px solid",
-									borderColor: "border.soft",
-									_hover: {
-										borderColor: "accent.default",
-										transform: "translateY(-4px)",
-										transition: "all 0.2s ease",
-									},
-								})}
-							>
-								<Card.Body>
-									<feature.icon
-										className={css({
-											width: "48px",
-											height: "48px",
-											color: "accent.default",
-											margin: "0 auto 16px",
-										})}
-									/>
-									<h3
-										className={css({
-											fontSize: "lg",
-											fontWeight: "semibold",
-											color: "text.bright",
-											marginBottom: "12px",
-										})}
-									>
-										{feature.title}
-									</h3>
-									<p
-										className={css({
-											color: "text.medium",
-											lineHeight: "1.5",
-										})}
-									>
-										{feature.description}
-									</p>
-								</Card.Body>
-							</Card.Root>
-						))}
-					</div>
-				</div>
-			</div>
-
-			{/* CTAセクション */}
-			<div
-				className={css({
-					padding: "80px 20px",
+					background: "bg.tertiary",
+					borderTop: "1px solid",
+					borderColor: "border.soft",
+					padding: "12px 20px",
 					textAlign: "center",
 				})}
 			>
-				<h2
-					className={css({
-						fontSize: "2xl",
-						fontWeight: "bold",
-						color: "text.bright",
-						marginBottom: "16px",
-					})}
-				>
-					今すぐ参加しましょう
-				</h2>
 				<p
 					className={css({
-						fontSize: "lg",
-						color: "text.medium",
-						marginBottom: "32px",
+						fontSize: "xs",
+						color: "text.disabled",
 					})}
 				>
-					アカウント作成は無料です。数分で始められます。
+					© 2025 nomanoma121 All rights reserved.
 				</p>
-				<Button
-					size="lg"
-					onClick={() => navigate("/signup")}
-					className={css({
-						fontSize: "lg",
-						padding: "16px 40px",
-					})}
-				>
-					無料でアカウント作成
-				</Button>
 			</div>
 		</div>
 	);
