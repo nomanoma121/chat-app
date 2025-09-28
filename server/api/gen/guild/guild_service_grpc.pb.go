@@ -37,6 +37,7 @@ const (
 	GuildService_CreateChannel_FullMethodName        = "/guild.GuildService/CreateChannel"
 	GuildService_UpdateChannel_FullMethodName        = "/guild.GuildService/UpdateChannel"
 	GuildService_DeleteChannel_FullMethodName        = "/guild.GuildService/DeleteChannel"
+	GuildService_CheckChannelAccess_FullMethodName   = "/guild.GuildService/CheckChannelAccess"
 )
 
 // GuildServiceClient is the client API for GuildService service.
@@ -61,6 +62,7 @@ type GuildServiceClient interface {
 	CreateChannel(ctx context.Context, in *CreateChannelRequest, opts ...grpc.CallOption) (*CreateChannelResponse, error)
 	UpdateChannel(ctx context.Context, in *UpdateChannelRequest, opts ...grpc.CallOption) (*UpdateChannelResponse, error)
 	DeleteChannel(ctx context.Context, in *DeleteChannelRequest, opts ...grpc.CallOption) (*DeleteChannelResponse, error)
+	CheckChannelAccess(ctx context.Context, in *CheckChannelAccessRequest, opts ...grpc.CallOption) (*CheckChannelAccessResponse, error)
 }
 
 type guildServiceClient struct {
@@ -251,6 +253,16 @@ func (c *guildServiceClient) DeleteChannel(ctx context.Context, in *DeleteChanne
 	return out, nil
 }
 
+func (c *guildServiceClient) CheckChannelAccess(ctx context.Context, in *CheckChannelAccessRequest, opts ...grpc.CallOption) (*CheckChannelAccessResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CheckChannelAccessResponse)
+	err := c.cc.Invoke(ctx, GuildService_CheckChannelAccess_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GuildServiceServer is the server API for GuildService service.
 // All implementations must embed UnimplementedGuildServiceServer
 // for forward compatibility.
@@ -273,6 +285,7 @@ type GuildServiceServer interface {
 	CreateChannel(context.Context, *CreateChannelRequest) (*CreateChannelResponse, error)
 	UpdateChannel(context.Context, *UpdateChannelRequest) (*UpdateChannelResponse, error)
 	DeleteChannel(context.Context, *DeleteChannelRequest) (*DeleteChannelResponse, error)
+	CheckChannelAccess(context.Context, *CheckChannelAccessRequest) (*CheckChannelAccessResponse, error)
 	mustEmbedUnimplementedGuildServiceServer()
 }
 
@@ -336,6 +349,9 @@ func (UnimplementedGuildServiceServer) UpdateChannel(context.Context, *UpdateCha
 }
 func (UnimplementedGuildServiceServer) DeleteChannel(context.Context, *DeleteChannelRequest) (*DeleteChannelResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteChannel not implemented")
+}
+func (UnimplementedGuildServiceServer) CheckChannelAccess(context.Context, *CheckChannelAccessRequest) (*CheckChannelAccessResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckChannelAccess not implemented")
 }
 func (UnimplementedGuildServiceServer) mustEmbedUnimplementedGuildServiceServer() {}
 func (UnimplementedGuildServiceServer) testEmbeddedByValue()                      {}
@@ -682,6 +698,24 @@ func _GuildService_DeleteChannel_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GuildService_CheckChannelAccess_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckChannelAccessRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GuildServiceServer).CheckChannelAccess(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GuildService_CheckChannelAccess_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GuildServiceServer).CheckChannelAccess(ctx, req.(*CheckChannelAccessRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GuildService_ServiceDesc is the grpc.ServiceDesc for GuildService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -760,6 +794,10 @@ var GuildService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteChannel",
 			Handler:    _GuildService_DeleteChannel_Handler,
+		},
+		{
+			MethodName: "CheckChannelAccess",
+			Handler:    _GuildService_CheckChannelAccess_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

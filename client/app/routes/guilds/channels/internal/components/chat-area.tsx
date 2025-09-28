@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useOutletContext, useParams } from "react-router";
 import { css } from "styled-system/css";
 import { useCreate, useGetByChannelID } from "~/api/gen/message/message";
+import { NotFoundPage } from "~/components/features/not-found-page";
 import { Message } from "~/components/features/message";
 import { MessageInput } from "~/components/features/message-input";
 import { Heading } from "~/components/ui/heading";
@@ -19,6 +20,7 @@ export const ChatArea = () => {
 		data: messagesData,
 		refetch,
 		isLoading,
+		error: messagesError,
 	} = useGetByChannelID(channelId);
 	const { mutateAsync: createMessage } = useCreate();
 	const messages = messagesData?.messages || [];
@@ -67,6 +69,10 @@ export const ChatArea = () => {
 				</Text>
 			</div>
 		);
+	}
+
+	if (messagesError) {
+		return <NotFoundPage />;
 	}
 
 	return (

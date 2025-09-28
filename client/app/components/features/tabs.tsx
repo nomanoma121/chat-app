@@ -65,9 +65,10 @@ interface TabsTriggerProps {
 	value: string;
 	className?: string;
 	asChild?: boolean;
+	disabled?: boolean;
 }
 
-const Trigger = ({ children, value, className, asChild }: TabsTriggerProps) => {
+const Trigger = ({ children, value, className, asChild, disabled = false }: TabsTriggerProps) => {
 	const { activeTab, setActiveTab, variant } = useTabsContext();
 	const isActive = activeTab === value;
 
@@ -76,16 +77,17 @@ const Trigger = ({ children, value, className, asChild }: TabsTriggerProps) => {
 		alignItems: "center",
 		justifyContent: "center",
 		padding: variant === "enclosed" ? "8px 16px" : "12px 16px",
-		cursor: "pointer",
+		cursor: disabled ? "not-allowed" : "pointer",
 		transition: "all 0.2s ease",
 		borderRadius: variant === "enclosed" ? "sm" : "0",
 		background: "transparent",
 		fontSize: "sm",
 		fontWeight: isActive ? "medium" : "normal",
-		color: isActive ? "text.bright" : "text.medium",
+		color: disabled ? "text.disabled" : (isActive ? "text.bright" : "text.medium"),
 		bgColor: isActive ? "bg.primary" : "transparent",
+		opacity: disabled ? 0.5 : 1,
 		flex: "1",
-		_hover: {
+		_hover: disabled ? {} : {
 			color: "text.bright",
 			bgColor: isActive ? "bg.primary" : "bg.quaternary",
 		},
@@ -95,7 +97,9 @@ const Trigger = ({ children, value, className, asChild }: TabsTriggerProps) => {
 	});
 
 	const handleClick = () => {
-		setActiveTab(value);
+		if (!disabled) {
+			setActiveTab(value);
+		}
 	};
 
 	if (asChild && React.isValidElement(children)) {
@@ -111,10 +115,12 @@ const Trigger = ({ children, value, className, asChild }: TabsTriggerProps) => {
 	return (
 		<button
 			onClick={handleClick}
+			disabled={disabled}
 			className={cx(baseStyles, className)}
 			role="tab"
 			aria-selected={isActive}
-			tabIndex={isActive ? 0 : -1}
+			aria-disabled={disabled}
+			tabIndex={disabled ? -1 : (isActive ? 0 : -1)}
 		>
 			{children}
 		</button>

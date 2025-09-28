@@ -15,7 +15,7 @@ const (
 
 type InviteUsecase interface {
 	Create(ctx context.Context, params *CreateInviteParams) (*domain.Invite, error)
-	GetByGuildID(ctx context.Context, guildID uuid.UUID) ([]*domain.Invite, error)
+	GetByGuildID(ctx context.Context, userID, guildID uuid.UUID) ([]*domain.Invite, error)
 	GetByInviteCode(ctx context.Context, inviteCode string) (*domain.Invite, error)
 	JoinGuild(ctx context.Context, params *JoinGuildParams) (*domain.Member, error)
 }
@@ -45,6 +45,15 @@ func (u *inviteUsecase) Create(ctx context.Context, params *CreateInviteParams) 
 	if err := u.validator.Struct(params); err != nil {
 		return nil, domain.ErrInvalidInviteData
 	}
+
+	isOwner, err := u.store.Guilds().IsOwner(ctx, params.GuildID, params.CreatorID)
+	if err != nil {
+		return nil, err
+	}
+	if !isOwner {
+		return nil, domain.ErrPermissionDenied
+	}
+
 	inviteCode, err := domain.GenerateInviteCode()
 	if err != nil {
 		return nil, err
@@ -66,7 +75,15 @@ func (u *inviteUsecase) Create(ctx context.Context, params *CreateInviteParams) 
 	return u.store.Invites().Create(ctx, invite)
 }
 
-func (u *inviteUsecase) GetByGuildID(ctx context.Context, guildID uuid.UUID) ([]*domain.Invite, error) {
+func (u *inviteUsecase) GetByGuildID(ctx context.Context, userID, guildID uuid.UUID) ([]*domain.Invite, error) {
+	isMember, err := u.store.Members().IsMember(ctx, guildID, userID)
+	if err != nil {
+		return nil, err
+	}
+	if !isMember {
+		return nil, domain.ErrGuildNotFound
+	}
+
 	invites, err := u.store.Invites().GetByGuildID(ctx, guildID)
 	if err != nil {
 		return nil, err

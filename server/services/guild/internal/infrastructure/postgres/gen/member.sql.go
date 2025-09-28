@@ -81,3 +81,23 @@ func (q *Queries) GetMembersByGuildID(ctx context.Context, guildID uuid.UUID) ([
 	}
 	return items, nil
 }
+
+const isMember = `-- name: IsMember :one
+SELECT EXISTS (
+    SELECT 1
+    FROM members
+    WHERE guild_id = $1 AND user_id = $2
+)
+`
+
+type IsMemberParams struct {
+	GuildID uuid.UUID
+	UserID  uuid.UUID
+}
+
+func (q *Queries) IsMember(ctx context.Context, arg IsMemberParams) (bool, error) {
+	row := q.db.QueryRow(ctx, isMember, arg.GuildID, arg.UserID)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}

@@ -1,7 +1,6 @@
 import { css } from "styled-system/css";
 import { GuildList } from "./guild-list";
 import { GuildPanel } from "./guild-panel";
-import { UserPanel } from "./user-panel";
 
 export const Sidebar = () => {
 	return (
@@ -16,18 +15,6 @@ export const Sidebar = () => {
 		>
 			<GuildList />
 			<GuildPanel />
-			<div
-				className={css({
-					position: "absolute",
-					bottom: "0",
-					width: "320px",
-					borderColor: "border.soft",
-					bg: "bg.secondary",
-					padding: "8px",
-				})}
-			>
-				<UserPanel />
-			</div>
 		</div>
 	);
 };

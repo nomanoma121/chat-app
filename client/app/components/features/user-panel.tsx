@@ -1,4 +1,4 @@
-import { Settings } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import { useNavigate } from "react-router";
 import { css } from "styled-system/css";
 import { useGetCurrentUser } from "~/api/gen/user/user";
@@ -9,6 +9,11 @@ import { Text } from "~/components/ui/text";
 export const UserPanel = () => {
 	const { data } = useGetCurrentUser();
 	const navigate = useNavigate();
+
+	const handleLogout = () => {
+		localStorage.removeItem("authToken");
+		navigate("/login");
+	};
 	return (
 		<Card.Root
 			className={css({
@@ -17,6 +22,8 @@ export const UserPanel = () => {
 				background: "bg.primary",
 				borderRadius: "md",
 				boxShadow: "md",
+				borderWidth: "1px",
+				borderColor: "border.soft",
 			})}
 		>
 			<Card.Body
@@ -37,10 +44,6 @@ export const UserPanel = () => {
 						borderRadius: "md",
 						padding: "3",
 						width: "90%",
-						_hover: {
-							background: "bg.quaternary",
-							cursor: "pointer",
-						},
 					})}
 				>
 					<Avatar
@@ -60,13 +63,12 @@ export const UserPanel = () => {
 						{data?.user.name ?? "Unknown User"}
 					</Text>
 				</div>
-				<div className={css({ display: "flex", alignItems: "center" })}>
+				<div className={css({ display: "flex", alignItems: "center", gap: "1" })}>
 					<div
 						className={css({
 							display: "flex",
 							alignItems: "center",
 							padding: "2",
-							marginRight: "2",
 							height: "8",
 							_hover: {
 								cursor: "pointer",
@@ -82,6 +84,28 @@ export const UserPanel = () => {
 								color: "text.bright",
 							})}
 							onClick={() => navigate("/settings")}
+						/>
+					</div>
+					<div
+						className={css({
+							display: "flex",
+							alignItems: "center",
+							padding: "2",
+							height: "8",
+							_hover: {
+								cursor: "pointer",
+								background: "danger.default",
+								borderRadius: "md",
+							},
+						})}
+					>
+						<LogOut
+							className={css({
+								width: "4",
+								height: "4",
+								color: "text.bright",
+							})}
+							onClick={handleLogout}
 						/>
 					</div>
 				</div>

@@ -53,4 +53,12 @@ func (r *categoryRepository) GetByGuildID(ctx context.Context, guildID uuid.UUID
 	return categories, nil
 }
 
+func (r *categoryRepository) GetGuildIDByCategoryID(ctx context.Context, categoryID uuid.UUID) (uuid.UUID, error) {
+	guildID, err := r.queries.GetGuildIDByCategoryID(ctx, categoryID)
+	if err != nil {
+		return uuid.Nil, err
+	}
+	return guildID, nil
+}
+
 var _ domain.ICategoryRepository = (*categoryRepository)(nil)

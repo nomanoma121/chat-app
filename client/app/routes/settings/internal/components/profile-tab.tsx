@@ -31,11 +31,11 @@ export const ProfileTab = () => {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isValid },
+		formState: { errors },
 		reset,
 	} = useForm<ProfileFormValues>({
 		resolver: standardSchemaResolver(ProfileForm),
-		mode: "onBlur",
+		mode: "onSubmit",
 		values: {
 			displayId: data?.user.displayId || "",
 			name: data?.user.name || "",
@@ -117,6 +117,7 @@ export const ProfileTab = () => {
 				<Card.Body>
 					<form
 						onSubmit={handleSubmit(onSubmit)}
+						noValidate
 						className={css({
 							display: "flex",
 							flexDirection: "column",
@@ -255,7 +256,7 @@ export const ProfileTab = () => {
 						>
 							<Button
 								type="submit"
-								disabled={!isValid || isPending}
+								disabled={isPending}
 								loading={isPending}
 							>
 								変更を保存

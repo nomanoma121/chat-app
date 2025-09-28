@@ -27,6 +27,11 @@ func NewChannelHandler(channelUsecase usecase.ChannelUsecase, logger *slog.Logge
 }
 
 func (h *channelHandler) CreateChannel(ctx context.Context, req *pb.CreateChannelRequest) (*pb.CreateChannelResponse, error) {
+	userID, err := getUserID(ctx, h.logger)
+	if err != nil {
+		return nil, err
+	}
+
 	categoryID, err := uuid.Parse(req.CategoryId)
 	if err != nil {
 		h.logger.Warn("Invalid category ID format", "category_id", req.CategoryId, "error", err)
@@ -35,6 +40,7 @@ func (h *channelHandler) CreateChannel(ctx context.Context, req *pb.CreateChanne
 
 	channel, err := h.channelUsecase.Create(ctx, &usecase.CreateChannelParams{
 		CategoryID: categoryID,
+		UserID:     userID,
 		Name:       req.Name,
 	})
 	if err != nil {
@@ -59,4 +65,32 @@ func (h *channelHandler) CreateChannel(ctx context.Context, req *pb.CreateChanne
 	}
 
 	return &pb.CreateChannelResponse{Channel: pbChannel}, nil
+}
+
+func (h *channelHandler) CheckChannelAccess(ctx context.Context, req *pb.CheckChannelAccessRequest) (*pb.CheckChannelAccessResponse, error) {
+	userID, err := uuid.Parse(req.UserId)
+	if err != nil {
+		h.logger.Warn("Invalid user ID format", "user_id", req.UserId, "error", err)
+		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidArgument.Error())
+	}
+
+	channelID, err := uuid.Parse(req.ChannelId)
+	if err != nil {
+		h.logger.Warn("Invalid channel ID format", "channel_id", req.ChannelId, "error", err)
+		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidArgument.Error())
+	}
+
+	hasAccess, err := h.channelUsecase.CheckAccess(ctx, userID, channelID)
+	if err != nil {
+		switch err {
+		case domain.ErrChannelNotFound:
+			h.logger.Warn("Channel not found", "channel_id", channelID)
+			return nil, status.Error(codes.NotFound, domain.ErrChannelNotFound.Error())
+		default:
+			h.logger.Error("Failed to check channel access", "user_id", userID, "channel_id", channelID, "error", err)
+			return nil, status.Error(codes.Internal, domain.ErrInternalServerError.Error())
+		}
+	}
+
+	return &pb.CheckChannelAccessResponse{HasAccess: hasAccess}, nil
 }

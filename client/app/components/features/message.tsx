@@ -163,7 +163,7 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>(
 					</div>
 				</div>
 
-				<div
+				{/* <div
 					className={messageActionsStyles()}
 					{...(showActions && { "data-visible": "" })}
 				>
@@ -199,7 +199,7 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>(
 					>
 						<MoreHorizontal size={16} />
 					</IconButton>
-				</div>
+				</div> */}
 			</div>
 		);
 	},

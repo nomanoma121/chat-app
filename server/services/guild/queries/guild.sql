@@ -18,3 +18,10 @@ FROM guilds g
 JOIN members m ON g.id = m.guild_id
 WHERE m.user_id = $1
 ORDER BY g.created_at DESC;
+
+-- name: IsOwner :one
+SELECT EXISTS (
+    SELECT 1
+    FROM guilds
+    WHERE id = $1 AND owner_id = $2
+);

@@ -18,4 +18,5 @@ type IMemberRepository interface {
 	Add(ctx context.Context, member *Member) (*Member, error)
 	GetMembersByGuildID(ctx context.Context, guildID uuid.UUID) ([]Member, error)
 	CountByGuildID(ctx context.Context, guildID uuid.UUID) (int32, error)
+	IsMember(ctx context.Context, guildID uuid.UUID, userID uuid.UUID) (bool, error)
 }

@@ -1,13 +1,12 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate, Link } from "react-router";
 import { css } from "styled-system/css";
 import * as v from "valibot";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
-import { Spinner } from "~/components/ui/spinner";
 import { useLogin } from "~/hooks/use-login";
 import { useToast } from "~/hooks/use-toast";
 import { UserSchema } from "~/schema/user";
@@ -23,6 +22,10 @@ export default function LoginPage() {
 	const navigate = useNavigate();
 	const { mutateAsync, isPending, error } = useLogin();
 	const toast = useToast();
+	const location = useLocation();
+	
+	const searchParams = new URLSearchParams(location.search);
+	const redirectState = searchParams.get("state");
 
 	const {
 		register,
@@ -30,7 +33,7 @@ export default function LoginPage() {
 		formState: { errors, isValid },
 	} = useForm<FormInputValues>({
 		resolver: standardSchemaResolver(LoginForm),
-		mode: "onBlur",
+		mode: "onSubmit",
 		defaultValues: {
 			email: "",
 			password: "",
@@ -44,7 +47,11 @@ export default function LoginPage() {
 				password: data.password,
 			});
 			toast.success("ログインしました");
-			navigate("/servers");
+			if (redirectState) {
+				navigate(`/invite/${redirectState.replace("invite:", "")}`);
+			} else {
+				navigate("/servers");
+			}
 		} catch (_error) {
 			toast.error(
 				"ログインに失敗しました",
@@ -54,12 +61,19 @@ export default function LoginPage() {
 	};
 
 	return (
-		<div>
+		<div
+			className={css({
+				minHeight: "100vh",
+				display: "flex",
+				alignItems: "center",
+				justifyContent: "center",
+				background: "bg.primary",
+				padding: "20px",
+			})}
+		>
 			<Card.Root
 				className={css({
 					width: "400px",
-					margin: "0 auto",
-					marginTop: "100px",
 					padding: "30px",
 					background: "bg.secondary",
 				})}
@@ -79,6 +93,7 @@ export default function LoginPage() {
 				<Card.Body>
 					<form
 						onSubmit={handleSubmit(onSubmit)}
+						noValidate
 						className={css({
 							display: "flex",
 							flexDirection: "column",
@@ -137,7 +152,7 @@ export default function LoginPage() {
 
 						<Button
 							type="submit"
-							disabled={!isValid || isPending}
+							disabled={isPending}
 							loading={isPending}
 							className={css({
 								width: "100%",
@@ -153,8 +168,12 @@ export default function LoginPage() {
 								marginTop: "4",
 							})}
 						>
-							<a
-								href="/register"
+							<Link
+								to={
+									redirectState
+										? `/register?state=${redirectState}`
+										: "/register"
+								}
 								className={css({
 									fontWeight: "medium",
 									color: "accent.default",
@@ -164,7 +183,7 @@ export default function LoginPage() {
 								})}
 							>
 								新規登録はこちら
-							</a>
+							</Link>
 						</div>
 					</form>
 				</Card.Body>

@@ -4,18 +4,28 @@ import { css } from "styled-system/css";
 import { useGetGuildByInviteCode, useJoinGuild } from "~/api/gen/invite/invite";
 import { Avatar } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
+import { InviteErrorCard } from "./internal/components/invite-error-card";
 import { Card } from "~/components/ui/card";
 import { Spinner } from "~/components/ui/spinner";
 import { Text } from "~/components/ui/text";
 import { useToast } from "~/hooks/use-toast";
+import { useAuthMe } from "~/api/gen/auth/auth";
+import { useEffect } from "react";
 
 export default function InvitePage() {
 	const navigate = useNavigate();
 	const toast = useToast();
 	const { inviteCode } = useParams();
+	const { error: authError } = useAuthMe();
+
+	useEffect(() => {
+		if (authError?.code === 401) {
+			navigate(`/login?state=invite:${inviteCode || ""}`);
+		}
+	}, [navigate, authError?.code, inviteCode]);
 
 	if (!inviteCode) {
-		return null;
+		return <InviteErrorCard navigate={navigate} />;
 	}
 
 	const { data, isLoading, isError } = useGetGuildByInviteCode(inviteCode);
@@ -53,65 +63,19 @@ export default function InvitePage() {
 		);
 	}
 
+	// エラーまたは招待データが存在しない場合のチェック
 	if (isError || !data?.invite) {
-		return (
-			<div
-				className={css({
-					minHeight: "100vh",
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "center",
-					background: "bg.primary",
-				})}
-			>
-				<Card.Root
-					className={css({
-						width: "400px",
-						padding: "30px",
-						background: "bg.secondary",
-						textAlign: "center",
-					})}
-				>
-					<Card.Body>
-						<div
-							className={css({
-								fontSize: "4xl",
-								marginBottom: "16px",
-							})}
-						>
-							😞
-						</div>
-						<Text
-							className={css({
-								fontSize: "xl",
-								fontWeight: "bold",
-								color: "text.bright",
-								marginBottom: "8px",
-							})}
-						>
-							招待が無効です
-						</Text>
-						<Text
-							className={css({
-								color: "text.medium",
-								marginBottom: "24px",
-							})}
-						>
-							この招待リンクは期限切れか、無効になっています
-						</Text>
-						<Button
-							onClick={() => navigate("/guilds")}
-							className={css({ width: "100%" })}
-						>
-							サーバー一覧に戻る
-						</Button>
-					</Card.Body>
-				</Card.Root>
-			</div>
-		);
+		return <InviteErrorCard navigate={navigate} />;
 	}
 
 	const invite = data.invite;
+
+	// 期限切れまたは使用回数上限チェック
+	if ((invite.expiresAt && new Date(invite.expiresAt) < new Date()) ||
+		(invite.maxUses && invite.currentUses >= invite.maxUses)) {
+		return <InviteErrorCard navigate={navigate} />;
+	}
+
 	const guild = invite.guild;
 
 	return (
@@ -153,23 +117,42 @@ export default function InvitePage() {
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
-							gap: "8px",
+							gap: "10px",
 							marginBottom: "4px",
 						})}
 					>
-						<Avatar
-							name={invite.creator?.name || "Unknown"}
-							src={invite.creator?.iconUrl}
-							size="sm"
+						<div
 							className={css({
-								width: "24px",
-								height: "24px",
+								width: "20px",
+								height: "20px",
+								borderRadius: "50%",
+								overflow: "hidden",
+								flexShrink: 0,
 							})}
-						/>
+						>
+							<Avatar
+								name={invite.creator?.name || "Unknown"}
+								src={invite.creator?.iconUrl}
+								size="sm"
+								className={css({
+									width: "100%",
+									height: "100%",
+									borderRadius: "50%",
+									"& img": {
+										width: "100%",
+										height: "100%",
+										objectFit: "cover",
+										borderRadius: "50%",
+									},
+								})}
+							/>
+						</div>
 						<Text
 							className={css({
 								color: "text.medium",
 								fontSize: "sm",
+								textAlign: "center",
+								lineHeight: "1.4",
 							})}
 						>
 							{invite.creator?.name || "誰か"}
@@ -188,22 +171,39 @@ export default function InvitePage() {
 						className={css({
 							display: "flex",
 							alignItems: "center",
-							gap: "20px",
-							padding: "24px",
+							gap: "18px",
+							padding: "20px",
 							background: "bg.tertiary",
 							borderRadius: "lg",
 							marginBottom: "32px",
 						})}
 					>
-						<Avatar
-							name={guild?.name || ""}
-							src={guild?.iconUrl}
-							size="lg"
+						<div
 							className={css({
-								width: "72px",
-								height: "72px",
+								width: "64px",
+								height: "64px",
+								borderRadius: "50%",
+								overflow: "hidden",
+								flexShrink: 0,
 							})}
-						/>
+						>
+							<Avatar
+								name={guild?.name || ""}
+								src={guild?.iconUrl}
+								size="lg"
+								className={css({
+									width: "100%",
+									height: "100%",
+									borderRadius: "50%",
+									"& img": {
+										width: "100%",
+										height: "100%",
+										objectFit: "cover",
+										borderRadius: "50%",
+									},
+								})}
+							/>
+						</div>
 						<div className={css({ flex: 1 })}>
 							<Text
 								className={css({

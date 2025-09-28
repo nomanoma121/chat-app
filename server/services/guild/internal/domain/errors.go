@@ -26,6 +26,9 @@ var (
 	ErrInvalidInviteData = errors.New("invalid invite data")
 	ErrInvalidInviteCode = errors.New("invalid invite code")
 
+	// 403
+	ErrPermissionDenied = errors.New("permission denied")
+
 	// Internal Server Error
 	ErrInternalServerError = errors.New("internal server error")
 )

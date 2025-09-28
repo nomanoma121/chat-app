@@ -19,4 +19,5 @@ type Channel struct {
 type IChannelRepository interface {
 	Create(ctx context.Context, channel *Channel) (*Channel, error)
 	GetByCategoryID(ctx context.Context, categoryID uuid.UUID) ([]*Channel, error)
+	CheckChannelMember(ctx context.Context, userID, channelID uuid.UUID) (bool, error)
 }

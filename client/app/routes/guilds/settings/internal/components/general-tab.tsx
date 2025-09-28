@@ -13,6 +13,7 @@ import { FormLabel } from "~/components/ui/form-label";
 import { Heading } from "~/components/ui/heading";
 import { Text } from "~/components/ui/text";
 import { useToast } from "~/hooks/use-toast";
+import { usePermissions } from "~/hooks/use-permissions";
 import { GuildSchema } from "~/schema/guild";
 
 interface GeneralTabProps {
@@ -29,13 +30,14 @@ type UpdateGuildFormValues = v.InferInput<typeof UpdateGuildForm>;
 export const GeneralTab = ({ guild }: GeneralTabProps) => {
 	const { mutateAsync: updateGuild } = useUpdateGuild();
 	const toast = useToast();
+	const { canEditGuild } = usePermissions(guild);
 	const {
 		register,
 		handleSubmit,
-		formState: { isValid, errors },
+		formState: { errors },
 	} = useForm<UpdateGuildFormValues>({
 		resolver: standardSchemaResolver(UpdateGuildForm),
-		mode: "onBlur",
+		mode: "onSubmit",
 		defaultValues: {
 			name: guild?.name,
 			description: guild?.description,
@@ -100,6 +102,7 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 				<Card.Body>
 					<form
 						onSubmit={handleSubmit(onSubmit)}
+						noValidate
 						className={css({
 							display: "flex",
 							flexDirection: "column",
@@ -124,14 +127,19 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 							<Button
 								type="button"
 								variant="outline"
+								disabled={!canEditGuild}
 								className={css({
 									display: "flex",
 									alignItems: "center",
 									bgColor: "bg.tertiary",
 									color: "text.medium",
-									_hover: {
+									_hover: canEditGuild ? {
 										bgColor: "bg.quaternary",
 										color: "text.bright",
+									} : {},
+									_disabled: {
+										opacity: 0.5,
+										cursor: "not-allowed",
 									},
 									paddingX: "12px",
 									paddingY: "8px",
@@ -148,9 +156,14 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 							<FormLabel color="text.bright">サーバー名</FormLabel>
 							<Field.Input
 								{...register("name")}
+								disabled={!canEditGuild}
 								className={css({
 									borderColor: "border.soft",
 									color: "text.bright",
+									_disabled: {
+										opacity: 0.6,
+										cursor: "not-allowed",
+									},
 								})}
 							/>
 							{errors.name && (
@@ -162,11 +175,16 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 							<FormLabel color="text.bright">サーバー説明</FormLabel>
 							<Field.Textarea
 								{...register("description")}
+								disabled={!canEditGuild}
 								rows={3}
 								className={css({
 									borderColor: "border.soft",
 									color: "text.bright",
 									resize: "none",
+									_disabled: {
+										opacity: 0.6,
+										cursor: "not-allowed",
+									},
 								})}
 							/>
 							{errors.description && (
@@ -238,10 +256,14 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 
 						<Button
 							type="submit"
-							disabled={!isValid}
+							disabled={!canEditGuild}
 							className={css({
 								marginTop: "8px",
 								alignSelf: "flex-end",
+								_disabled: {
+									opacity: 0.5,
+									cursor: "not-allowed",
+								},
 							})}
 						>
 							変更を保存
@@ -281,12 +303,17 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 				<Card.Body>
 					<Button
 						variant="outline"
+						disabled={!canEditGuild}
 						className={css({
 							color: "text.bright",
 							bgColor: "danger.default",
-							_hover: {
+							_hover: canEditGuild ? {
 								bgColor: "danger.emphasized",
 								color: "text.bright",
+							} : {},
+							_disabled: {
+								opacity: 0.5,
+								cursor: "not-allowed",
 							},
 							alignSelf: "flex-end",
 						})}
