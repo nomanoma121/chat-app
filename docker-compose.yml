@@ -4,9 +4,7 @@ services:
     environment:
       POSTGRES_DB: chat_app
       POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -23,11 +21,9 @@ services:
       dockerfile: Dockerfile
       args:
         SERVICE_NAME: user
-    ports:
-      - "50051:50051"
     environment:
-      - JWT_SECRET=your-secret-key-here
-      - DATABASE_URL=postgres://user:password@postgres:5432/chat_app?sslmode=disable
+      - JWT_SECRET=${JWT_SECRET}
+      - DATABASE_URL=${DATABASE_URL}
     depends_on:
       - postgres
 
@@ -37,10 +33,8 @@ services:
       dockerfile: Dockerfile
       args:
         SERVICE_NAME: guild
-    ports:
-      - "50052:50052"
     environment:
-      - DATABASE_URL=postgres://user:password@postgres:5432/chat_app?sslmode=disable
+      - DATABASE_URL=${DATABASE_URL}
       - USER_SERVICE_URL=user:50051
     depends_on:
       - postgres
@@ -52,10 +46,8 @@ services:
       dockerfile: Dockerfile
       args:
         SERVICE_NAME: message
-    ports:
-      - "50053:50053"
     environment:
-      - DATABASE_URL=postgres://user:password@postgres:5432/chat_app?sslmode=disable
+      - DATABASE_URL=${DATABASE_URL}
       - USER_SERVICE_URL=user:50051
       - GUILD_SERVICE_URL=guild:50052
     depends_on:
@@ -72,7 +64,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - JWT_SECRET=your-secret-key-here
+      - JWT_SECRET=${JWT_SECRET}
       - USER_SERVICE_URL=user:50051
       - GUILD_SERVICE_URL=guild:50052
       - MESSAGE_SERVICE_URL=message:50053

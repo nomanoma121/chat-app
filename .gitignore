@@ -3,3 +3,5 @@ CLAUDE.md
 node_modules
 # swagger.jsonをignoreする
 docs/*.swagger.json
+
+.env
