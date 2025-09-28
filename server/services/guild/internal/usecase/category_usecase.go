@@ -27,12 +27,21 @@ func NewCategoryUsecase(store domain.IStore, validator *validator.Validate) Cate
 
 type CreateCategoryParams struct {
 	GuildID uuid.UUID `validate:"required"`
+	UserID  uuid.UUID `validate:"required"`
 	Name    string    `validate:"required,min=1,max=100"`
 }
 
 func (u *categoryUsecase) CreateCategory(ctx context.Context, params *CreateCategoryParams) (*domain.Category, error) {
 	if err := u.validator.Struct(params); err != nil {
 		return nil, domain.ErrInvalidCategoryData
+	}
+
+	isOwner, err := u.store.Guilds().IsOwner(ctx, params.UserID, params.GuildID)
+	if err != nil {
+		return nil, err
+	}
+	if !isOwner {
+		return nil, domain.ErrPermissionDenied
 	}
 
 	return u.store.Categories().Create(ctx, &domain.Category{

@@ -27,6 +27,11 @@ func NewChannelHandler(channelUsecase usecase.ChannelUsecase, logger *slog.Logge
 }
 
 func (h *channelHandler) CreateChannel(ctx context.Context, req *pb.CreateChannelRequest) (*pb.CreateChannelResponse, error) {
+	userID, err := getUserID(ctx, h.logger)
+	if err != nil {
+		return nil, err
+	}
+	
 	categoryID, err := uuid.Parse(req.CategoryId)
 	if err != nil {
 		h.logger.Warn("Invalid category ID format", "category_id", req.CategoryId, "error", err)
@@ -35,6 +40,7 @@ func (h *channelHandler) CreateChannel(ctx context.Context, req *pb.CreateChanne
 
 	channel, err := h.channelUsecase.Create(ctx, &usecase.CreateChannelParams{
 		CategoryID: categoryID,
+		UserID:     userID,
 		Name:       req.Name,
 	})
 	if err != nil {

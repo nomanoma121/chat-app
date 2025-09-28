@@ -7,3 +7,8 @@ RETURNING id, guild_id, name, created_at;
 SELECT id, guild_id, name, created_at
 FROM categories
 WHERE guild_id = $1;
+
+-- name: GetGuildIDByCategoryID :one
+SELECT guild_id
+FROM categories
+WHERE id = $1;

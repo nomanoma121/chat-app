@@ -27,6 +27,11 @@ func NewCategoryHandler(categoryUsecase usecase.CategoryUsecase, logger *slog.Lo
 }
 
 func (h *categoryHandler) CreateCategory(ctx context.Context, req *pb.CreateCategoryRequest) (*pb.CreateCategoryResponse, error) {
+	userID, err := getUserID(ctx, h.logger)
+	if err != nil {
+		return nil, err
+	}
+	
 	guildID, err := uuid.Parse(req.GuildId)
 	if err != nil {
 		h.logger.Warn("Invalid guild ID format", "guild_id", req.GuildId, "error", err)
@@ -35,6 +40,7 @@ func (h *categoryHandler) CreateCategory(ctx context.Context, req *pb.CreateCate
 
 	category, err := h.categoryUsecase.CreateCategory(ctx, &usecase.CreateCategoryParams{
 		GuildID: guildID,
+		UserID:  userID,
 		Name:    req.Name,
 	})
 	if err != nil {
@@ -42,9 +48,9 @@ func (h *categoryHandler) CreateCategory(ctx context.Context, req *pb.CreateCate
 		case domain.ErrInvalidCategoryData:
 			h.logger.Warn("Invalid category data", "guild_id", guildID)
 			return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidCategoryData.Error())
-		case domain.ErrGuildNotFound:
-			h.logger.Warn("Guild not found", "guild_id", guildID)
-			return nil, status.Error(codes.NotFound, domain.ErrGuildNotFound.Error())
+		case domain.ErrPermissionDenied:
+			h.logger.Warn("Permission denied", "guild_id", guildID)
+			return nil, status.Error(codes.PermissionDenied, domain.ErrPermissionDenied.Error())
 		default:
 			h.logger.Error("Failed to create category", "guild_id", guildID, "error", err)
 			return nil, status.Error(codes.Internal, domain.ErrInternalServerError.Error())

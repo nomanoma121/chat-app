@@ -86,3 +86,16 @@ func (q *Queries) GetByGuildID(ctx context.Context, guildID uuid.UUID) ([]*GetBy
 	}
 	return items, nil
 }
+
+const getGuildIDByCategoryID = `-- name: GetGuildIDByCategoryID :one
+SELECT guild_id
+FROM categories
+WHERE id = $1
+`
+
+func (q *Queries) GetGuildIDByCategoryID(ctx context.Context, id uuid.UUID) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, getGuildIDByCategoryID, id)
+	var guild_id uuid.UUID
+	err := row.Scan(&guild_id)
+	return guild_id, err
+}

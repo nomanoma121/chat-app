@@ -153,9 +153,9 @@ func (h *guildHandler) UpdateGuild(ctx context.Context, req *pb.UpdateGuildReque
 		case domain.ErrInvalidGuildData:
 			h.logger.Warn("Invalid guild data", "guild_id", guildID)
 			return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidGuildData.Error())
-		case domain.ErrNotGuildOwner:
+		case domain.ErrPermissionDenied:
 			h.logger.Warn("Not guild owner", "guild_id", guildID)
-			return nil, status.Error(codes.PermissionDenied, domain.ErrNotGuildOwner.Error())
+			return nil, status.Error(codes.PermissionDenied, domain.ErrPermissionDenied.Error())
 		default:
 			h.logger.Error("Failed to update guild", "guild_id", guildID, "error", err)
 			return nil, status.Error(codes.Internal, domain.ErrInternalServerError.Error())

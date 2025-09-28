@@ -133,7 +133,7 @@ func (u *guildUsecase) Update(ctx context.Context, params *UpdateGuildParams) (*
 		return nil, err
 	}
 	if !isOwner {
-		return nil, domain.ErrNotGuildOwner
+		return nil, domain.ErrPermissionDenied
 	}
 
 	return u.store.Guilds().Update(ctx, &domain.Guild{

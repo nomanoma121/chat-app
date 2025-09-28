@@ -26,4 +26,5 @@ type CategoryOverview struct {
 type ICategoryRepository interface {
 	Create(ctx context.Context, category *Category) (*Category, error)
 	GetByGuildID(ctx context.Context, guildID uuid.UUID) ([]*Category, error)
+	GetGuildIDByCategoryID(ctx context.Context, categoryID uuid.UUID) (uuid.UUID, error)
 }
