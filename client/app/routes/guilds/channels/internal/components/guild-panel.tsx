@@ -131,7 +131,6 @@ export const GuildPanel = () => {
 						fontSize: "sm",
 						color: "text.medium",
 					})}
-					onClick={() => navigate(`/servers/${guild?.id}/settings`)}
 				>
 					{guild?.name}
 				</Heading>
