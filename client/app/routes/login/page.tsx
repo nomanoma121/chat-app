@@ -48,7 +48,7 @@ export default function LoginPage() {
 			});
 			toast.success("ログインしました");
 			if (redirectState) {
-				navigate(`/invite/${redirectState}`);
+				navigate(`/invite/${redirectState.replace("invite:", "")}`);
 			} else {
 				navigate("/servers");
 			}

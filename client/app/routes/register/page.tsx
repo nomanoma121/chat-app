@@ -67,7 +67,7 @@ export default function RegisterPage() {
 			toast.success("アカウントを作成しました");
 			await login({ email: data.email, password: data.password });
 			if (redirectState) {
-				navigate(`/invite/${redirectState}`);
+				navigate(`/invite/${redirectState.replace("invite:", "")}`);
 			} else {
 				navigate("/servers");
 			}
