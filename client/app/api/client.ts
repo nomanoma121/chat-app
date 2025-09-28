@@ -1,8 +1,9 @@
 import type { AxiosRequestConfig, AxiosError } from "axios";
 import Axios from "axios";
+import { API_BASE_URL } from "~/constants";
 
 export const axiosInstance = Axios.create({
-	baseURL: "http://localhost:8000",
+	baseURL: API_BASE_URL,
 });
 
 axiosInstance.interceptors.request.use(
