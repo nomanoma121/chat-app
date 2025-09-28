@@ -11,7 +11,7 @@ import (
 
 type MessageUsecase interface {
 	Create(ctx context.Context, params *CreateParams) (*domain.Message, error)
-	GetByChannelID(ctx context.Context, channelID uuid.UUID) ([]*domain.Message, error)
+	GetByChannelID(ctx context.Context, userID, channelID uuid.UUID) ([]*domain.Message, error)
 }
 
 type CreateParams struct {
@@ -24,13 +24,15 @@ type CreateParams struct {
 type messageUsecase struct {
 	messageRepo domain.IMessageRepository
 	userSvc     domain.IUserService
+	guildSvc    domain.IGuildService
 	validator   *validator.Validate
 }
 
-func NewMessageUsecase(messageRepo domain.IMessageRepository, userSvc domain.IUserService, validator *validator.Validate) MessageUsecase {
+func NewMessageUsecase(messageRepo domain.IMessageRepository, userSvc domain.IUserService, guildSvc domain.IGuildService, validator *validator.Validate) MessageUsecase {
 	return &messageUsecase{
 		messageRepo: messageRepo,
 		userSvc:     userSvc,
+		guildSvc:    guildSvc,
 		validator:   validator,
 	}
 }
@@ -50,7 +52,15 @@ func (u *messageUsecase) Create(ctx context.Context, params *CreateParams) (*dom
 	return u.messageRepo.Create(ctx, &message)
 }
 
-func (u *messageUsecase) GetByChannelID(ctx context.Context, channelID uuid.UUID) ([]*domain.Message, error) {
+func (u *messageUsecase) GetByChannelID(ctx context.Context, userID, channelID uuid.UUID) ([]*domain.Message, error) {
+	hasAccess, err := u.guildSvc.CheckChannelAccess(ctx, userID, channelID)
+	if err != nil {
+		return nil, err
+	}
+	if !hasAccess {
+		return nil, domain.ErrChannelNotFound
+	}
+
 	messages, err := u.messageRepo.GetByChannelID(ctx, channelID)
 	if err != nil {
 		return nil, err
@@ -65,7 +75,7 @@ func (u *messageUsecase) GetByChannelID(ctx context.Context, channelID uuid.UUID
 		userIDs = append(userIDs, id)
 	}
 
-	users, err := u.userSvc.GetUsersByIDs(userIDs)
+	users, err := u.userSvc.GetUsersByIDs(ctx, userIDs)
 	if err != nil {
 		return nil, err
 	}

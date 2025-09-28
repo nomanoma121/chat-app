@@ -19,7 +19,7 @@ func NewUserServiceClient(conn *grpc.ClientConn) *userServiceClient {
 	}
 }
 
-func (c *userServiceClient) GetUsersByIDs(ids []uuid.UUID) ([]*domain.User, error) {
+func (c *userServiceClient) GetUsersByIDs(ctx context.Context, ids []uuid.UUID) ([]*domain.User, error) {
 	strIDs := make([]string, len(ids))
 	for i, id := range ids {
 		strIDs[i] = id.String()
@@ -28,7 +28,7 @@ func (c *userServiceClient) GetUsersByIDs(ids []uuid.UUID) ([]*domain.User, erro
 	req := &pb.GetUsersByIDsRequest{
 		UserIds: strIDs,
 	}
-	res, err := c.client.GetUsersByIDs(context.Background(), req)
+	res, err := c.client.GetUsersByIDs(ctx, req)
 	if err != nil {
 		return nil, err
 	}

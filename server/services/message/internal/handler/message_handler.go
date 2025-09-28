@@ -5,7 +5,6 @@ import (
 	"log/slog"
 	"message-service/internal/domain"
 	"message-service/internal/usecase"
-	"shared/metadata"
 
 	pb "chat-app-proto/gen/message"
 
@@ -29,16 +28,11 @@ func NewMessageHandler(messageUsecase usecase.MessageUsecase, logger *slog.Logge
 }
 
 func (h *MessageHandler) Create(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error) {
-	senderIDStr, err := metadata.GetUserIDFromMetadata(ctx)
+	senderID, err := getUserID(ctx, h.logger)
 	if err != nil {
-		h.logger.Warn("Failed to get user ID from metadata", "error", err)
-		return nil, status.Error(codes.Unauthenticated, "authentication required")
+		return nil, err
 	}
-	senderID, err := uuid.Parse(senderIDStr)
-	if err != nil {
-		h.logger.Warn("Invalid user ID format", "user_id", senderIDStr, "error", err)
-		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidMessageData.Error())
-	}
+
 	channelID, err := uuid.Parse(req.ChannelId)
 	if err != nil {
 		h.logger.Warn("Invalid channel ID format", "channel_id", req.ChannelId, "error", err)
@@ -91,12 +85,17 @@ func (h *MessageHandler) Create(ctx context.Context, req *pb.CreateRequest) (*pb
 }
 
 func (h *MessageHandler) GetByChannelID(ctx context.Context, req *pb.GetByChannelIDRequest) (*pb.GetByChannelIDResponse, error) {
+	userID, err := getUserID(ctx, h.logger)
+	if err != nil {
+		return nil, err
+	}
+
 	channelID, err := uuid.Parse(req.ChannelId)
 	if err != nil {
 		h.logger.Warn("Invalid channel ID format", "channel_id", req.ChannelId, "error", err)
 		return nil, status.Error(codes.InvalidArgument, domain.ErrInvalidMessageData.Error())
 	}
-	messages, err := h.messageUsecase.GetByChannelID(ctx, channelID)
+	messages, err := h.messageUsecase.GetByChannelID(ctx, userID, channelID)
 	if err != nil {
 		h.logger.Error("Get messages by channel ID failed: unexpected error", "error", err)
 		return nil, status.Error(codes.Internal, "failed to get messages")

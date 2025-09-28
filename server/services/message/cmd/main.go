@@ -67,10 +67,24 @@ func main() {
 	}()
 	log.Info("Connected to user service", "url", userServiceURL)
 
+	guildServiceURL := os.Getenv("GUILD_SERVICE_URL")
+	guildConn, err := grpc.NewClient(guildServiceURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Error("Failed to connect to guild service", "error", err)
+		os.Exit(1)
+	}
+	defer func() {
+		if err := guildConn.Close(); err != nil {
+			log.Error("Failed to close guild service connection", "error", err)
+		}
+	}()
+	log.Info("Connected to guild service", "url", guildServiceURL)
+
 	messageRepo := postgres.NewPostgresMessageRepository(gen.New(db))
 	userSvc := user.NewUserServiceClient(userConn)
+	guildSvc := user.NewGuildServiceClient(guildConn)
 	validate := validator.New()
-	messageUsecase := usecase.NewMessageUsecase(messageRepo, userSvc, validate)
+	messageUsecase := usecase.NewMessageUsecase(messageRepo, userSvc, guildSvc, validate)
 	messageHandler := handler.NewMessageHandler(messageUsecase, log)
 	server := grpc.NewServer()
 	pb.RegisterMessageServiceServer(server, messageHandler)

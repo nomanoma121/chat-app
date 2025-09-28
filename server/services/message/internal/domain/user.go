@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"context"
 	"time"
 
 	"github.com/google/uuid"
@@ -16,5 +17,5 @@ type User struct {
 }
 
 type IUserService interface {
-	GetUsersByIDs(ids []uuid.UUID) ([]*User, error)
+	GetUsersByIDs(ctx context.Context, ids []uuid.UUID) ([]*User, error)
 }
