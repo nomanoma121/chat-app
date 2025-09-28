@@ -61,12 +61,19 @@ export default function LoginPage() {
 	};
 
 	return (
-		<div>
+		<div
+			className={css({
+				minHeight: "100vh",
+				display: "flex",
+				alignItems: "center",
+				justifyContent: "center",
+				background: "bg.primary",
+				padding: "20px",
+			})}
+		>
 			<Card.Root
 				className={css({
 					width: "400px",
-					margin: "0 auto",
-					marginTop: "100px",
 					padding: "30px",
 					background: "bg.secondary",
 				})}
