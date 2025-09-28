@@ -201,6 +201,15 @@ export default function InvitePage() {
 								}}
 								className={css({ width: "50%" })}
 								defaultValue={["7"]}
+								onValueChange={(details) =>
+									setInviteSettings((prev) => ({
+										...prev,
+										expiryDays: {
+											...prev.expiryDays,
+											value: details.value[0],
+										},
+									}))
+								}
 							>
 								<Select.Label className={css({ color: "text.bright" })}>
 									有効期限
