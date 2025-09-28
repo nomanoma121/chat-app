@@ -15,6 +15,7 @@ import { FormLabel } from "~/components/ui/form-label";
 import { Heading } from "~/components/ui/heading";
 import { IconButton } from "~/components/ui/icon-button";
 import { useToast } from "~/hooks/use-toast";
+import { usePermissions } from "~/hooks/use-permissions";
 import type { GuildsContext } from "../../layout";
 
 const ChannelForm = v.object({
@@ -43,6 +44,8 @@ export const GuildPanel = () => {
 	const { mutateAsync: createChannel, isPending: isChannelPending } =
 		useCreateChannel();
 	const toast = useToast();
+	const { canCreateCategories, canCreateChannels, canCreateInvites, canViewSettings } =
+		usePermissions(guild);
 
 	const [isChannelDialogOpen, setIsChannelDialogOpen] = useState(false);
 	const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
@@ -133,48 +136,52 @@ export const GuildPanel = () => {
 					{guild?.name}
 				</Heading>
 				<div className={css({ display: "flex", gap: "2" })}>
-					<IconButton
-						variant="ghost"
-						size="sm"
-						color="text.medium"
-						className={css({
-							_hover: {
-								bgColor: "bg.tertiary",
-								color: "text.bright",
-							},
-						})}
-					>
-						<UserRoundPlus
-							size={16}
+					{canCreateInvites && (
+						<IconButton
+							variant="ghost"
+							size="sm"
+							color="text.medium"
+							className={css({
+								_hover: {
+									bgColor: "bg.tertiary",
+									color: "text.bright",
+								},
+							})}
 							onClick={() => navigate(`/servers/${guild?.id}/invite`)}
-						/>
-					</IconButton>
-					<IconButton
-						variant="ghost"
-						size="sm"
-						color="text.medium"
-						className={css({
-							_hover: {
-								bgColor: "bg.tertiary",
-								color: "text.bright",
-							},
-						})}
-					>
-						<Settings
-							size={16}
+						>
+							<UserRoundPlus size={16} />
+						</IconButton>
+					)}
+					{canViewSettings && (
+						<IconButton
+							variant="ghost"
+							size="sm"
+							color="text.medium"
+							className={css({
+								_hover: {
+									bgColor: "bg.tertiary",
+									color: "text.bright",
+								},
+							})}
 							onClick={() => navigate(`/servers/${guild?.id}/settings`)}
-						/>
-					</IconButton>
+						>
+							<Settings size={16} />
+						</IconButton>
+					)}
 				</div>
 			</div>
 
 			{guild?.categories?.map((category) => (
 				<Category
 					key={category.id}
-					onAddChannel={() => {
-						setIsChannelDialogOpen(true);
-						setSelectedCategoryId(category.id);
-					}}
+					onAddChannel={
+						canCreateChannels
+							? () => {
+									setIsChannelDialogOpen(true);
+									setSelectedCategoryId(category.id);
+							  }
+							: undefined
+					}
 				>
 					<Category.Title>{category.name}</Category.Title>
 					{category.channels.map((channel) => (
@@ -190,41 +197,43 @@ export const GuildPanel = () => {
 			))}
 
 			{/* カテゴリ作成ボタン（ホバー時表示） */}
-			<div
-				className={css({
-					padding: "4",
-					marginTop: "4",
-					opacity: isHovered ? 1 : 0,
-					transition: isHovered ? "opacity 0.3s ease" : "opacity 0s",
-					pointerEvents: isHovered ? "auto" : "none",
-				})}
-			>
-				<button
-					onClick={() => setIsCategoryDialogOpen(true)}
+			{canCreateCategories && (
+				<div
 					className={css({
-						display: "flex",
-						alignItems: "center",
-						gap: "2",
-						width: "100%",
-						padding: "2",
-						fontSize: "xs",
-						fontWeight: "medium",
-						color: "text.medium",
-						background: "transparent",
-						border: "none",
-						borderRadius: "sm",
-						cursor: "pointer",
-						transition: "all 0.1s ease",
-						_hover: {
-							color: "text.bright",
-							backgroundColor: "bg.tertiary",
-						},
+						padding: "4",
+						marginTop: "4",
+						opacity: isHovered ? 1 : 0,
+						transition: isHovered ? "opacity 0.3s ease" : "opacity 0s",
+						pointerEvents: isHovered ? "auto" : "none",
 					})}
 				>
-					<Plus size={14} />
-					カテゴリを作成
-				</button>
-			</div>
+					<button
+						onClick={() => setIsCategoryDialogOpen(true)}
+						className={css({
+							display: "flex",
+							alignItems: "center",
+							gap: "2",
+							width: "100%",
+							padding: "2",
+							fontSize: "xs",
+							fontWeight: "medium",
+							color: "text.medium",
+							background: "transparent",
+							border: "none",
+							borderRadius: "sm",
+							cursor: "pointer",
+							transition: "all 0.1s ease",
+							_hover: {
+								color: "text.bright",
+								backgroundColor: "bg.tertiary",
+							},
+						})}
+					>
+						<Plus size={14} />
+						カテゴリを作成
+					</button>
+				</div>
+			)}
 
 			{/* チャンネル作成モーダル */}
 			<Dialog.Root

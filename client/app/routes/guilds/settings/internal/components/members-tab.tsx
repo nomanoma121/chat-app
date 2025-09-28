@@ -9,6 +9,7 @@ import { Card } from "~/components/ui/card";
 import { Heading } from "~/components/ui/heading";
 import { Input } from "~/components/ui/input";
 import { Text } from "~/components/ui/text";
+import { usePermissions } from "~/hooks/use-permissions";
 
 interface MembersTabProps {
 	guild?: GuildWithMembers;
@@ -17,6 +18,7 @@ interface MembersTabProps {
 export const MembersTab = ({ guild }: MembersTabProps) => {
 	const navigate = useNavigate();
 	const { serverId: guildId } = useParams();
+	const { canEditGuild, canCreateInvites } = usePermissions(guild);
 	return (
 		<div
 			className={css({
@@ -72,17 +74,19 @@ export const MembersTab = ({ guild }: MembersTabProps) => {
 								color: "text.bright",
 							})}
 						/>
-						<Button
-							variant="solid"
-							size="md"
-							className={css({
-								color: "text.bright",
-							})}
-							onClick={() => navigate(`/servers/${guildId}/invite`)}
-						>
-							<UserRoundPlus size={16} />
-							新しいメンバーを招待
-						</Button>
+						{canCreateInvites && (
+							<Button
+								variant="solid"
+								size="md"
+								className={css({
+									color: "text.bright",
+								})}
+								onClick={() => navigate(`/servers/${guildId}/invite`)}
+							>
+								<UserRoundPlus size={16} />
+								新しいメンバーを招待
+							</Button>
+						)}
 					</div>
 				</Card.Header>
 				<Card.Body>
@@ -170,13 +174,22 @@ export const MembersTab = ({ guild }: MembersTabProps) => {
 										)}
 									</div>
 								</div>
-								<Button
-									variant="outline"
-									size="sm"
-									className={css({ ml: "12px", color: "danger.default" })}
-								>
-									キック
-								</Button>
+								{canEditGuild && member.userId !== guild.ownerId && (
+									<Button
+										variant="outline"
+										size="sm"
+										className={css({
+											ml: "12px",
+											color: "danger.default",
+											_hover: {
+												bgColor: "danger.default",
+												color: "text.bright",
+											},
+										})}
+									>
+										キック
+									</Button>
+								)}
 							</Card.Body>
 						</Card.Root>
 					))}

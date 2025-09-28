@@ -8,6 +8,7 @@ import { Button } from "~/components/ui/button";
 import { Heading } from "~/components/ui/heading";
 import { Spinner } from "~/components/ui/spinner";
 import { Text } from "~/components/ui/text";
+import { usePermissions } from "~/hooks/use-permissions";
 import { GeneralTab } from "./internal/components/general-tab";
 import { MembersTab } from "./internal/components/members-tab";
 
@@ -16,6 +17,7 @@ export default function ServerSetting() {
 	if (!guildId) return <NotFoundPage />;
 	const navigate = useNavigate();
 	const { data, isLoading } = useGetGuildByID(guildId);
+	const { canViewSettings } = usePermissions(data?.guild);
 
 	if (isLoading) {
 		return (
@@ -41,6 +43,11 @@ export default function ServerSetting() {
 	}
 
 	if (!data?.guild) {
+		return <NotFoundPage />;
+	}
+
+	// 権限がない場合は404を表示
+	if (!canViewSettings) {
 		return <NotFoundPage />;
 	}
 

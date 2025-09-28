@@ -14,6 +14,7 @@ import {
 	useCreateGuildInvite,
 	useGetGuildInvites,
 } from "~/api/gen/invite/invite";
+import { useGetGuildByID } from "~/api/gen/guild/guild";
 import { NotFoundPage } from "~/components/features/not-found-page";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -27,6 +28,7 @@ import { Switch } from "~/components/ui/switch";
 import { Text } from "~/components/ui/text";
 import { formatDate } from "~/constants";
 import { useToast } from "~/hooks/use-toast";
+import { usePermissions } from "~/hooks/use-permissions";
 
 const SECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 
@@ -47,7 +49,9 @@ export default function InvitePage() {
 		return <NotFoundPage />;
 	}
 	const { data, refetch } = useGetGuildInvites(guildId);
+	const { data: guildData } = useGetGuildByID(guildId);
 	const { mutateAsync: createInvite } = useCreateGuildInvite();
+	const { canCreateInvites } = usePermissions(guildData?.guild);
 	const [inviteSettings, setInviteSettings] = useState({
 		maxUses: {
 			value: 10,
@@ -93,6 +97,11 @@ export default function InvitePage() {
 			toast.error("招待リンクのコピーに失敗しました");
 		}
 	};
+
+	// 権限がない場合は404を表示
+	if (!canCreateInvites) {
+		return <NotFoundPage />;
+	}
 
 	return (
 		<div
