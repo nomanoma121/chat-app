@@ -11,6 +11,7 @@ import (
 
 type ChannelUsecase interface {
 	Create(ctx context.Context, params *CreateChannelParams) (*domain.Channel, error)
+	CheckAccess(ctx context.Context, userID, channelID uuid.UUID) (bool, error)
 }
 
 type channelUsecase struct {
@@ -41,6 +42,14 @@ func (u *channelUsecase) Create(ctx context.Context, params *CreateChannelParams
 		Name:       params.Name,
 		CreatedAt:  time.Now(),
 	})
+}
+
+func (u *channelUsecase) CheckAccess(ctx context.Context, userID, channelID uuid.UUID) (bool, error) {
+	isMember, err := u.store.Channels().CheckChannelMember(ctx, userID, channelID)
+	if err != nil {
+		return false, err
+	}
+	return isMember, nil
 }
 
 var _ ChannelUsecase = (*channelUsecase)(nil)

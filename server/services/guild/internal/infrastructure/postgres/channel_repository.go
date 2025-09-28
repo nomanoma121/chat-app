@@ -53,4 +53,15 @@ func (r *channelRepository) GetByCategoryID(ctx context.Context, categoryID uuid
 	return channels, nil
 }
 
+func (r *channelRepository) CheckChannelMember(ctx context.Context, userID, channelID uuid.UUID) (bool, error) {
+	isMember, err := r.queries.CheckChannelMember(ctx, gen.CheckChannelMemberParams{
+		UserID:    userID,
+		ID: channelID,
+	})
+	if err != nil {
+		return false, err
+	}
+	return isMember, nil
+}
+
 var _ domain.IChannelRepository = (*channelRepository)(nil)

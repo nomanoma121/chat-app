@@ -74,4 +74,9 @@ func (h *GuildServiceHandler) GetGuildByInviteCode(ctx context.Context, req *pb.
 	return h.inviteHandler.GetGuildByInviteCode(ctx, req)
 }
 
+// CheckChannelAccess
+func (h *GuildServiceHandler) CheckChannelAccess(ctx context.Context, req *pb.CheckChannelAccessRequest) (*pb.CheckChannelAccessResponse, error) {
+	return h.channelHandler.CheckChannelAccess(ctx, req)
+}
+
 var _ pb.GuildServiceServer = (*GuildServiceHandler)(nil)
