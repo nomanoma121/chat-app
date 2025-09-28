@@ -77,7 +77,7 @@ func (h *inviteHandler) GetGuildInvites(ctx context.Context, req *pb.GetGuildInv
 	if err != nil {
 		return nil, err
 	}
-	
+
 	guildID, err := uuid.Parse(req.GuildId)
 	if err != nil {
 		h.logger.Warn("Invalid guild ID format", "guild_id", req.GuildId, "error", err)

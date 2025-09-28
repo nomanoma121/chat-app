@@ -211,7 +211,7 @@ func (u *guildUsecase) GetGuildOverview(ctx context.Context, userID, guildID uui
 	if !isMember {
 		return nil, domain.ErrGuildNotFound
 	}
-	
+
 	guild, err := u.store.Guilds().GetByID(ctx, guildID)
 	if err != nil {
 		return nil, err

@@ -107,8 +107,8 @@ func (r *guildRepository) Update(ctx context.Context, guild *domain.Guild) (*dom
 
 func (r *guildRepository) IsOwner(ctx context.Context, guildID uuid.UUID, userID uuid.UUID) (bool, error) {
 	isOwner, err := r.queries.IsOwner(ctx, gen.IsOwnerParams{
-		ID: guildID,
-		OwnerID:  userID,
+		ID:      guildID,
+		OwnerID: userID,
 	})
 	if err != nil {
 		return false, err

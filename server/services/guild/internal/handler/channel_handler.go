@@ -31,7 +31,7 @@ func (h *channelHandler) CreateChannel(ctx context.Context, req *pb.CreateChanne
 	if err != nil {
 		return nil, err
 	}
-	
+
 	categoryID, err := uuid.Parse(req.CategoryId)
 	if err != nil {
 		h.logger.Warn("Invalid category ID format", "category_id", req.CategoryId, "error", err)

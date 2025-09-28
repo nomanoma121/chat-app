@@ -55,8 +55,8 @@ func (r *channelRepository) GetByCategoryID(ctx context.Context, categoryID uuid
 
 func (r *channelRepository) CheckChannelMember(ctx context.Context, userID, channelID uuid.UUID) (bool, error) {
 	isMember, err := r.queries.CheckChannelMember(ctx, gen.CheckChannelMemberParams{
-		UserID:    userID,
-		ID: channelID,
+		UserID: userID,
+		ID:     channelID,
 	})
 	if err != nil {
 		return false, err

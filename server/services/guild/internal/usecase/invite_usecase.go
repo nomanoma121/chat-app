@@ -83,7 +83,7 @@ func (u *inviteUsecase) GetByGuildID(ctx context.Context, userID, guildID uuid.U
 	if !isMember {
 		return nil, domain.ErrGuildNotFound
 	}
-	
+
 	invites, err := u.store.Invites().GetByGuildID(ctx, guildID)
 	if err != nil {
 		return nil, err
