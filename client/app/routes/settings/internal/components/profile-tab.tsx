@@ -26,7 +26,7 @@ type ProfileFormValues = v.InferInput<typeof ProfileForm>;
 
 export const ProfileTab = () => {
 	const toast = useToast();
-	const { data, isLoading } = useGetCurrentUser();
+	const { data, isLoading, refetch } = useGetCurrentUser();
 	const { mutateAsync: updateUser, isPending } = useUpdate();
 	const {
 		register,
@@ -55,6 +55,7 @@ export const ProfileTab = () => {
 				},
 			});
 			toast.success("プロフィール情報を更新しました");
+			await refetch();
 		} catch (error) {
 			console.error("Profile update error:", error);
 			toast.error("プロフィール情報の更新に失敗しました");
