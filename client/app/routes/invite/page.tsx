@@ -9,11 +9,20 @@ import { Card } from "~/components/ui/card";
 import { Spinner } from "~/components/ui/spinner";
 import { Text } from "~/components/ui/text";
 import { useToast } from "~/hooks/use-toast";
+import { useAuthMe } from "~/api/gen/auth/auth";
 
 export default function InvitePage() {
 	const navigate = useNavigate();
 	const toast = useToast();
 	const { inviteCode } = useParams();
+	const { error: authError } = useAuthMe();
+
+	console.log("InvitePage rendered with inviteCode:", inviteCode);
+	console.log("Auth error:", authError);
+	if (authError?.code === 401) {
+		navigate(`/login?state=invite:${inviteCode || ""}`);
+		return null;
+	}
 
 	if (!inviteCode) {
 		return <InviteErrorCard navigate={navigate} />;

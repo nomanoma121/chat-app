@@ -1,13 +1,12 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate, Link } from "react-router";
 import { css } from "styled-system/css";
 import * as v from "valibot";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
-import { Spinner } from "~/components/ui/spinner";
 import { useLogin } from "~/hooks/use-login";
 import { useToast } from "~/hooks/use-toast";
 import { UserSchema } from "~/schema/user";
@@ -23,6 +22,10 @@ export default function LoginPage() {
 	const navigate = useNavigate();
 	const { mutateAsync, isPending, error } = useLogin();
 	const toast = useToast();
+	const location = useLocation();
+	
+	const searchParams = new URLSearchParams(location.search);
+	const redirectState = searchParams.get("state");
 
 	const {
 		register,
@@ -44,7 +47,11 @@ export default function LoginPage() {
 				password: data.password,
 			});
 			toast.success("ログインしました");
-			navigate("/servers");
+			if (redirectState) {
+				navigate(`/invite/${redirectState}`);
+			} else {
+				navigate("/servers");
+			}
 		} catch (_error) {
 			toast.error(
 				"ログインに失敗しました",
@@ -153,8 +160,12 @@ export default function LoginPage() {
 								marginTop: "4",
 							})}
 						>
-							<a
-								href="/register"
+							<Link
+								to={
+									redirectState
+										? `/register?state=${redirectState}`
+										: "/register"
+								}
 								className={css({
 									fontWeight: "medium",
 									color: "accent.default",
@@ -164,7 +175,7 @@ export default function LoginPage() {
 								})}
 							>
 								新規登録はこちら
-							</a>
+							</Link>
 						</div>
 					</form>
 				</Card.Body>

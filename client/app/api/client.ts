@@ -1,4 +1,4 @@
-import type { AxiosRequestConfig } from "axios";
+import type { AxiosRequestConfig, AxiosError } from "axios";
 import Axios from "axios";
 
 export const axiosInstance = Axios.create({
@@ -20,24 +20,19 @@ axiosInstance.interceptors.request.use(
 	},
 );
 
-axiosInstance.interceptors.response.use(
-	(response) => response,
-	(error) => {
-		if (error.response?.status === 401) {
-			localStorage.removeItem("authToken");
-			if (typeof window !== "undefined") {
-				window.location.href = "/login";
-			}
-		}
-		return Promise.reject(error);
-	},
-);
-
 export const customClient = <T>(config: AxiosRequestConfig): Promise<T> => {
 	const controller = new AbortController();
-	const promise = axiosInstance({ ...config, signal: controller.signal }).then(
-		({ data }) => data,
-	);
+	const promise = axiosInstance({ ...config, signal: controller.signal })
+		.then(({ data }) => data)
+		.catch((error: AxiosError) => {
+			// AxiosErrorをStatus型互換のエラーオブジェクトに変換
+			const statusError = {
+				code: error.response?.status || 500,
+				message: error.message,
+				details: []
+			};
+			throw statusError;
+		});
 
 	// @ts-expect-error
 	promise.cancel = () => {

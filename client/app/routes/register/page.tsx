@@ -11,6 +11,7 @@ import { FormLabel } from "~/components/ui/form-label";
 import { useLogin } from "~/hooks/use-login";
 import { useToast } from "~/hooks/use-toast";
 import { UserSchema } from "~/schema/user";
+import { Link, useLocation } from "react-router";
 
 const RegisterForm = v.object({
 	displayId: UserSchema.DisplayId,
@@ -28,6 +29,10 @@ export default function RegisterPage() {
 	const { mutateAsync: register, isPending, error } = useRegister();
 	const { mutateAsync: login } = useLogin();
 	const toast = useToast();
+	const location = useLocation();
+	
+	const searchParams = new URLSearchParams(location.search);
+	const redirectState = searchParams.get("state");
 
 	const {
 		register: registerField,
@@ -59,9 +64,13 @@ export default function RegisterPage() {
 				},
 			});
 
-			await login({ email: data.email, password: data.password });
 			toast.success("アカウントを作成しました");
-			navigate("/servers");
+			await login({ email: data.email, password: data.password });
+			if (redirectState) {
+				navigate(`/invite/${redirectState}`);
+			} else {
+				navigate("/servers");
+			}
 		} catch (error) {
 			console.error("Registration or login error:", error);
 			toast.error("登録に失敗しました", "入力内容を確認してください");
@@ -238,8 +247,8 @@ export default function RegisterPage() {
 								marginTop: "4",
 							})}
 						>
-							<a
-								href="/login"
+							<Link
+								to={redirectState ? `/login?state=${redirectState}` : "/login"}
 								className={css({
 									fontWeight: "medium",
 									color: "accent.default",
@@ -249,7 +258,7 @@ export default function RegisterPage() {
 								})}
 							>
 								ログインはこちら
-							</a>
+							</Link>
 						</div>
 					</form>
 				</Card.Body>
