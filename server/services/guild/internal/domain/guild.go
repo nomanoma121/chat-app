@@ -28,4 +28,5 @@ type IGuildRepository interface {
 	GetByID(ctx context.Context, id uuid.UUID) (*Guild, error)
 	GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*Guild, error)
 	Update(ctx context.Context, guild *Guild) (*Guild, error)
+	IsOwner(ctx context.Context, guildID uuid.UUID, userID uuid.UUID) (bool, error)
 }

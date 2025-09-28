@@ -26,6 +26,9 @@ var (
 	ErrInvalidInviteData = errors.New("invalid invite data")
 	ErrInvalidInviteCode = errors.New("invalid invite code")
 
+	// 401
+	ErrNotGuildOwner = errors.New("not guild owner")
+
 	// Internal Server Error
 	ErrInternalServerError = errors.New("internal server error")
 )

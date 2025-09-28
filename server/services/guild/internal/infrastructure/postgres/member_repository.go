@@ -61,4 +61,15 @@ func (r *memberRepository) CountByGuildID(ctx context.Context, guildID uuid.UUID
 	return int32(count), nil
 }
 
+func (r *memberRepository) IsMember(ctx context.Context, guildID uuid.UUID, userID uuid.UUID) (bool, error) {
+	exists, err := r.queries.IsMember(ctx, gen.IsMemberParams{
+		GuildID: guildID,
+		UserID:  userID,
+	})
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
+}
+
 var _ domain.IMemberRepository = (*memberRepository)(nil)
