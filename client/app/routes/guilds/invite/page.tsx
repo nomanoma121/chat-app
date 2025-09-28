@@ -29,6 +29,7 @@ import { Text } from "~/components/ui/text";
 import { formatDate } from "~/constants";
 import { useToast } from "~/hooks/use-toast";
 import { usePermissions } from "~/hooks/use-permissions";
+import { CLIENT_BASE_URL } from "~/constants";
 
 const SECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 
@@ -89,7 +90,7 @@ export default function InvitePage() {
 	};
 
 	const handleCopyInvite = async (code: string) => {
-		const inviteUrl = `http://localhost:5173/invite/${code}`;
+		const inviteUrl = `${CLIENT_BASE_URL}/invite/${code}`;
 		try {
 			await navigator.clipboard.writeText(inviteUrl);
 			toast.success("招待リンクをコピーしました");
