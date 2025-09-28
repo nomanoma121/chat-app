@@ -136,6 +136,26 @@ func (q *Queries) GetMyGuilds(ctx context.Context, userID uuid.UUID) ([]*GetMyGu
 	return items, nil
 }
 
+const isOwner = `-- name: IsOwner :one
+SELECT EXISTS (
+    SELECT 1
+    FROM guilds
+    WHERE id = $1 AND owner_id = $2
+)
+`
+
+type IsOwnerParams struct {
+	ID      uuid.UUID
+	OwnerID uuid.UUID
+}
+
+func (q *Queries) IsOwner(ctx context.Context, arg IsOwnerParams) (bool, error) {
+	row := q.db.QueryRow(ctx, isOwner, arg.ID, arg.OwnerID)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
 const updateGuild = `-- name: UpdateGuild :one
 UPDATE guilds
 SET name = $2, description = $3, icon_url = $4, default_channel_id = $5, updated_at = NOW()

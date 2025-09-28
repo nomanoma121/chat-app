@@ -12,3 +12,10 @@ WHERE guild_id = $1;
 SELECT COUNT(*) AS count
 FROM members
 WHERE guild_id = $1;
+
+-- name: IsMember :one
+SELECT EXISTS (
+    SELECT 1
+    FROM members
+    WHERE guild_id = $1 AND user_id = $2
+);
