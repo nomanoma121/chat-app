@@ -10,6 +10,7 @@ import { Spinner } from "~/components/ui/spinner";
 import { Text } from "~/components/ui/text";
 import { useToast } from "~/hooks/use-toast";
 import { useAuthMe } from "~/api/gen/auth/auth";
+import { useEffect } from "react";
 
 export default function InvitePage() {
 	const navigate = useNavigate();
@@ -17,12 +18,11 @@ export default function InvitePage() {
 	const { inviteCode } = useParams();
 	const { error: authError } = useAuthMe();
 
-	console.log("InvitePage rendered with inviteCode:", inviteCode);
-	console.log("Auth error:", authError);
-	if (authError?.code === 401) {
-		navigate(`/login?state=invite:${inviteCode || ""}`);
-		return null;
-	}
+	useEffect(() => {
+		if (authError?.code === 401) {
+			navigate(`/login?state=invite:${inviteCode || ""}`);
+		}
+	}, [navigate, authError?.code, inviteCode]);
 
 	if (!inviteCode) {
 		return <InviteErrorCard navigate={navigate} />;

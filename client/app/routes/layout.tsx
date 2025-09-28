@@ -3,6 +3,7 @@ import { css } from "styled-system/css";
 import { useAuthMe } from "~/api/gen/auth/auth";
 import { UserPanel } from "~/components/features/user-panel";
 import { useLocation } from "react-router";
+import { useEffect } from "react";
 
 export default function ChannelLayout() {
   const { data, error } = useAuthMe();
@@ -11,11 +12,12 @@ export default function ChannelLayout() {
   const isAuthRoute =
     location.pathname.startsWith("/login") ||
     location.pathname.startsWith("/register");
-
-  if (!isAuthRoute && error?.code === 401) {
-    navigate("/login");
-    return;
-  }
+    
+  useEffect(() => {
+    if (!isAuthRoute && error?.code === 401) {
+      navigate("/login");
+    }
+  }, [navigate, isAuthRoute, error?.code]);
 
   return (
     <div>
