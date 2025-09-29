@@ -1,0 +1,1953 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "guild_type.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "Guild",
+      "description": "Guild management operations"
+    },
+    {
+      "name": "Message",
+      "description": "Message management operations"
+    },
+    {
+      "name": "User",
+      "description": "User management operations"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/auth/login": {
+      "post": {
+        "operationId": "Login",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/LoginResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "operationId": "AuthMe",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/AuthMeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "operationId": "Register",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/RegisterResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RegisterRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/categories/{categoryId}": {
+      "delete": {
+        "operationId": "DeleteCategory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/DeleteCategoryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Category"
+        ]
+      },
+      "put": {
+        "operationId": "UpdateCategory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UpdateCategoryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateCategoryBody"
+            }
+          }
+        ],
+        "tags": [
+          "Category"
+        ]
+      }
+    },
+    "/api/categories/{categoryId}/channels": {
+      "post": {
+        "operationId": "CreateChannel",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CreateChannelResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateChannelBody"
+            }
+          }
+        ],
+        "tags": [
+          "Channel"
+        ]
+      }
+    },
+    "/api/channels/{channelId}": {
+      "delete": {
+        "operationId": "DeleteChannel",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/DeleteChannelResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "channelId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Channel"
+        ]
+      },
+      "put": {
+        "operationId": "UpdateChannel",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UpdateChannelResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "channelId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateChannelBody"
+            }
+          }
+        ],
+        "tags": [
+          "Channel"
+        ]
+      }
+    },
+    "/api/channels/{channelId}/messages": {
+      "get": {
+        "operationId": "GetByChannelID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetByChannelIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "channelId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Message"
+        ]
+      },
+      "post": {
+        "operationId": "Create",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CreateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "channelId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateBody"
+            }
+          }
+        ],
+        "tags": [
+          "Message"
+        ]
+      }
+    },
+    "/api/guilds": {
+      "post": {
+        "operationId": "CreateGuild",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CreateGuildResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateGuildRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Guild"
+        ]
+      }
+    },
+    "/api/guilds/{guildId}": {
+      "get": {
+        "operationId": "GetGuildByID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetGuildByIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "guildId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Guild"
+        ]
+      },
+      "put": {
+        "operationId": "UpdateGuild",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UpdateGuildResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "guildId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateGuildBody"
+            }
+          }
+        ],
+        "tags": [
+          "Guild"
+        ]
+      }
+    },
+    "/api/guilds/{guildId}/categories": {
+      "post": {
+        "operationId": "CreateCategory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CreateCategoryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "guildId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateCategoryBody"
+            }
+          }
+        ],
+        "tags": [
+          "Category"
+        ]
+      }
+    },
+    "/api/guilds/{guildId}/invites": {
+      "get": {
+        "operationId": "GetGuildInvites",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetGuildInvitesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "guildId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Invite"
+        ]
+      },
+      "post": {
+        "operationId": "CreateGuildInvite",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CreateGuildInviteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "guildId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateGuildInviteBody"
+            }
+          }
+        ],
+        "tags": [
+          "Invite"
+        ]
+      }
+    },
+    "/api/guilds/{guildId}/members/me": {
+      "delete": {
+        "operationId": "LeaveGuild",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/LeaveGuildResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "guildId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Member"
+        ]
+      }
+    },
+    "/api/guilds/{guildId}/members/{userId}": {
+      "delete": {
+        "operationId": "DeleteGuildMember",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/DeleteGuildMemberResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "guildId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Member"
+        ]
+      }
+    },
+    "/api/guilds/{guildId}/overview": {
+      "get": {
+        "operationId": "GetGuildOverview",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetGuildOverviewResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "guildId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Guild"
+        ]
+      }
+    },
+    "/api/invites/{inviteCode}": {
+      "get": {
+        "operationId": "GetGuildByInviteCode",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetGuildByInviteCodeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "inviteCode",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Invite"
+        ]
+      },
+      "delete": {
+        "operationId": "DeleteGuildInvite",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/DeleteGuildInviteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "inviteCode",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Invite"
+        ]
+      }
+    },
+    "/api/invites/{inviteCode}/join": {
+      "post": {
+        "operationId": "JoinGuild",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/JoinGuildResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "inviteCode",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/JoinGuildBody"
+            }
+          }
+        ],
+        "tags": [
+          "Invite"
+        ]
+      }
+    },
+    "/api/messages/{messageId}": {
+      "delete": {
+        "operationId": "DeleteByMessageID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/DeleteByMessageIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "messageId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Message"
+        ]
+      },
+      "put": {
+        "operationId": "UpdateByMessageID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UpdateByMessageIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "messageId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateByMessageIDBody"
+            }
+          }
+        ],
+        "tags": [
+          "Message"
+        ]
+      }
+    },
+    "/api/user/me": {
+      "get": {
+        "operationId": "GetCurrentUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetCurrentUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/users/me": {
+      "put": {
+        "operationId": "Update",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UpdateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/users/me/guilds": {
+      "get": {
+        "operationId": "ListMyGuilds",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ListMyGuildsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "tags": [
+          "Guild"
+        ]
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "operationId": "GetUserByID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetUserByIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "User"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Any": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "AuthMeResponse": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "exp": {
+          "type": "string"
+        },
+        "iat": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "userId",
+        "exp",
+        "iat"
+      ]
+    },
+    "Category": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "guildId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "guildId",
+        "name",
+        "createdAt"
+      ]
+    },
+    "CategoryDetail": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "guildId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "channels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Channel"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "guildId",
+        "name",
+        "createdAt",
+        "channels"
+      ]
+    },
+    "Channel": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "categoryId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "categoryId",
+        "createdAt"
+      ]
+    },
+    "CheckChannelAccessResponse": {
+      "type": "object",
+      "properties": {
+        "hasAccess": {
+          "type": "boolean"
+        }
+      }
+    },
+    "CreateBody": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string"
+        },
+        "replyId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "content"
+      ]
+    },
+    "CreateCategoryBody": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "CreateCategoryResponse": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "$ref": "#/definitions/Category"
+        }
+      },
+      "required": [
+        "category"
+      ]
+    },
+    "CreateChannelBody": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "CreateChannelResponse": {
+      "type": "object",
+      "properties": {
+        "channel": {
+          "$ref": "#/definitions/Channel"
+        }
+      },
+      "required": [
+        "channel"
+      ]
+    },
+    "CreateGuildInviteBody": {
+      "type": "object",
+      "properties": {
+        "maxUses": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "CreateGuildInviteResponse": {
+      "type": "object",
+      "properties": {
+        "invite": {
+          "$ref": "#/definitions/Invite"
+        }
+      },
+      "required": [
+        "invite"
+      ]
+    },
+    "CreateGuildRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "owner_idはjwtから取得するため不要"
+        },
+        "description": {
+          "type": "string"
+        },
+        "iconUrl": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "iconUrl"
+      ]
+    },
+    "CreateGuildResponse": {
+      "type": "object",
+      "properties": {
+        "guild": {
+          "$ref": "#/definitions/Guild"
+        }
+      },
+      "required": [
+        "guild"
+      ]
+    },
+    "CreateResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "$ref": "#/definitions/Message"
+        }
+      },
+      "required": [
+        "message"
+      ]
+    },
+    "DeleteByMessageIDResponse": {
+      "type": "object",
+      "properties": {
+        "empty": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      "required": [
+        "empty"
+      ]
+    },
+    "DeleteCategoryResponse": {
+      "type": "object",
+      "properties": {
+        "empty": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      "required": [
+        "empty"
+      ]
+    },
+    "DeleteChannelResponse": {
+      "type": "object",
+      "properties": {
+        "empty": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      "required": [
+        "empty"
+      ]
+    },
+    "DeleteGuildInviteResponse": {
+      "type": "object",
+      "properties": {
+        "empty": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      "required": [
+        "empty"
+      ]
+    },
+    "DeleteGuildMemberResponse": {
+      "type": "object",
+      "properties": {
+        "empty": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      "required": [
+        "empty"
+      ]
+    },
+    "ExistsResponse": {
+      "type": "object",
+      "properties": {
+        "exists": {
+          "type": "boolean"
+        }
+      }
+    },
+    "GetByChannelIDResponse": {
+      "type": "object",
+      "properties": {
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Message"
+          }
+        }
+      },
+      "required": [
+        "messages"
+      ]
+    },
+    "GetCurrentUserResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/user.User"
+        }
+      },
+      "required": [
+        "user"
+      ]
+    },
+    "GetGuildByIDResponse": {
+      "type": "object",
+      "properties": {
+        "guild": {
+          "$ref": "#/definitions/GuildWithMembers"
+        }
+      },
+      "required": [
+        "guild"
+      ]
+    },
+    "GetGuildByInviteCodeResponse": {
+      "type": "object",
+      "properties": {
+        "invite": {
+          "$ref": "#/definitions/Invite"
+        }
+      },
+      "required": [
+        "invite"
+      ]
+    },
+    "GetGuildInvitesResponse": {
+      "type": "object",
+      "properties": {
+        "invites": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Invite"
+          }
+        }
+      },
+      "required": [
+        "invites"
+      ]
+    },
+    "GetGuildOverviewResponse": {
+      "type": "object",
+      "properties": {
+        "guild": {
+          "$ref": "#/definitions/GuildDetail"
+        }
+      },
+      "required": [
+        "guild",
+        "categories"
+      ]
+    },
+    "GetUserByIDResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/user.User"
+        }
+      },
+      "required": [
+        "user"
+      ]
+    },
+    "GetUsersByIDsResponse": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/user.User"
+          }
+        }
+      }
+    },
+    "Guild": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "iconUrl": {
+          "type": "string"
+        },
+        "defaultChannelId": {
+          "type": "string"
+        },
+        "memberCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "ownerId",
+        "description",
+        "defaultChannelId",
+        "iconUrl",
+        "createdAt"
+      ]
+    },
+    "GuildDetail": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "iconUrl": {
+          "type": "string"
+        },
+        "defaultChannelId": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/CategoryDetail"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "ownerId",
+        "description",
+        "defaultChannelId",
+        "iconUrl",
+        "createdAt",
+        "categories"
+      ]
+    },
+    "GuildWithMemberCount": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "iconUrl": {
+          "type": "string"
+        },
+        "defaultChannelId": {
+          "type": "string"
+        },
+        "memberCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "ownerId",
+        "description",
+        "defaultChannelId",
+        "iconUrl",
+        "memberCount",
+        "createdAt"
+      ]
+    },
+    "GuildWithMembers": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "iconUrl": {
+          "type": "string"
+        },
+        "defaultChannelId": {
+          "type": "string"
+        },
+        "memberCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Member"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "ownerId",
+        "description",
+        "defaultChannelId",
+        "iconUrl",
+        "memberCount",
+        "members",
+        "createdAt"
+      ]
+    },
+    "Invite": {
+      "type": "object",
+      "properties": {
+        "guildId": {
+          "type": "string"
+        },
+        "guild": {
+          "$ref": "#/definitions/Guild"
+        },
+        "creatorId": {
+          "type": "string"
+        },
+        "creator": {
+          "$ref": "#/definitions/guild.User"
+        },
+        "maxUses": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "currentUses": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "inviteCode": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "guildId",
+        "creatorId",
+        "currentUses",
+        "inviteCode",
+        "createdAt"
+      ]
+    },
+    "JoinGuildBody": {
+      "type": "object"
+    },
+    "JoinGuildResponse": {
+      "type": "object",
+      "properties": {
+        "member": {
+          "$ref": "#/definitions/Member"
+        }
+      },
+      "required": [
+        "guild"
+      ]
+    },
+    "LeaveGuildResponse": {
+      "type": "object",
+      "properties": {
+        "empty": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      "required": [
+        "empty"
+      ]
+    },
+    "ListMyGuildsResponse": {
+      "type": "object",
+      "properties": {
+        "guilds": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/GuildWithMemberCount"
+          }
+        }
+      },
+      "required": [
+        "guilds"
+      ]
+    },
+    "LoginRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "email",
+        "password"
+      ]
+    },
+    "LoginResponse": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "token"
+      ]
+    },
+    "Member": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "guildId": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/guild.User"
+        },
+        "joinedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "userId",
+        "guildId",
+        "joinedAt"
+      ]
+    },
+    "Message": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "senderId": {
+          "type": "string"
+        },
+        "sender": {
+          "$ref": "#/definitions/msg.User"
+        },
+        "channelId": {
+          "type": "string"
+        },
+        "replyId": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "senderId",
+        "channelId",
+        "content",
+        "createdAt"
+      ]
+    },
+    "RegisterRequest": {
+      "type": "object",
+      "properties": {
+        "displayId": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "bio": {
+          "type": "string"
+        },
+        "iconUrl": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "displayId",
+        "password",
+        "email",
+        "name",
+        "bio",
+        "iconUrl"
+      ]
+    },
+    "RegisterResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/user.User"
+        }
+      },
+      "required": [
+        "user"
+      ]
+    },
+    "Status": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Any"
+          }
+        }
+      }
+    },
+    "UpdateByMessageIDBody": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string"
+        },
+        "replyId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "content"
+      ]
+    },
+    "UpdateByMessageIDResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "$ref": "#/definitions/Message"
+        }
+      },
+      "required": [
+        "message"
+      ]
+    },
+    "UpdateCategoryBody": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "UpdateCategoryResponse": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "$ref": "#/definitions/Category"
+        }
+      },
+      "required": [
+        "category"
+      ]
+    },
+    "UpdateChannelBody": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "UpdateChannelResponse": {
+      "type": "object",
+      "properties": {
+        "channel": {
+          "$ref": "#/definitions/Channel"
+        }
+      },
+      "required": [
+        "channel"
+      ]
+    },
+    "UpdateGuildBody": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "iconUrl": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "defaultChannelId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "iconUrl",
+        "defaultChannelId"
+      ]
+    },
+    "UpdateGuildResponse": {
+      "type": "object",
+      "properties": {
+        "guild": {
+          "$ref": "#/definitions/Guild"
+        }
+      },
+      "required": [
+        "guild"
+      ]
+    },
+    "UpdateRequest": {
+      "type": "object",
+      "properties": {
+        "displayId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "bio": {
+          "type": "string"
+        },
+        "iconUrl": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "displayId",
+        "name",
+        "bio",
+        "iconUrl"
+      ]
+    },
+    "UpdateResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/user.User"
+        }
+      },
+      "required": [
+        "user"
+      ]
+    },
+    "guild.User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "displayId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "iconUrl": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "TODO: あとからProtoをリファクタするときにuser protoのものをimportして使うようにする",
+      "required": [
+        "id",
+        "displayId",
+        "name",
+        "iconUrl",
+        "createdAt"
+      ]
+    },
+    "msg.User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "displayId": {
+          "type": "string"
+        },
+        "iconUrl": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "displayId",
+        "iconUrl",
+        "createdAt"
+      ]
+    },
+    "user.User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "displayId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "bio": {
+          "type": "string"
+        },
+        "iconUrl": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "displayId",
+        "name",
+        "bio",
+        "iconUrl",
+        "createdAt"
+      ]
+    }
+  }
+}
