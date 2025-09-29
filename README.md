@@ -15,23 +15,23 @@
 
 ### バックエンド
 
-- 言語: Go
-- フレームワーク: chi
-- API: gRPC, Protocol Buffers
-- 認証: JWT
+- 言語: [Go](https://go.dev/)
+- フレームワーク: [chi](https://github.com/go-chi/chi)
+- API: [gRPC](https://grpc.io/), [Protocol Buffers](https://protobuf.dev/)
+- 認証: [JWT](https://jwt.io/)
 
 ### フロントエンド
 
-- 言語: TypeScript
-- フレームワーク: React
-- APIクライアント: Orval
+- 言語: [TypeScript](https://www.typescriptlang.org/)
+- フレームワーク: [React](https://react.dev/)
+- APIクライアント: [Orval](https://orval.dev/)
 
 ### インフラ & データベース
 
-- データベース: PostgreSQL
-- DBマイグレーション: Atlas
-- クエリビルダ: sqlc
-- コンテナ: Docker
+- データベース: [PostgreSQL](https://www.postgresql.org/)
+- DBマイグレーション: [Atlas](https://atlasgo.io/)
+- クエリビルダ: [sqlc](https://sqlc.dev/)
+- コンテナ: [Docker](https://www.docker.com/)
 
 ## 今後実装予定
 
