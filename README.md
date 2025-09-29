@@ -1,5 +1,7 @@
 # Chat App
 
+マイクロサービスアーキテクチャで構築されたチャットアプリケーションです。
+
 ![chat-app-demo](./docs/images/chat-page.png)
 
 ## 主な機能
