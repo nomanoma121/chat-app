@@ -16,7 +16,7 @@
 ### バックエンド
 
 - 言語: [Go](https://go.dev/)
-- フレームワーク: [chi](https://github.com/go-chi/chi)
+- フレームワーク: [chi](https://go-chi.io/#/)
 - API: [gRPC](https://grpc.io/), [Protocol Buffers](https://protobuf.dev/)
 - 認証: [JWT](https://jwt.io/)
 
