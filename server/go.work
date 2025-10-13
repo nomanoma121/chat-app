@@ -7,4 +7,5 @@ use (
 	./services/api-gateway
 	./services/guild
 	./services/message
+	./services/realtime
 )
