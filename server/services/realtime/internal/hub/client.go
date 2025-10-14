@@ -19,7 +19,7 @@ type Client struct {
 	hub      *Hub
 	conn     *websocket.Conn
 	userID   uuid.UUID
-	channels map[string]bool
+	channels map[uuid.UUID]bool
 	send     chan []byte
 }
 
@@ -28,7 +28,7 @@ func NewClient(hub *Hub, conn *websocket.Conn, userID uuid.UUID) *Client {
 		hub:      hub,
 		conn:     conn,
 		userID:   userID,
-		channels: make(map[string]bool),
+		channels: make(map[uuid.UUID]bool),
 		send:     make(chan []byte, 256),
 	}
 }

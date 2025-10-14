@@ -89,7 +89,7 @@ func (h *Hub) broadcastMessageEvent(evt *event.Event) {
 		return
 	}
 
-	subscribers := h.subscriptions.GetSubscribers(channelID.String())
+	subscribers := h.subscriptions.GetSubscribers(channelID)
 	for client := range subscribers {
 		select {
 		case client.send <- message:
@@ -103,7 +103,7 @@ func (h *Hub) broadcastMessageEvent(evt *event.Event) {
 	log.Printf("Broadcasted event %s to channel %s", evt.Type, channelID)
 }
 
-func (h *Hub) SubscribeClientToChannel(client *Client, channelID string) {
+func (h *Hub) SubscribeClientToChannel(client *Client, channelID uuid.UUID) {
 	h.subscriptions.SubscribeChannel(client, channelID)
 	log.Printf("Client %s subscribed to channel %s", client.userID, channelID)
 }

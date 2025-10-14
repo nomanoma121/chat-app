@@ -1,16 +1,18 @@
 package hub
 
+import "github.com/google/uuid"
+
 type SubscriptionManager struct {
-	ChannelSubs map[string]map[*Client]bool
+	ChannelSubs map[uuid.UUID]map[*Client]bool
 }
 
 func NewSubscriptionManager() *SubscriptionManager {
 	return &SubscriptionManager{
-		ChannelSubs: make(map[string]map[*Client]bool),
+		ChannelSubs: make(map[uuid.UUID]map[*Client]bool),
 	}
 }
 
-func (sm *SubscriptionManager) SubscribeChannel(client *Client, channelID string) {
+func (sm *SubscriptionManager) SubscribeChannel(client *Client, channelID uuid.UUID) {
 	if sm.ChannelSubs[channelID] == nil {
 		sm.ChannelSubs[channelID] = make(map[*Client]bool)
 	}
@@ -18,7 +20,7 @@ func (sm *SubscriptionManager) SubscribeChannel(client *Client, channelID string
 	client.channels[channelID] = true
 }
 
-func (sm *SubscriptionManager) UnsubscribeChannel(client *Client, channelID string) {
+func (sm *SubscriptionManager) UnsubscribeChannel(client *Client, channelID uuid.UUID) {
 	if subs, ok := sm.ChannelSubs[channelID]; ok {
 		if _, exists := subs[client]; exists {
 			delete(subs, client)
@@ -43,7 +45,6 @@ func (sm *SubscriptionManager) UnsubscribeAll(client *Client) {
 	}
 }
 
-func (sm *SubscriptionManager) GetSubscribers(channelID string) map[*Client]bool {
+func (sm *SubscriptionManager) GetSubscribers(channelID uuid.UUID) map[*Client]bool {
 	return sm.ChannelSubs[channelID]
 }
-
