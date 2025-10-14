@@ -73,6 +73,19 @@ services:
       - postgres
       - user
       - guild
+    
+  realtime:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: realtime
+    environment:
+      - REDIS_URL=redis:6379
+    depends_on:
+      - redis
+      - user
+      - message
 
   api-gateway:
     build:
@@ -87,10 +100,12 @@ services:
       - USER_SERVICE_URL=user:50051
       - GUILD_SERVICE_URL=guild:50052
       - MESSAGE_SERVICE_URL=message:50053
+      - REALTIME_SERVICE_URL=realtime:5054
     depends_on:
       - user
       - guild
       - message
+      - realtime
 
 volumes:
   postgres_data:
