@@ -24,8 +24,6 @@ services:
 
   redis:
     image: redis:7-alpine
-    ports:
-      - "6379:6379"
 
   adminer:
     image: adminer
@@ -82,6 +80,10 @@ services:
         SERVICE_NAME: realtime
     environment:
       - REDIS_URL=redis:6379
+      - REALTIME_SERVICE_PORT=50054
+      - JWT_SECRET=${JWT_SECRET}
+    ports:
+      - "50054:50054"
     depends_on:
       - redis
       - user
@@ -100,7 +102,6 @@ services:
       - USER_SERVICE_URL=user:50051
       - GUILD_SERVICE_URL=guild:50052
       - MESSAGE_SERVICE_URL=message:50053
-      - REALTIME_SERVICE_URL=realtime:5054
     depends_on:
       - user
       - guild
