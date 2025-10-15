@@ -25,15 +25,25 @@ type messageUsecase struct {
 	messageRepo domain.IMessageRepository
 	userSvc     domain.IUserService
 	guildSvc    domain.IGuildService
+	publisher   domain.IPublisher
 	validator   *validator.Validate
 }
 
-func NewMessageUsecase(messageRepo domain.IMessageRepository, userSvc domain.IUserService, guildSvc domain.IGuildService, validator *validator.Validate) MessageUsecase {
+type MessageUsecaseParams struct {
+	MessageRepo domain.IMessageRepository
+	UserSvc     domain.IUserService
+	GuildSvc    domain.IGuildService
+	Publisher   domain.IPublisher
+	Validator   *validator.Validate
+}
+
+func NewMessageUsecase(params MessageUsecaseParams) MessageUsecase {
 	return &messageUsecase{
-		messageRepo: messageRepo,
-		userSvc:     userSvc,
-		guildSvc:    guildSvc,
-		validator:   validator,
+		messageRepo: params.MessageRepo,
+		userSvc:     params.UserSvc,
+		guildSvc:    params.GuildSvc,
+		publisher:   params.Publisher,
+		validator:   params.Validator,
 	}
 }
 
