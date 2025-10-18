@@ -1,9 +1,15 @@
 package redis
 
 import (
+	"context"
+	"encoding/json"
 	"message-service/internal/domain"
 
 	"github.com/redis/go-redis/v9"
+)
+
+const (
+	RedisChannelMessagePrefix = "message"
 )
 
 type RedisPublisher struct {
@@ -16,8 +22,14 @@ func NewRedisPublisher(client redis.Client) *RedisPublisher {
 	}
 }
 
-func (p *RedisPublisher) Publish(channel string, message interface{}) error {
-	return nil
+func (p *RedisPublisher) Publish(ctx context.Context, message domain.PublishMessage) error {
+	messageJson, err := json.Marshal(message)
+	if err != nil {
+		return err
+	}
+	
+	redisChannel := RedisChannelMessagePrefix + ":" + message.ChannelID.String()
+	return p.client.Publish(ctx, redisChannel, messageJson).Err()
 }
 
 var _ domain.IPublisher = (*RedisPublisher)(nil)
