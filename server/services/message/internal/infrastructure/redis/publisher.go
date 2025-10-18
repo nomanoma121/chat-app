@@ -22,12 +22,12 @@ func NewRedisPublisher(client redis.Client) *RedisPublisher {
 	}
 }
 
-func (p *RedisPublisher) Publish(ctx context.Context, message domain.PublishMessage) error {
+func (p *RedisPublisher) Publish(ctx context.Context, message *domain.Message) error {
 	messageJson, err := json.Marshal(message)
 	if err != nil {
 		return err
 	}
-	
+
 	redisChannel := RedisChannelMessagePrefix + ":" + message.ChannelID.String()
 	return p.client.Publish(ctx, redisChannel, messageJson).Err()
 }

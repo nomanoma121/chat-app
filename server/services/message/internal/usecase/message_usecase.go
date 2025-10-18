@@ -68,7 +68,18 @@ func (u *messageUsecase) Create(ctx context.Context, params *CreateParams) (*dom
 		ReplyID:   params.ReplyID,
 		CreatedAt: time.Now(),
 	}
-	return u.messageRepo.Create(ctx, &message)
+
+	createdMessage, err := u.messageRepo.Create(ctx, &message)
+	if err != nil {
+		return nil, err
+	}
+
+	err = u.publisher.Publish(ctx, createdMessage)
+	if err != nil {
+		return nil, err
+	}
+
+	return createdMessage, nil
 }
 
 func (u *messageUsecase) GetByChannelID(ctx context.Context, userID, channelID uuid.UUID) ([]*domain.Message, error) {
