@@ -90,7 +90,7 @@ func main() {
 	messageRepo := postgres.NewPostgresMessageRepository(gen.New(db))
 	userSvc := user.NewUserServiceClient(userConn)
 	guildSvc := user.NewGuildServiceClient(guildConn)
-	redisPub := rds.NewRedisPublisher(*redisClient)
+	redisPub := rds.NewRedisPublisher(redisClient)
 
 	validate := validator.New()
 

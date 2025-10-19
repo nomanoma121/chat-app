@@ -13,7 +13,7 @@ import (
 type Pattern string
 
 const (
-	MessageEventPattern Pattern = "event:message:*"
+	MessageEventPattern Pattern = "message:*"
 )
 
 type Subscriber struct {
