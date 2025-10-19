@@ -8,9 +8,10 @@ import (
 type EventType string
 
 const (
-	EventTypeMessageCreated EventType = "MESSAGE_CREATE"
-	EventTypeMessageUpdated EventType = "MESSAGE_UPDATE"
-	EventTypeMessageDeleted EventType = "MESSAGE_DELETE"
+	EventTypeMessageCreated    EventType = "MESSAGE_CREATE"
+	EventTypeMessageUpdated    EventType = "MESSAGE_UPDATE"
+	EventTypeMessageDeleted    EventType = "MESSAGE_DELETE"
+	EventTypeSubscribeChannels EventType = "SUBSCRIBE_CHANNELS"
 )
 
 type Event struct {

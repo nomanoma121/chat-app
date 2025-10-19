@@ -3,6 +3,7 @@ package subscriber
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"realtime-service/internal/event"
 	"realtime-service/internal/hub"
@@ -52,6 +53,7 @@ func (s *Subscriber) Start(ctx context.Context) error {
 				log.Printf("Error unmarshaling event: %v", err)
 				continue
 			}
+			fmt.Println("Received event:", string(evt.Data))
 			s.hub.Broadcast(&evt)
 		}
 	}
