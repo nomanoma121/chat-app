@@ -11,6 +11,7 @@ import (
 type Hub struct {
 	clients       map[uuid.UUID]*Client
 	subscriptions *SubscriptionManager
+	handlers      *EventHandlerRegistry
 	register      chan *Client
 	unregister    chan *Client
 	broadcast     chan *event.Event
@@ -20,6 +21,7 @@ func NewHub() *Hub {
 	return &Hub{
 		clients:       make(map[uuid.UUID]*Client),
 		subscriptions: NewSubscriptionManager(),
+		handlers:      NewEventHandlerRegistry(),
 		register:      make(chan *Client),
 		unregister:    make(chan *Client),
 		broadcast:     make(chan *event.Event),
@@ -46,43 +48,21 @@ func (h *Hub) Run() {
 }
 
 func (h *Hub) handleEvent(evt *event.Event) {
-	switch evt.Type {
-	case event.EventTypeMessageCreated, event.EventTypeMessageUpdated, event.EventTypeMessageDeleted:
-		h.broadcastMessageEvent(evt)
-	default:
-		log.Printf("Unhandled event type: %s", evt.Type)
-	}
-}
-
-func (h *Hub) broadcastMessageEvent(evt *event.Event) {
-	var channelID uuid.UUID
-
-	switch evt.Type {
-	case event.EventTypeMessageCreated:
-		var msgEvent event.MessageCreatedEvent
-		if err := json.Unmarshal(evt.Data, &msgEvent); err != nil {
-			log.Printf("Error unmarshaling message created event: %v", err)
-			return
-		}
-		channelID = msgEvent.ChannelID
-	case event.EventTypeMessageUpdated:
-		var msgEvent event.MessageUpdatedEvent
-		if err := json.Unmarshal(evt.Data, &msgEvent); err != nil {
-			log.Printf("Error unmarshaling message updated event: %v", err)
-			return
-		}
-		channelID = msgEvent.ChannelID
-	case event.EventTypeMessageDeleted:
-		var msgEvent event.MessageDeletedEvent
-		if err := json.Unmarshal(evt.Data, &msgEvent); err != nil {
-			log.Printf("Error unmarshaling message deleted event: %v", err)
-			return
-		}
-		channelID = msgEvent.ChannelID
-	default:
-		log.Printf("Unhandled message event type: %s", evt.Type)
+	channelID, err := h.handlers.Handle(evt)
+	if err != nil {
+		log.Printf("Error handling event %s: %v", evt.Type, err)
 		return
 	}
+
+	if channelID == uuid.Nil {
+		log.Printf("No channel ID found for event type: %s", evt.Type)
+		return
+	}
+
+	h.broadcastToChannel(channelID, evt)
+}
+
+func (h *Hub) broadcastToChannel(channelID uuid.UUID, evt *event.Event) {
 	message, err := json.Marshal(evt)
 	if err != nil {
 		log.Printf("Error marshaling event: %v", err)
@@ -90,17 +70,23 @@ func (h *Hub) broadcastMessageEvent(evt *event.Event) {
 	}
 
 	subscribers := h.subscriptions.GetSubscribers(channelID)
+	if len(subscribers) == 0 {
+		log.Printf("No subscribers for channel %s", channelID)
+		return
+	}
+
 	for client := range subscribers {
 		select {
 		case client.send <- message:
 		default:
 			close(client.send)
-
 			delete(h.clients, client.userID)
 			h.subscriptions.UnsubscribeAll(client)
+			log.Printf("Failed to send to client %s, cleaned up", client.userID)
 		}
 	}
-	log.Printf("Broadcasted event %s to channel %s", evt.Type, channelID)
+
+	log.Printf("Broadcasted event %s to %d subscribers in channel %s", evt.Type, len(subscribers), channelID)
 }
 
 func (h *Hub) SubscribeClientToChannel(client *Client, channelID uuid.UUID) {

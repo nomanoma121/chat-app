@@ -6,6 +6,10 @@ import (
 	"github.com/google/uuid"
 )
 
+type ChannelEvent interface {
+	GetChannelID() uuid.UUID
+}
+
 type MessageUser struct {
 	ID        uuid.UUID `json:"id"`
 	Name      string    `json:"name"`
@@ -24,13 +28,25 @@ type MessageCreatedEvent struct {
 	CreatedAt time.Time   `json:"created_at"`
 }
 
+func (e MessageCreatedEvent) GetChannelID() uuid.UUID {
+	return e.ChannelID
+}
+
 type MessageUpdatedEvent struct {
 	ID        uuid.UUID `json:"id"`
 	ChannelID uuid.UUID `json:"channel_id"`
 	Content   string    `json:"content"`
 }
 
+func (e MessageUpdatedEvent) GetChannelID() uuid.UUID {
+	return e.ChannelID
+}
+
 type MessageDeletedEvent struct {
 	ID        uuid.UUID `json:"id"`
 	ChannelID uuid.UUID `json:"channel_id"`
+}
+
+func (e MessageDeletedEvent) GetChannelID() uuid.UUID {
+	return e.ChannelID
 }
