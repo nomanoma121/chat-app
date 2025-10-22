@@ -54,7 +54,9 @@ func (c *Client) ReadPump() {
 			}
 			break
 		}
-		log.Printf("Received message: %s", message)
+
+		
+
 	}
 }
 
