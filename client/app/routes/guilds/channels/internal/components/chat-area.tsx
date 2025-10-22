@@ -55,7 +55,7 @@ export const ChatArea = () => {
 		}
 	};
 
-	useWebSocketEvent(SUBSCRIBE_CHANNELS, (event) => {
+	useWebSocketEvent("MESSAGE_CREATE", (event) => {
 		setMessages((prev) => [...prev, event]);
 	});
 

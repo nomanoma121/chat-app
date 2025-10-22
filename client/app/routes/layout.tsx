@@ -26,7 +26,7 @@ export default function ChannelLayout() {
 		wsClient.Send("SUBSCRIBE_CHANNELS", {
 			data: {
 				user_id: "4c5edfc1-ff52-4c46-b902-8dc322b33a4d",
-				channels: ["6efe4572-1efd-4075-b846-2151a340af6e"],
+				channel_ids: ["6efe4572-1efd-4075-b846-2151a340af6e"],
 			},
 		});
 	}, [token, wsClient]);
