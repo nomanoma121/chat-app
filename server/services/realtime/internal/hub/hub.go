@@ -48,18 +48,9 @@ func (h *Hub) Run() {
 }
 
 func (h *Hub) handleEvent(evt *event.Event) {
-	channelID, err := h.handlers.Handle(evt)
-	if err != nil {
+	if err := h.handlers.Handle(h, evt); err != nil {
 		log.Printf("Error handling event %s: %v", evt.Type, err)
-		return
 	}
-
-	if channelID == uuid.Nil {
-		log.Printf("No channel ID found for event type: %s", evt.Type)
-		return
-	}
-
-	h.broadcastToChannel(channelID, evt)
 }
 
 func (h *Hub) broadcastToChannel(channelID uuid.UUID, evt *event.Event) {

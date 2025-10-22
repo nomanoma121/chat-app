@@ -2,21 +2,41 @@ package hub
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"realtime-service/internal/event"
 
 	"github.com/google/uuid"
 )
 
-type EventHandler func(*event.Event) (uuid.UUID, error)
+type EventProcessor interface {
+	Process(*Hub, *event.Event) error
+}
+
+type ChannelEvent interface {
+	GetChannelID() uuid.UUID
+}
+
+type MessageEventProcessor[T ChannelEvent] struct{}
+
+func (p MessageEventProcessor[T]) Process(hub *Hub, evt *event.Event) error {
+	var e T
+	if err := json.Unmarshal(evt.Data, &e); err != nil {
+		return err
+	}
+
+	channelID := e.GetChannelID()
+	hub.broadcastToChannel(channelID, evt)
+	return nil
+}
 
 type EventHandlerRegistry struct {
-	handlers map[event.EventType]EventHandler
+	processors map[event.EventType]EventProcessor
 }
 
 func NewEventHandlerRegistry() *EventHandlerRegistry {
 	registry := &EventHandlerRegistry{
-		handlers: make(map[event.EventType]EventHandler),
+		processors: make(map[event.EventType]EventProcessor),
 	}
 
 	registry.registerDefaultHandlers()
@@ -25,40 +45,19 @@ func NewEventHandlerRegistry() *EventHandlerRegistry {
 }
 
 func (r *EventHandlerRegistry) registerDefaultHandlers() {
-	registerChannelEventHandler[event.MessageCreatedEvent](r, event.EventTypeMessageCreated)
-	registerChannelEventHandler[event.MessageUpdatedEvent](r, event.EventTypeMessageUpdated)
-	registerChannelEventHandler[event.MessageDeletedEvent](r, event.EventTypeMessageDeleted)
+	r.processors[event.EventTypeMessageCreated] = MessageEventProcessor[event.MessageCreatedEvent]{}
+	r.processors[event.EventTypeMessageUpdated] = MessageEventProcessor[event.MessageUpdatedEvent]{}
+	r.processors[event.EventTypeMessageDeleted] = MessageEventProcessor[event.MessageDeletedEvent]{}
+
+	log.Printf("Registered %d event processors", len(r.processors))
 }
 
-func registerChannelEventHandler[T event.ChannelEvent](
-	registry *EventHandlerRegistry,
-	eventType event.EventType,
-) {
-	registry.Register(eventType, func(evt *event.Event) (uuid.UUID, error) {
-		var e T
-		if err := json.Unmarshal(evt.Data, &e); err != nil {
-			return uuid.Nil, err
-		}
-		return e.GetChannelID(), nil
-	})
-}
-
-func (r *EventHandlerRegistry) Register(eventType event.EventType, handler EventHandler) {
-	r.handlers[eventType] = handler
-	log.Printf("Registered handler for event type: %s", eventType)
-}
-
-func (r *EventHandlerRegistry) Handle(evt *event.Event) (uuid.UUID, error) {
-	handler, ok := r.handlers[evt.Type]
+func (r *EventHandlerRegistry) Handle(hub *Hub, evt *event.Event) error {
+	processor, ok := r.processors[evt.Type]
 	if !ok {
-		log.Printf("No handler registered for event type: %s", evt.Type)
-		return uuid.Nil, nil
+		log.Printf("No processor registered for event type: %s", evt.Type)
+		return errors.New("no processor registered for event type: " + string(evt.Type))
 	}
 
-	return handler(evt)
-}
-
-func (r *EventHandlerRegistry) HasHandler(eventType event.EventType) bool {
-	_, ok := r.handlers[eventType]
-	return ok
+	return processor.Process(hub, evt)
 }

@@ -6,10 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-type ChannelEvent interface {
-	GetChannelID() uuid.UUID
-}
-
 type MessageUser struct {
 	ID        uuid.UUID `json:"id"`
 	Name      string    `json:"name"`
