@@ -255,11 +255,7 @@ export const ProfileTab = () => {
 								marginTop: "8px",
 							})}
 						>
-							<Button
-								type="submit"
-								disabled={isPending}
-								loading={isPending}
-							>
+							<Button type="submit" disabled={isPending} loading={isPending}>
 								変更を保存
 							</Button>
 						</div>

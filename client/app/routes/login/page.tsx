@@ -1,6 +1,6 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useForm } from "react-hook-form";
-import { useLocation, useNavigate, Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { css } from "styled-system/css";
 import * as v from "valibot";
 import { Button } from "~/components/ui/button";
@@ -23,7 +23,7 @@ export default function LoginPage() {
 	const { mutateAsync, isPending, error } = useLogin();
 	const toast = useToast();
 	const location = useLocation();
-	
+
 	const searchParams = new URLSearchParams(location.search);
 	const redirectState = searchParams.get("state");
 

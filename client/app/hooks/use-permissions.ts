@@ -7,7 +7,7 @@ const getUserIdFromToken = (): string | null => {
 		const token = localStorage.getItem("authToken");
 		if (!token) return null;
 
-		const payload = JSON.parse(atob(token.split('.')[1]));
+		const payload = JSON.parse(atob(token.split(".")[1]));
 		return payload.user_id || null;
 	} catch (error) {
 		console.error("Failed to parse JWT token:", error);

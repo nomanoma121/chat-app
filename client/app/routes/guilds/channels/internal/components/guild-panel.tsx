@@ -14,8 +14,8 @@ import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
 import { Heading } from "~/components/ui/heading";
 import { IconButton } from "~/components/ui/icon-button";
-import { useToast } from "~/hooks/use-toast";
 import { usePermissions } from "~/hooks/use-permissions";
+import { useToast } from "~/hooks/use-toast";
 import type { GuildsContext } from "../../layout";
 
 const ChannelForm = v.object({
@@ -44,8 +44,12 @@ export const GuildPanel = () => {
 	const { mutateAsync: createChannel, isPending: isChannelPending } =
 		useCreateChannel();
 	const toast = useToast();
-	const { canCreateCategories, canCreateChannels, canCreateInvites, canViewSettings } =
-		usePermissions(guild);
+	const {
+		canCreateCategories,
+		canCreateChannels,
+		canCreateInvites,
+		canViewSettings,
+	} = usePermissions(guild);
 
 	const [isChannelDialogOpen, setIsChannelDialogOpen] = useState(false);
 	const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
@@ -178,7 +182,7 @@ export const GuildPanel = () => {
 							? () => {
 									setIsChannelDialogOpen(true);
 									setSelectedCategoryId(category.id);
-							  }
+								}
 							: undefined
 					}
 				>
@@ -265,7 +269,10 @@ export const GuildPanel = () => {
 							チャンネルを作成
 						</Dialog.Title>
 
-						<form onSubmit={channelForm.handleSubmit(handleChannelSubmit)} noValidate>
+						<form
+							onSubmit={channelForm.handleSubmit(handleChannelSubmit)}
+							noValidate
+						>
 							<div
 								className={css({
 									display: "flex",
@@ -357,7 +364,10 @@ export const GuildPanel = () => {
 							カテゴリを作成
 						</Dialog.Title>
 
-						<form onSubmit={categoryForm.handleSubmit(handleCategorySubmit)} noValidate>
+						<form
+							onSubmit={categoryForm.handleSubmit(handleCategorySubmit)}
+							noValidate
+						>
 							<div
 								className={css({
 									display: "flex",

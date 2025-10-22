@@ -99,7 +99,9 @@ export const GuildList = () => {
 							position: "relative",
 						})}
 						onClick={() =>
-							navigate(`/servers/${guild.id}/channels/${guild.defaultChannelId}`)
+							navigate(
+								`/servers/${guild.id}/channels/${guild.defaultChannelId}`,
+							)
 						}
 					>
 						<GuildIcon

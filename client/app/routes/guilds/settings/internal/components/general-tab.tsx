@@ -12,8 +12,8 @@ import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
 import { Heading } from "~/components/ui/heading";
 import { Text } from "~/components/ui/text";
-import { useToast } from "~/hooks/use-toast";
 import { usePermissions } from "~/hooks/use-permissions";
+import { useToast } from "~/hooks/use-toast";
 import { GuildSchema } from "~/schema/guild";
 
 interface GeneralTabProps {
@@ -133,10 +133,12 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 									alignItems: "center",
 									bgColor: "bg.tertiary",
 									color: "text.medium",
-									_hover: canEditGuild ? {
-										bgColor: "bg.quaternary",
-										color: "text.bright",
-									} : {},
+									_hover: canEditGuild
+										? {
+												bgColor: "bg.quaternary",
+												color: "text.bright",
+											}
+										: {},
 									_disabled: {
 										opacity: 0.5,
 										cursor: "not-allowed",
@@ -307,10 +309,12 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 						className={css({
 							color: "text.bright",
 							bgColor: "danger.default",
-							_hover: canEditGuild ? {
-								bgColor: "danger.emphasized",
-								color: "text.bright",
-							} : {},
+							_hover: canEditGuild
+								? {
+										bgColor: "danger.emphasized",
+										color: "text.bright",
+									}
+								: {},
 							_disabled: {
 								opacity: 0.5,
 								cursor: "not-allowed",

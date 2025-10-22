@@ -13,10 +13,12 @@ export default function Channels() {
 
 	ws.onopen = () => {
 		console.log("WebSocket connection established");
-		ws.send(JSON.stringify({ 
-			type: "auth",
-			token
-		}));
+		ws.send(
+			JSON.stringify({
+				type: "auth",
+				token,
+			}),
+		);
 	};
 
 	ws.onmessage = (event) => {
