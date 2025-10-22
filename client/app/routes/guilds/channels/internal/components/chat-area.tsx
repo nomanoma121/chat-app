@@ -10,9 +10,9 @@ import { Heading } from "~/components/ui/heading";
 import { Spinner } from "~/components/ui/spinner";
 import { Text } from "~/components/ui/text";
 import { SUBSCRIBE_CHANNELS } from "~/constants";
+import { useWebSocket } from "~/contexts/websocket";
 import { useWebSocketEvent } from "~/hooks/use-websocket-event";
 import type { GuildsContext } from "../../layout";
-import { useWebSocket } from "~/contexts/websocket";
 
 export const ChatArea = () => {
 	const { channelId } = useParams<{ channelId: string }>();
@@ -55,7 +55,7 @@ export const ChatArea = () => {
 		}
 	};
 
-	useWebSocketEvent(wsClient, SUBSCRIBE_CHANNELS, (event) => {
+	useWebSocketEvent(SUBSCRIBE_CHANNELS, (event) => {
 		setMessages((prev) => [...prev, event]);
 	});
 

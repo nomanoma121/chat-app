@@ -21,6 +21,6 @@ export class WebSocketClient {
 	}
 
 	public Send(type: string, data: any) {
-		this.ws.send(JSON.stringify({ type, data }));
+		this.ws.send(JSON.stringify({ type, ...data }));
 	}
 }
