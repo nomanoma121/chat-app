@@ -12,15 +12,14 @@ import { Text } from "~/components/ui/text";
 import { SUBSCRIBE_CHANNELS } from "~/constants";
 import { useWebSocketEvent } from "~/hooks/use-websocket-event";
 import type { GuildsContext } from "../../layout";
-
-type OutletContext = GuildsContext & { wsClient: WebSocketClient };
+import { useWebSocket } from "~/contexts/websocket";
 
 export const ChatArea = () => {
 	const { channelId } = useParams<{ channelId: string }>();
 	if (!channelId) {
 		return <div>Channel ID is missing</div>;
 	}
-	const { guild, wsClient } = useOutletContext<OutletContext>();
+	const { guild } = useOutletContext<GuildsContext>();
 	const {
 		data: messagesData,
 		refetch,
@@ -31,6 +30,7 @@ export const ChatArea = () => {
 	const [messages, setMessages] = useState(() => messagesData?.messages || []);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const messagesContainerRef = useRef<HTMLDivElement>(null);
+	const wsClient = useWebSocket();
 
 	const channelName = guild?.categories.map((category) => {
 		return category.channels.find((channel) => channel?.id === channelId)?.name;
