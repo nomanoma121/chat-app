@@ -1,7 +1,9 @@
 package hub
 
 import (
+	"encoding/json"
 	"log"
+	"realtime-service/internal/event"
 	"time"
 
 	"github.com/google/uuid"
@@ -12,7 +14,7 @@ const (
 	writeWait      = 10 * time.Second
 	pongWait       = 60 * time.Second
 	pingPeriod     = (pongWait * 9) / 10
-	maxMessageSize = 512
+	maxMessageSize = 64 << 10
 )
 
 type Client struct {
@@ -55,7 +57,13 @@ func (c *Client) ReadPump() {
 			break
 		}
 
-		
+		event := &event.Event{}
+		if err := json.Unmarshal(message, event); err != nil {
+			log.Printf("Error unmarshaling message to event: %v", err)
+			continue
+		}
+
+		c.hub.handleEvent(event)
 
 	}
 }
