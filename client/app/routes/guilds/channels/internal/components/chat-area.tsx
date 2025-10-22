@@ -1,24 +1,26 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useOutletContext, useParams } from "react-router";
 import { css } from "styled-system/css";
 import { useCreate, useGetByChannelID } from "~/api/gen/message/message";
+import type { WebSocketClient } from "~/api/websocket";
 import { Message } from "~/components/features/message";
 import { MessageInput } from "~/components/features/message-input";
 import { NotFoundPage } from "~/components/features/not-found-page";
 import { Heading } from "~/components/ui/heading";
 import { Spinner } from "~/components/ui/spinner";
 import { Text } from "~/components/ui/text";
-import type { GuildsContext } from "../../layout";
-import { useWebSocketEvent } from "~/hooks/use-websocket-event";
 import { SUBSCRIBE_CHANNELS } from "~/constants";
-import { useState } from "react";
+import { useWebSocketEvent } from "~/hooks/use-websocket-event";
+import type { GuildsContext } from "../../layout";
+
+type OutletContext = GuildsContext & { wsClient: WebSocketClient };
 
 export const ChatArea = () => {
 	const { channelId } = useParams<{ channelId: string }>();
 	if (!channelId) {
 		return <div>Channel ID is missing</div>;
 	}
-	const { guild } = useOutletContext<GuildsContext>();
+	const { guild, wsClient } = useOutletContext<OutletContext>();
 	const {
 		data: messagesData,
 		refetch,
@@ -53,7 +55,7 @@ export const ChatArea = () => {
 		}
 	};
 
-	useWebSocketEvent(SUBSCRIBE_CHANNELS, (event) => {
+	useWebSocketEvent(wsClient, SUBSCRIBE_CHANNELS, (event) => {
 		setMessages((prev) => [...prev, event]);
 	});
 

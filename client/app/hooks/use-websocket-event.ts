@@ -1,18 +1,16 @@
-import { useOutletContext } from "react-router";
-import { WebSocketClient } from "~/api/websocket";
 import { useEffect } from "react";
+import { useOutletContext } from "react-router";
+import type { WebSocketClient } from "~/api/websocket";
 
 export const useWebSocketEvent = <T = any>(
-  type: string,
-  callback: (data: T) => void
+	wsClient: WebSocketClient,
+	type: string,
+	callback: (data: T) => void,
 ) => {
-  const { WSClient } = useOutletContext<{ WSClient: WebSocketClient }>();
-
-  useEffect(() => {
-    WSClient.SetListener(type, callback);
-    return () => {
-      WSClient.RemoveListener(type);
-    };
-  }, [WSClient, type, callback]);
+	useEffect(() => {
+		wsClient.SetListener(type, callback);
+		return () => {
+			wsClient.RemoveListener(type);
+		};
+	}, [wsClient, type, callback]);
 };
-  
