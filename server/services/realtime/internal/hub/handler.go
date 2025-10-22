@@ -30,6 +30,33 @@ func (p MessageEventProcessor[T]) Process(hub *Hub, evt *event.Event) error {
 	return nil
 }
 
+type SubscribeChannelsEvent interface {
+	GetUserID() uuid.UUID
+	GetChannelIDs() []uuid.UUID
+}
+
+type SubscribeChannelsEventProcessor[T SubscribeChannelsEvent] struct{}
+
+func (p SubscribeChannelsEventProcessor[T]) Process(hub *Hub, evt *event.Event) error {
+	var e T
+	if err := json.Unmarshal(evt.Data, &e); err != nil {
+		return err
+	}
+
+	client, ok := hub.clients[e.GetUserID()]
+	if !ok {
+		log.Printf("Client not found for user ID: %s", e.GetUserID())
+		return errors.New("client not found for user ID: " + e.GetUserID().String())
+	}
+
+	for _, channelID := range e.GetChannelIDs() {
+		hub.subscriptions.SubscribeChannel(client, channelID)
+		log.Printf("User %s subscribed to channel %s", e.GetUserID(), channelID)
+	}
+
+	return nil
+}
+
 type EventHandlerRegistry struct {
 	processors map[event.EventType]EventProcessor
 }
@@ -49,6 +76,7 @@ func (r *EventHandlerRegistry) registerDefaultHandlers() {
 	r.processors[event.EventTypeMessageUpdated] = MessageEventProcessor[event.MessageUpdatedEvent]{}
 	r.processors[event.EventTypeMessageDeleted] = MessageEventProcessor[event.MessageDeletedEvent]{}
 
+	r.processors[event.EventTypeSubscribeChannels] = SubscribeChannelsEventProcessor[event.SubscribeChannels]{}
 	log.Printf("Registered %d event processors", len(r.processors))
 }
 
