@@ -11,3 +11,5 @@ export const formatDate = (dateString: string) => {
 		day: "2-digit",
 	});
 };
+
+export const SUBSCRIBE_CHANNELS = "SUBSCRIBE_CHANNELS";

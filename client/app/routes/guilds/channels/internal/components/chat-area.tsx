@@ -9,6 +9,9 @@ import { Heading } from "~/components/ui/heading";
 import { Spinner } from "~/components/ui/spinner";
 import { Text } from "~/components/ui/text";
 import type { GuildsContext } from "../../layout";
+import { useWebSocketEvent } from "~/hooks/use-websocket-event";
+import { SUBSCRIBE_CHANNELS } from "~/constants";
+import { useState } from "react";
 
 export const ChatArea = () => {
 	const { channelId } = useParams<{ channelId: string }>();
@@ -23,7 +26,7 @@ export const ChatArea = () => {
 		error: messagesError,
 	} = useGetByChannelID(channelId);
 	const { mutateAsync: createMessage } = useCreate();
-	const messages = messagesData?.messages || [];
+	const [messages, setMessages] = useState(() => messagesData?.messages || []);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const messagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -36,8 +39,8 @@ export const ChatArea = () => {
 	};
 
 	useEffect(() => {
-		scrollToBottom();
-	}, [messages]);
+		setMessages(messagesData?.messages || []);
+	}, [messagesData]);
 
 	const handleSendMessage = async (content: string) => {
 		if (!channelId) return;
@@ -49,6 +52,10 @@ export const ChatArea = () => {
 			console.error("Failed to send message:", error);
 		}
 	};
+
+	useWebSocketEvent(SUBSCRIBE_CHANNELS, (event) => {
+		setMessages((prev) => [...prev, event]);
+	});
 
 	if (isLoading) {
 		return (

@@ -15,6 +15,7 @@ import { Toast } from "~/components/ui/toast";
 import { toaster } from "~/hooks/use-toast";
 import { css } from "../styled-system/css";
 import stylesheet from "./app.css?url";
+import { WebSocketClient } from "./api/websocket";
 
 export const links: Route.LinksFunction = () => [
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -62,10 +63,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
 	// Create a QueryClient once per request (SSR) / once per app instance (CSR)
 	const [queryClient] = useState(() => new QueryClient());
+	const WSClient = new WebSocketClient();
 
 	return (
 		<QueryClientProvider client={queryClient}>
-			<Outlet />
+			<Outlet context={{ WSClient }} />
 			<Toast.Toaster toaster={toaster}>
 				{(toast) => (
 					<Toast.Root
