@@ -7,7 +7,7 @@ on:
 
 jobs:
   api-gateway-lint:
-    name: lint
+    name: api-gateway-lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -20,7 +20,7 @@ jobs:
           version: v2.4
           working-directory: ./server/services/api-gateway
   user-lint:
-    name: lint
+    name: user-lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -33,7 +33,7 @@ jobs:
           version: v2.4
           working-directory: ./server/services/user
   guild-lint:
-    name: lint
+    name: guild-lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -46,7 +46,7 @@ jobs:
           version: v2.4
           working-directory: ./server/services/guild
   message-lint:
-    name: lint
+    name: message-lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -59,7 +59,7 @@ jobs:
           version: v2.4
           working-directory: ./server/services/message 
   realtime-lint:
-    name: lint
+    name: realtime-lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -72,7 +72,7 @@ jobs:
           version: v2.4
           working-directory: ./server/services/realtime
   shared-lint:
-    name: lint
+    name: shared-lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -85,7 +85,7 @@ jobs:
           version: v2.4
           working-directory: ./server/shared
   client-lint:
-    name: lint
+    name: client-lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
