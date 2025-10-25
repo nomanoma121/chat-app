@@ -10,7 +10,6 @@ import { useMessages } from "../hooks/use-messages";
 import { useAutoScroll } from "../hooks/use-auto-scroll";
 import { Loading } from "./loading";
 import { useEffect } from "react";
-import { message } from "valibot";
 
 export const ChatArea = () => {
 	const { channelId } = useParams<{ channelId: string }>();
@@ -20,14 +19,16 @@ export const ChatArea = () => {
 		return <Loading />;
 	}
 
-	const { messages, messagesError, sendMessage } = useMessages(
+	const { messages, messagesError, sendMessage, firstMessageReceived } = useMessages(
 		userData?.user.id,
 		channelId
 	);
 	const { scrollRef, containerRef, scrollToBottom } = useAutoScroll();
+
 	useEffect(() => {
-		scrollToBottom("smooth");
-	}, [messages, scrollToBottom]);
+		const behavior = firstMessageReceived ? "smooth" : "instant";
+		scrollToBottom(behavior);
+	}, [messages, scrollToBottom, firstMessageReceived]);
 
 	const channelName = guild?.categories.map((category) => {
 		return category.channels.find((channel) => channel?.id === channelId)?.name;
