@@ -14,22 +14,21 @@ import { useWebSocketEvent } from "~/hooks/use-websocket-event";
 import type { GuildsContext } from "../../layout";
 import { useWebSocket } from "~/contexts/websocket";
 import { useGetCurrentUser } from "~/api/gen/user/user";
+import { useMessages } from "../hooks/use-messages";
+import { Loading } from "./loading";
 
 export const ChatArea = () => {
 	const { channelId } = useParams<{ channelId: string }>();
-	if (!channelId) {
-		return <div>Channel ID is missing</div>;
-	}
 	const { guild } = useOutletContext<GuildsContext>();
-	const {
-		data: messagesData,
-		isLoading,
-		error: messagesError,
-	} = useGetByChannelID(channelId);
-	const { mutateAsync: createMessage } = useCreate();
 	const { data: userData } = useGetCurrentUser();
-	const wsClient = useWebSocket();
-	const [messages, setMessages] = useState(() => messagesData?.messages || []);
+	if (!channelId || !guild || !userData) {
+		return <Loading />;
+	}
+
+	const { messages, messagesError, sendMessage } = useMessages(
+		userData?.user.id,
+		channelId
+	);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const messagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -41,58 +40,13 @@ export const ChatArea = () => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 	};
 
-	useEffect(() => {
-		setMessages(messagesData?.messages || []);
-	}, [messagesData]);
-
-	const handleSendMessage = async (content: string) => {
-		if (!channelId) return;
-		try {
-			await createMessage({ channelId, data: { content } });
-			scrollToBottom();
-		} catch (error) {
-			console.error("Failed to send message:", error);
-		}
-	};
-
-	useEffect(() => {
-		if (!userData) return;
-
-		wsClient.Send(WebSocketEvent.SubscribeChannels, {
-			user_id: userData.user.id,
-			channel_ids: [channelId],
-		});
-	}, [wsClient, userData])
-
-	useWebSocketEvent<TMessage>(WebSocketEvent.MessageCreate, (event) => {
-		console.log(event);
-		setMessages((prev) => [...prev, event]);
-	});
-
-	if (isLoading) {
-		return (
-			<div
-				className={css({
-					flex: 1,
-					display: "flex",
-					flexDirection: "column",
-					alignItems: "center",
-					justifyContent: "center",
-					height: "100vh",
-					backgroundColor: "bg.primary",
-				})}
-			>
-				<Spinner size="lg" />
-				<Text className={css({ mt: "4", color: "text.medium" })}>
-					メッセージを読み込み中...
-				</Text>
-			</div>
-		);
-	}
-
 	if (messagesError) {
 		return <NotFoundPage />;
 	}
+
+	useEffect(() => {
+		scrollToBottom();
+	}, [messages]);
 
 	return (
 		<div
@@ -177,7 +131,7 @@ export const ChatArea = () => {
 			</div>
 
 			<MessageInput
-				onSendMessage={handleSendMessage}
+				onSendMessage={sendMessage}
 				placeholder="Message #general"
 			/>
 		</div>
