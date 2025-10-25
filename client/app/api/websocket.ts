@@ -1,12 +1,33 @@
 import { WebSocketEvent, WS_BASE_URL } from "../constants";
 
 export class WebSocketClient {
-	private ws = new WebSocket(WS_BASE_URL);
+	private ws!: WebSocket;
 	private listeners: Map<string, (data: unknown) => void> = new Map();
 	private isAuthenticated = false;
 	private pendingMessages: Array<{ type: string; data: unknown }> = [];
 
+	private token: string | null = null;
+	private isClosedIntentionally = false;
+	private reconnectDelay = 1000;
+	private maxReconnectDelay = 30000;
+	private baseReconnectDelay = 1000;
+
 	constructor() {
+		this.connect();
+	}
+
+	private connect() {
+		this.ws = new WebSocket(WS_BASE_URL);
+		this.isClosedIntentionally = false;
+
+		this.ws.onopen = () => {
+			this.reconnectDelay = this.baseReconnectDelay;
+
+			if (this.token) {
+				this.sendAuthRequest();
+			}
+		};
+
 		this.ws.onmessage = (event) => {
 			const message = JSON.parse(event.data);
 			const listener = this.listeners.get(message.type);
@@ -19,10 +40,35 @@ export class WebSocketClient {
 				this.flushPendingMessages();
 			}
 		};
+
+		this.ws.onclose = () => {
+			this.isAuthenticated = false;
+
+			if (!this.isClosedIntentionally) {
+				setTimeout(() => {
+					this.connect();
+				}, this.reconnectDelay);
+
+				this.reconnectDelay = Math.min(
+					this.reconnectDelay * 2,
+					this.maxReconnectDelay,
+				);
+			}
+		};
+	}
+
+	private sendAuthRequest() {
+		if (!this.token) return;
+		this.ws.send(
+			JSON.stringify({
+				type: WebSocketEvent.AuthRequest,
+				data: { token: this.token },
+			}),
+		);
 	}
 
 	public SetListener<T>(type: string, listener: (data: T) => void) {
-		this.listeners.set(type, listener);
+		this.listeners.set(type, listener as (data: unknown) => void);
 	}
 
 	public RemoveListener(type: string) {
@@ -30,13 +76,15 @@ export class WebSocketClient {
 	}
 
 	public Authenticate(token: string) {
-		this.ws.send(
-			JSON.stringify({ type: WebSocketEvent.AuthRequest, data: { token } }),
-		);
+		this.token = token;
+
+		if (this.ws.readyState === WebSocket.OPEN) {
+			this.sendAuthRequest();
+		}
 	}
 
 	public Send(type: string, data: unknown) {
-		if (this.isAuthenticated) {
+		if (this.isAuthenticated && this.ws.readyState === WebSocket.OPEN) {
 			this.ws.send(JSON.stringify({ type, data }));
 		} else {
 			this.pendingMessages.push({ type, data });
@@ -47,7 +95,7 @@ export class WebSocketClient {
 		while (this.pendingMessages.length > 0) {
 			const msg = this.pendingMessages.shift();
 			if (msg) {
-				this.ws.send(JSON.stringify({ type: msg.type, data: msg.data }));
+				this.Send(msg.type, msg.data);
 			}
 		}
 	}
