@@ -12,6 +12,8 @@ import { Text } from "~/components/ui/text";
 import { WebSocketEvent } from "~/constants";
 import { useWebSocketEvent } from "~/hooks/use-websocket-event";
 import type { GuildsContext } from "../../layout";
+import { useWebSocket } from "~/contexts/websocket";
+import { useGetCurrentUser } from "~/api/gen/user/user";
 
 export const ChatArea = () => {
 	const { channelId } = useParams<{ channelId: string }>();
@@ -26,6 +28,8 @@ export const ChatArea = () => {
 		error: messagesError,
 	} = useGetByChannelID(channelId);
 	const { mutateAsync: createMessage } = useCreate();
+	const { data: userData } = useGetCurrentUser();
+	const wsClient = useWebSocket();
 	const [messages, setMessages] = useState(() => messagesData?.messages || []);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -46,12 +50,20 @@ export const ChatArea = () => {
 		if (!channelId) return;
 		try {
 			await createMessage({ channelId, data: { content } });
-			await refetch();
 			scrollToBottom();
 		} catch (error) {
 			console.error("Failed to send message:", error);
 		}
 	};
+
+	useEffect(() => {
+		if (!userData) return;
+
+		wsClient.Send(WebSocketEvent.SubscribeChannels, {
+			user_id: userData.user.id,
+			channel_ids: [channelId],
+		});
+	}, [wsClient, userData])
 
 	useWebSocketEvent<TMessage>(WebSocketEvent.MessageCreate, (event) => {
 		setMessages((prev) => [...prev, event]);

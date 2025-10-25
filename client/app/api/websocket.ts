@@ -1,6 +1,11 @@
+import { WebSocketEvent } from "../constants";
+
+
 export class WebSocketClient {
 	private ws = new WebSocket("ws://localhost:50054/ws");
 	private listeners: Map<string, (data: any) => void> = new Map();
+	private isAuthenticated = false;
+	private pendingMessages: Array<{ type: string; data: any }> = [];
 
 	constructor() {
 		this.ws.onmessage = (event) => {
@@ -8,6 +13,11 @@ export class WebSocketClient {
 			const listener = this.listeners.get(message.type);
 			if (listener) {
 				listener(message.data);
+			}
+
+			if (message.type === WebSocketEvent.AuthSuccess) {
+				this.isAuthenticated = true;
+				this.flushPendingMessages();
 			}
 		};
 	}
@@ -20,7 +30,26 @@ export class WebSocketClient {
 		this.listeners.delete(type);
 	}
 
+	public Authenticate(token: string) {
+		this.ws.send(
+			JSON.stringify({ type: WebSocketEvent.AuthRequest, data: { token } }),
+		);
+	}
+
 	public Send(type: string, data: any) {
-		this.ws.send(JSON.stringify({ type, data: data }));
+		if (this.isAuthenticated) {
+			this.ws.send(JSON.stringify({ type, data }));
+		} else {
+			this.pendingMessages.push({ type, data });
+		}
+	}
+
+	private flushPendingMessages() {
+		while (this.pendingMessages.length > 0) {
+			const msg = this.pendingMessages.shift();
+			if (msg) {
+				this.ws.send(JSON.stringify({ type: msg.type, data: msg.data }));
+			}
+		}
 	}
 }
