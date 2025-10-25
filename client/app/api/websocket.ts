@@ -1,5 +1,4 @@
-import { WebSocketEvent } from "../constants";
-import { WS_BASE_URL } from "../constants";
+import { WebSocketEvent, WS_BASE_URL } from "../constants";
 
 export class WebSocketClient {
 	private ws = new WebSocket(WS_BASE_URL);

@@ -1,15 +1,15 @@
+import { useEffect } from "react";
 import { useOutletContext, useParams } from "react-router";
 import { css } from "styled-system/css";
+import { useGetCurrentUser } from "~/api/gen/user/user";
 import { Message } from "~/components/features/message";
 import { MessageInput } from "~/components/features/message-input";
 import { NotFoundPage } from "~/components/features/not-found-page";
 import { Heading } from "~/components/ui/heading";
 import type { GuildsContext } from "../../layout";
-import { useGetCurrentUser } from "~/api/gen/user/user";
-import { useMessages } from "../hooks/use-messages";
 import { useAutoScroll } from "../hooks/use-auto-scroll";
+import { useMessages } from "../hooks/use-messages";
 import { Loading } from "./loading";
-import { useEffect } from "react";
 
 export const ChatArea = () => {
 	const { channelId } = useParams<{ channelId: string }>();
@@ -19,10 +19,8 @@ export const ChatArea = () => {
 		return <Loading />;
 	}
 
-	const { messages, messagesError, sendMessage, firstMessageReceived } = useMessages(
-		userData?.user.id,
-		channelId
-	);
+	const { messages, messagesError, sendMessage, firstMessageReceived } =
+		useMessages(userData?.user.id, channelId);
 	const { scrollRef, containerRef, scrollToBottom } = useAutoScroll();
 
 	useEffect(() => {
