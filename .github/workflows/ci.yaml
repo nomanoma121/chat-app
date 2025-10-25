@@ -6,84 +6,29 @@ on:
   pull_request:
 
 jobs:
-  api-gateway-lint:
-    name: api-gateway-lint
+  go-lint:
+    name: go-lint(${{ matrix.path }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        path:
+          - ./server/services/message
+          - ./server/services/realtime
+          - ./server/services/guild
+          - ./server/services/user
+          - ./server/services/api-gateway
+          - ./server/shared
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-go@v6
         with:
           go-version: 1.25.1
-      - name: golangci-lint
+      - name: golangci-lint install
         uses: golangci/golangci-lint-action@v8
         with:
-          version: v2.4
-          working-directory: ./server/services/api-gateway
-  user-lint:
-    name: user-lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-go@v6
-        with:
-          go-version: 1.25.1
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v8
-        with:
-          version: v2.4
-          working-directory: ./server/services/user
-  guild-lint:
-    name: guild-lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-go@v6
-        with:
-          go-version: 1.25.1
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v8
-        with:
-          version: v2.4
-          working-directory: ./server/services/guild
-  message-lint:
-    name: message-lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-go@v6
-        with:
-          go-version: 1.25.1
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v8
-        with:
-          version: v2.4
-          working-directory: ./server/services/message 
-  realtime-lint:
-    name: realtime-lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-go@v6
-        with:
-          go-version: 1.25.1
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v8
-        with:
-          version: v2.4
-          working-directory: ./server/services/realtime
-  shared-lint:
-    name: shared-lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-go@v6
-        with:
-          go-version: 1.25.1
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v8
-        with:
-          version: v2.4
-          working-directory: ./server/shared
+          version: v2.5
+          working-directory: ${{ matrix.path }}
+          
   client-lint:
     name: client-lint
     runs-on: ubuntu-latest
