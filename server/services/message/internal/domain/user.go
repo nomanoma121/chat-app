@@ -17,5 +17,6 @@ type User struct {
 }
 
 type IUserService interface {
+	GetUserByID(ctx context.Context, id uuid.UUID) (*User, error)
 	GetUsersByIDs(ctx context.Context, ids []uuid.UUID) ([]*User, error)
 }

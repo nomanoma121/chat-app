@@ -74,6 +74,13 @@ func (u *messageUsecase) Create(ctx context.Context, params *CreateParams) (*dom
 		return nil, err
 	}
 
+	sender, err := u.userSvc.GetUserByID(ctx, createdMessage.SenderID)
+	if err != nil {
+		return nil, err
+	}
+	createdMessage.Sender = sender
+	// TODO: Reply機能作ったらReplyも取得する
+
 	err = u.publisher.Publish(ctx, createdMessage)
 	if err != nil {
 		return nil, err
