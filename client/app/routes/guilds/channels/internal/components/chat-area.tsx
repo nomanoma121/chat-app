@@ -23,7 +23,6 @@ export const ChatArea = () => {
 	const { guild } = useOutletContext<GuildsContext>();
 	const {
 		data: messagesData,
-		refetch,
 		isLoading,
 		error: messagesError,
 	} = useGetByChannelID(channelId);
@@ -66,6 +65,7 @@ export const ChatArea = () => {
 	}, [wsClient, userData])
 
 	useWebSocketEvent<TMessage>(WebSocketEvent.MessageCreate, (event) => {
+		console.log(event);
 		setMessages((prev) => [...prev, event]);
 	});
 

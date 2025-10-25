@@ -12,6 +12,7 @@ type MessageUser struct {
 	DisplayID string    `json:"display_id"`
 	Bio       string    `json:"bio"`
 	IconURL   string    `json:"icon_url"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type MessageCreatedEvent struct {
