@@ -14,7 +14,7 @@ export default {
       },
     },
     hooks: {
-      afterAllFilesWrite: "pnpm biome check ./app/api/gen",
+      afterAllFilesWrite: "pnpm exec biome format --write ./app/api/gen",
     },
   },
 };
