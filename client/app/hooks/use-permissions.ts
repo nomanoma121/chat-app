@@ -1,5 +1,8 @@
 import { useMemo } from "react";
-import type { GuildDetail } from "~/api/gen/guildTypeProto.schemas";
+import type {
+	GuildDetail,
+	GuildWithMembers,
+} from "~/api/gen/guildTypeProto.schemas";
 
 // JWTトークンからユーザーIDを取得する関数
 const getUserIdFromToken = (): string | null => {
@@ -15,7 +18,7 @@ const getUserIdFromToken = (): string | null => {
 	}
 };
 
-export const usePermissions = (guild?: GuildDetail) => {
+export const usePermissions = (guild?: GuildDetail | GuildWithMembers) => {
 	const currentUserId = useMemo(() => getUserIdFromToken(), []);
 
 	const permissions = useMemo(() => {
