@@ -13,7 +13,7 @@ export const useMessages = (userId: string, channelId: string) => {
 		error: messagesError,
 	} = useGetByChannelID(channelId);
 	const { mutateAsync: createMessage } = useCreate();
-	const [messages, setMessages] = useState(() => messagesData?.messages || []);
+	const [messages, setMessages] = useState<Message[]>([]);
 	const wsClient = useWebSocket();
 	const toast = useToast();
 	const [firstMessageReceived, setFirstMessageReceived] = useState(false);
