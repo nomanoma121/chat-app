@@ -14,3 +14,4 @@ func (e SubscribeChannels) GetChannelIDs() []uuid.UUID {
 func (e SubscribeChannels) GetUserID() uuid.UUID {
 	return e.UserID
 }
+

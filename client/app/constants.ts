@@ -12,4 +12,9 @@ export const formatDate = (dateString: string) => {
 	});
 };
 
-export const SUBSCRIBE_CHANNELS = "SUBSCRIBE_CHANNELS";
+export const WEBSOCKET_CHANNELS = {
+	SUBSCRIBE_CHANNELS: "SUBSCRIBE_CHANNELS",
+	MESSAGE_CREATE: "MESSAGE_CREATE",
+	AUTH: "AUTH",
+} as const;
+

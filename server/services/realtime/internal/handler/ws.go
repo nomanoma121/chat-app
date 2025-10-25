@@ -4,26 +4,12 @@ import (
 	"fmt"
 	"net/http"
 	"realtime-service/internal/auth"
+	"realtime-service/internal/event"
 	"realtime-service/internal/hub"
 	"time"
 
 	"github.com/gorilla/websocket"
 )
-
-type AuthMessage struct {
-	Type  string `json:"type"`
-	Token string `json:"token"`
-}
-
-type AuthSuccessMessage struct {
-	Type   string `json:"type"`
-	UserID string `json:"user_id"`
-}
-
-type AuthErrorMessage struct {
-	Type    string `json:"type"`
-	Message string `json:"message"`
-}
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -55,20 +41,20 @@ func (h *WebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	conn.SetReadDeadline(time.Now().Add(5 * time.Second))
 
 	// 最初に認証メッセージを受け取るが、それ以外はタイムアウトまで無視する
-	var authMsg AuthMessage
+	var authMsg event.AuthRequest
 	if err := conn.ReadJSON(&authMsg); err != nil {
-		conn.WriteJSON(AuthErrorMessage{
-			Type:    "auth_error",
-			Message: "Failed to read auth message",
+		conn.WriteJSON(event.Event{
+			Type: event.EventTypeAuthError,
+			Data: event.AuthError{Message: "Failed to read auth message"},
 		})
 		fmt.Println("Failed to read auth message:", err)
 		conn.Close()
 		return
 	}
 
-	if authMsg.Type != "auth" || authMsg.Token == "" {
+	if authMsg.Type != event.EventTypeAuth || authMsg.Token == "" {
 		conn.WriteJSON(AuthErrorMessage{
-			Type:    "auth_error",
+			Type:    event.EventTypeAuthError,
 			Message: "Invalid auth message",
 		})
 		fmt.Println("Invalid auth message:", authMsg)
@@ -81,7 +67,7 @@ func (h *WebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	claims, err := auth.ValidateToken(authMsg.Token, h.jwtSecret)
 	if err != nil {
 		conn.WriteJSON(AuthErrorMessage{
-			Type:    "auth_error",
+			Type:    event.EventTypeAuthError,
 			Message: "Invalid token",
 		})
 		fmt.Println("Invalid token:", err)

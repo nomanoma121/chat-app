@@ -2,14 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { useOutletContext, useParams } from "react-router";
 import { css } from "styled-system/css";
 import { useCreate, useGetByChannelID } from "~/api/gen/message/message";
-import type { WebSocketClient } from "~/api/websocket";
 import { Message } from "~/components/features/message";
 import { MessageInput } from "~/components/features/message-input";
 import { NotFoundPage } from "~/components/features/not-found-page";
 import { Heading } from "~/components/ui/heading";
 import { Spinner } from "~/components/ui/spinner";
 import { Text } from "~/components/ui/text";
-import { SUBSCRIBE_CHANNELS } from "~/constants";
+import { WEBSOCKET_CHANNELS } from "~/constants";
 import { useWebSocket } from "~/contexts/websocket";
 import { useWebSocketEvent } from "~/hooks/use-websocket-event";
 import type { GuildsContext } from "../../layout";
@@ -55,7 +54,7 @@ export const ChatArea = () => {
 		}
 	};
 
-	useWebSocketEvent("MESSAGE_CREATE", (event) => {
+	useWebSocketEvent(WEBSOCKET_CHANNELS.MESSAGE_CREATE, (event) => {
 		setMessages((prev) => [...prev, event]);
 	});
 
