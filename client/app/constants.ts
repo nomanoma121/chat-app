@@ -12,9 +12,9 @@ export const formatDate = (dateString: string) => {
 	});
 };
 
-export const WEBSOCKET_CHANNELS = {
-	SUBSCRIBE_CHANNELS: "SUBSCRIBE_CHANNELS",
-	MESSAGE_CREATE: "MESSAGE_CREATE",
-	AUTH: "AUTH",
+export const WebSocketEventType = {
+	SubscribeChannels: "SUBSCRIBE_CHANNELS",
+	MessageCreate: "MESSAGE_CREATE",
+	Auth: "AUTH",
 } as const;
 

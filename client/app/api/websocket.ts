@@ -12,7 +12,7 @@ export class WebSocketClient {
 		};
 	}
 
-	public SetListener(type: string, listener: (data: any) => void) {
+	public SetListener<T>(type: string, listener: (data: T) => void) {
 		this.listeners.set(type, listener);
 	}
 
