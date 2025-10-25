@@ -19,7 +19,6 @@ export default function GuildListLayout() {
 	if (!guildId) {
 		return <NotFoundPage />;
 	}
-
 	const { data, isPending, error, refetch } = useGetGuildOverview(guildId);
 
 	if (isPending) {

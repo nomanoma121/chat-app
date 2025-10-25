@@ -115,13 +115,19 @@ const Trigger = ({
 	};
 
 	if (asChild && React.isValidElement(children)) {
-		return React.cloneElement(children as React.ReactElement<any>, {
-			onClick: handleClick,
-			className: cx(baseStyles, (children.props as any).className, className),
-			role: "tab",
-			"aria-selected": isActive,
-			tabIndex: isActive ? 0 : -1,
-		});
+		const childProps = children.props as { className?: string };
+		return React.cloneElement(
+			children as React.ReactElement<
+				React.HTMLAttributes<HTMLElement> & { className?: string }
+			>,
+			{
+				onClick: handleClick,
+				className: cx(baseStyles, childProps.className, className),
+				role: "tab",
+				"aria-selected": isActive,
+				tabIndex: isActive ? 0 : -1,
+			},
+		);
 	}
 
 	return (
