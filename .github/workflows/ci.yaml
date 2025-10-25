@@ -87,6 +87,9 @@ jobs:
   client-lint:
     name: client-lint
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
     steps:
       - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v2
@@ -95,4 +98,4 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Run Biome Check
-        run: pnpm biome lint ./client
+        run: pnpm biome lint 
