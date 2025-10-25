@@ -9,7 +9,7 @@ import { NotFoundPage } from "~/components/features/not-found-page";
 import { Heading } from "~/components/ui/heading";
 import { Spinner } from "~/components/ui/spinner";
 import { Text } from "~/components/ui/text";
-import { WebSocketEventType } from "~/constants";
+import { WebSocketEvent } from "~/constants";
 import { useWebSocketEvent } from "~/hooks/use-websocket-event";
 import type { GuildsContext } from "../../layout";
 
@@ -53,7 +53,7 @@ export const ChatArea = () => {
 		}
 	};
 
-	useWebSocketEvent<TMessage>(WebSocketEventType.MessageCreate, (event) => {
+	useWebSocketEvent<TMessage>(WebSocketEvent.MessageCreate, (event) => {
 		setMessages((prev) => [...prev, event]);
 	});
 
