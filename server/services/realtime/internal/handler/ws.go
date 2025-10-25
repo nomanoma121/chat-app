@@ -62,7 +62,7 @@ func (h *WebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		conn.Close()
 		return
 	}
-	
+
 	authRequest := event.AuthRequest{}
 	if err := json.Unmarshal(authEvent.Data, &authRequest); err != nil {
 		conn.WriteJSON(event.EventResponse[event.AuthError]{

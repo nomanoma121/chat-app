@@ -62,6 +62,6 @@ func (sm *SubscriptionManager) UnsubscribeAll(client *Client) {
 func (sm *SubscriptionManager) GetSubscribers(channelID uuid.UUID) map[*Client]bool {
 	sm.mu.RLock()
 	defer sm.mu.RUnlock()
-	
+
 	return sm.ChannelSubs[channelID]
 }

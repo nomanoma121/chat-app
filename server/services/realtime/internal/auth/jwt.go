@@ -3,8 +3,8 @@ package auth
 import (
 	"errors"
 
-	"github.com/google/uuid"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 var (
@@ -24,7 +24,6 @@ func ValidateToken(tokenString, secretKey string) (*Claims, error) {
 		}
 		return []byte(secretKey), nil
 	})
-
 	if err != nil {
 		if errors.Is(err, jwt.ErrTokenExpired) {
 			return nil, ErrTokenExpired
