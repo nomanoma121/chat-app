@@ -3,7 +3,6 @@ package redis
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"message-service/internal/domain"
 	"time"
 
@@ -48,8 +47,6 @@ func (p *RedisPublisher) Publish(ctx context.Context, message *domain.Message) e
 	if err != nil {
 		return err
 	}
-
-	fmt.Println("Publishing to channel:", redisChannel)
 
 	return p.client.Publish(ctx, redisChannel, payloadJson).Err()
 }
