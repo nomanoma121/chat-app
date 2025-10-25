@@ -38,7 +38,7 @@ export default function InvitePage() {
 			navigate(
 				`/servers/${data?.invite?.guild?.id}/channels/${data?.invite?.guild?.defaultChannelId}`,
 			);
-		} catch (err) {
+		} catch {
 			toast.error("サーバーへの参加に失敗しました");
 		}
 	};

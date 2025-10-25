@@ -83,7 +83,7 @@ export default function InvitePage() {
 
 			toast.success("招待リンクを作成しました");
 			refetch();
-		} catch (err) {
+		} catch {
 			toast.error("招待リンクの作成に失敗しました");
 		}
 	};
@@ -93,7 +93,7 @@ export default function InvitePage() {
 		try {
 			await navigator.clipboard.writeText(inviteUrl);
 			toast.success("招待リンクをコピーしました");
-		} catch (err) {
+		} catch {
 			toast.error("招待リンクのコピーに失敗しました");
 		}
 	};

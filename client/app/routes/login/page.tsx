@@ -30,7 +30,7 @@ export default function LoginPage() {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isValid },
+		formState: { errors },
 	} = useForm<FormInputValues>({
 		resolver: standardSchemaResolver(LoginForm),
 		mode: "onSubmit",

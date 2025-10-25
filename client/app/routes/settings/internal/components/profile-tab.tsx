@@ -1,11 +1,10 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { Shield, Upload } from "lucide-react";
+import { Upload } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { css } from "styled-system/css";
 import * as v from "valibot";
 import { useGetCurrentUser, useUpdate } from "~/api/gen/user/user";
 import { Avatar } from "~/components/ui/avatar";
-import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Field } from "~/components/ui/field";
@@ -32,7 +31,6 @@ export const ProfileTab = () => {
 		register,
 		handleSubmit,
 		formState: { errors },
-		reset,
 	} = useForm<ProfileFormValues>({
 		resolver: standardSchemaResolver(ProfileForm),
 		mode: "onSubmit",
