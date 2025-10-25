@@ -26,7 +26,7 @@ export const ChatArea = () => {
 	useEffect(() => {
 		const behavior = firstMessageReceived ? "smooth" : "instant";
 		scrollToBottom(behavior);
-	}, [messages, scrollToBottom, firstMessageReceived]);
+	}, [scrollToBottom, firstMessageReceived]);
 
 	const channelName = guild?.categories.map((category) => {
 		return category.channels.find((channel) => channel?.id === channelId)?.name;
