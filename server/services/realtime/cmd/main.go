@@ -32,7 +32,11 @@ func main() {
 	log.Printf("Hub started")
 
 	messageSub := subscriber.NewMessageSubscriber(redisClient, hub)
-	go messageSub.Start(context.Background())
+	go func() {
+		if err := messageSub.Start(context.Background()); err != nil {
+			log.Printf("Message subscriber error: %v", err)
+		}
+	}()
 	log.Printf("Message subscriber started")
 
 	wsHandler := handler.NewWebSocketHandler(hub, cfg.JWTSecret)

@@ -33,7 +33,11 @@ func NewSubscriber(redisClient *redis.Client, hub *hub.Hub, pattern Pattern) *Su
 
 func (s *Subscriber) Start(ctx context.Context) error {
 	pubsub := s.redis.PSubscribe(ctx, string(s.pattern))
-	defer pubsub.Close()
+	defer func() {
+		if err := pubsub.Close(); err != nil {
+			log.Printf("Error closing pubsub: %v", err)
+		}
+	}()
 
 	log.Println("Redis subscriber started")
 
