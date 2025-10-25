@@ -41,28 +41,28 @@ const messageHeaderStyles = cva({
 	},
 });
 
-const messageActionsStyles = cva({
-	base: {
-		position: "absolute",
-		color: "text.medium",
-		top: "-8px",
-		right: "16px",
-		display: "flex",
-		alignItems: "center",
-		gap: "4px",
-		bg: "bg.secondary",
-		border: "1px solid",
-		borderColor: "border.soft",
-		borderRadius: "md",
-		padding: "4px",
-		opacity: 0,
-		transition: "all 0.1s ease",
-		boxShadow: "sm",
-		"&[data-visible]": {
-			opacity: 1,
-		},
-	},
-});
+// const messageActionsStyles = cva({
+// 	base: {
+// 		position: "absolute",
+// 		color: "text.medium",
+// 		top: "-8px",
+// 		right: "16px",
+// 		display: "flex",
+// 		alignItems: "center",
+// 		gap: "4px",
+// 		bg: "bg.secondary",
+// 		border: "1px solid",
+// 		borderColor: "border.soft",
+// 		borderRadius: "md",
+// 		padding: "4px",
+// 		opacity: 0,
+// 		transition: "all 0.1s ease",
+// 		boxShadow: "sm",
+// 		"&[data-visible]": {
+// 			opacity: 1,
+// 		},
+// 	},
+// });
 
 export interface MessageProps {
 	message: TMessage;

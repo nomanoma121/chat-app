@@ -22,7 +22,7 @@ export const useMessages = (userId: string, channelId: string) => {
 		if (!channelId) return;
 		try {
 			await createMessage({ channelId, data: { content } });
-		} catch (error) {
+		} catch {
 			toast.error("メッセージの送信に失敗しました。");
 		}
 	};

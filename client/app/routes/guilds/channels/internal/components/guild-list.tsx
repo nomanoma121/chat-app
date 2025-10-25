@@ -2,7 +2,6 @@ import { MoveLeft } from "lucide-react";
 import { useNavigate } from "react-router";
 import { css } from "styled-system/css";
 import { useListMyGuilds } from "~/api/gen/guild/guild";
-import { NotFoundPage } from "~/components/features/not-found-page";
 import { GuildIcon } from "~/components/ui/guild-icon";
 import { IconButton } from "~/components/ui/icon-button";
 import { Spinner } from "~/components/ui/spinner";

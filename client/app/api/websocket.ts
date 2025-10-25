@@ -2,9 +2,9 @@ import { WebSocketEvent, WS_BASE_URL } from "../constants";
 
 export class WebSocketClient {
 	private ws = new WebSocket(WS_BASE_URL);
-	private listeners: Map<string, (data: any) => void> = new Map();
+	private listeners: Map<string, (data: unknown) => void> = new Map();
 	private isAuthenticated = false;
-	private pendingMessages: Array<{ type: string; data: any }> = [];
+	private pendingMessages: Array<{ type: string; data: unknown }> = [];
 
 	constructor() {
 		this.ws.onmessage = (event) => {
@@ -35,7 +35,7 @@ export class WebSocketClient {
 		);
 	}
 
-	public Send(type: string, data: any) {
+	public Send(type: string, data: unknown) {
 		if (this.isAuthenticated) {
 			this.ws.send(JSON.stringify({ type, data }));
 		} else {

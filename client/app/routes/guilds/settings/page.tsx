@@ -1,7 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 import { css } from "styled-system/css";
-import { useGetGuildByID, useUpdateGuild } from "~/api/gen/guild/guild";
+import { useGetGuildByID } from "~/api/gen/guild/guild";
 import { NotFoundPage } from "~/components/features/not-found-page";
 import { Tabs } from "~/components/features/tabs";
 import { Button } from "~/components/ui/button";
