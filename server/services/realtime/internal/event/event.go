@@ -1,8 +1,6 @@
 package event
 
-import (
-	"encoding/json"
-)
+import "encoding/json"
 
 type EventType string
 
@@ -21,4 +19,9 @@ const (
 type Event struct {
 	Type EventType       `json:"type"`
 	Data json.RawMessage `json:"data"`
+}
+
+type EventResponse[T any] struct {
+	Type EventType `json:"type"`
+	Data T         `json:"data"`
 }

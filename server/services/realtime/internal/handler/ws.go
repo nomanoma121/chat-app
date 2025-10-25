@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"realtime-service/internal/auth"
@@ -41,9 +42,9 @@ func (h *WebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	conn.SetReadDeadline(time.Now().Add(5 * time.Second))
 
 	// 最初に認証メッセージを受け取るが、それ以外はタイムアウトまで無視する
-	var authMsg event.AuthRequest
-	if err := conn.ReadJSON(&authMsg); err != nil {
-		conn.WriteJSON(event.Event{
+	var authEvent event.Event
+	if err := conn.ReadJSON(&authEvent); err != nil {
+		conn.WriteJSON(event.EventResponse[event.AuthError]{
 			Type: event.EventTypeAuthError,
 			Data: event.AuthError{Message: "Failed to read auth message"},
 		})
@@ -52,23 +53,32 @@ func (h *WebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if authMsg.Type != event.EventTypeAuth || authMsg.Token == "" {
-		conn.WriteJSON(AuthErrorMessage{
-			Type:    event.EventTypeAuthError,
-			Message: "Invalid auth message",
+	if authEvent.Type != event.EventTypeAuth {
+		conn.WriteJSON(event.EventResponse[event.AuthError]{
+			Type: event.EventTypeAuthError,
+			Data: event.AuthError{Message: "Invalid auth message"},
 		})
-		fmt.Println("Invalid auth message:", authMsg)
+		fmt.Println("Invalid auth message:", authEvent)
+		conn.Close()
+		return
+	}
+	
+	authRequest := event.AuthRequest{}
+	if err := json.Unmarshal(authEvent.Data, &authRequest); err != nil {
+		conn.WriteJSON(event.EventResponse[event.AuthError]{
+			Type: event.EventTypeAuthError,
+			Data: event.AuthError{Message: "Invalid auth data"},
+		})
+		fmt.Println("Invalid auth data:", err)
 		conn.Close()
 		return
 	}
 
-	fmt.Println("Auth message received:", authMsg)
-
-	claims, err := auth.ValidateToken(authMsg.Token, h.jwtSecret)
+	claims, err := auth.ValidateToken(authRequest.Token, h.jwtSecret)
 	if err != nil {
-		conn.WriteJSON(AuthErrorMessage{
-			Type:    event.EventTypeAuthError,
-			Message: "Invalid token",
+		conn.WriteJSON(event.EventResponse[event.AuthError]{
+			Type: event.EventTypeAuthError,
+			Data: event.AuthError{Message: "Invalid token"},
 		})
 		fmt.Println("Invalid token:", err)
 		conn.Close()
@@ -79,9 +89,9 @@ func (h *WebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	conn.SetReadDeadline(time.Time{})
 
-	conn.WriteJSON(AuthSuccessMessage{
-		Type:   "auth_success",
-		UserID: claims.UserID.String(),
+	conn.WriteJSON(event.EventResponse[event.AuthSuccess]{
+		Type: event.EventTypeAuthSuccess,
+		Data: event.AuthSuccess{UserID: claims.UserID},
 	})
 
 	fmt.Println("WebSocket connection established for user:", claims.UserID)
