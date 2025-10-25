@@ -4,15 +4,14 @@
  * guild_type.proto
  * OpenAPI spec version: version not set
  */
-
+import { useMutation } from "@tanstack/react-query";
 import type {
 	MutationFunction,
 	QueryClient,
 	UseMutationOptions,
 	UseMutationResult,
 } from "@tanstack/react-query";
-import { useMutation } from "@tanstack/react-query";
-import { customClient } from "../../client";
+
 import type {
 	CreateCategoryBody,
 	CreateCategoryResponse,
@@ -21,6 +20,8 @@ import type {
 	UpdateCategoryBody,
 	UpdateCategoryResponse,
 } from "../guildTypeProto.schemas";
+
+import { customClient } from "../../client";
 
 export const deleteCategory = (categoryId: string) => {
 	return customClient<DeleteCategoryResponse>({

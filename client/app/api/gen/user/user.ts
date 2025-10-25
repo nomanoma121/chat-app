@@ -4,7 +4,7 @@
  * guild_type.proto
  * OpenAPI spec version: version not set
  */
-
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
 	DataTag,
 	DefinedInitialDataOptions,
@@ -19,8 +19,7 @@ import type {
 	UseQueryOptions,
 	UseQueryResult,
 } from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { customClient } from "../../client";
+
 import type {
 	GetCurrentUserResponse,
 	GetUserByIDResponse,
@@ -28,6 +27,8 @@ import type {
 	UpdateRequest,
 	UpdateResponse,
 } from "../guildTypeProto.schemas";
+
+import { customClient } from "../../client";
 
 export const getCurrentUser = (signal?: AbortSignal) => {
 	return customClient<GetCurrentUserResponse>({
