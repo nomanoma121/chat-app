@@ -9,6 +9,8 @@ import { useGetCurrentUser } from "~/api/gen/user/user";
 import { useMessages } from "../hooks/use-messages";
 import { useAutoScroll } from "../hooks/use-auto-scroll";
 import { Loading } from "./loading";
+import { useEffect } from "react";
+import { message } from "valibot";
 
 export const ChatArea = () => {
 	const { channelId } = useParams<{ channelId: string }>();
@@ -22,7 +24,11 @@ export const ChatArea = () => {
 		userData?.user.id,
 		channelId
 	);
-	const { scrollRef, containerRef } = useAutoScroll([messages]);
+	const { scrollRef, containerRef, scrollToBottom } = useAutoScroll();
+	useEffect(() => {
+		scrollToBottom("smooth");
+	}, [messages, scrollToBottom]);
+
 	const channelName = guild?.categories.map((category) => {
 		return category.channels.find((channel) => channel?.id === channelId)?.name;
 	});

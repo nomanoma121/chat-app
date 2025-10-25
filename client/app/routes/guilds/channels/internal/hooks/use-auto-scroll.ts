@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
-export const useAutoScroll = <T>(dependencies: T[]) => {
+export const useAutoScroll = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -8,13 +8,14 @@ export const useAutoScroll = <T>(dependencies: T[]) => {
     scrollRef.current?.scrollIntoView({ behavior });
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, dependencies);
+  const scrollToTop = (behavior: ScrollBehavior = "smooth") => {
+    containerRef.current?.scrollTo({ top: 0, behavior });
+  };
 
   return {
     scrollRef,
     containerRef,
     scrollToBottom,
+    scrollToTop,
   };
 };
