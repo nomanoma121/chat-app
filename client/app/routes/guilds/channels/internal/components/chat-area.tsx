@@ -1,20 +1,13 @@
-import { useEffect, useRef, useState } from "react";
 import { useOutletContext, useParams } from "react-router";
 import { css } from "styled-system/css";
-import type { Message as TMessage } from "~/api/gen/guildTypeProto.schemas";
-import { useCreate, useGetByChannelID } from "~/api/gen/message/message";
 import { Message } from "~/components/features/message";
 import { MessageInput } from "~/components/features/message-input";
 import { NotFoundPage } from "~/components/features/not-found-page";
 import { Heading } from "~/components/ui/heading";
-import { Spinner } from "~/components/ui/spinner";
-import { Text } from "~/components/ui/text";
-import { WebSocketEvent } from "~/constants";
-import { useWebSocketEvent } from "~/hooks/use-websocket-event";
 import type { GuildsContext } from "../../layout";
-import { useWebSocket } from "~/contexts/websocket";
 import { useGetCurrentUser } from "~/api/gen/user/user";
 import { useMessages } from "../hooks/use-messages";
+import { useAutoScroll } from "../hooks/use-auto-scroll";
 import { Loading } from "./loading";
 
 export const ChatArea = () => {
@@ -29,24 +22,14 @@ export const ChatArea = () => {
 		userData?.user.id,
 		channelId
 	);
-	const messagesEndRef = useRef<HTMLDivElement>(null);
-	const messagesContainerRef = useRef<HTMLDivElement>(null);
-
+	const { scrollRef, containerRef } = useAutoScroll([messages]);
 	const channelName = guild?.categories.map((category) => {
 		return category.channels.find((channel) => channel?.id === channelId)?.name;
 	});
 
-	const scrollToBottom = () => {
-		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-	};
-
 	if (messagesError) {
 		return <NotFoundPage />;
 	}
-
-	useEffect(() => {
-		scrollToBottom();
-	}, [messages]);
 
 	return (
 		<div
@@ -102,7 +85,7 @@ export const ChatArea = () => {
 			</div>
 
 			<div
-				ref={messagesContainerRef}
+				ref={containerRef}
 				className={css({
 					flex: 1,
 					overflowY: "auto",
@@ -126,7 +109,7 @@ export const ChatArea = () => {
 							onReact={() => {}}
 						/>
 					))}
-					<div ref={messagesEndRef} />
+					<div ref={scrollRef} />
 				</div>
 			</div>
 
