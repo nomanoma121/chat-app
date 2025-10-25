@@ -9,11 +9,11 @@ import (
 
 type User struct {
 	ID        uuid.UUID `json:"id"`
-	DisplayId string    `json:"display_id"`
+	DisplayId string    `json:"displayId"`
 	Name      string    `json:"name"`
 	Bio       string    `json:"bio"`
-	IconURL   string    `json:"icon_url"`
-	CreatedAt time.Time `json:"created_at"`
+	IconURL   string    `json:"iconUrl"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 type IUserService interface {

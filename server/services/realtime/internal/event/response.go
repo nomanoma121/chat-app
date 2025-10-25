@@ -6,23 +6,24 @@ import (
 	"github.com/google/uuid"
 )
 
+// TODO: 今後可能ならスネークケースにしたい(OpenAPIをスネークケースで生成したい)
 type MessageUser struct {
 	ID        uuid.UUID `json:"id"`
 	Name      string    `json:"name"`
-	DisplayID string    `json:"display_id"`
+	DisplayID string    `json:"displayId"`
 	Bio       string    `json:"bio"`
-	IconURL   string    `json:"icon_url"`
-	CreatedAt time.Time `json:"created_at"`
+	IconURL   string    `json:"iconUrl"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 type MessageCreatedEvent struct {
 	ID        uuid.UUID   `json:"id"`
-	ChannelID uuid.UUID   `json:"channel_id"`
-	SenderID  uuid.UUID   `json:"sender_id"`
+	ChannelID uuid.UUID   `json:"channelId"`
+	SenderID  uuid.UUID   `json:"senderId"`
 	Sender    MessageUser `json:"sender"`
 	Content   string      `json:"content"`
-	ReplyID   *uuid.UUID  `json:"reply_id"`
-	CreatedAt time.Time   `json:"created_at"`
+	ReplyID   *uuid.UUID  `json:"replyId"`
+	CreatedAt time.Time   `json:"createdAt"`
 }
 
 func (e MessageCreatedEvent) GetChannelID() uuid.UUID {
@@ -31,7 +32,7 @@ func (e MessageCreatedEvent) GetChannelID() uuid.UUID {
 
 type MessageUpdatedEvent struct {
 	ID        uuid.UUID `json:"id"`
-	ChannelID uuid.UUID `json:"channel_id"`
+	ChannelID uuid.UUID `json:"channelId"`
 	Content   string    `json:"content"`
 }
 
@@ -41,7 +42,7 @@ func (e MessageUpdatedEvent) GetChannelID() uuid.UUID {
 
 type MessageDeletedEvent struct {
 	ID        uuid.UUID `json:"id"`
-	ChannelID uuid.UUID `json:"channel_id"`
+	ChannelID uuid.UUID `json:"channelId"`
 }
 
 func (e MessageDeletedEvent) GetChannelID() uuid.UUID {
