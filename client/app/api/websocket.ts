@@ -1,8 +1,8 @@
 import { WebSocketEvent } from "../constants";
-
+import { WS_BASE_URL } from "../constants";
 
 export class WebSocketClient {
-	private ws = new WebSocket("ws://localhost:50054/ws");
+	private ws = new WebSocket(WS_BASE_URL);
 	private listeners: Map<string, (data: any) => void> = new Map();
 	private isAuthenticated = false;
 	private pendingMessages: Array<{ type: string; data: any }> = [];
