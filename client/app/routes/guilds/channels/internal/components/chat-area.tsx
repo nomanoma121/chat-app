@@ -97,6 +97,22 @@ export const ChatArea = () => {
 					flex: 1,
 					overflowY: "auto",
 					backgroundColor: "bg.primary",
+					"&::-webkit-scrollbar": {
+						width: "8px",
+					},
+					"&::-webkit-scrollbar-track": {
+						background: "transparent",
+					},
+					"&::-webkit-scrollbar-thumb": {
+						background: "bg.tertiary",
+						borderRadius: "4px",
+						"&:hover": {
+							background: "bg.quaternary",
+						},
+					},
+					// For Firefox
+					scrollbarWidth: "thin",
+					scrollbarColor: "token(colors.bg.tertiary) transparent",
 				})}
 			>
 				<div
