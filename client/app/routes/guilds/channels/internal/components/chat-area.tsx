@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useOutletContext, useParams } from "react-router";
 import { css } from "styled-system/css";
+import type { Message as TMessage } from "~/api/gen/guildTypeProto.schemas";
 import { useCreate, useGetByChannelID } from "~/api/gen/message/message";
 import { Message } from "~/components/features/message";
-import { type Message as TMessage } from "~/api/gen/guildTypeProto.schemas";
 import { MessageInput } from "~/components/features/message-input";
 import { NotFoundPage } from "~/components/features/not-found-page";
 import { Heading } from "~/components/ui/heading";

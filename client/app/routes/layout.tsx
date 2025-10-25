@@ -3,9 +3,9 @@ import { Outlet, useLocation, useNavigate } from "react-router";
 import { css } from "styled-system/css";
 import { useAuthMe } from "~/api/gen/auth/auth";
 import { UserPanel } from "~/components/features/user-panel";
+import { WebSocketEvent } from "~/constants";
 import { useWebSocket } from "~/contexts/websocket";
 import { useWebSocketEvent } from "~/hooks/use-websocket-event";
-import { WebSocketEvent } from "~/constants";
 
 export default function ChannelLayout() {
 	const token = localStorage.getItem("authToken");
@@ -26,10 +26,8 @@ export default function ChannelLayout() {
 			wsClient.Send(WebSocketEvent.AuthRequest, { token });
 		}
 		wsClient.Send(WebSocketEvent.SubscribeChannels, {
-			data: {
-				user_id: "4c5edfc1-ff52-4c46-b902-8dc322b33a4d",
-				channel_ids: ["6efe4572-1efd-4075-b846-2151a340af6e"],
-			},
+			user_id: "4c5edfc1-ff52-4c46-b902-8dc322b33a4d",
+			channel_ids: ["6efe4572-1efd-4075-b846-2151a340af6e"],
 		});
 	}, [token, wsClient]);
 

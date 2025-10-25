@@ -1,3 +1,4 @@
-import { WebSocketEvent } from "~/constants";
+import type { WebSocketEvent } from "~/constants";
 
-export type WebSocketEventType = typeof WebSocketEvent[keyof typeof WebSocketEvent];
+export type WebSocketEventType =
+	(typeof WebSocketEvent)[keyof typeof WebSocketEvent];
