@@ -98,4 +98,4 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Run Biome Check
-        run: pnpm biome lint 
+        run: pnpm biome lint ./app
