@@ -14,7 +14,7 @@ import "./app.css";
 import { Toast } from "~/components/ui/toast";
 import { toaster } from "~/hooks/use-toast";
 import { css } from "../styled-system/css";
-import { WebSocketClient } from "./api/websocket";
+import { wsClient } from "./api/websocket";
 import stylesheet from "./app.css?url";
 import { WebSocketProvider } from "./contexts/websocket";
 
@@ -64,12 +64,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
 	// Create a QueryClient once per request (SSR) / once per app instance (CSR)
 	const [queryClient] = useState(() => new QueryClient());
-	const WSClient = WebSocketClient.getInstance();
 
 	return (
-		<WebSocketProvider wsClient={WSClient}>
+		<WebSocketProvider wsClient={wsClient}>
 			<QueryClientProvider client={queryClient}>
-				<Outlet context={{ WSClient }} />
+				<Outlet context={{ wsClient }} />
 				<Toast.Toaster toaster={toaster}>
 					{(toast) => (
 						<Toast.Root
