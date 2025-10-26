@@ -1,5 +1,7 @@
 import { WebSocketEvent, WS_BASE_URL } from "../constants";
 
+let instance: WebSocketClient | null = null;
+
 export class WebSocketClient {
 	private ws!: WebSocket;
 	private listeners: Map<string, (data: unknown) => void> = new Map();
@@ -12,8 +14,15 @@ export class WebSocketClient {
 	private maxReconnectDelay = 30000;
 	private baseReconnectDelay = 1000;
 
-	constructor() {
+	private constructor() {
 		this.connect();
+	}
+
+	public static getInstance(): WebSocketClient {
+		if (!instance) {
+			instance = new WebSocketClient();
+		}
+		return instance;
 	}
 
 	private connect() {
@@ -23,8 +32,9 @@ export class WebSocketClient {
 		this.ws.onopen = () => {
 			this.reconnectDelay = this.baseReconnectDelay;
 
-			if (this.token) {
-				this.sendAuthRequest();
+			const token = this.getTokenByLocalStorage();
+			if (token) {
+				this.Authenticate(token);
 			}
 		};
 
@@ -55,6 +65,10 @@ export class WebSocketClient {
 				);
 			}
 		};
+	}
+
+	private getTokenByLocalStorage(): string | null {
+		return localStorage.getItem("authToken");
 	}
 
 	private sendAuthRequest() {

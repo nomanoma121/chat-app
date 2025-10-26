@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"realtime-service/internal/event"
+	"sync"
 	"time"
 
 	"github.com/google/uuid"
@@ -18,11 +19,12 @@ const (
 )
 
 type Client struct {
-	hub      *Hub
-	conn     *websocket.Conn
-	userID   uuid.UUID
-	channels map[uuid.UUID]bool
-	send     chan []byte
+	hub       *Hub
+	conn      *websocket.Conn
+	userID    uuid.UUID
+	channels  map[uuid.UUID]bool
+	send      chan []byte
+	closeOnce sync.Once
 }
 
 func NewClient(hub *Hub, conn *websocket.Conn, userID uuid.UUID) *Client {
@@ -35,12 +37,18 @@ func NewClient(hub *Hub, conn *websocket.Conn, userID uuid.UUID) *Client {
 	}
 }
 
-func (c *Client) ReadPump() {
-	defer func() {
-		c.hub.unregister <- c
+func (c *Client) close() {
+	c.closeOnce.Do(func() {
 		if err := c.conn.Close(); err != nil {
 			log.Printf("Error closing connection: %v", err)
 		}
+	})
+}
+
+func (c *Client) ReadPump() {
+	defer func() {
+		c.hub.unregister <- c
+		c.close()
 	}()
 
 	c.conn.SetReadLimit(maxMessageSize)
@@ -76,9 +84,7 @@ func (c *Client) WritePump() {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
 		ticker.Stop()
-		if err := c.conn.Close(); err != nil {
-			log.Printf("Error closing connection: %v", err)
-		}
+		c.close()
 	}()
 
 	for {

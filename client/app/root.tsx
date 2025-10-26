@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
 	isRouteErrorResponse,
 	Links,
@@ -64,7 +64,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
 	// Create a QueryClient once per request (SSR) / once per app instance (CSR)
 	const [queryClient] = useState(() => new QueryClient());
-	const WSClient = useRef(new WebSocketClient()).current;
+	const WSClient = WebSocketClient.getInstance();
 
 	return (
 		<WebSocketProvider wsClient={WSClient}>
