@@ -3,8 +3,10 @@ FROM node:22.12 AS builder
 # Build arguments
 ARG VITE_API_BASE_URL
 ARG VITE_CLIENT_BASE_URL
+ARG VITE_WS_BASE_URL
 ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
 ENV VITE_CLIENT_BASE_URL=${VITE_CLIENT_BASE_URL}
+ENV VITE_WS_BASE_URL=${VITE_WS_BASE_URL}
 
 # Install pnpm directly to avoid corepack signature issues
 RUN npm install -g pnpm@10.15.0
