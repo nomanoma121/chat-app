@@ -6,42 +6,41 @@ on:
   pull_request:
 
 jobs:
-  api-gateway-lint:
-    name: lint
+  go-lint:
+    name: go-lint(${{ matrix.path }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        path:
+          - ./server/services/message
+          - ./server/services/realtime
+          - ./server/services/guild
+          - ./server/services/user
+          - ./server/services/api-gateway
+          - ./server/shared
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-go@v6
         with:
           go-version: 1.25.1
-      - name: golangci-lint
+      - name: golangci-lint install
         uses: golangci/golangci-lint-action@v8
         with:
-          version: v2.4
-          working-directory: ./server/services/api-gateway
-  user-lint:
-    name: lint
+          version: v2.5
+          working-directory: ${{ matrix.path }}
+          
+  client-lint:
+    name: client-lint
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-go@v6
+      - uses: pnpm/action-setup@v2
         with:
-          go-version: 1.25.1
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v8
-        with:
-          version: v2.4
-          working-directory: ./server/services/user
-  guild-lint:
-    name: lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-go@v6
-        with:
-          go-version: 1.25.1
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v8
-        with:
-          version: v2.4
-          working-directory: ./server/services/guild
+          version: 10.15.0
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run Biome Check
+        run: pnpm biome lint ./app

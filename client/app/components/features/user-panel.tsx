@@ -63,7 +63,9 @@ export const UserPanel = () => {
 						{data?.user.name ?? "Unknown User"}
 					</Text>
 				</div>
-				<div className={css({ display: "flex", alignItems: "center", gap: "1" })}>
+				<div
+					className={css({ display: "flex", alignItems: "center", gap: "1" })}
+				>
 					<div
 						className={css({
 							display: "flex",

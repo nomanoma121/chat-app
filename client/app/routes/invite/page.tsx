@@ -1,16 +1,16 @@
 import { Users } from "lucide-react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { css } from "styled-system/css";
+import { useAuthMe } from "~/api/gen/auth/auth";
 import { useGetGuildByInviteCode, useJoinGuild } from "~/api/gen/invite/invite";
 import { Avatar } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
-import { InviteErrorCard } from "./internal/components/invite-error-card";
 import { Card } from "~/components/ui/card";
 import { Spinner } from "~/components/ui/spinner";
 import { Text } from "~/components/ui/text";
 import { useToast } from "~/hooks/use-toast";
-import { useAuthMe } from "~/api/gen/auth/auth";
-import { useEffect } from "react";
+import { InviteErrorCard } from "./internal/components/invite-error-card";
 
 export default function InvitePage() {
 	const navigate = useNavigate();
@@ -38,7 +38,7 @@ export default function InvitePage() {
 			navigate(
 				`/servers/${data?.invite?.guild?.id}/channels/${data?.invite?.guild?.defaultChannelId}`,
 			);
-		} catch (err) {
+		} catch {
 			toast.error("サーバーへの参加に失敗しました");
 		}
 	};
@@ -71,8 +71,10 @@ export default function InvitePage() {
 	const invite = data.invite;
 
 	// 期限切れまたは使用回数上限チェック
-	if ((invite.expiresAt && new Date(invite.expiresAt) < new Date()) ||
-		(invite.maxUses && invite.currentUses >= invite.maxUses)) {
+	if (
+		(invite.expiresAt && new Date(invite.expiresAt) < new Date()) ||
+		(invite.maxUses && invite.currentUses >= invite.maxUses)
+	) {
 		return <InviteErrorCard navigate={navigate} />;
 	}
 

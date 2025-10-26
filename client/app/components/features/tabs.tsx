@@ -68,7 +68,13 @@ interface TabsTriggerProps {
 	disabled?: boolean;
 }
 
-const Trigger = ({ children, value, className, asChild, disabled = false }: TabsTriggerProps) => {
+const Trigger = ({
+	children,
+	value,
+	className,
+	asChild,
+	disabled = false,
+}: TabsTriggerProps) => {
 	const { activeTab, setActiveTab, variant } = useTabsContext();
 	const isActive = activeTab === value;
 
@@ -83,14 +89,20 @@ const Trigger = ({ children, value, className, asChild, disabled = false }: Tabs
 		background: "transparent",
 		fontSize: "sm",
 		fontWeight: isActive ? "medium" : "normal",
-		color: disabled ? "text.disabled" : (isActive ? "text.bright" : "text.medium"),
+		color: disabled
+			? "text.disabled"
+			: isActive
+				? "text.bright"
+				: "text.medium",
 		bgColor: isActive ? "bg.primary" : "transparent",
 		opacity: disabled ? 0.5 : 1,
 		flex: "1",
-		_hover: disabled ? {} : {
-			color: "text.bright",
-			bgColor: isActive ? "bg.primary" : "bg.quaternary",
-		},
+		_hover: disabled
+			? {}
+			: {
+					color: "text.bright",
+					bgColor: isActive ? "bg.primary" : "bg.quaternary",
+				},
 		_focus: {
 			outline: "none",
 		},
@@ -103,13 +115,19 @@ const Trigger = ({ children, value, className, asChild, disabled = false }: Tabs
 	};
 
 	if (asChild && React.isValidElement(children)) {
-		return React.cloneElement(children as React.ReactElement<any>, {
-			onClick: handleClick,
-			className: cx(baseStyles, (children.props as any).className, className),
-			role: "tab",
-			"aria-selected": isActive,
-			tabIndex: isActive ? 0 : -1,
-		});
+		const childProps = children.props as { className?: string };
+		return React.cloneElement(
+			children as React.ReactElement<
+				React.HTMLAttributes<HTMLElement> & { className?: string }
+			>,
+			{
+				onClick: handleClick,
+				className: cx(baseStyles, childProps.className, className),
+				role: "tab",
+				"aria-selected": isActive,
+				tabIndex: isActive ? 0 : -1,
+			},
+		);
 	}
 
 	return (
@@ -120,7 +138,7 @@ const Trigger = ({ children, value, className, asChild, disabled = false }: Tabs
 			role="tab"
 			aria-selected={isActive}
 			aria-disabled={disabled}
-			tabIndex={disabled ? -1 : (isActive ? 0 : -1)}
+			tabIndex={disabled ? -1 : isActive ? 0 : -1}
 		>
 			{children}
 		</button>

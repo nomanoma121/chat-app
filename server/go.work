@@ -6,5 +6,6 @@ use (
 	./services/user
 	./services/api-gateway
 	./services/guild
+	./services/realtime
 	./services/message
 )

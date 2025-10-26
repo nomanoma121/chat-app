@@ -1,75 +1,36 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useOutletContext, useParams } from "react-router";
 import { css } from "styled-system/css";
-import { useCreate, useGetByChannelID } from "~/api/gen/message/message";
-import { NotFoundPage } from "~/components/features/not-found-page";
+import { useGetCurrentUser } from "~/api/gen/user/user";
 import { Message } from "~/components/features/message";
 import { MessageInput } from "~/components/features/message-input";
+import { NotFoundPage } from "~/components/features/not-found-page";
 import { Heading } from "~/components/ui/heading";
-import { Spinner } from "~/components/ui/spinner";
-import { Text } from "~/components/ui/text";
 import type { GuildsContext } from "../../layout";
+import { useAutoScroll } from "../hooks/use-auto-scroll";
+import { useMessages } from "../hooks/use-messages";
+import { Loading } from "./loading";
 
 export const ChatArea = () => {
 	const { channelId } = useParams<{ channelId: string }>();
-	if (!channelId) {
-		return <div>Channel ID is missing</div>;
-	}
 	const { guild } = useOutletContext<GuildsContext>();
-	const {
-		data: messagesData,
-		refetch,
-		isLoading,
-		error: messagesError,
-	} = useGetByChannelID(channelId);
-	const { mutateAsync: createMessage } = useCreate();
-	const messages = messagesData?.messages || [];
-	const messagesEndRef = useRef<HTMLDivElement>(null);
-	const messagesContainerRef = useRef<HTMLDivElement>(null);
+	const { data: userData } = useGetCurrentUser();
+	if (!channelId || !guild || !userData) {
+		return <Loading />;
+	}
+
+	const { messages, messagesError, sendMessage, firstMessageReceived } =
+		useMessages(userData?.user.id, channelId);
+	const { scrollRef, containerRef, scrollToBottom } = useAutoScroll();
+
+	useEffect(() => {
+		const behavior = firstMessageReceived ? "smooth" : "instant";
+		scrollToBottom(behavior);
+	}, [scrollToBottom, firstMessageReceived]);
 
 	const channelName = guild?.categories.map((category) => {
 		return category.channels.find((channel) => channel?.id === channelId)?.name;
 	});
-
-	const scrollToBottom = () => {
-		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-	};
-
-	useEffect(() => {
-		scrollToBottom();
-	}, [messages]);
-
-	const handleSendMessage = async (content: string) => {
-		if (!channelId) return;
-		try {
-			await createMessage({ channelId, data: { content } });
-			await refetch();
-			scrollToBottom();
-		} catch (error) {
-			console.error("Failed to send message:", error);
-		}
-	};
-
-	if (isLoading) {
-		return (
-			<div
-				className={css({
-					flex: 1,
-					display: "flex",
-					flexDirection: "column",
-					alignItems: "center",
-					justifyContent: "center",
-					height: "100vh",
-					backgroundColor: "bg.primary",
-				})}
-			>
-				<Spinner size="lg" />
-				<Text className={css({ mt: "4", color: "text.medium" })}>
-					メッセージを読み込み中...
-				</Text>
-			</div>
-		);
-	}
 
 	if (messagesError) {
 		return <NotFoundPage />;
@@ -129,11 +90,27 @@ export const ChatArea = () => {
 			</div>
 
 			<div
-				ref={messagesContainerRef}
+				ref={containerRef}
 				className={css({
 					flex: 1,
 					overflowY: "auto",
 					backgroundColor: "bg.primary",
+					"&::-webkit-scrollbar": {
+						width: "8px",
+					},
+					"&::-webkit-scrollbar-track": {
+						background: "transparent",
+					},
+					"&::-webkit-scrollbar-thumb": {
+						background: "bg.tertiary",
+						borderRadius: "4px",
+						"&:hover": {
+							background: "bg.quaternary",
+						},
+					},
+					// For Firefox
+					scrollbarWidth: "thin",
+					scrollbarColor: "token(colors.bg.tertiary) transparent",
 				})}
 			>
 				<div
@@ -153,12 +130,12 @@ export const ChatArea = () => {
 							onReact={() => {}}
 						/>
 					))}
-					<div ref={messagesEndRef} />
+					<div ref={scrollRef} />
 				</div>
 			</div>
 
 			<MessageInput
-				onSendMessage={handleSendMessage}
+				onSendMessage={sendMessage}
 				placeholder="Message #general"
 			/>
 		</div>

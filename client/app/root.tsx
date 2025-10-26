@@ -14,7 +14,9 @@ import "./app.css";
 import { Toast } from "~/components/ui/toast";
 import { toaster } from "~/hooks/use-toast";
 import { css } from "../styled-system/css";
+import { wsClient } from "./api/websocket";
 import stylesheet from "./app.css?url";
+import { WebSocketProvider } from "./contexts/websocket";
 
 export const links: Route.LinksFunction = () => [
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -64,52 +66,54 @@ export default function App() {
 	const [queryClient] = useState(() => new QueryClient());
 
 	return (
-		<QueryClientProvider client={queryClient}>
-			<Outlet />
-			<Toast.Toaster toaster={toaster}>
-				{(toast) => (
-					<Toast.Root
-						key={toast.id}
-						className={css({
-							bg: "bg.secondary",
-							border: "1px solid",
-							borderColor: "border.soft",
-							color: "text.bright",
-						})}
-					>
-						<Toast.Title
+		<WebSocketProvider wsClient={wsClient}>
+			<QueryClientProvider client={queryClient}>
+				<Outlet context={{ wsClient }} />
+				<Toast.Toaster toaster={toaster}>
+					{(toast) => (
+						<Toast.Root
+							key={toast.id}
 							className={css({
-								color:
-									toast.type === "success"
-										? "#22c55e"
-										: toast.type === "error"
-											? "#ef4444"
-											: toast.type === "warning"
-												? "#f59e0b"
-												: "#3b82f6",
+								bg: "bg.secondary",
+								border: "1px solid",
+								borderColor: "border.soft",
+								color: "text.bright",
 							})}
 						>
-							{toast.title}
-						</Toast.Title>
-						<Toast.Description
-							className={css({
-								color: "text.medium",
-							})}
-						>
-							{toast.description}
-						</Toast.Description>
-						<Toast.CloseTrigger
-							className={css({
-								color: "text.medium",
-								_hover: {
-									color: "text.bright",
-								},
-							})}
-						/>
-					</Toast.Root>
-				)}
-			</Toast.Toaster>
-		</QueryClientProvider>
+							<Toast.Title
+								className={css({
+									color:
+										toast.type === "success"
+											? "#22c55e"
+											: toast.type === "error"
+												? "#ef4444"
+												: toast.type === "warning"
+													? "#f59e0b"
+													: "#3b82f6",
+								})}
+							>
+								{toast.title}
+							</Toast.Title>
+							<Toast.Description
+								className={css({
+									color: "text.medium",
+								})}
+							>
+								{toast.description}
+							</Toast.Description>
+							<Toast.CloseTrigger
+								className={css({
+									color: "text.medium",
+									_hover: {
+										color: "text.bright",
+									},
+								})}
+							/>
+						</Toast.Root>
+					)}
+				</Toast.Toaster>
+			</QueryClientProvider>
+		</WebSocketProvider>
 	);
 }
 

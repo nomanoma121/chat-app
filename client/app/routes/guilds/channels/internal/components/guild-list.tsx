@@ -2,7 +2,6 @@ import { MoveLeft } from "lucide-react";
 import { useNavigate } from "react-router";
 import { css } from "styled-system/css";
 import { useListMyGuilds } from "~/api/gen/guild/guild";
-import { NotFoundPage } from "~/components/features/not-found-page";
 import { GuildIcon } from "~/components/ui/guild-icon";
 import { IconButton } from "~/components/ui/icon-button";
 import { Spinner } from "~/components/ui/spinner";
@@ -90,16 +89,24 @@ export const GuildList = () => {
 					<Spinner size="sm" />
 				</div>
 			) : (
-				data?.guilds.map((guild, index) => (
+				data?.guilds.map((guild) => (
 					<div
-						key={index}
+						key={guild.id}
 						className={css({
-							marginTop: index === 0 ? "16px" : "8px",
-							marginBottom: index === data.guilds.length - 1 ? "16px" : "0",
+							marginTop: "8px",
+							marginBottom: "0",
 							position: "relative",
+							"&:first-of-type": {
+								marginTop: "16px",
+							},
+							"&:last-of-type": {
+								marginBottom: "16px",
+							},
 						})}
 						onClick={() =>
-							navigate(`/servers/${guild.id}/channels/${guild.defaultChannelId}`)
+							navigate(
+								`/servers/${guild.id}/channels/${guild.defaultChannelId}`,
+							)
 						}
 					>
 						<GuildIcon

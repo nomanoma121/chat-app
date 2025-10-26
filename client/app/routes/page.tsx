@@ -1,10 +1,9 @@
-import { useNavigate } from "react-router";
+import { Github } from "lucide-react";
+import { Link, useNavigate } from "react-router";
 import { css } from "styled-system/css";
 import { Button } from "~/components/ui/button";
-import { Github } from "lucide-react";
-import { Text } from "~/components/ui/text";
 import { Heading } from "~/components/ui/heading";
-import { Link } from "react-router";
+import { Text } from "~/components/ui/text";
 
 export default function Home() {
 	const navigate = useNavigate();
@@ -50,7 +49,7 @@ export default function Home() {
 					このサイトは勉強用に作成されたものであり、実際のサービスではありません。
 				</Text>
 
-				<Text 
+				<Text
 					className={css({
 						fontSize: "medium",
 						color: "text.medium",
@@ -74,8 +73,11 @@ export default function Home() {
 						})}
 						to="https://github.com/nomanoma121/chat-app"
 						target="_blank"
-						rel="noopener noreferrer">こちら</Link>
-					</Text>
+						rel="noopener noreferrer"
+					>
+						こちら
+					</Link>
+				</Text>
 
 				<div
 					className={css({

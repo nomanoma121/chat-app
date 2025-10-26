@@ -8,13 +8,13 @@ import (
 )
 
 type Message struct {
-	ID        uuid.UUID
-	ChannelID uuid.UUID
-	SenderID  uuid.UUID
-	Sender    *User
-	Content   string
-	ReplyID   *uuid.UUID
-	CreatedAt time.Time
+	ID        uuid.UUID  `json:"id"`
+	ChannelID uuid.UUID  `json:"channelId"`
+	SenderID  uuid.UUID  `json:"senderId"`
+	Sender    *User      `json:"sender"`
+	Content   string     `json:"content"`
+	ReplyID   *uuid.UUID `json:"replyId"`
+	CreatedAt time.Time  `json:"createdAt"`
 }
 
 type IMessageRepository interface {

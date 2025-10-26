@@ -6,6 +6,7 @@ import (
 	user "message-service/internal/infrastructure/grpc"
 	"message-service/internal/infrastructure/postgres"
 	"message-service/internal/infrastructure/postgres/gen"
+	rds "message-service/internal/infrastructure/redis"
 	"message-service/internal/usecase"
 	"net"
 	"os"
@@ -18,6 +19,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/redis/go-redis/v9"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
@@ -54,6 +56,11 @@ func main() {
 		db.Close()
 	}()
 
+	redisAddr := os.Getenv("REDIS_ADDR")
+	redisClient := redis.NewClient(&redis.Options{
+		Addr: redisAddr,
+	})
+
 	userServiceURL := os.Getenv("USER_SERVICE_URL")
 	userConn, err := grpc.NewClient(userServiceURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
@@ -83,9 +90,20 @@ func main() {
 	messageRepo := postgres.NewPostgresMessageRepository(gen.New(db))
 	userSvc := user.NewUserServiceClient(userConn)
 	guildSvc := user.NewGuildServiceClient(guildConn)
+	redisPub := rds.NewRedisPublisher(redisClient)
+
 	validate := validator.New()
-	messageUsecase := usecase.NewMessageUsecase(messageRepo, userSvc, guildSvc, validate)
+
+	messageUsecase := usecase.NewMessageUsecase(usecase.MessageUsecaseParams{
+		MessageRepo: messageRepo,
+		UserSvc:     userSvc,
+		GuildSvc:    guildSvc,
+		Publisher:   redisPub,
+		Validator:   validate,
+	})
+
 	messageHandler := handler.NewMessageHandler(messageUsecase, log)
+
 	server := grpc.NewServer()
 	pb.RegisterMessageServiceServer(server, messageHandler)
 	reflection.Register(server)

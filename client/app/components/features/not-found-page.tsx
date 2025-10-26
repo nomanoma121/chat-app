@@ -7,7 +7,7 @@ interface NotFoundPageProps {
 
 export const NotFoundPage = ({
 	title = "ページが見つかりません",
-	message = "お探しのページは削除されたか、名前が変更された可能性があります"
+	message = "お探しのページは削除されたか、名前が変更された可能性があります",
 }: NotFoundPageProps = {}) => {
 	return (
 		<div
@@ -46,9 +46,7 @@ export const NotFoundPage = ({
 				>
 					{title}
 				</p>
-				<p className={css({ fontSize: "sm", marginTop: "2" })}>
-					{message}
-				</p>
+				<p className={css({ fontSize: "sm", marginTop: "2" })}>{message}</p>
 			</div>
 		</div>
 	);

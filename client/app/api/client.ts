@@ -1,4 +1,4 @@
-import type { AxiosRequestConfig, AxiosError } from "axios";
+import type { AxiosError, AxiosRequestConfig } from "axios";
 import Axios from "axios";
 import { API_BASE_URL } from "~/constants";
 
@@ -30,7 +30,7 @@ export const customClient = <T>(config: AxiosRequestConfig): Promise<T> => {
 			const statusError = {
 				code: error.response?.status || 500,
 				message: error.message,
-				details: []
+				details: [],
 			};
 			throw statusError;
 		});

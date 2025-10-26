@@ -37,6 +37,10 @@ export interface Channel {
 	createdAt: string;
 }
 
+export interface CheckChannelAccessResponse {
+	hasAccess?: boolean;
+}
+
 export interface CreateBody {
 	content: string;
 	replyId?: string;

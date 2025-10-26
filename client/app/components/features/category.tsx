@@ -6,7 +6,7 @@ import {
 	useContext,
 	useState,
 } from "react";
-import { css, cva } from "styled-system/css";
+import { cva } from "styled-system/css";
 import { Channel, type ChannelData, type ChannelProps } from "./channel";
 
 // Context for sharing state between Category components

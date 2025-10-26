@@ -1,9 +1,7 @@
-import { MoreHorizontal, Reply, Smile } from "lucide-react";
-import { forwardRef, useState } from "react";
+import { forwardRef } from "react";
 import { css, cva } from "styled-system/css";
 import type { Message as TMessage } from "~/api/gen/guildTypeProto.schemas";
 import { Avatar } from "~/components/ui/avatar";
-import { IconButton } from "~/components/ui/icon-button";
 
 const messageStyles = cva({
 	base: {
@@ -41,28 +39,28 @@ const messageHeaderStyles = cva({
 	},
 });
 
-const messageActionsStyles = cva({
-	base: {
-		position: "absolute",
-		color: "text.medium",
-		top: "-8px",
-		right: "16px",
-		display: "flex",
-		alignItems: "center",
-		gap: "4px",
-		bg: "bg.secondary",
-		border: "1px solid",
-		borderColor: "border.soft",
-		borderRadius: "md",
-		padding: "4px",
-		opacity: 0,
-		transition: "all 0.1s ease",
-		boxShadow: "sm",
-		"&[data-visible]": {
-			opacity: 1,
-		},
-	},
-});
+// const messageActionsStyles = cva({
+// 	base: {
+// 		position: "absolute",
+// 		color: "text.medium",
+// 		top: "-8px",
+// 		right: "16px",
+// 		display: "flex",
+// 		alignItems: "center",
+// 		gap: "4px",
+// 		bg: "bg.secondary",
+// 		border: "1px solid",
+// 		borderColor: "border.soft",
+// 		borderRadius: "md",
+// 		padding: "4px",
+// 		opacity: 0,
+// 		transition: "all 0.1s ease",
+// 		boxShadow: "sm",
+// 		"&[data-visible]": {
+// 			opacity: 1,
+// 		},
+// 	},
+// });
 
 export interface MessageProps {
 	message: TMessage;
@@ -73,8 +71,7 @@ export interface MessageProps {
 
 export const Message = forwardRef<HTMLDivElement, MessageProps>(
 	(props, ref) => {
-		const { message, onReply, onReact, className, ...rest } = props;
-		const [showActions, setShowActions] = useState(false);
+		const { message, className, ...rest } = props;
 
 		const formatTimestamp = (timestamp: string) => {
 			const date = new Date(timestamp);
@@ -98,8 +95,6 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>(
 			<div
 				ref={ref}
 				className={[messageStyles(), className].filter(Boolean).join(" ")}
-				onMouseEnter={() => setShowActions(true)}
-				onMouseLeave={() => setShowActions(false)}
 				{...rest}
 			>
 				<div className={messageAvatarStyles()}>

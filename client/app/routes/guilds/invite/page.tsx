@@ -10,11 +10,11 @@ import {
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { css } from "styled-system/css";
+import { useGetGuildByID } from "~/api/gen/guild/guild";
 import {
 	useCreateGuildInvite,
 	useGetGuildInvites,
 } from "~/api/gen/invite/invite";
-import { useGetGuildByID } from "~/api/gen/guild/guild";
 import { NotFoundPage } from "~/components/features/not-found-page";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -26,10 +26,9 @@ import { NumberInput } from "~/components/ui/number-input";
 import { createListCollection, Select } from "~/components/ui/select";
 import { Switch } from "~/components/ui/switch";
 import { Text } from "~/components/ui/text";
-import { formatDate } from "~/constants";
-import { useToast } from "~/hooks/use-toast";
+import { CLIENT_BASE_URL, formatDate } from "~/constants";
 import { usePermissions } from "~/hooks/use-permissions";
-import { CLIENT_BASE_URL } from "~/constants";
+import { useToast } from "~/hooks/use-toast";
 
 const SECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 
@@ -84,7 +83,7 @@ export default function InvitePage() {
 
 			toast.success("招待リンクを作成しました");
 			refetch();
-		} catch (err) {
+		} catch {
 			toast.error("招待リンクの作成に失敗しました");
 		}
 	};
@@ -94,7 +93,7 @@ export default function InvitePage() {
 		try {
 			await navigator.clipboard.writeText(inviteUrl);
 			toast.success("招待リンクをコピーしました");
-		} catch (err) {
+		} catch {
 			toast.error("招待リンクのコピーに失敗しました");
 		}
 	};
