@@ -1,3 +1,5 @@
+: sample
+
 on:
   workflow_dispatch: # Webから手動実行可能にするトリガー
 
