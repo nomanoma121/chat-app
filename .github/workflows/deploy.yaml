@@ -1,7 +1,8 @@
 name: Deploy to Server
 on:
-  push:
-    branches: [ "main" ]
+  # push:
+  #   branches: [ "main" ]
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
@@ -114,16 +115,16 @@ jobs:
 
       - name: Install cloudflared
         run: |
-          latest_version=$(curl -s $GITHUB_API_URL/repos/cloudflare/cloudflared/releases/latest | jq -r '.tag_name')
+          latest_version=$(curl -s https://api.github.com/repos/cloudflare/cloudflared/releases/latest | jq -r '.tag_name')
           mkdir -p /tmp/cloudflared
-          curl -sL -o /tmp/cloudflared/cloudflared $GITHUB_SERVER_URL/cloudflare/cloudflared/releases/download/$latest_version/cloudflared-linux-amd64
+          curl -sL -o /tmp/cloudflared/cloudflared https://github.com/cloudflare/cloudflared/releases/download/$latest_version/cloudflared-linux-amd64
           chmod +x /tmp/cloudflared/cloudflared
           /tmp/cloudflared/cloudflared --version
 
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
       - name: Deploy via SSH
