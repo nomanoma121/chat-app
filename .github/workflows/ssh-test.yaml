@@ -24,4 +24,4 @@ jobs:
 
       - name: Run SSH command and whoami
         run: |
-          ssh -i  ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ProxyCommand="$SSH_PROXY_COMMAND" ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} whoami
+          ssh -i  ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ProxyCommand="$SSH_PROXY_COMMAND" ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} echo "SSH connection successful!"
