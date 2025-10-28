@@ -12,6 +12,8 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    outputs:
+      sha_tag: ${{ steps.meta.outputs.SHA_TAG }}
     permissions:
       contents: read
       packages: write
@@ -52,7 +54,9 @@ jobs:
       - name: Build & Push user service
         uses: docker/build-push-action@v6
         with:
-          context: ./server/services/user
+          context: ./server
+          build-args: |
+            SERVICE_NAME=user
           push: true
           tags: |
             ${{ steps.meta.outputs.USER_IMG }}:latest
@@ -61,7 +65,9 @@ jobs:
       - name: Build & Push guild service
         uses: docker/build-push-action@v6
         with:
-          context: ./server/services/guild
+          context: ./server
+          build-args: |
+            SERVICE_NAME=guild
           push: true
           tags: |
             ${{ steps.meta.outputs.GUILD_IMG }}:latest
@@ -70,7 +76,9 @@ jobs:
       - name: Build & Push message service
         uses: docker/build-push-action@v6
         with:
-          context: ./server/services/message
+          context: ./server
+          build-args: |
+            SERVICE_NAME=message
           push: true
           tags: |
             ${{ steps.meta.outputs.MESSAGE_IMG }}:latest
@@ -79,7 +87,9 @@ jobs:
       - name: Build & Push realtime service
         uses: docker/build-push-action@v6
         with:
-          context: ./server/services/realtime
+          context: ./server
+          build-args: |
+            SERVICE_NAME=realtime
           push: true
           tags: |
             ${{ steps.meta.outputs.REALTIME_IMG }}:latest
@@ -88,7 +98,9 @@ jobs:
       - name: Build & Push api-gateway service
         uses: docker/build-push-action@v6
         with:
-          context: ./server/services/api-gateway
+          context: ./server
+          build-args: |
+            SERVICE_NAME=api-gateway
           push: true
           tags: |
             ${{ steps.meta.outputs.API_IMG }}:latest
@@ -119,15 +131,18 @@ jobs:
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          SHA_TAG: ${{ needs.build-and-push.outputs.sha_tag }}
         with:
           host: localhost # cloudflared経由で接続するためlocalhost
           port: 2222
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: SHA_TAG
           script: |
             set -e
-            echo "Pulling latest images..."
-            export VERSION=${GITHUB_SHA::12}
+            echo "Pulling latest images with version: $SHA_TAG"
+            export VERSION=$SHA_TAG
             docker compose -f ~/chat-app/docker-compose.prod.yml pull
             docker compose -f ~/chat-app/docker-compose.prod.yml up -d
             echo "Cleaning up unused images..."
