@@ -121,38 +121,27 @@ jobs:
           chmod +x /tmp/cloudflared/cloudflared
           /tmp/cloudflared/cloudflared --version
 
-      - name: Start Cloudflare Tunnel
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Deploy via SSH
         env:
           CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
           CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
-          TUNNELS_HOST: ${{ secrets.SSH_HOST }}
-        run: |
-          /tmp/cloudflared/cloudflared access tcp --hostname $TUNNELS_HOST --url localhost:22 --listen-port 2222 &
-          for i in {1..30}; do
-            if nc -z localhost 2222 2>/dev/null; then
-              echo "Tunnel is ready"
-              break
-            fi
-            echo "Waiting for tunnel to start... ($i/30)"
-            sleep 1
-          done
-
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.2.0
-        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
           SHA_TAG: ${{ needs.build-and-push.outputs.sha_tag }}
-        with:
-          host: localhost # cloudflared経由で接続するためlocalhost
-          port: 2222
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: SHA_TAG
-          script: |
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ProxyCommand="/tmp/cloudflared/cloudflared access ssh --id $CF_ACCESS_CLIENT_ID --secret $CF_ACCESS_CLIENT_SECRET --hostname %h" $SSH_USER@$SSH_HOST << 'EOF'
             set -e
-            echo "Pulling latest images with version: $SHA_TAG"
-            export VERSION=$SHA_TAG
+            echo "Pulling latest images with version: ${{ needs.build-and-push.outputs.sha_tag }}"
+            export VERSION=${{ needs.build-and-push.outputs.sha_tag }}
             docker compose -f ~/chat-app/docker-compose.prod.yml pull
             docker compose -f ~/chat-app/docker-compose.prod.yml up -d
             echo "Cleaning up unused images..."
             docker image prune -f
             echo "Deployment completed."
+          EOF
