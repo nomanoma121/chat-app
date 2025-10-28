@@ -135,10 +135,12 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USER }}
           SHA_TAG: ${{ needs.build-and-push.outputs.sha_tag }}
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ProxyCommand="/tmp/cloudflared/cloudflared access ssh --id $CF_ACCESS_CLIENT_ID --secret $CF_ACCESS_CLIENT_SECRET --hostname %h" $SSH_USER@$SSH_HOST << 'EOF'
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ProxyCommand="/tmp/cloudflared/cloudflared access ssh --id $CF_ACCESS_CLIENT_ID --secret $CF_ACCESS_CLIENT_SECRET --hostname %h" $SSH_USER@$SSH_HOST << EOF
             set -e
-            echo "Pulling latest images with version: ${{ needs.build-and-push.outputs.sha_tag }}"
-            export VERSION=${{ needs.build-and-push.outputs.sha_tag }}
+            echo "Pulling latest images with version: $SHA_TAG"
+            export ORG=nomanoma121
+            export APP=chat-app
+            export VERSION=$SHA_TAG
             docker compose -f ~/chat-app/docker-compose.prod.yml pull
             docker compose -f ~/chat-app/docker-compose.prod.yml up -d
             echo "Cleaning up unused images..."

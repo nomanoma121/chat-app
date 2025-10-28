@@ -1,6 +1,6 @@
 services:
   web:
-    image: ghcr.io/${{ env.ORG }}/${{ env.APP }}-frontend:${VERSION:-latest}
+    image: ghcr.io/${ORG}/${APP}-frontend:${VERSION:-latest}
     ports:
       - "80:80"
     depends_on:
@@ -15,7 +15,7 @@ services:
       - VITE_WS_BASE_URL=${WS_BASE_URL}
 
   api-gateway:
-    image: ghcr.io/${{ env.ORG }}/${{ env.APP }}-api-gateway:${VERSION:-latest}
+    image: ghcr.io/${ORG}/${APP}-api-gateway:${VERSION:-latest}
     depends_on:
       - user
       - guild
@@ -30,19 +30,19 @@ services:
       - MESSAGE_SERVICE_URL=message:50053
 
   user:
-    image: ghcr.io/${{ env.ORG }}/${{ env.APP }}-user:${VERSION:-latest}
+    image: ghcr.io/${ORG}/${APP}-user:${VERSION:-latest}
     environment:
       - JWT_SECRET=${JWT_SECRET}
       - DATABASE_URL=${DATABASE_URL}
 
   guild:
-    image: ghcr.io/${{ env.ORG }}/${{ env.APP }}-guild:${VERSION:-latest}
+    image: ghcr.io/${ORG}/${APP}-guild:${VERSION:-latest}
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - USER_SERVICE_URL=user:50051
 
   message:
-    image: ghcr.io/${{ env.ORG }}/${{ env.APP }}-message:${VERSION:-latest}
+    image: ghcr.io/${ORG}/${APP}-message:${VERSION:-latest}
     depends_on:
       - redis
     environment:
@@ -52,7 +52,7 @@ services:
       - GUILD_SERVICE_URL=guild:50052
 
   realtime:
-    image: ghcr.io/${{ env.ORG }}/${{ env.APP }}-realtime:${VERSION:-latest}
+    image: ghcr.io/${ORG}/${APP}-realtime:${VERSION:-latest}
     depends_on:
       - redis
     ports:
