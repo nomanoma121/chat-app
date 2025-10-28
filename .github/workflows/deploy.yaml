@@ -115,9 +115,9 @@ jobs:
 
       - name: Install cloudflared
         run: |
-          lastest_version=$(curl -s $GITHUB_API_URL/repos/cloudflare/cloudflared/releases/latest | jq -r '.tag_name')
+          latest_version=$(curl -s $GITHUB_API_URL/repos/cloudflare/cloudflared/releases/latest | jq -r '.tag_name')
           mkdir -p /tmp/cloudflared
-          curl -sL -o /tmp/cloudflared/cloudflared $GITHUB_SERVER_URL/cloudflare/cloudflared/releases/download/$lastest_version/cloudflared-linux-amd64
+          curl -sL -o /tmp/cloudflared/cloudflared $GITHUB_SERVER_URL/cloudflare/cloudflared/releases/download/$latest_version/cloudflared-linux-amd64
           chmod +x /tmp/cloudflared/cloudflared
           /tmp/cloudflared/cloudflared --version
 
