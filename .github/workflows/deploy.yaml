@@ -127,7 +127,15 @@ jobs:
           CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
           TUNNELS_HOST: ${{ secrets.SSH_HOST }}
         run: |
-          /tmp/cloudflared/cloudflared access tcp --hostname $TUNNELS_HOST --url localhost:22 --listen-port 2222 & sleep 3
+          /tmp/cloudflared/cloudflared access tcp --hostname $TUNNELS_HOST --url localhost:22 --listen-port 2222 &
+          for i in {1..30}; do
+            if nc -z localhost 2222 2>/dev/null; then
+              echo "Tunnel is ready"
+              break
+            fi
+            echo "Waiting for tunnel to start... ($i/30)"
+            sleep 1
+          done
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.2.0
