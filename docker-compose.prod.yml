@@ -1,0 +1,83 @@
+services:
+  web:
+    image: ghcr.io/${{ env.ORG }}/${{ env.APP }}-frontend:${VERSION:-latest}
+    ports:
+      - "80:80"
+    depends_on:
+      - api-gateway
+      - user
+      - guild
+      - message
+      - realtime
+    environment:
+      - VITE_API_BASE_URL=${API_BASE_URL}
+      - VITE_CLIENT_BASE_URL=${CLIENT_BASE_URL}
+      - VITE_WS_BASE_URL=${WS_BASE_URL}
+
+  api-gateway:
+    image: ghcr.io/${{ env.ORG }}/${{ env.APP }}-api-gateway:${VERSION:-latest}
+    depends_on:
+      - user
+      - guild
+      - message
+      - realtime
+    ports:
+      - "8080:8080"
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - GUILD_SERVICE_URL=guild:50052
+      - USER_SERVICE_URL=user:50051
+      - MESSAGE_SERVICE_URL=message:50053
+
+  user:
+    image: ghcr.io/${{ env.ORG }}/${{ env.APP }}-user:${VERSION:-latest}
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - DATABASE_URL=${DATABASE_URL}
+
+  guild:
+    image: ghcr.io/${{ env.ORG }}/${{ env.APP }}-guild:${VERSION:-latest}
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - USER_SERVICE_URL=user:50051
+
+  message:
+    image: ghcr.io/${{ env.ORG }}/${{ env.APP }}-message:${VERSION:-latest}
+    depends_on:
+      - redis
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_ADDR=redis:6379
+      - USER_SERVICE_URL=user:50051
+      - GUILD_SERVICE_URL=guild:50052
+
+  realtime:
+    image: ghcr.io/${{ env.ORG }}/${{ env.APP }}-realtime:${VERSION:-latest}
+    depends_on:
+      - redis
+    ports:
+      - "50054:50054"
+    environment:
+      - REDIS_URL=redis:6379
+      - REALTIME_SERVICE_PORT=50054
+      - JWT_SECRET=${JWT_SECRET}
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: chat_app
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data: {}
+  redis_data: {}
