@@ -1,6 +1,7 @@
+: gehoge
 name: Deploy to Production
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
   # push:
   #   branches: [ "main" ]
 
@@ -92,7 +93,7 @@ jobs:
           push: true
           tags: |
             ${{ steps.meta.outputs.API_IMG }}:latest
-            ${{ steps.meta.outputs.API_IMG }}:${{ steps.meta.outputs.SHA_TAG }} 
+            ${{ steps.meta.outputs.API_IMG }}:${{ steps.meta.outputs.SHA_TAG }}
 
   deploy:
     needs: build-and-push
@@ -103,26 +104,24 @@ jobs:
 
       - name: Install cloudflared
         run: |
-            latest_version=$(curl -s https://api.github.com/repos/cloudflare/cloudflared/releases/latest | jq -r '.tag_name')
-            mkdir -p /tmp/cloudflared
-            curl -sL -o /tmp/cloudflared/cloudflared https://github.com/cloudflare/cloudflared/releases/download/$latest_version/cloudflared-linux-amd64
-            chmod +x /tmp/cloudflared/cloudflared
-            /tmp/cloudflared/cloudflared --version 
-      
+          lastest_version=$(curl -s $GITHUB_API_URL/repos/cloudflare/cloudflared/releases/latest | jq -r '.tag_name')
+          mkdir -p /tmp/cloudflared
+          curl -sL -o /tmp/cloudflared/cloudflared $GITHUB_SERVER_URL/cloudflare/cloudflared/releases/download/$latest_version/cloudflared-linux-amd64
+          chmod +x /tmp/cloudflared/cloudflared
+          /tmp/cloudflared/cloudflared --version
+
       - name: Start Cloudflare Tunnel
         env:
           CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
           CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
           TUNNELS_HOST: ${{ secrets.SSH_HOST }}
         run: |
-          /tmp/cloudflared/cloudflared access tcp --hostname $TUNNELS_HOST --url localhost:22 --listen-port 2222 &
-          sleep 3
-          echo "Cloudflare Tunnel started"
+          /tmp/cloudflared/cloudflared access tcp --hostname $TUNNELS_HOST --url localhost:22 --listen-port 2222 & sleep 3
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: localhost
+          host: localhost # cloudflared経由で接続するためlocalhost
           port: 2222
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
