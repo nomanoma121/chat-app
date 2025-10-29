@@ -21,14 +21,9 @@ export default function ChannelLayout() {
 	useEffect(() => {
 		if (!isAuthRoute && error?.code === 401) {
 			localStorage.removeItem(AUTH_TOKEN);
-			navigate("/login");
+			navigate("/login", { replace: true });
 		}
 	}, [navigate, isAuthRoute, error?.code]);
-
-	// 認証済みであれば /servers にリダイレクト
-	if (!error && data) {
-		navigate("/servers");
-	}
 
 	return (
 		<div>

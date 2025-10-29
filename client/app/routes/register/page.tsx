@@ -13,6 +13,8 @@ import { Text } from "~/components/ui/text";
 import { useLogin } from "~/hooks/use-login";
 import { useToast } from "~/hooks/use-toast";
 import { UserSchema } from "~/schema/user";
+import { useAuthMe } from "~/api/gen/auth/auth";
+import { useEffect } from "react";
 
 const RegisterForm = v.object({
 	displayId: UserSchema.DisplayId,
@@ -27,6 +29,7 @@ type FormInputValues = v.InferInput<typeof RegisterForm>;
 
 export default function RegisterPage() {
 	const navigate = useNavigate();
+	const { data: user } = useAuthMe();
 	const { mutateAsync: register, isPending, error } = useRegister();
 	const { mutateAsync: login } = useLogin();
 	const toast = useToast();
@@ -34,6 +37,13 @@ export default function RegisterPage() {
 
 	const searchParams = new URLSearchParams(location.search);
 	const redirectState = searchParams.get("state");
+
+	// 認証済みであれば /servers にリダイレクト
+	useEffect(() => {
+		if (user) {
+			navigate("/servers", { replace: true });
+		}
+	}, [navigate, user]);
 
 	const {
 		register: registerField,

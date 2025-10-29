@@ -1,8 +1,10 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router";
 import { css } from "styled-system/css";
 import * as v from "valibot";
+import { useAuthMe } from "~/api/gen/auth/auth";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Field } from "~/components/ui/field";
@@ -20,9 +22,17 @@ type FormInputValues = v.InferInput<typeof LoginForm>;
 
 export default function LoginPage() {
 	const navigate = useNavigate();
+	const { data: user } = useAuthMe();
 	const { mutateAsync, isPending, error } = useLogin();
 	const toast = useToast();
 	const location = useLocation();
+
+	// 認証済みであれば /servers にリダイレクト
+	useEffect(() => {
+		if (user) {
+			navigate("/servers", { replace: true });
+		}
+	}, [navigate, user]);
 
 	const searchParams = new URLSearchParams(location.search);
 	const redirectState = searchParams.get("state");
