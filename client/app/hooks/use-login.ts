@@ -1,3 +1,4 @@
+import { AUTH_TOKEN } from "~/constants";
 import { useLogin as useLoginMutate } from "../api/gen/auth/auth";
 import type { LoginRequest } from "../api/gen/userProto.schemas";
 
@@ -5,10 +6,10 @@ export const useLogin = () => {
 	const { mutateAsync: loginMutateAsync, isPending, error } = useLoginMutate();
 
 	const loginMutationAsync = async (data: LoginRequest) => {
-		localStorage.removeItem("authToken");
+		localStorage.removeItem(AUTH_TOKEN);
 		try {
 			const response = await loginMutateAsync({ data });
-			localStorage.setItem("authToken", response.token);
+			localStorage.setItem(AUTH_TOKEN, response.token);
 		} catch (err) {
 			console.error("Login failed:", err);
 			throw err;

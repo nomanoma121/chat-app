@@ -1,4 +1,4 @@
-import { WebSocketEvent, WS_BASE_URL } from "../constants";
+import { AUTH_TOKEN, WebSocketEvent, WS_BASE_URL } from "../constants";
 
 export class WebSocketClient {
 	private ws!: WebSocket;
@@ -59,7 +59,7 @@ export class WebSocketClient {
 	}
 
 	private getTokenByLocalStorage(): string | null {
-		return localStorage.getItem("authToken");
+		return localStorage.getItem(AUTH_TOKEN);
 	}
 
 	private sendAuthRequest() {

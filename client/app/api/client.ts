@@ -1,6 +1,6 @@
 import type { AxiosError, AxiosRequestConfig } from "axios";
 import Axios from "axios";
-import { API_BASE_URL } from "~/constants";
+import { API_BASE_URL, AUTH_TOKEN } from "~/constants";
 
 export const axiosInstance = Axios.create({
 	baseURL: API_BASE_URL,
@@ -8,7 +8,7 @@ export const axiosInstance = Axios.create({
 
 axiosInstance.interceptors.request.use(
 	(config) => {
-		const token = localStorage.getItem("authToken");
+		const token = localStorage.getItem(AUTH_TOKEN);
 
 		if (token) {
 			config.headers.Authorization = `Bearer ${token}`;

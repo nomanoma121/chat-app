@@ -3,7 +3,7 @@ import { Outlet, useLocation, useNavigate } from "react-router";
 import { css } from "styled-system/css";
 import { useAuthMe } from "~/api/gen/auth/auth";
 import { UserPanel } from "~/components/features/user-panel";
-import { WebSocketEvent } from "~/constants";
+import { AUTH_TOKEN, WebSocketEvent } from "~/constants";
 import { useWebSocketEvent } from "~/hooks/use-websocket-event";
 
 export default function ChannelLayout() {
@@ -20,7 +20,7 @@ export default function ChannelLayout() {
 
 	useEffect(() => {
 		if (!isAuthRoute && error?.code === 401) {
-			localStorage.removeItem("auth_token");
+			localStorage.removeItem(AUTH_TOKEN);
 			navigate("/login");
 		}
 	}, [navigate, isAuthRoute, error?.code]);
