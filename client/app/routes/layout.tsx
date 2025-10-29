@@ -7,7 +7,7 @@ import { WebSocketEvent } from "~/constants";
 import { useWebSocketEvent } from "~/hooks/use-websocket-event";
 
 export default function ChannelLayout() {
-	const { error } = useAuthMe();
+	const { data, error } = useAuthMe();
 	const navigate = useNavigate();
 	const location = useLocation();
 	const isAuthRoute =
@@ -20,9 +20,15 @@ export default function ChannelLayout() {
 
 	useEffect(() => {
 		if (!isAuthRoute && error?.code === 401) {
+			localStorage.removeItem("auth_token");
 			navigate("/login");
 		}
 	}, [navigate, isAuthRoute, error?.code]);
+
+	// 認証済みであれば /servers にリダイレクト
+	if (!error && data) {
+		navigate("/servers");
+	}
 
 	return (
 		<div>

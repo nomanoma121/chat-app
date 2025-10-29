@@ -5,6 +5,7 @@ export const useLogin = () => {
 	const { mutateAsync: loginMutateAsync, isPending, error } = useLoginMutate();
 
 	const loginMutationAsync = async (data: LoginRequest) => {
+		localStorage.removeItem("authToken");
 		try {
 			const response = await loginMutateAsync({ data });
 			localStorage.setItem("authToken", response.token);
