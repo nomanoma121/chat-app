@@ -6,6 +6,7 @@ export const WS_BASE_URL =
 	import.meta.env.VITE_WS_BASE_URL || "ws://localhost:50054/ws";
 
 export const AUTH_TOKEN = "authToken";
+export const INVALID_TOKEN_MESSAGE = "Invalid token";
 
 export const formatDate = (dateString: string) => {
 	const date = new Date(dateString);

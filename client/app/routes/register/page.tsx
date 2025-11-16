@@ -1,10 +1,11 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { TriangleAlert } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router";
 import { css } from "styled-system/css";
 import * as v from "valibot";
-import { useRegister } from "~/api/gen/auth/auth";
+import { useAuthMe, useRegister } from "~/api/gen/auth/auth";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Field } from "~/components/ui/field";
@@ -13,8 +14,6 @@ import { Text } from "~/components/ui/text";
 import { useLogin } from "~/hooks/use-login";
 import { useToast } from "~/hooks/use-toast";
 import { UserSchema } from "~/schema/user";
-import { useAuthMe } from "~/api/gen/auth/auth";
-import { useEffect } from "react";
 
 const RegisterForm = v.object({
 	displayId: UserSchema.DisplayId,
