@@ -1,7 +1,7 @@
+import { wsClient } from "~/api/websocket";
 import { AUTH_TOKEN } from "~/constants";
 import { useLogin as useLoginMutate } from "../api/gen/auth/auth";
 import type { LoginRequest } from "../api/gen/userProto.schemas";
-import { wsClient } from "~/api/websocket";
 
 export const useLogin = () => {
 	const { mutateAsync: loginMutateAsync, isPending, error } = useLoginMutate();

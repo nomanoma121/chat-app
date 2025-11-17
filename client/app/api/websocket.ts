@@ -20,7 +20,7 @@ export class WebSocketClient {
 		if (typeof window === "undefined") {
 			return;
 		}
-		
+
 		const token = this.getTokenByLocalStorage();
 		if (!token) return;
 
