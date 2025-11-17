@@ -17,16 +17,20 @@ export class WebSocketClient {
 	}
 
 	private connect() {
+		if (typeof window === "undefined") {
+			return;
+		}
+		
+		const token = this.getTokenByLocalStorage();
+		if (!token) return;
+
 		this.ws = new WebSocket(WS_BASE_URL);
+
 		this.isClosedIntentionally = false;
 
 		this.ws.onopen = () => {
 			this.reconnectDelay = this.baseReconnectDelay;
-
-			const token = this.getTokenByLocalStorage();
-			if (token) {
-				this.Authenticate(token);
-			}
+			this.Authenticate(token);
 		};
 
 		this.ws.onmessage = (event) => {
@@ -56,6 +60,14 @@ export class WebSocketClient {
 				);
 			}
 		};
+	}
+
+	public recconnect() {
+		if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+			this.isClosedIntentionally = true;
+			this.ws.close();
+		}
+		this.connect();
 	}
 
 	private getTokenByLocalStorage(): string | null {
