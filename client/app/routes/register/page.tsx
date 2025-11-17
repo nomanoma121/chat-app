@@ -1,10 +1,11 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { TriangleAlert } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router";
 import { css } from "styled-system/css";
 import * as v from "valibot";
-import { useRegister } from "~/api/gen/auth/auth";
+import { useAuthMe, useRegister } from "~/api/gen/auth/auth";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Field } from "~/components/ui/field";
@@ -27,6 +28,7 @@ type FormInputValues = v.InferInput<typeof RegisterForm>;
 
 export default function RegisterPage() {
 	const navigate = useNavigate();
+	const { data: user } = useAuthMe();
 	const { mutateAsync: register, isPending, error } = useRegister();
 	const { mutateAsync: login } = useLogin();
 	const toast = useToast();
@@ -34,6 +36,13 @@ export default function RegisterPage() {
 
 	const searchParams = new URLSearchParams(location.search);
 	const redirectState = searchParams.get("state");
+
+	// 認証済みであれば /servers にリダイレクト
+	useEffect(() => {
+		if (user) {
+			navigate("/servers", { replace: true });
+		}
+	}, [navigate, user]);
 
 	const {
 		register: registerField,

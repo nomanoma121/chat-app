@@ -3,8 +3,9 @@ import { Outlet, useLocation, useNavigate } from "react-router";
 import { css } from "styled-system/css";
 import { useAuthMe } from "~/api/gen/auth/auth";
 import { UserPanel } from "~/components/features/user-panel";
-import { WebSocketEvent } from "~/constants";
+import { AUTH_TOKEN, INVALID_TOKEN_MESSAGE, WebSocketEvent } from "~/constants";
 import { useWebSocketEvent } from "~/hooks/use-websocket-event";
+import type { AuthErrorMessage } from "~/types/ws-event";
 
 export default function ChannelLayout() {
 	const { error } = useAuthMe();
@@ -14,13 +15,17 @@ export default function ChannelLayout() {
 		location.pathname.startsWith("/login") ||
 		location.pathname.startsWith("/register");
 
-	useWebSocketEvent(WebSocketEvent.AuthSuccess, (data) => {
-		console.log("AuthSuccess:", data);
+	useWebSocketEvent<AuthErrorMessage>(WebSocketEvent.AuthError, (data) => {
+		if (data.message === INVALID_TOKEN_MESSAGE) {
+			localStorage.removeItem(AUTH_TOKEN);
+			navigate("/login", { replace: true });
+		}
 	});
 
 	useEffect(() => {
 		if (!isAuthRoute && error?.code === 401) {
-			navigate("/login");
+			localStorage.removeItem(AUTH_TOKEN);
+			navigate("/login", { replace: true });
 		}
 	}, [navigate, isAuthRoute, error?.code]);
 

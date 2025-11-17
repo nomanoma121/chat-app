@@ -5,13 +5,14 @@ import { useGetCurrentUser } from "~/api/gen/user/user";
 import { Avatar } from "~/components/ui/avatar";
 import { Card } from "~/components/ui/card";
 import { Text } from "~/components/ui/text";
+import { AUTH_TOKEN } from "~/constants";
 
 export const UserPanel = () => {
 	const { data } = useGetCurrentUser();
 	const navigate = useNavigate();
 
 	const handleLogout = () => {
-		localStorage.removeItem("authToken");
+		localStorage.removeItem(AUTH_TOKEN);
 		navigate("/login");
 	};
 	return (

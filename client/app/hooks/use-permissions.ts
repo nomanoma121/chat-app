@@ -3,11 +3,12 @@ import type {
 	GuildDetail,
 	GuildWithMembers,
 } from "~/api/gen/guildTypeProto.schemas";
+import { AUTH_TOKEN } from "~/constants";
 
 // JWTトークンからユーザーIDを取得する関数
 const getUserIdFromToken = (): string | null => {
 	try {
-		const token = localStorage.getItem("authToken");
+		const token = localStorage.getItem(AUTH_TOKEN);
 		if (!token) return null;
 
 		const payload = JSON.parse(atob(token.split(".")[1]));
