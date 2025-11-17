@@ -11,7 +11,7 @@ export const useLogin = () => {
 		try {
 			const response = await loginMutateAsync({ data });
 			localStorage.setItem(AUTH_TOKEN, response.token);
-			wsClient.recconnect();
+			wsClient.reconnect();
 		} catch (err) {
 			console.error("Login failed:", err);
 			throw err;

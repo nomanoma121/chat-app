@@ -62,7 +62,7 @@ export class WebSocketClient {
 		};
 	}
 
-	public recconnect() {
+	public reconnect() {
 		if (this.ws && this.ws.readyState === WebSocket.OPEN) {
 			this.isClosedIntentionally = true;
 			this.ws.close();
