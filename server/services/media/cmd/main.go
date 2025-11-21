@@ -1,8 +1,7 @@
-package cmd
+package main
 
 import (
 	"context"
-	"fmt"
 	"media-service/internal/handler"
 	"media-service/internal/infrastructure/rustfs"
 	"net"
@@ -11,7 +10,9 @@ import (
 
 	pb "chat-app-proto/gen/media"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/joho/godotenv"
 
@@ -36,20 +37,33 @@ func init() {
 func main() {
 	log := logger.Default("media-service")
 	ctx := context.Background()
-	sdkConfig, err := config.LoadDefaultConfig(ctx)
+
+	rustfsEndpoint := os.Getenv("RUSTFS_ENDPOINT")
+
+	sdkConfig, err := config.LoadDefaultConfig(ctx,
+		config.WithRegion("us-east-1"),
+		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
+			os.Getenv("AWS_ACCESS_KEY_ID"),
+			os.Getenv("AWS_SECRET_ACCESS_KEY"),
+			"",
+		)),
+	)
 	if err != nil {
-		fmt.Println("Could not load AWS SDK config:", err)
-		return
+		log.Error("Could not load AWS SDK config", "error", err)
+		os.Exit(1)
 	}
 
-	s3Client := s3.NewFromConfig(sdkConfig)
+	s3Client := s3.NewFromConfig(sdkConfig, func(o *s3.Options) {
+		o.BaseEndpoint = aws.String(rustfsEndpoint)
+		o.UsePathStyle = true
+	})
 	mediaRepo := rustfs.NewRustFSMediaRepository(s3Client, BUCKET_NAME)
 	mediaHandler := handler.NewMediaHandler(mediaRepo)
 	server := grpc.NewServer()
 	pb.RegisterMediaServiceServer(server, mediaHandler)
 	reflection.Register(server)
 
-	port := 50051
+	port := 50055
 	lis, err := net.Listen("tcp", ":50055")
 	if err != nil {
 		log.Error("Failed to listen", "port", port, "error", err)

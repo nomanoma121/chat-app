@@ -103,6 +103,21 @@ services:
       - user
       - message
 
+  media:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: media
+    environment:
+      - RUSTFS_ENDPOINT=http://rustfs:9001
+      - AWS_ACCESS_KEY_ID=rustfsadmin
+      - AWS_SECRET_ACCESS_KEY=rustfsadmin
+    ports:
+      - "50055:50055"
+    depends_on:
+      - rustfs
+
   api-gateway:
     build:
       context: ./server

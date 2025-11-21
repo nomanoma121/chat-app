@@ -35,7 +35,7 @@ func NewMediaHandler(mediaRepo MediaRepository) *MediaHandler {
 	}
 }
 
-func (h *MediaHandler) GetPresignedURL(ctx context.Context, req *pb.GetPresignedUploadURLRequest) (*pb.GetPresignedUploadURLResponse, error) {
+func (h *MediaHandler) GetPresignedUploadURL(ctx context.Context, req *pb.GetPresignedUploadURLRequest) (*pb.GetPresignedUploadURLResponse, error) {
 	var objectKey string
 	switch req.MediaType {
 	case pb.MediaType_MEDIA_TYPE_UNSPECIFIED:
@@ -58,3 +58,5 @@ func (h *MediaHandler) GetPresignedURL(ctx context.Context, req *pb.GetPresigned
 		UploadUrl: presignedURL,
 	}, nil
 }
+
+var _ pb.MediaServiceServer = (*MediaHandler)(nil)
