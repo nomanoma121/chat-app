@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package media;
+
+option go_package = "./media;mediapb";
+
+service MediaService {
+  rpc GetPresignedUploadURL(GetPresignedUploadURLRequest) returns (GetPresignedUploadURLResponse);
+}
+
+enum MediaType {
+  MEDIA_TYPE_UNSPECIFIED = 0;
+  MEDIA_TYPE_GUILD_ICON = 1;
+  MEDIA_TYPE_USER_ICON = 2;
+}
+
+message GetPresignedUploadURLRequest {
+  MediaType media_type = 1;
+}
+
+message GetPresignedUploadURLResponse {
+  string upload_url = 1;
+}
