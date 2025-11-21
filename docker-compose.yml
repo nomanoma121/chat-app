@@ -33,6 +33,18 @@ services:
     depends_on:
       - postgres
 
+  rustfs:
+    image: rustfs/rustfs:latest
+    ports:
+      - "9001:9001"
+    environment:
+      - RUSTFS_VOLUMES=/data
+      - RUSTFS_CONSOLE_ENABLE=true
+      - RUSTFS_ACCESS_KEY=rustfsadmin
+      - RUSTFS_SECRET_KEY=rustfsadmin
+    volumes:
+      - ./server/volumes/rustfs:/data
+
   user:
     build:
       context: ./server
