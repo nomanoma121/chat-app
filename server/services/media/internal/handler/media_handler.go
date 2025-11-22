@@ -4,6 +4,7 @@ import (
 	pb "chat-app-proto/gen/media"
 	"context"
 	"errors"
+	"net/url"
 	"time"
 )
 
@@ -27,11 +28,13 @@ type MediaRepository interface {
 type MediaHandler struct {
 	pb.UnimplementedMediaServiceServer
 	mediaRepo MediaRepository
+	objectStoreEndpoint url.URL
 }
 
-func NewMediaHandler(mediaRepo MediaRepository) *MediaHandler {
+func NewMediaHandler(mediaRepo MediaRepository, objectStoreEndpoint url.URL) *MediaHandler {
 	return &MediaHandler{
 		mediaRepo: mediaRepo,
+		objectStoreEndpoint: objectStoreEndpoint,
 	}
 }
 
@@ -54,8 +57,17 @@ func (h *MediaHandler) GetPresignedUploadURL(ctx context.Context, req *pb.GetPre
 		return nil, err
 	}
 
+	parsedPresignedURL, err := url.Parse(presignedURL)
+	if err != nil {
+		return nil, err
+	}
+
+	// 登録したドメインに置き換える
+	parsedPresignedURL.Host = h.objectStoreEndpoint.Host
+	parsedPresignedURL.Scheme = h.objectStoreEndpoint.Scheme
+
 	return &pb.GetPresignedUploadURLResponse{
-		UploadUrl: presignedURL,
+		UploadUrl: parsedPresignedURL.String(),
 	}, nil
 }
 
