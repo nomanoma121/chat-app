@@ -3,7 +3,6 @@ syntax = "proto3";
 package media;
 
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "google/api/annotations.proto";
 
 option go_package = "./media;mediapb";
 
@@ -32,5 +31,10 @@ message GetPresignedUploadURLRequest {
 }
 
 message GetPresignedUploadURLResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["upload_url"]
+    }
+  };
   string upload_url = 1;
 }

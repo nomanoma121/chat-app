@@ -8,7 +8,6 @@ package mediapb
 
 import (
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
-	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -172,16 +171,18 @@ var File_media_service_proto protoreflect.FileDescriptor
 
 const file_media_service_proto_rawDesc = "" +
 	"\n" +
-	"\x13media_service.proto\x12\x05media\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1cgoogle/api/annotations.proto\"\x8a\x01\n" +
+	"\x13media_service.proto\x12\x05media\x1a.protoc-gen-openapiv2/options/annotations.proto\"\x8a\x01\n" +
 	"\x1cGetPresignedUploadURLRequest\x12/\n" +
 	"\n" +
 	"media_type\x18\x01 \x01(\x0e2\x10.media.MediaTypeR\tmediaType\x12\x1a\n" +
 	"\bfilename\x18\x02 \x01(\tR\bfilename:\x1d\x92A\x1a\n" +
 	"\x18\xd2\x01\n" +
-	"media_type\xd2\x01\bfilename\">\n" +
+	"media_type\xd2\x01\bfilename\"R\n" +
 	"\x1dGetPresignedUploadURLResponse\x12\x1d\n" +
 	"\n" +
-	"upload_url\x18\x01 \x01(\tR\tuploadUrl*\\\n" +
+	"upload_url\x18\x01 \x01(\tR\tuploadUrl:\x12\x92A\x0f\n" +
+	"\r\xd2\x01\n" +
+	"upload_url*\\\n" +
 	"\tMediaType\x12\x1a\n" +
 	"\x16MEDIA_TYPE_UNSPECIFIED\x10\x00\x12\x19\n" +
 	"\x15MEDIA_TYPE_GUILD_ICON\x10\x01\x12\x18\n" +

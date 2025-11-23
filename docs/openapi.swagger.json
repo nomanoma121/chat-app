@@ -1308,7 +1308,10 @@
         "uploadUrl": {
           "type": "string"
         }
-      }
+      },
+      "required": [
+        "uploadUrl"
+      ]
     },
     "GetUserByIDResponse": {
       "type": "object",
