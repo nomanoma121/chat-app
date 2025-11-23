@@ -110,8 +110,7 @@ services:
       args:
         SERVICE_NAME: media
     environment:
-      - RUSTFS_ENDPOINT=http://rustfs:9001
-      - OBJECT_STORE_ENDPOINT=http://localhost:9001
+      - RUSTFS_ENDPOINT=http://localhost:9001
       - AWS_ACCESS_KEY_ID=rustfsadmin
       - AWS_SECRET_ACCESS_KEY=rustfsadmin
     ports:

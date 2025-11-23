@@ -5,7 +5,6 @@ import (
 	"media-service/internal/handler"
 	"media-service/internal/infrastructure/rustfs"
 	"net"
-	"net/url"
 	"os"
 	"shared/logger"
 
@@ -59,13 +58,8 @@ func main() {
 		o.UsePathStyle = true
 	})
 
-	publicObjectStoreEndpoint := os.Getenv("OBJECT_STORE_ENDPOINT")
-	publicObjectStoreEndpointURL, err := url.Parse(publicObjectStoreEndpoint)
-	if err != nil {
-		os.Exit(1)
-	}
 	mediaRepo := rustfs.NewRustFSMediaRepository(s3Client, BUCKET_NAME)
-	mediaHandler := handler.NewMediaHandler(mediaRepo, *publicObjectStoreEndpointURL)
+	mediaHandler := handler.NewMediaHandler(mediaRepo)
 	server := grpc.NewServer()
 	pb.RegisterMediaServiceServer(server, mediaHandler)
 	reflection.Register(server)

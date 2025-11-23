@@ -88,7 +88,7 @@ func main() {
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type"},
 		ExposedHeaders: []string{"Link"},
 	}))
 	r.Use(mdw.JWTAuthorizer(tokenAuth, mdw.Config{

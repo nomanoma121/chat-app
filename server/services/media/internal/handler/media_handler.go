@@ -12,8 +12,8 @@ const (
 	// 15 minute
 	EXPIRES_DURATION = time.Duration(15 * time.Minute)
 
-	GUILD_ICON_KEY = "guild_icon"
-	USER_ICON_KEY  = "user_icon"
+	GUILD_ICON_PATH = "guild_icon/"
+	USER_ICON_PATH  = "user_icon/"
 )
 
 type GeneratePresignedURLParamas struct {
@@ -28,13 +28,11 @@ type MediaRepository interface {
 type MediaHandler struct {
 	pb.UnimplementedMediaServiceServer
 	mediaRepo MediaRepository
-	objectStoreEndpoint url.URL
 }
 
-func NewMediaHandler(mediaRepo MediaRepository, objectStoreEndpoint url.URL) *MediaHandler {
+func NewMediaHandler(mediaRepo MediaRepository) *MediaHandler {
 	return &MediaHandler{
 		mediaRepo: mediaRepo,
-		objectStoreEndpoint: objectStoreEndpoint,
 	}
 }
 
@@ -44,9 +42,9 @@ func (h *MediaHandler) GetPresignedUploadURL(ctx context.Context, req *pb.GetPre
 	case pb.MediaType_MEDIA_TYPE_UNSPECIFIED:
 		return nil, errors.New("media type unspecified")
 	case pb.MediaType_MEDIA_TYPE_GUILD_ICON:
-		objectKey = GUILD_ICON_KEY
+		objectKey = GUILD_ICON_PATH + req.Filename
 	case pb.MediaType_MEDIA_TYPE_USER_ICON:
-		objectKey = USER_ICON_KEY
+		objectKey = USER_ICON_PATH + req.Filename
 	}
 
 	presignedURL, err := h.mediaRepo.GeneratePresignedURL(ctx, GeneratePresignedURLParamas{
@@ -61,10 +59,6 @@ func (h *MediaHandler) GetPresignedUploadURL(ctx context.Context, req *pb.GetPre
 	if err != nil {
 		return nil, err
 	}
-
-	// 登録したドメインに置き換える
-	parsedPresignedURL.Host = h.objectStoreEndpoint.Host
-	parsedPresignedURL.Scheme = h.objectStoreEndpoint.Scheme
 
 	return &pb.GetPresignedUploadURLResponse{
 		UploadUrl: parsedPresignedURL.String(),
