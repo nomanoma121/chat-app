@@ -10,7 +10,8 @@
       "description": "Guild management operations"
     },
     {
-      "name": "MediaService"
+      "name": "Media",
+      "description": "Media service for handling media-related operations"
     },
     {
       "name": "Message",

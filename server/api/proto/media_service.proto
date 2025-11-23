@@ -2,9 +2,16 @@ syntax = "proto3";
 
 package media;
 
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/api/annotations.proto";
+
 option go_package = "./media;mediapb";
 
 service MediaService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    name: "Media",
+    description: "Media service for handling media-related operations"
+  };
   rpc GetPresignedUploadURL(GetPresignedUploadURLRequest) returns (GetPresignedUploadURLResponse);
 }
 
@@ -15,7 +22,13 @@ enum MediaType {
 }
 
 message GetPresignedUploadURLRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["media_type", "filename"]
+    }
+  };
   MediaType media_type = 1;
+  string filename = 2;
 }
 
 message GetPresignedUploadURLResponse {
