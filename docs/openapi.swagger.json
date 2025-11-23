@@ -745,6 +745,38 @@
         ]
       }
     },
+    "/api/media/upload-url": {
+      "post": {
+        "operationId": "GetPresignedUploadURL",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetPresignedUploadURLResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetPresignedUploadURLRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Media"
+        ]
+      }
+    },
     "/api/messages/{messageId}": {
       "delete": {
         "operationId": "DeleteByMessageID",
@@ -1300,6 +1332,21 @@
       "required": [
         "guild",
         "categories"
+      ]
+    },
+    "GetPresignedUploadURLRequest": {
+      "type": "object",
+      "properties": {
+        "mediaType": {
+          "$ref": "#/definitions/MediaType"
+        },
+        "filename": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "mediaType",
+        "filename"
       ]
     },
     "GetPresignedUploadURLResponse": {

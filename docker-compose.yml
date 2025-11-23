@@ -132,10 +132,12 @@ services:
       - USER_SERVICE_URL=user:50051
       - GUILD_SERVICE_URL=guild:50052
       - MESSAGE_SERVICE_URL=message:50053
+      - MEDIA_SERVICE_URL=media:50055
     depends_on:
       - user
       - guild
       - message
+      - media
       - realtime
 
 volumes:

@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package media;
 
+import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "./media;mediapb";
@@ -11,7 +12,13 @@ service MediaService {
     name: "Media",
     description: "Media service for handling media-related operations"
   };
-  rpc GetPresignedUploadURL(GetPresignedUploadURLRequest) returns (GetPresignedUploadURLResponse);
+
+  rpc GetPresignedUploadURL(GetPresignedUploadURLRequest) returns (GetPresignedUploadURLResponse) {
+    option (google.api.http) = {
+      post: "/api/media/upload-url"
+      body: "*"
+    };
+  }
 }
 
 enum MediaType {
