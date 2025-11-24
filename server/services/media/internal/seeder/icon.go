@@ -61,6 +61,32 @@ func (s *Seeder) SeedUserIcons(ctx context.Context) error {
 	return nil
 }
 
+func (s *Seeder) SeedGuildIcons(ctx context.Context) error {
+  icons := []string{
+    "guild-gray.png",
+  }
+
+  for _, icon := range icons {
+    filePath := filepath.Join(iconDir, icon)
+    objectKey := constants.GUILD_ICON_PATH + icon
+
+    presignedURL, err := s.mediaRepo.GeneratePresignedURL(ctx, handler.GeneratePresignedURLParamas{
+      ObjectKey: objectKey,
+      Expires:   15 * time.Minute,
+    })
+    if err != nil {
+      return fmt.Errorf("failed to generate presigned URL for %s: %w", icon, err)
+    }
+
+    if err := uploadToStorage(filePath, presignedURL); err != nil {
+      return fmt.Errorf("failed to upload %s: %w", icon, err)
+    }
+
+    fmt.Printf("Successfully uploaded: %s\n", icon)
+  }
+  return nil
+}
+
 func uploadToStorage(filePath, presignedURL string) error {
 	file, err := os.Open(filePath)
 	if err != nil {

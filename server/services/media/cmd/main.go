@@ -80,6 +80,11 @@ func main() {
 	} else {
 		log.Info("User icons seeded successfully")
 	}
+	if err := seeder.SeedGuildIcons(ctx); err != nil {
+		log.Error("Failed to seed guild icons", "error", err)
+	} else {
+		log.Info("Guild icons seeded successfully")
+	}
 
 	if err := server.Serve(lis); err != nil {
 		log.Error("Failed to serve", "error", err)
