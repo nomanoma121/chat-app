@@ -5,7 +5,7 @@ export const CLIENT_BASE_URL =
 export const WS_BASE_URL =
 	import.meta.env.VITE_WS_BASE_URL || "ws://localhost:50054/ws";
 export const MEDIA_BASE_URL =
-	import.meta.env.VITE_MEDIA_BASE_URL || "http://localhost:9001";
+	import.meta.env.VITE_MEDIA_BASE_URL || "http://localhost:9000";
 
 export const AUTH_TOKEN = "authToken";
 export const INVALID_TOKEN_MESSAGE = "Invalid token";
