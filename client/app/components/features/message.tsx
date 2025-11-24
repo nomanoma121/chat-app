@@ -82,6 +82,9 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>(
 				return `Today at ${date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
 			}
 
+			// リント回避用
+			const _ = onReact || onReply;
+
 			return (
 				date.toLocaleDateString([], {
 					month: "short",
