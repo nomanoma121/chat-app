@@ -19,6 +19,7 @@ COPY services/api-gateway/go.mod services/api-gateway/go.sum ./services/api-gate
 COPY services/guild/go.mod services/guild/go.sum ./services/guild/
 COPY services/message/go.mod services/message/go.sum ./services/message/
 COPY services/realtime/go.mod services/realtime/go.sum ./services/realtime/
+COPY services/media/go.mod services/media/go.sum ./services/media/
 
 # Download all dependencies (cached layer)
 RUN go mod download

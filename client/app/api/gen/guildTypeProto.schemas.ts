@@ -143,6 +143,15 @@ export interface GetGuildOverviewResponse {
 	guild: GuildDetail;
 }
 
+export interface GetPresignedUploadURLRequest {
+	mediaType: MediaType;
+	filename: string;
+}
+
+export interface GetPresignedUploadURLResponse {
+	uploadUrl: string;
+}
+
 export interface GetUserByIDResponse {
 	user: UserUser;
 }
@@ -234,6 +243,15 @@ export interface LoginRequest {
 export interface LoginResponse {
 	token: string;
 }
+
+export type MediaType = (typeof MediaType)[keyof typeof MediaType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const MediaType = {
+	MEDIA_TYPE_UNSPECIFIED: "MEDIA_TYPE_UNSPECIFIED",
+	MEDIA_TYPE_GUILD_ICON: "MEDIA_TYPE_GUILD_ICON",
+	MEDIA_TYPE_USER_ICON: "MEDIA_TYPE_USER_ICON",
+} as const;
 
 export interface Member {
 	userId: string;

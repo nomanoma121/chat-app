@@ -5,8 +5,6 @@ import (
 	"api-gateway/internal/utils"
 	"context"
 	"net/http"
-	"net/http/httputil"
-	"net/url"
 	"os"
 	"shared/logger"
 
@@ -16,7 +14,6 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/jwtauth/v5"
-	"github.com/golang-jwt/jwt"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -24,6 +21,7 @@ import (
 	"github.com/joho/godotenv"
 
 	guildpb "chat-app-proto/gen/guild"
+	mediapb "chat-app-proto/gen/media"
 	messagepb "chat-app-proto/gen/message"
 	userpb "chat-app-proto/gen/user"
 )
@@ -32,6 +30,7 @@ var (
 	USER_SERVICE_ENDPOINT    string
 	GUILD_SERVICE_ENDPOINT   string
 	MESSAGE_SERVICE_ENDPOINT string
+	MEDIA_SERVICE_ENDPOINT   string
 	REALTIME_SERVICE_URL     string
 	tokenAuth                *jwtauth.JWTAuth
 )
@@ -42,7 +41,7 @@ func init() {
 	USER_SERVICE_ENDPOINT = os.Getenv("USER_SERVICE_URL")
 	GUILD_SERVICE_ENDPOINT = os.Getenv("GUILD_SERVICE_URL")
 	MESSAGE_SERVICE_ENDPOINT = os.Getenv("MESSAGE_SERVICE_URL")
-	REALTIME_SERVICE_URL = os.Getenv("REALTIME_SERVICE_URL")
+	MEDIA_SERVICE_ENDPOINT = os.Getenv("MEDIA_SERVICE_URL")
 }
 
 func main() {
@@ -77,25 +76,11 @@ func main() {
 		log.Error("Failed to register message service handler", "error", err, "endpoint", MESSAGE_SERVICE_ENDPOINT)
 		os.Exit(1)
 	}
-
-	realtimeTarget, err := url.Parse(REALTIME_SERVICE_URL)
+	err = mediapb.RegisterMediaServiceHandlerFromEndpoint(ctx, grpcGatewayMux, MEDIA_SERVICE_ENDPOINT, opts)
 	if err != nil {
-		log.Error("Failed to parse realtime service URL", "error", err, "url", REALTIME_SERVICE_URL)
+		log.Error("Failed to register media service handler", "error", err, "endpoint", MEDIA_SERVICE_ENDPOINT)
 		os.Exit(1)
 	}
-	wsProxy := httputil.NewSingleHostReverseProxy(realtimeTarget)
-
-	originalDirector := wsProxy.Director
-	wsProxy.Director = func(req *http.Request) {
-		originalDirector(req)
-		req.Header.Set("X-Forwarded-Host", req.Host)
-	}
-
-	wsProxy.ErrorHandler = func(w http.ResponseWriter, r *http.Request, err error) {
-		log.Error("WebSocket proxy error", "error", err)
-		http.Error(w, "WebSocket connection failed", http.StatusBadGateway)
-	}
-
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger)
@@ -103,7 +88,7 @@ func main() {
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type"},
 		ExposedHeaders: []string{"Link"},
 	}))
 	r.Use(mdw.JWTAuthorizer(tokenAuth, mdw.Config{
@@ -112,27 +97,6 @@ func main() {
 			"/api/auth/login":    true,
 		},
 	}))
-
-	// Realtime Serviceにプロキシ
-	r.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		token, ok := r.Context().Value(jwtauth.TokenCtxKey).(*jwt.Token)
-		if !ok || token == nil {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
-			return
-		}
-
-		claims, ok := token.Claims.(jwt.MapClaims)
-		if !ok {
-			http.Error(w, "Invalid token claims", http.StatusUnauthorized)
-			return
-		}
-
-		if userID, ok := claims["user_id"].(string); ok {
-			r.Header.Set("X-User-ID", userID)
-		}
-
-		wsProxy.ServeHTTP(w, r)
-	})
 
 	r.Mount("/", grpcGatewayMux)
 

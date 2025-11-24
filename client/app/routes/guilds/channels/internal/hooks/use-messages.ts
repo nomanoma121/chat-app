@@ -28,8 +28,10 @@ export const useMessages = (userId: string, channelId: string) => {
 	};
 
 	useWebSocketEvent<Message>(WebSocketEvent.MessageCreate, (event) => {
-		setFirstMessageReceived(true);
-		setMessages((prev) => [...prev, event]);
+		if (event.channelId === channelId) {
+			setFirstMessageReceived(true);
+			setMessages((prev) => [...prev, event]);
+		}
 	});
 
 	useEffect(() => {

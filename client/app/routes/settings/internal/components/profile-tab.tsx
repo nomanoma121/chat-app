@@ -1,8 +1,11 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Upload } from "lucide-react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { css } from "styled-system/css";
 import * as v from "valibot";
+import { MediaType } from "~/api/gen/guildTypeProto.schemas";
+import { useGetPresignedUploadURL } from "~/api/gen/media/media";
 import { useGetCurrentUser, useUpdate } from "~/api/gen/user/user";
 import { Avatar } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
@@ -11,6 +14,7 @@ import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
 import { Spinner } from "~/components/ui/spinner";
 import { Text } from "~/components/ui/text";
+import { MEDIA_BASE_URL } from "~/constants";
 import { useToast } from "~/hooks/use-toast";
 import { UserSchema } from "~/schema/user";
 
@@ -27,6 +31,11 @@ export const ProfileTab = () => {
 	const toast = useToast();
 	const { data, isLoading, refetch } = useGetCurrentUser();
 	const { mutateAsync: updateUser, isPending } = useUpdate();
+	const { mutateAsync: getPresignedUrl } = useGetPresignedUploadURL();
+	const fileInputRef = useRef<HTMLInputElement>(null);
+	const [iconUrl, setIconUrl] = useState<string | undefined>(undefined);
+	const [isUploading, setIsUploading] = useState(false);
+
 	const {
 		register,
 		handleSubmit,
@@ -42,6 +51,63 @@ export const ProfileTab = () => {
 		},
 	});
 
+	const handleIconUpload = async (file: File) => {
+		try {
+			setIsUploading(true);
+			const extension = file.name.split(".").pop() || "png";
+			const { uploadUrl } = await getPresignedUrl({
+				data: {
+					filename: `${data?.user.id}.${extension}`,
+					mediaType: MediaType.MEDIA_TYPE_USER_ICON,
+				},
+			});
+
+			const uploadResponse = await fetch(uploadUrl, {
+				method: "PUT",
+				body: file,
+				headers: {
+					"Content-Type": file.type,
+				},
+			});
+
+			if (!uploadResponse.ok) {
+				throw new Error("Upload failed");
+			}
+
+			const url = new URL(uploadUrl);
+			const publicUrl = `${MEDIA_BASE_URL}${url.pathname}?t=${Date.now()}`;
+			setIconUrl(publicUrl);
+
+			await updateUser({
+				data: {
+					displayId: data?.user.displayId || "",
+					name: data?.user.name || "",
+					bio: data?.user.bio || "",
+					iconUrl: `${MEDIA_BASE_URL}${url.pathname}`,
+				},
+			});
+
+			toast.success("アイコンをアップロードしました");
+			await refetch();
+		} catch (error) {
+			console.error("アイコンのアップロード中にエラーが発生しました:", error);
+			toast.error("アイコンのアップロードに失敗しました");
+		} finally {
+			setIsUploading(false);
+		}
+	};
+
+	const handleIconButtonClick = () => {
+		fileInputRef.current?.click();
+	};
+
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (file) {
+			handleIconUpload(file);
+		}
+	};
+
 	const onSubmit = async (formData: ProfileFormValues) => {
 		try {
 			await updateUser({
@@ -49,7 +115,7 @@ export const ProfileTab = () => {
 					displayId: formData.displayId,
 					name: formData.name,
 					bio: formData.bio || "",
-					iconUrl: formData.iconUrl || "",
+					iconUrl: iconUrl || formData.iconUrl || "",
 				},
 			});
 			toast.success("プロフィール情報を更新しました");
@@ -134,11 +200,19 @@ export const ProfileTab = () => {
 							<div className={css({ position: "relative" })}>
 								<Avatar
 									name={data?.user.name || "ユーザー"}
-									src={data?.user.iconUrl}
+									src={iconUrl || data?.user.iconUrl}
 									size="xl"
 									className={css({
 										width: "80px",
 										height: "80px",
+										borderRadius: "50%",
+										overflow: "hidden",
+										"& img": {
+											width: "100%",
+											height: "100%",
+											objectFit: "cover",
+											aspectRatio: "1",
+										},
 									})}
 								/>
 							</div>
@@ -165,18 +239,43 @@ export const ProfileTab = () => {
 										? new Date(data.user.createdAt).toLocaleDateString()
 										: "不明"}
 								</p>
+								<input
+									ref={fileInputRef}
+									type="file"
+									accept="image/*"
+									onChange={handleFileChange}
+									className={css({ display: "none" })}
+								/>
 								<Button
 									type="button"
 									variant="outline"
 									size="sm"
+									disabled={isUploading}
+									loading={isUploading}
+									onClick={handleIconButtonClick}
 									className={css({
 										display: "flex",
 										alignItems: "center",
+										bgColor: "bg.tertiary",
+										color: "text.medium",
+										_hover: !isUploading
+											? {
+													bgColor: "bg.quaternary",
+													color: "text.bright",
+												}
+											: {},
+										_disabled: {
+											opacity: 0.5,
+											cursor: "not-allowed",
+										},
+										paddingX: "12px",
+										paddingY: "8px",
+										fontSize: "sm",
 										gap: "8px",
 									})}
 								>
 									<Upload size={14} />
-									アイコン画像を変更
+									{isUploading ? "アップロード中..." : "アイコン画像を変更"}
 								</Button>
 							</div>
 						</div>
@@ -228,24 +327,6 @@ export const ProfileTab = () => {
 								<Field.ErrorText>{errors.bio.message}</Field.ErrorText>
 							)}
 						</Field.Root>
-
-						<Field.Root invalid={!!errors.iconUrl}>
-							<FormLabel color="text.bright">アイコンURL</FormLabel>
-							<Field.Input
-								{...register("iconUrl")}
-								type="url"
-								placeholder="https://example.com/avatar.jpg"
-								className={css({
-									background: "bg.primary",
-									border: "none",
-									color: "text.bright",
-								})}
-							/>
-							{errors.iconUrl && (
-								<Field.ErrorText>{errors.iconUrl.message}</Field.ErrorText>
-							)}
-						</Field.Root>
-
 						<div
 							className={css({
 								display: "flex",

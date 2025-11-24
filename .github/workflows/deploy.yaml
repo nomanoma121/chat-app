@@ -36,6 +36,7 @@ jobs:
           echo "GUILD_IMG=${REGISTRY}/${ORG}/${APP}-guild" >> $GITHUB_OUTPUT
           echo "MESSAGE_IMG=${REGISTRY}/${ORG}/${APP}-message" >> $GITHUB_OUTPUT
           echo "REALTIME_IMG=${REGISTRY}/${ORG}/${APP}-realtime" >> $GITHUB_OUTPUT
+          echo "MEDIA_IMG=${REGISTRY}/${ORG}/${APP}-media" >> $GITHUB_OUTPUT
           echo "API_IMG=${REGISTRY}/${ORG}/${APP}-api-gateway" >> $GITHUB_OUTPUT
 
       - name: Buildx setup
@@ -97,6 +98,17 @@ jobs:
           tags: |
             ${{ steps.meta.outputs.REALTIME_IMG }}:latest
             ${{ steps.meta.outputs.REALTIME_IMG }}:${{ steps.meta.outputs.SHA_TAG }}
+
+      - name: Build & Push media service  
+        uses: docker/build-push-action@v6
+        with:
+          context: ./server
+          build-args: |
+            SERVICE_NAME=media
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.MEDIA_IMG }}:latest
+            ${{ steps.meta.outputs.MEDIA_IMG }}:${{ steps.meta.outputs.SHA_TAG }}
 
       - name: Build & Push api-gateway service
         uses: docker/build-push-action@v6

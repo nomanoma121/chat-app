@@ -68,7 +68,7 @@ export default function App() {
 	return (
 		<WebSocketProvider wsClient={wsClient}>
 			<QueryClientProvider client={queryClient}>
-				<Outlet context={{ wsClient }} />
+				<Outlet />
 				<Toast.Toaster toaster={toaster}>
 					{(toast) => (
 						<Toast.Root

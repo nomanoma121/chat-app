@@ -10,6 +10,10 @@
       "description": "Guild management operations"
     },
     {
+      "name": "Media",
+      "description": "Media service for handling media-related operations"
+    },
+    {
       "name": "Message",
       "description": "Message management operations"
     },
@@ -741,6 +745,38 @@
         ]
       }
     },
+    "/api/media/upload-url": {
+      "post": {
+        "operationId": "GetPresignedUploadURL",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetPresignedUploadURLResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetPresignedUploadURLRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Media"
+        ]
+      }
+    },
     "/api/messages/{messageId}": {
       "delete": {
         "operationId": "DeleteByMessageID",
@@ -1298,6 +1334,32 @@
         "categories"
       ]
     },
+    "GetPresignedUploadURLRequest": {
+      "type": "object",
+      "properties": {
+        "mediaType": {
+          "$ref": "#/definitions/MediaType"
+        },
+        "filename": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "mediaType",
+        "filename"
+      ]
+    },
+    "GetPresignedUploadURLResponse": {
+      "type": "object",
+      "properties": {
+        "uploadUrl": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "uploadUrl"
+      ]
+    },
     "GetUserByIDResponse": {
       "type": "object",
       "properties": {
@@ -1604,6 +1666,15 @@
       "required": [
         "token"
       ]
+    },
+    "MediaType": {
+      "type": "string",
+      "enum": [
+        "MEDIA_TYPE_UNSPECIFIED",
+        "MEDIA_TYPE_GUILD_ICON",
+        "MEDIA_TYPE_USER_ICON"
+      ],
+      "default": "MEDIA_TYPE_UNSPECIFIED"
     },
     "Member": {
       "type": "object",

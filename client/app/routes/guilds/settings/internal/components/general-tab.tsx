@@ -1,10 +1,15 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Settings, Upload } from "lucide-react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { css } from "styled-system/css";
 import * as v from "valibot";
 import { useUpdateGuild } from "~/api/gen/guild/guild";
-import type { GuildWithMembers } from "~/api/gen/guildTypeProto.schemas";
+import {
+	type GuildWithMembers,
+	MediaType,
+} from "~/api/gen/guildTypeProto.schemas";
+import { useGetPresignedUploadURL } from "~/api/gen/media/media";
 import { Avatar } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
@@ -29,8 +34,13 @@ type UpdateGuildFormValues = v.InferInput<typeof UpdateGuildForm>;
 
 export const GeneralTab = ({ guild }: GeneralTabProps) => {
 	const { mutateAsync: updateGuild } = useUpdateGuild();
+	const { mutateAsync: getPresignedUrl } = useGetPresignedUploadURL();
 	const toast = useToast();
 	const { canEditGuild } = usePermissions(guild);
+	const fileInputRef = useRef<HTMLInputElement>(null);
+	const [iconUrl, setIconUrl] = useState(guild?.iconUrl);
+	const [isUploading, setIsUploading] = useState(false);
+
 	const {
 		register,
 		handleSubmit,
@@ -44,6 +54,68 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 		},
 	});
 
+	const handleIconUpload = async (file: File) => {
+		try {
+			setIsUploading(true);
+			// ファイル拡張子を取得
+			const extension = file.name.split(".").pop() || "png";
+			const { uploadUrl } = await getPresignedUrl({
+				data: {
+					filename: `${guild.id}.${extension}`,
+					mediaType: MediaType.MEDIA_TYPE_GUILD_ICON,
+				},
+			});
+
+			console.log("uploadUrl:", uploadUrl);
+
+			const uploadResponse = await fetch(uploadUrl, {
+				method: "PUT",
+				body: file,
+				headers: {
+					"Content-Type": file.type,
+				},
+			});
+
+			if (!uploadResponse.ok) {
+				throw new Error("Upload failed");
+			}
+
+			const uploadedUrl = uploadUrl.split("?")[0];
+			// キャッシュバスティング用のタイムスタンプを追加
+			const urlWithCacheBuster = `${uploadedUrl}?t=${Date.now()}`;
+			setIconUrl(urlWithCacheBuster);
+
+			console.log("uploadedUrl:", uploadedUrl);
+
+			await updateGuild({
+				guildId: guild.id,
+				data: {
+					name: guild.name,
+					description: guild.description || "",
+					iconUrl: uploadedUrl,
+					defaultChannelId: guild.defaultChannelId,
+				},
+			});
+			toast.success("アイコンをアップロードしました");
+		} catch (error) {
+			console.log("error during icon upload:", error);
+			toast.error("アイコンのアップロードに失敗しました");
+		} finally {
+			setIsUploading(false);
+		}
+	};
+
+	const handleIconButtonClick = () => {
+		fileInputRef.current?.click();
+	};
+
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (file) {
+			handleIconUpload(file);
+		}
+	};
+
 	const onSubmit = async (data: UpdateGuildFormValues) => {
 		try {
 			await updateGuild({
@@ -51,7 +123,7 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 				data: {
 					name: data.name,
 					description: data.description || "",
-					iconUrl: guild.iconUrl,
+					iconUrl: iconUrl || guild.iconUrl,
 					defaultChannelId: guild.defaultChannelId,
 				},
 			});
@@ -117,17 +189,35 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 							})}
 						>
 							<Avatar
+								src={iconUrl}
 								name={guild?.name || "サーバー"}
 								size="lg"
 								className={css({
 									width: "64px",
 									height: "64px",
+									borderRadius: "50%",
+									overflow: "hidden",
+									"& img": {
+										width: "100%",
+										height: "100%",
+										objectFit: "cover",
+										aspectRatio: "1",
+									},
 								})}
+							/>
+							<input
+								ref={fileInputRef}
+								type="file"
+								accept="image/*"
+								onChange={handleFileChange}
+								className={css({ display: "none" })}
 							/>
 							<Button
 								type="button"
 								variant="outline"
-								disabled={!canEditGuild}
+								disabled={!canEditGuild || isUploading}
+								onClick={handleIconButtonClick}
+								loading={isUploading}
 								className={css({
 									display: "flex",
 									alignItems: "center",
@@ -150,7 +240,7 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 								})}
 							>
 								<Upload size={16} />
-								アイコンを変更
+								{isUploading ? "アップロード中..." : "アイコンを変更"}
 							</Button>
 						</div>
 

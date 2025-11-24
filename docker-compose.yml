@@ -7,6 +7,7 @@ services:
         - VITE_API_BASE_URL=${API_BASE_URL}
         - VITE_CLIENT_BASE_URL=${CLIENT_BASE_URL}
         - VITE_WS_BASE_URL=${WS_BASE_URL}
+        - VITE_MEDIA_BASE_URL=${MEDIA_BASE_URL}
     ports:
       - "80:80"
     depends_on:
@@ -32,6 +33,50 @@ services:
       - "8080:8080"
     depends_on:
       - postgres
+
+  rustfs:
+    image: rustfs/rustfs:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - RUSTFS_VOLUMES=/data
+      - RUSTFS_CONSOLE_ENABLE=true
+      - RUSTFS_ACCESS_KEY=${RUSTFS_ACCESS_KEY}
+      - RUSTFS_SECRET_KEY=${RUSTFS_SECRET_KEY}
+    volumes:
+      - ./server/volumes/rustfs:/data
+    healthcheck:
+      test: ["CMD-SHELL", "pidof rustfs || exit 1"]
+      interval: 3s
+      timeout: 2s
+      retries: 10
+      start_period: 5s
+
+  rustfs-init:
+    image: amazon/aws-cli:latest
+    depends_on:
+      rustfs:
+        condition: service_healthy
+    environment:
+      - AWS_ACCESS_KEY_ID=${RUSTFS_ACCESS_KEY}
+      - AWS_SECRET_ACCESS_KEY=${RUSTFS_SECRET_KEY}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        aws --endpoint-url=http://rustfs:9000 s3 mb s3://chat-app-bucket || true
+        aws --endpoint-url=http://rustfs:9000 s3api put-bucket-policy --bucket chat-app-bucket --policy '{
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {"AWS": ["*"]},
+              "Action": ["s3:GetObject"],
+              "Resource": ["arn:aws:s3:::chat-app-bucket/*"]
+            }
+          ]
+        }'
+        echo "Bucket initialized with public read access"
 
   user:
     build:
@@ -91,6 +136,24 @@ services:
       - user
       - message
 
+  media:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: media
+    environment:
+      - RUSTFS_ENDPOINT=${MEDIA_BASE_URL}
+      - AWS_ACCESS_KEY_ID=${RUSTFS_ACCESS_KEY}
+      - AWS_SECRET_ACCESS_KEY=${RUSTFS_SECRET_KEY}
+    ports:
+      - "50055:50055"
+    volumes:
+      - ./server/services/media/assets:/assets:ro
+    depends_on:
+      - rustfs
+      - rustfs-init
+
   api-gateway:
     build:
       context: ./server
@@ -104,10 +167,12 @@ services:
       - USER_SERVICE_URL=user:50051
       - GUILD_SERVICE_URL=guild:50052
       - MESSAGE_SERVICE_URL=message:50053
+      - MEDIA_SERVICE_URL=media:50055
     depends_on:
       - user
       - guild
       - message
+      - media
       - realtime
 
 volumes:
