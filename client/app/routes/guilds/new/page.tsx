@@ -135,24 +135,6 @@ export default function CreateGuild() {
 								<Field.ErrorText>{errors.description.message}</Field.ErrorText>
 							)}
 						</Field.Root>
-						<Field.Root
-							className={css({ width: "100%" })}
-							invalid={!!errors.iconUrl}
-						>
-							<FormLabel color="text.bright">アイコンURL</FormLabel>
-							<Field.Input
-								{...register("iconUrl")}
-								placeholder="https://example.com/icon.png"
-								className={css({
-									background: "bg.primary",
-									border: "none",
-									color: "text.bright",
-								})}
-							/>
-							{errors.iconUrl && (
-								<Field.ErrorText>{errors.iconUrl.message}</Field.ErrorText>
-							)}
-						</Field.Root>
 						<Button
 							type="submit"
 							className={css({ width: "100%", marginTop: "10px" })}

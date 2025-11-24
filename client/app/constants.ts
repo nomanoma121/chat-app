@@ -20,14 +20,17 @@ export const WebSocketEvent = {
 
 export const DEFAULT_ICON_URL = `${MEDIA_BASE_URL}/user_icons/default.png`;
 
+const USER_ICON_PATH = "chat-app-bucket/icons/users";
+const GUILD_ICON_PATH = "chat-app-bucket/icons/guilds";
+
 export const DEFAULT_USER_ICONS = {
-	BLUE: `${MEDIA_BASE_URL}/icons/users/user-blue.png`,
-	GREEN: `${MEDIA_BASE_URL}/icons/users/user-green.png`,
-	GRAY: `${MEDIA_BASE_URL}/icons/users/user-gray.png`,
-	YELLOW: `${MEDIA_BASE_URL}/icons/users/user-yellow.png`,
-	RED: `${MEDIA_BASE_URL}/icons/users/user-red.png`,
+	BLUE: `${MEDIA_BASE_URL}/${USER_ICON_PATH}/user-blue.png`,
+	GREEN: `${MEDIA_BASE_URL}/${USER_ICON_PATH}/user-green.png`,
+	GRAY: `${MEDIA_BASE_URL}/${USER_ICON_PATH}/user-gray.png`,
+	YELLOW: `${MEDIA_BASE_URL}/${USER_ICON_PATH}/user-yellow.png`,
+	RED: `${MEDIA_BASE_URL}/${USER_ICON_PATH}/user-red.png`,
 };
 
 export const DEFAULT_GUILD_ICONS = {
-	GRAY: `${MEDIA_BASE_URL}/icons/guilds/guild-gray.png`,
+	GRAY: `${MEDIA_BASE_URL}/${GUILD_ICON_PATH}/guild-gray.png`,
 };
