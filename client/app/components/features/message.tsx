@@ -39,39 +39,14 @@ const messageHeaderStyles = cva({
 	},
 });
 
-// const messageActionsStyles = cva({
-// 	base: {
-// 		position: "absolute",
-// 		color: "text.medium",
-// 		top: "-8px",
-// 		right: "16px",
-// 		display: "flex",
-// 		alignItems: "center",
-// 		gap: "4px",
-// 		bg: "bg.secondary",
-// 		border: "1px solid",
-// 		borderColor: "border.soft",
-// 		borderRadius: "md",
-// 		padding: "4px",
-// 		opacity: 0,
-// 		transition: "all 0.1s ease",
-// 		boxShadow: "sm",
-// 		"&[data-visible]": {
-// 			opacity: 1,
-// 		},
-// 	},
-// });
-
 export interface MessageProps {
 	message: TMessage;
-	onReply?: (messageId: string) => void;
-	onReact?: (messageId: string, emoji: string) => void;
 	className?: string;
 }
 
 export const Message = forwardRef<HTMLDivElement, MessageProps>(
 	(props, ref) => {
-		const { message, className, onReply, onReact, ...rest } = props;
+		const { message, className, ...rest } = props;
 
 		const formatTimestamp = (timestamp: string) => {
 			const date = new Date(timestamp);
@@ -81,9 +56,6 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>(
 			if (isToday) {
 				return `Today at ${date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
 			}
-
-			// リント回避用
-			const _ = onReact || onReply;
 
 			return (
 				date.toLocaleDateString([], {
@@ -103,34 +75,17 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>(
 				<div className={messageAvatarStyles()}>
 					<Avatar
 						name={message?.sender?.name ?? "Unknown"}
-						src={message?.sender?.iconUrl ?? ""}
+						src={message?.sender?.iconUrl}
 						size="sm"
 					/>
 				</div>
 
 				<div className={messageContentStyles()}>
-					{/* {message.replyTo && (
-						<div
-							className={css({
-								display: "flex",
-								alignItems: "center",
-								gap: "4px",
-								fontSize: "xs",
-								color: "fg.muted",
-								marginBottom: "4px",
-							})}
-						>
-							<Reply size={14} />
-							<span>Replying to {message.replyTo.author.name}</span>
-						</div>
-					)} */}
-
 					<div className={messageHeaderStyles()}>
 						<span
 							className={css({
 								fontWeight: "semibold",
 								fontSize: "sm",
-								// color: message.author.color || "text.bright",
 								color: "text.bright",
 								cursor: "pointer",
 								_hover: { textDecoration: "underline" },
@@ -160,44 +115,6 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>(
 						{message.content}
 					</div>
 				</div>
-
-				{/* <div
-					className={messageActionsStyles()}
-					{...(showActions && { "data-visible": "" })}
-				>
-					<IconButton
-						variant="ghost"
-						size="sm"
-						onClick={() => onReact?.(message.id, "👍")}
-						className={css({
-							color: "text.bright",
-							_hover: { color: "text.bright", bgColor: "bg.tertiary" },
-						})}
-					>
-						<Smile size={16} />
-					</IconButton>
-					<IconButton
-						variant="ghost"
-						size="sm"
-						onClick={() => onReply?.(message.id)}
-						className={css({
-							color: "text.bright",
-							_hover: { color: "text.bright", bgColor: "bg.tertiary" },
-						})}
-					>
-						<Reply size={16} />
-					</IconButton>
-					<IconButton
-						variant="ghost"
-						size="sm"
-						className={css({
-							color: "text.bright",
-							_hover: { color: "text.bright", bgColor: "bg.tertiary" },
-						})}
-					>
-						<MoreHorizontal size={16} />
-					</IconButton>
-				</div> */}
 			</div>
 		);
 	},

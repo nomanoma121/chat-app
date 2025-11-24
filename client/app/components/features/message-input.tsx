@@ -49,7 +49,7 @@ export const MessageInput = ({
 					gap: "12px",
 					backgroundColor: "bg.tertiary",
 					borderRadius: "lg",
-					padding: "0 12px",
+					padding: "0 12px 0 18px",
 					minHeight: "44px",
 					border: "2px solid transparent",
 					transition: "all 0.2s ease",
@@ -59,18 +59,6 @@ export const MessageInput = ({
 					},
 				})}
 			>
-				<IconButton
-					variant="ghost"
-					size="sm"
-					className={css({
-						color: "fg.subtle",
-						flexShrink: 0,
-						alignSelf: "center",
-					})}
-				>
-					<Plus size={20} />
-				</IconButton>
-
 				<div
 					className={css({
 						flex: 1,
@@ -110,19 +98,6 @@ export const MessageInput = ({
 						flexShrink: 0,
 					})}
 				>
-					<IconButton
-						variant="ghost"
-						size="sm"
-						className={css({
-							color: "fg.subtle",
-							_hover: {
-								color: "fg.default",
-							},
-						})}
-					>
-						<Smile size={20} />
-					</IconButton>
-
 					<IconButton
 						variant="ghost"
 						size="sm"
