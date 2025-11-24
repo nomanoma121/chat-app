@@ -89,8 +89,7 @@ export const ProfileTab = () => {
 
 			toast.success("アイコンをアップロードしました");
 			await refetch();
-		} catch (error) {
-			console.error("アイコンのアップロード中にエラーが発生しました:", error);
+		} catch {
 			toast.error("アイコンのアップロードに失敗しました");
 		} finally {
 			setIsUploading(false);

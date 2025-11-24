@@ -85,8 +85,6 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 			const urlWithCacheBuster = `${uploadedUrl}?t=${Date.now()}`;
 			setIconUrl(urlWithCacheBuster);
 
-			console.log("uploadedUrl:", uploadedUrl);
-
 			await updateGuild({
 				guildId: guild.id,
 				data: {
