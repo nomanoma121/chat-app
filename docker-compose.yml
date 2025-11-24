@@ -45,7 +45,7 @@ services:
       - RUSTFS_ACCESS_KEY=${RUSTFS_ACCESS_KEY}
       - RUSTFS_SECRET_KEY=${RUSTFS_SECRET_KEY}
     volumes:
-      - ./server/volumes/rustfs:/data
+      - rustfs_data:/data
     healthcheck:
       test: ["CMD-SHELL", "pidof rustfs || exit 1"]
       interval: 3s
@@ -177,3 +177,4 @@ services:
 
 volumes:
   postgres_data:
+  rustfs_data:
