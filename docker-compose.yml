@@ -63,7 +63,18 @@ services:
     command:
       - |
         aws --endpoint-url=http://rustfs:9001 s3 mb s3://chat-app-bucket || true
-        echo "Bucket initialized"
+        aws --endpoint-url=http://rustfs:9001 s3api put-bucket-policy --bucket chat-app-bucket --policy '{
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {"AWS": ["*"]},
+              "Action": ["s3:GetObject"],
+              "Resource": ["arn:aws:s3:::chat-app-bucket/*"]
+            }
+          ]
+        }'
+        echo "Bucket initialized with public read access"
 
   user:
     build:
