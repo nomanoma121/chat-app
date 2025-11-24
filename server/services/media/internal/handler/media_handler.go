@@ -14,13 +14,13 @@ const (
 	EXPIRES_DURATION = 15 * time.Minute
 )
 
-type GeneratePresignedURLParamas struct {
+type GeneratePresignedURLParams struct {
 	ObjectKey string
 	Expires   time.Duration
 }
 
 type MediaRepository interface {
-	GeneratePresignedURL(context.Context, GeneratePresignedURLParamas) (string, error)
+	GeneratePresignedURL(context.Context, GeneratePresignedURLParams) (string, error)
 }
 
 type MediaHandler struct {
@@ -45,7 +45,7 @@ func (h *MediaHandler) GetPresignedUploadURL(ctx context.Context, req *pb.GetPre
 		objectKey = constants.USER_ICON_PATH + req.Filename
 	}
 
-	presignedURL, err := h.mediaRepo.GeneratePresignedURL(ctx, GeneratePresignedURLParamas{
+	presignedURL, err := h.mediaRepo.GeneratePresignedURL(ctx, GeneratePresignedURLParams{
 		ObjectKey: objectKey,
 		Expires:   EXPIRES_DURATION,
 	})

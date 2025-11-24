@@ -18,7 +18,7 @@ const (
 )
 
 type MediaRepository interface {
-	GeneratePresignedURL(context.Context, handler.GeneratePresignedURLParamas) (string, error)
+	GeneratePresignedURL(context.Context, handler.GeneratePresignedURLParams) (string, error)
 }
 
 type Seeder struct {
@@ -44,7 +44,7 @@ func (s *Seeder) SeedUserIcons(ctx context.Context) error {
 		filePath := filepath.Join(userIconDir, icon)
 		objectKey := constants.USER_ICON_PATH + icon
 
-		presignedURL, err := s.mediaRepo.GeneratePresignedURL(ctx, handler.GeneratePresignedURLParamas{
+		presignedURL, err := s.mediaRepo.GeneratePresignedURL(ctx, handler.GeneratePresignedURLParams{
 			ObjectKey: objectKey,
 			Expires:   15 * time.Minute,
 		})
@@ -71,7 +71,7 @@ func (s *Seeder) SeedGuildIcons(ctx context.Context) error {
 		filePath := filepath.Join(guildIconDir, icon)
 		objectKey := constants.GUILD_ICON_PATH + icon
 
-		presignedURL, err := s.mediaRepo.GeneratePresignedURL(ctx, handler.GeneratePresignedURLParamas{
+		presignedURL, err := s.mediaRepo.GeneratePresignedURL(ctx, handler.GeneratePresignedURLParams{
 			ObjectKey: objectKey,
 			Expires:   15 * time.Minute,
 		})

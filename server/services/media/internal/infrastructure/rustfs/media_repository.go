@@ -20,7 +20,7 @@ func NewRustFSMediaRepository(client *s3.Client, bucketName string) *RustFSMedia
 	}
 }
 
-func (r *RustFSMediaRepository) GeneratePresignedURL(ctx context.Context, params handler.GeneratePresignedURLParamas) (string, error) {
+func (r *RustFSMediaRepository) GeneratePresignedURL(ctx context.Context, params handler.GeneratePresignedURLParams) (string, error) {
 	presignClient := s3.NewPresignClient(r.client)
 	request, err := presignClient.PresignPutObject(context.TODO(), &s3.PutObjectInput{
 		Bucket: aws.String(r.bucketName),
