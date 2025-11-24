@@ -14,6 +14,7 @@ import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
 import { Spinner } from "~/components/ui/spinner";
 import { Text } from "~/components/ui/text";
+import { MEDIA_BASE_URL } from "~/constants";
 import { useToast } from "~/hooks/use-toast";
 import { UserSchema } from "~/schema/user";
 
@@ -74,7 +75,7 @@ export const ProfileTab = () => {
 			}
 
 			const url = new URL(uploadUrl);
-			const publicUrl = `http://localhost:9001${url.pathname}?t=${Date.now()}`;
+			const publicUrl = `${MEDIA_BASE_URL}${url.pathname}?t=${Date.now()}`;
 			setIconUrl(publicUrl);
 
 			await updateUser({
@@ -82,7 +83,7 @@ export const ProfileTab = () => {
 					displayId: data?.user.displayId || "",
 					name: data?.user.name || "",
 					bio: data?.user.bio || "",
-					iconUrl: url.pathname.replace(/^\//, "http://localhost:9001/"),
+					iconUrl: `${MEDIA_BASE_URL}${url.pathname}`,
 				},
 			});
 
