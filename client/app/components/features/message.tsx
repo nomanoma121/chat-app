@@ -71,7 +71,7 @@ export interface MessageProps {
 
 export const Message = forwardRef<HTMLDivElement, MessageProps>(
 	(props, ref) => {
-		const { message, className, ...rest } = props;
+		const { message, className, onReply, onReact, ...rest } = props;
 
 		const formatTimestamp = (timestamp: string) => {
 			const date = new Date(timestamp);
