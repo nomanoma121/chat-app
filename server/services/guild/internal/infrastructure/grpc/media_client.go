@@ -21,7 +21,7 @@ func NewMediaServiceClient(conn *grpc.ClientConn) *mediaServiceClient {
 func (c *mediaServiceClient) GetPresignedUploadURL(ctx context.Context, mediaType domain.MediaType, filename string) (string, error) {
 	req := &pb.GetPresignedUploadURLRequest{
 		MediaType: pb.MediaType(mediaType),
-		Filename: filename,
+		Filename:  filename,
 	}
 	res, err := c.client.GetPresignedUploadURL(ctx, req)
 	if err != nil {

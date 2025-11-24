@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	userIconDir = "assets/user-icons/"
+	userIconDir  = "assets/user-icons/"
 	guildIconDir = "assets/guild-icons/"
 )
 
@@ -63,29 +63,29 @@ func (s *Seeder) SeedUserIcons(ctx context.Context) error {
 }
 
 func (s *Seeder) SeedGuildIcons(ctx context.Context) error {
-  icons := []string{
-    "guild-gray.png",
-  }
+	icons := []string{
+		"guild-gray.png",
+	}
 
-  for _, icon := range icons {
-    filePath := filepath.Join(guildIconDir, icon)
-    objectKey := constants.GUILD_ICON_PATH + icon
+	for _, icon := range icons {
+		filePath := filepath.Join(guildIconDir, icon)
+		objectKey := constants.GUILD_ICON_PATH + icon
 
-    presignedURL, err := s.mediaRepo.GeneratePresignedURL(ctx, handler.GeneratePresignedURLParamas{
-      ObjectKey: objectKey,
-      Expires:   15 * time.Minute,
-    })
-    if err != nil {
-      return fmt.Errorf("failed to generate presigned URL for %s: %w", icon, err)
-    }
+		presignedURL, err := s.mediaRepo.GeneratePresignedURL(ctx, handler.GeneratePresignedURLParamas{
+			ObjectKey: objectKey,
+			Expires:   15 * time.Minute,
+		})
+		if err != nil {
+			return fmt.Errorf("failed to generate presigned URL for %s: %w", icon, err)
+		}
 
-    if err := uploadToStorage(filePath, presignedURL); err != nil {
-      return fmt.Errorf("failed to upload %s: %w", icon, err)
-    }
+		if err := uploadToStorage(filePath, presignedURL); err != nil {
+			return fmt.Errorf("failed to upload %s: %w", icon, err)
+		}
 
-    fmt.Printf("Successfully uploaded: %s\n", icon)
-  }
-  return nil
+		fmt.Printf("Successfully uploaded: %s\n", icon)
+	}
+	return nil
 }
 
 func uploadToStorage(filePath, presignedURL string) error {
@@ -93,7 +93,7 @@ func uploadToStorage(filePath, presignedURL string) error {
 	if err != nil {
 		return fmt.Errorf("failed to open file: %w", err)
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	fileInfo, err := file.Stat()
 	if err != nil {
@@ -112,7 +112,7 @@ func uploadToStorage(filePath, presignedURL string) error {
 	if err != nil {
 		return fmt.Errorf("failed to send request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
 		bodyBytes, _ := io.ReadAll(resp.Body)

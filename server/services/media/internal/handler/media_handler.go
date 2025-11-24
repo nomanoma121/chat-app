@@ -11,7 +11,7 @@ import (
 
 const (
 	// 15 minute
-	EXPIRES_DURATION = time.Duration(15 * time.Minute)
+	EXPIRES_DURATION = 15 * time.Minute
 )
 
 type GeneratePresignedURLParamas struct {

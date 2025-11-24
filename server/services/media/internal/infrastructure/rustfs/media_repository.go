@@ -26,7 +26,6 @@ func (r *RustFSMediaRepository) GeneratePresignedURL(ctx context.Context, params
 		Bucket: aws.String(r.bucketName),
 		Key:    aws.String(params.ObjectKey),
 	}, s3.WithPresignExpires(params.Expires))
-
 	if err != nil {
 		return "", err
 	}
