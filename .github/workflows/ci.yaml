@@ -16,6 +16,7 @@ jobs:
           - ./server/services/realtime
           - ./server/services/guild
           - ./server/services/user
+          - ./server/services/media
           - ./server/services/api-gateway
           - ./server/shared
     steps:
