@@ -14,6 +14,7 @@ import { Text } from "~/components/ui/text";
 import { useLogin } from "~/hooks/use-login";
 import { useToast } from "~/hooks/use-toast";
 import { UserSchema } from "~/schema/user";
+import { getDefaultUserIconUrl } from "~/utils";
 
 const RegisterForm = v.object({
 	displayId: UserSchema.DisplayId,
@@ -57,7 +58,7 @@ export default function RegisterPage() {
 			email: "",
 			password: "",
 			bio: "",
-			iconUrl: "http://example.com/icon.png",
+			iconUrl: getDefaultUserIconUrl(),
 		},
 	});
 
@@ -70,7 +71,7 @@ export default function RegisterPage() {
 					email: data.email,
 					password: data.password,
 					bio: data.bio || "",
-					iconUrl: data.iconUrl || "",
+					iconUrl: getDefaultUserIconUrl(),
 				},
 			});
 
@@ -255,26 +256,6 @@ export default function RegisterPage() {
 								<Field.ErrorText>{errors.bio.message}</Field.ErrorText>
 							)}
 						</Field.Root>
-
-						<Field.Root invalid={!!errors.iconUrl}>
-							<FormLabel color="text.bright">
-								アイコンURL(このままでもOK)
-							</FormLabel>
-							<Field.Input
-								{...registerField("iconUrl")}
-								type="url"
-								placeholder="https://example.com/icon.jpg"
-								className={css({
-									background: "bg.primary",
-									border: "none",
-									color: "text.bright",
-								})}
-							/>
-							{errors.iconUrl && (
-								<Field.ErrorText>{errors.iconUrl.message}</Field.ErrorText>
-							)}
-						</Field.Root>
-
 						{error && (
 							<div
 								className={css({
