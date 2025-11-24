@@ -4,6 +4,7 @@ import (
 	pb "chat-app-proto/gen/media"
 	"context"
 	"errors"
+	"media-service/internal/constants"
 	"net/url"
 	"time"
 )
@@ -11,9 +12,6 @@ import (
 const (
 	// 15 minute
 	EXPIRES_DURATION = time.Duration(15 * time.Minute)
-
-	GUILD_ICON_PATH = "guild_icon/"
-	USER_ICON_PATH  = "user_icon/"
 )
 
 type GeneratePresignedURLParamas struct {
@@ -42,9 +40,9 @@ func (h *MediaHandler) GetPresignedUploadURL(ctx context.Context, req *pb.GetPre
 	case pb.MediaType_MEDIA_TYPE_UNSPECIFIED:
 		return nil, errors.New("media type unspecified")
 	case pb.MediaType_MEDIA_TYPE_GUILD_ICON:
-		objectKey = GUILD_ICON_PATH + req.Filename
+		objectKey = constants.GUILD_ICON_PATH + req.Filename
 	case pb.MediaType_MEDIA_TYPE_USER_ICON:
-		objectKey = USER_ICON_PATH + req.Filename
+		objectKey = constants.USER_ICON_PATH + req.Filename
 	}
 
 	presignedURL, err := h.mediaRepo.GeneratePresignedURL(ctx, GeneratePresignedURLParamas{

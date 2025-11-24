@@ -44,6 +44,26 @@ services:
       - RUSTFS_SECRET_KEY=rustfsadmin
     volumes:
       - ./server/volumes/rustfs:/data
+    healthcheck:
+      test: ["CMD-SHELL", "pidof rustfs || exit 1"]
+      interval: 3s
+      timeout: 2s
+      retries: 10
+      start_period: 5s
+
+  rustfs-init:
+    image: amazon/aws-cli:latest
+    depends_on:
+      rustfs:
+        condition: service_healthy
+    environment:
+      - AWS_ACCESS_KEY_ID=rustfsadmin
+      - AWS_SECRET_ACCESS_KEY=rustfsadmin
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        aws --endpoint-url=http://rustfs:9001 s3 mb s3://chat-app-bucket || true
+        echo "Bucket initialized"
 
   user:
     build:
@@ -110,13 +130,16 @@ services:
       args:
         SERVICE_NAME: media
     environment:
-      - RUSTFS_ENDPOINT=http://localhost:9001
+      - RUSTFS_ENDPOINT=http://rustfs:9001
       - AWS_ACCESS_KEY_ID=rustfsadmin
       - AWS_SECRET_ACCESS_KEY=rustfsadmin
     ports:
       - "50055:50055"
+    volumes:
+      - ./server/services/media/assets:/assets:ro
     depends_on:
       - rustfs
+      - rustfs-init
 
   api-gateway:
     build:

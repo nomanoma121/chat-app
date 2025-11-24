@@ -4,6 +4,7 @@ import (
 	"context"
 	"media-service/internal/handler"
 	"media-service/internal/infrastructure/rustfs"
+	"media-service/internal/seeder"
 	"net"
 	"os"
 	"shared/logger"
@@ -72,6 +73,14 @@ func main() {
 	}
 
 	log.Info("Media service starting", "port", port)
+
+	seeder := seeder.NewSeeder(mediaRepo)
+	if err := seeder.SeedUserIcons(ctx); err != nil {
+		log.Error("Failed to seed user icons", "error", err)
+	} else {
+		log.Info("User icons seeded successfully")
+	}
+
 	if err := server.Serve(lis); err != nil {
 		log.Error("Failed to serve", "error", err)
 		os.Exit(1)
