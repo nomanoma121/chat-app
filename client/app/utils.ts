@@ -1,4 +1,4 @@
-import { DEFAULT_USER_ICONS, DEFAULT_GUILD_ICONS } from "./constants";
+import { DEFAULT_GUILD_ICONS, DEFAULT_USER_ICONS } from "./constants";
 
 export const formatDate = (dateString: string) => {
 	const date = new Date(dateString);
@@ -10,13 +10,13 @@ export const formatDate = (dateString: string) => {
 };
 
 export const getDefaultUserIconUrl = () => {
-  const icons = Object.values(DEFAULT_USER_ICONS);
-  const randomIndex = Math.floor(Math.random() * icons.length);
-  return icons[randomIndex];
-}
+	const icons = Object.values(DEFAULT_USER_ICONS);
+	const randomIndex = Math.floor(Math.random() * icons.length);
+	return icons[randomIndex];
+};
 
 export const getDefaultGuildIconUrl = () => {
-  const icons = Object.values(DEFAULT_GUILD_ICONS);
-  const randomIndex = Math.floor(Math.random() * icons.length);
-  return icons[randomIndex];
-}
+	const icons = Object.values(DEFAULT_GUILD_ICONS);
+	const randomIndex = Math.floor(Math.random() * icons.length);
+	return icons[randomIndex];
+};

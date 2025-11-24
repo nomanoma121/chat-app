@@ -4,7 +4,7 @@
  * guild_type.proto
  * OpenAPI spec version: version not set
  */
-import { useMutation, useQuery } from "@tanstack/react-query";
+
 import type {
 	DataTag,
 	DefinedInitialDataOptions,
@@ -19,7 +19,8 @@ import type {
 	UseQueryOptions,
 	UseQueryResult,
 } from "@tanstack/react-query";
-
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { customClient } from "../../client";
 import type {
 	CreateGuildInviteBody,
 	CreateGuildInviteResponse,
@@ -30,8 +31,6 @@ import type {
 	JoinGuildResponse,
 	Status,
 } from "../guildTypeProto.schemas";
-
-import { customClient } from "../../client";
 
 export const getGuildInvites = (guildId: string, signal?: AbortSignal) => {
 	return customClient<GetGuildInvitesResponse>({

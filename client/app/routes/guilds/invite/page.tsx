@@ -27,9 +27,9 @@ import { createListCollection, Select } from "~/components/ui/select";
 import { Switch } from "~/components/ui/switch";
 import { Text } from "~/components/ui/text";
 import { CLIENT_BASE_URL } from "~/constants";
-import { formatDate } from "~/utils";
 import { usePermissions } from "~/hooks/use-permissions";
 import { useToast } from "~/hooks/use-toast";
+import { formatDate } from "~/utils";
 
 const SECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 

@@ -5,8 +5,11 @@ import { useForm } from "react-hook-form";
 import { css } from "styled-system/css";
 import * as v from "valibot";
 import { useUpdateGuild } from "~/api/gen/guild/guild";
+import {
+	type GuildWithMembers,
+	MediaType,
+} from "~/api/gen/guildTypeProto.schemas";
 import { useGetPresignedUploadURL } from "~/api/gen/media/media";
-import { MediaType, type GuildWithMembers } from "~/api/gen/guildTypeProto.schemas";
 import { Avatar } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
@@ -94,8 +97,8 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 				},
 			});
 			toast.success("アイコンをアップロードしました");
-	} catch (error) {
-		 	console.log("error during icon upload:", error);
+		} catch (error) {
+			console.log("error during icon upload:", error);
 			toast.error("アイコンのアップロードに失敗しました");
 		} finally {
 			setIsUploading(false);
