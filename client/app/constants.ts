@@ -27,3 +27,7 @@ export const DEFAULT_USER_ICONS = {
 	YELLOW: `${MEDIA_BASE_URL}/icons/users/user-yellow.png`,
 	RED: `${MEDIA_BASE_URL}/icons/users/user-red.png`,
 }
+
+export const DEFAULT_GUILD_ICONS = {
+	GRAY: `${MEDIA_BASE_URL}/icons/guilds/guild-gray.png`,
+}

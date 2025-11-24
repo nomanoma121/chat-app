@@ -10,6 +10,7 @@ import { Field } from "~/components/ui/field";
 import { FormLabel } from "~/components/ui/form-label";
 import { useToast } from "~/hooks/use-toast";
 import { GuildSchema } from "~/schema/guild";
+import { getDefaultGuildIconUrl } from "~/utils";
 
 const CreateGuildForm = v.object({
 	name: GuildSchema.Name,
@@ -35,7 +36,7 @@ export default function CreateGuild() {
 		defaultValues: {
 			name: "",
 			description: "",
-			iconUrl: "",
+			iconUrl: getDefaultGuildIconUrl(),
 		},
 	});
 

@@ -13,7 +13,8 @@ import (
 )
 
 const (
-	iconDir = "assets/user-icons/"
+	userIconDir = "assets/user-icons/"
+	guildIconDir = "assets/guild-icons/"
 )
 
 type MediaRepository interface {
@@ -40,7 +41,7 @@ func (s *Seeder) SeedUserIcons(ctx context.Context) error {
 	}
 
 	for _, icon := range icons {
-		filePath := filepath.Join(iconDir, icon)
+		filePath := filepath.Join(userIconDir, icon)
 		objectKey := constants.USER_ICON_PATH + icon
 
 		presignedURL, err := s.mediaRepo.GeneratePresignedURL(ctx, handler.GeneratePresignedURLParamas{
@@ -67,7 +68,7 @@ func (s *Seeder) SeedGuildIcons(ctx context.Context) error {
   }
 
   for _, icon := range icons {
-    filePath := filepath.Join(iconDir, icon)
+    filePath := filepath.Join(guildIconDir, icon)
     objectKey := constants.GUILD_ICON_PATH + icon
 
     presignedURL, err := s.mediaRepo.GeneratePresignedURL(ctx, handler.GeneratePresignedURLParamas{
