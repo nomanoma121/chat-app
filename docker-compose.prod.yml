@@ -5,10 +5,6 @@ services:
       - "80:80"
     depends_on:
       - api-gateway
-      - user
-      - guild
-      - message
-      - realtime
     environment:
       - VITE_API_BASE_URL=${API_BASE_URL}
       - VITE_CLIENT_BASE_URL=${CLIENT_BASE_URL}
@@ -22,6 +18,7 @@ services:
       - guild
       - message
       - realtime
+      - media
     ports:
       - "8080:8080"
     environment:
@@ -29,6 +26,7 @@ services:
       - GUILD_SERVICE_URL=guild:50052
       - USER_SERVICE_URL=user:50051
       - MESSAGE_SERVICE_URL=message:50053
+      - MEDIA_SERVICE_URL=media:50055
 
   user:
     image: ghcr.io/${ORG}/${APP}-user:${VERSION:-latest}
@@ -38,9 +36,13 @@ services:
 
   guild:
     image: ghcr.io/${ORG}/${APP}-guild:${VERSION:-latest}
+    depends_on:
+      - user
+      - media
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - USER_SERVICE_URL=user:50051
+      - MEDIA_SERVICE_URL=media:50055
 
   message:
     image: ghcr.io/${ORG}/${APP}-message:${VERSION:-latest}
@@ -64,11 +66,7 @@ services:
       - JWT_SECRET=${JWT_SECRET}
 
   media:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-      args:
-        SERVICE_NAME: media
+    image: ghcr.io/${ORG}/${APP}-media:${VERSION:-latest}
     environment:
       - RUSTFS_ENDPOINT=${MEDIA_BASE_URL}
       - AWS_ACCESS_KEY_ID=${RUSTFS_ACCESS_KEY}
@@ -125,8 +123,8 @@ services:
     entrypoint: ["/bin/sh", "-c"]
     command:
       - |
-        aws --endpoint-url=http://rustfs:9001 s3 mb s3://chat-app-bucket || true
-        aws --endpoint-url=http://rustfs:9001 s3api put-bucket-policy --bucket chat-app-bucket --policy '{
+        aws --endpoint-url=http://rustfs:9000 s3 mb s3://chat-app-bucket || true
+        aws --endpoint-url=http://rustfs:9000 s3api put-bucket-policy --bucket chat-app-bucket --policy '{
           "Version": "2012-10-17",
           "Statement": [
             {
