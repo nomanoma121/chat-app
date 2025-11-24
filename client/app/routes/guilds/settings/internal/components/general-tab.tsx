@@ -54,10 +54,11 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 	const handleIconUpload = async (file: File) => {
 		try {
 			setIsUploading(true);
-			toast.info("アイコンをアップロードしています...");
+			// ファイル拡張子を取得
+			const extension = file.name.split(".").pop() || "png";
 			const { uploadUrl } = await getPresignedUrl({
 				data: {
-					filename: guild.id,
+					filename: `${guild.id}.${extension}`,
 					mediaType: MediaType.MEDIA_TYPE_GUILD_ICON,
 				},
 			});
@@ -77,7 +78,9 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 			}
 
 			const uploadedUrl = uploadUrl.split("?")[0];
-			setIconUrl(uploadedUrl);
+			// キャッシュバスティング用のタイムスタンプを追加
+			const urlWithCacheBuster = `${uploadedUrl}?t=${Date.now()}`;
+			setIconUrl(urlWithCacheBuster);
 
 			console.log("uploadedUrl:", uploadedUrl);
 
