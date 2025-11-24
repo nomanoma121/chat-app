@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { LogOut, Settings } from "lucide-react";
 import { useNavigate } from "react-router";
 import { css } from "styled-system/css";
@@ -10,10 +11,12 @@ import { AUTH_TOKEN } from "~/constants";
 export const UserPanel = () => {
 	const { data } = useGetCurrentUser();
 	const navigate = useNavigate();
+	const queryClient = useQueryClient();
 
-	const handleLogout = () => {
+	const handleLogout = async () => {
 		localStorage.removeItem(AUTH_TOKEN);
-		navigate("/login");
+		queryClient.clear();
+		await navigate("/login");
 	};
 	return (
 		<Card.Root
