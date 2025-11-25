@@ -66,6 +66,7 @@ export const ProfileTab = () => {
 				body: file,
 				headers: {
 					"Content-Type": file.type,
+					"Cache-Control": "public, max-age=60",
 				},
 			});
 

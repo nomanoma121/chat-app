@@ -72,6 +72,7 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 				body: file,
 				headers: {
 					"Content-Type": file.type,
+					"Cache-Control": "public, max-age=60",
 				},
 			});
 
