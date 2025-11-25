@@ -10,10 +10,20 @@ env:
   APP: chat-app
 
 jobs:
-  build-and-push:
+  prepare:
     runs-on: ubuntu-latest
     outputs:
       sha_tag: ${{ steps.meta.outputs.SHA_TAG }}
+    steps:
+      - name: Set tags
+        id: meta
+        run: |
+          SHA_TAG=${GITHUB_SHA::12}
+          echo "SHA_TAG=$SHA_TAG" >> $GITHUB_OUTPUT
+
+  build-frontend:
+    needs: prepare
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -26,19 +36,6 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set tags
-        id: meta
-        run: |
-          SHA_TAG=${GITHUB_SHA::12}
-          echo "SHA_TAG=$SHA_TAG" >> $GITHUB_OUTPUT
-          echo "FRONT_IMG=${REGISTRY}/${ORG}/${APP}-frontend" >> $GITHUB_OUTPUT
-          echo "USER_IMG=${REGISTRY}/${ORG}/${APP}-user" >> $GITHUB_OUTPUT
-          echo "GUILD_IMG=${REGISTRY}/${ORG}/${APP}-guild" >> $GITHUB_OUTPUT
-          echo "MESSAGE_IMG=${REGISTRY}/${ORG}/${APP}-message" >> $GITHUB_OUTPUT
-          echo "REALTIME_IMG=${REGISTRY}/${ORG}/${APP}-realtime" >> $GITHUB_OUTPUT
-          echo "MEDIA_IMG=${REGISTRY}/${ORG}/${APP}-media" >> $GITHUB_OUTPUT
-          echo "API_IMG=${REGISTRY}/${ORG}/${APP}-api-gateway" >> $GITHUB_OUTPUT
 
       - name: Buildx setup
         uses: docker/setup-buildx-action@v3
@@ -54,77 +51,48 @@ jobs:
             VITE_MEDIA_BASE_URL=${{ vars.MEDIA_BASE_URL }}
           push: true
           tags: |
-            ${{ steps.meta.outputs.FRONT_IMG }}:latest
-            ${{ steps.meta.outputs.FRONT_IMG }}:${{ steps.meta.outputs.SHA_TAG }}
+            ${{ env.REGISTRY }}/${{ env.ORG }}/${{ env.APP }}-frontend:latest
+            ${{ env.REGISTRY }}/${{ env.ORG }}/${{ env.APP }}-frontend:${{ needs.prepare.outputs.sha_tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      - name: Build & Push user service
+  build-backend:
+    needs: prepare
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        service: [user, guild, message, realtime, media, api-gateway]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Buildx setup
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build & Push ${{ matrix.service }}
         uses: docker/build-push-action@v6
         with:
           context: ./server
           build-args: |
-            SERVICE_NAME=user
+            SERVICE_NAME=${{ matrix.service }}
           push: true
           tags: |
-            ${{ steps.meta.outputs.USER_IMG }}:latest
-            ${{ steps.meta.outputs.USER_IMG }}:${{ steps.meta.outputs.SHA_TAG }}
-
-      - name: Build & Push guild service
-        uses: docker/build-push-action@v6
-        with:
-          context: ./server
-          build-args: |
-            SERVICE_NAME=guild
-          push: true
-          tags: |
-            ${{ steps.meta.outputs.GUILD_IMG }}:latest
-            ${{ steps.meta.outputs.GUILD_IMG }}:${{ steps.meta.outputs.SHA_TAG }}
-
-      - name: Build & Push message service
-        uses: docker/build-push-action@v6
-        with:
-          context: ./server
-          build-args: |
-            SERVICE_NAME=message
-          push: true
-          tags: |
-            ${{ steps.meta.outputs.MESSAGE_IMG }}:latest
-            ${{ steps.meta.outputs.MESSAGE_IMG }}:${{ steps.meta.outputs.SHA_TAG }}
-
-      - name: Build & Push realtime service
-        uses: docker/build-push-action@v6
-        with:
-          context: ./server
-          build-args: |
-            SERVICE_NAME=realtime
-          push: true
-          tags: |
-            ${{ steps.meta.outputs.REALTIME_IMG }}:latest
-            ${{ steps.meta.outputs.REALTIME_IMG }}:${{ steps.meta.outputs.SHA_TAG }}
-
-      - name: Build & Push media service  
-        uses: docker/build-push-action@v6
-        with:
-          context: ./server
-          build-args: |
-            SERVICE_NAME=media
-          push: true
-          tags: |
-            ${{ steps.meta.outputs.MEDIA_IMG }}:latest
-            ${{ steps.meta.outputs.MEDIA_IMG }}:${{ steps.meta.outputs.SHA_TAG }}
-
-      - name: Build & Push api-gateway service
-        uses: docker/build-push-action@v6
-        with:
-          context: ./server
-          build-args: |
-            SERVICE_NAME=api-gateway
-          push: true
-          tags: |
-            ${{ steps.meta.outputs.API_IMG }}:latest
-            ${{ steps.meta.outputs.API_IMG }}:${{ steps.meta.outputs.SHA_TAG }}
+            ${{ env.REGISTRY }}/${{ env.ORG }}/${{ env.APP }}-${{ matrix.service }}:latest
+            ${{ env.REGISTRY }}/${{ env.ORG }}/${{ env.APP }}-${{ matrix.service }}:${{ needs.prepare.outputs.sha_tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   deploy:
-    needs: build-and-push
+    needs: [prepare, build-frontend, build-backend]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -150,7 +118,7 @@ jobs:
           CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
-          SHA_TAG: ${{ needs.build-and-push.outputs.sha_tag }}
+          SHA_TAG: ${{ needs.prepare.outputs.sha_tag }}
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ProxyCommand="/tmp/cloudflared/cloudflared access ssh --id $CF_ACCESS_CLIENT_ID --secret $CF_ACCESS_CLIENT_SECRET --hostname %h" $SSH_USER@$SSH_HOST << EOF
             set -e
