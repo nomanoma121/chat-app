@@ -52,7 +52,7 @@ export const UserPanel = () => {
 				>
 					<Avatar
 						src={data?.user.iconUrl}
-						name={data?.user.name ?? "Unknown User"}
+						name={data?.user.name}
 						className={css({
 							width: "7",
 							height: "7",

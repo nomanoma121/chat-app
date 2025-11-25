@@ -118,7 +118,6 @@ export const ProfileTab = () => {
 			toast.success("プロフィール情報を更新しました");
 			await refetch();
 		} catch (error) {
-			console.error("Profile update error:", error);
 			toast.error("プロフィール情報の更新に失敗しました");
 		}
 	};
@@ -196,7 +195,7 @@ export const ProfileTab = () => {
 						>
 							<div className={css({ position: "relative" })}>
 								<Avatar
-									name={data?.user.name || "ユーザー"}
+									name={data?.user.name}
 									src={`${data?.user.iconUrl}?t=${Date.now()}`}
 									size="xl"
 									className={css({

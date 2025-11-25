@@ -185,7 +185,7 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 						>
 							<Avatar
 								src={`${guild?.iconUrl}?t=${Date.now()}`}
-								name={guild?.name || "サーバー"}
+								name={guild?.name}
 								size="lg"
 								className={css({
 									width: "64px",
