@@ -15,18 +15,18 @@ export const ChatArea = () => {
 	const { channelId } = useParams<{ channelId: string }>();
 	const { guild } = useOutletContext<GuildsContext>();
 	const { data: userData } = useGetCurrentUser();
-	if (!channelId || !guild || !userData) {
-		return <Loading />;
-	}
-
 	const { messages, messagesError, sendMessage, firstMessageReceived } =
-		useMessages(userData?.user.id, channelId);
+		useMessages(userData?.user.id || "", channelId || "");
 	const { scrollRef, containerRef, scrollToBottom } = useAutoScroll();
 
 	useEffect(() => {
 		const behavior = firstMessageReceived ? "smooth" : "instant";
 		scrollToBottom(behavior);
 	}, [scrollToBottom, firstMessageReceived]);
+
+	if (!channelId || !guild || !userData) {
+		return <Loading />;
+	}
 
 	const channelName = guild?.categories.map((category) => {
 		return category.channels.find((channel) => channel?.id === channelId)?.name;
@@ -126,8 +126,6 @@ export const ChatArea = () => {
 						<Message
 							key={message.id}
 							message={message}
-							onReply={() => {}}
-							onReact={() => {}}
 						/>
 					))}
 					<div ref={scrollRef} />
