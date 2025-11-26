@@ -20,7 +20,7 @@ import { Text } from "~/components/ui/text";
 import { usePermissions } from "~/hooks/use-permissions";
 import { useToast } from "~/hooks/use-toast";
 import { GuildSchema } from "~/schema/guild";
-import { getCacheBustTimestamp } from "~/utils";
+import { addCacheBust } from "~/utils";
 
 interface GeneralTabProps {
 	guild: GuildWithMembers;
@@ -185,7 +185,7 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 							})}
 						>
 							<Avatar
-								src={`${guild?.iconUrl}?t=${getCacheBustTimestamp()}`}
+								src={addCacheBust(guild?.iconUrl)}
 								name={guild?.name}
 								size="lg"
 								className={css({

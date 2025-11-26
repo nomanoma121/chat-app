@@ -7,12 +7,17 @@ import { Avatar } from "~/components/ui/avatar";
 import { Card } from "~/components/ui/card";
 import { Text } from "~/components/ui/text";
 import { AUTH_TOKEN } from "~/constants";
-import { getCacheBustTimestamp } from "~/lib/utils";
+import { addCacheBust } from "~/utils";
 
 export const UserPanel = () => {
-	const { data } = useGetCurrentUser();
+	const { data, error, isError } = useGetCurrentUser();
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
+
+	// デバッグ用：本番環境でのデータを確認
+	if (import.meta.env.PROD && !data?.user.iconUrl) {
+		console.log("UserPanel debug:", { data, error, isError });
+	}
 
 	const handleLogout = async () => {
 		localStorage.removeItem(AUTH_TOKEN);
@@ -52,7 +57,7 @@ export const UserPanel = () => {
 					})}
 				>
 					<Avatar
-						src={`${data?.user.iconUrl}?t=${getCacheBustTimestamp()}`}
+						src={addCacheBust(data?.user.iconUrl)}
 						name={data?.user.name}
 						className={css({
 							width: "8",
