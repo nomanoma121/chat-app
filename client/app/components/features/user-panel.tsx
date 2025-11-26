@@ -54,8 +54,8 @@ export const UserPanel = () => {
 						src={data?.user.iconUrl}
 						name={data?.user.name}
 						className={css({
-							width: "7",
-							height: "7",
+							width: "8",
+							height: "8",
 						})}
 					/>
 					<Text
