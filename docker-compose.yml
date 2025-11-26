@@ -142,12 +142,11 @@ services:
       dockerfile: Dockerfile
       args:
         SERVICE_NAME: media
+    network_mode: host
     environment:
       - RUSTFS_ENDPOINT=${MEDIA_BASE_URL}
       - AWS_ACCESS_KEY_ID=${RUSTFS_ACCESS_KEY}
       - AWS_SECRET_ACCESS_KEY=${RUSTFS_SECRET_KEY}
-    ports:
-      - "50055:50055"
     volumes:
       - ./server/services/media/assets:/assets:ro
     depends_on:
@@ -167,7 +166,7 @@ services:
       - USER_SERVICE_URL=user:50051
       - GUILD_SERVICE_URL=guild:50052
       - MESSAGE_SERVICE_URL=message:50053
-      - MEDIA_SERVICE_URL=media:50055
+      - MEDIA_SERVICE_URL=172.17.0.1:50055
     depends_on:
       - user
       - guild
