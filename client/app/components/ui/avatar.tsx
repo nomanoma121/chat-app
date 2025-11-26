@@ -1,6 +1,6 @@
 import { type ComponentProps, forwardRef, useState } from "react";
-import { avatar } from "styled-system/recipes";
 import type { AvatarVariantProps } from "styled-system/recipes";
+import { avatar } from "styled-system/recipes";
 
 export interface AvatarProps
 	extends Omit<ComponentProps<"div">, "size">,

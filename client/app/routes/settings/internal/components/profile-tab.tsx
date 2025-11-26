@@ -17,6 +17,7 @@ import { Text } from "~/components/ui/text";
 import { MEDIA_BASE_URL } from "~/constants";
 import { useToast } from "~/hooks/use-toast";
 import { UserSchema } from "~/schema/user";
+import { getCacheBustTimestamp } from "~/utils";
 
 const ProfileForm = v.object({
 	displayId: UserSchema.DisplayId,
@@ -117,7 +118,7 @@ export const ProfileTab = () => {
 			});
 			toast.success("プロフィール情報を更新しました");
 			await refetch();
-		} catch (error) {
+		} catch {
 			toast.error("プロフィール情報の更新に失敗しました");
 		}
 	};
@@ -196,7 +197,7 @@ export const ProfileTab = () => {
 							<div className={css({ position: "relative" })}>
 								<Avatar
 									name={data?.user.name}
-									src={`${data?.user.iconUrl}?t=${Date.now()}`}
+									src={`${data?.user.iconUrl}?t=${getCacheBustTimestamp()}`}
 									size="xl"
 									className={css({
 										width: "80px",

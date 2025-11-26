@@ -7,6 +7,7 @@ import { Avatar } from "~/components/ui/avatar";
 import { Card } from "~/components/ui/card";
 import { Text } from "~/components/ui/text";
 import { AUTH_TOKEN } from "~/constants";
+import { getCacheBustTimestamp } from "~/lib/utils";
 
 export const UserPanel = () => {
 	const { data } = useGetCurrentUser();
@@ -51,7 +52,7 @@ export const UserPanel = () => {
 					})}
 				>
 					<Avatar
-						src={data?.user.iconUrl}
+						src={`${data?.user.iconUrl}?t=${getCacheBustTimestamp()}`}
 						name={data?.user.name}
 						className={css({
 							width: "8",
