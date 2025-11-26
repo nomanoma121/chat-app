@@ -34,29 +34,71 @@ services:
     depends_on:
       - postgres
 
-  rustfs:
-    image: rustfs/rustfs:latest
+  # rustfs:
+  #   image: rustfs/rustfs:latest
+  #   ports:
+  #     - "9000:9000"
+  #     - "9001:9001"
+  #   environment:
+  #     - RUSTFS_VOLUMES=/data
+  #     - RUSTFS_CONSOLE_ENABLE=true
+  #     - RUSTFS_ACCESS_KEY=${RUSTFS_ACCESS_KEY}
+  #     - RUSTFS_SECRET_KEY=${RUSTFS_SECRET_KEY}
+  #   volumes:
+  #     - rustfs_data:/data
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pidof rustfs || exit 1"]
+  #     interval: 3s
+  #     timeout: 2s
+  #     retries: 10
+  #     start_period: 5s
+
+  # rustfs-init:
+  #   image: amazon/aws-cli:latest
+  #   depends_on:
+  #     rustfs:
+  #       condition: service_healthy
+  #   environment:
+  #     - AWS_ACCESS_KEY_ID=${RUSTFS_ACCESS_KEY}
+  #     - AWS_SECRET_ACCESS_KEY=${RUSTFS_SECRET_KEY}
+  #   entrypoint: ["/bin/sh", "-c"]
+  #   command:
+  #     - |
+  #       aws --endpoint-url=http://rustfs:9000 s3 mb s3://chat-app-bucket || true
+  #       aws --endpoint-url=http://rustfs:9000 s3api put-bucket-policy --bucket chat-app-bucket --policy '{
+  #         "Version": "2012-10-17",
+  #         "Statement": [
+  #           {
+  #             "Effect": "Allow",
+  #             "Principal": {"AWS": ["*"]},
+  #             "Action": ["s3:GetObject"],
+  #             "Resource": ["arn:aws:s3:::chat-app-bucket/*"]
+  #           }
+  #         ]
+  #       }'
+  #       echo "Bucket initialized with public read access"
+
+  minio:
+    image: minio/minio:latest
     ports:
       - "9000:9000"
       - "9001:9001"
     environment:
-      - RUSTFS_VOLUMES=/data
-      - RUSTFS_CONSOLE_ENABLE=true
-      - RUSTFS_ACCESS_KEY=${RUSTFS_ACCESS_KEY}
-      - RUSTFS_SECRET_KEY=${RUSTFS_SECRET_KEY}
+      - MINIO_ROOT_USER=${RUSTFS_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${RUSTFS_SECRET_KEY}
+    command: server /data --console-address ":9001"
     volumes:
-      - rustfs_data:/data
+      - minio_data:/data
     healthcheck:
-      test: ["CMD-SHELL", "pidof rustfs || exit 1"]
-      interval: 3s
-      timeout: 2s
-      retries: 10
-      start_period: 5s
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  rustfs-init:
+  minio-init:
     image: amazon/aws-cli:latest
     depends_on:
-      rustfs:
+      minio:
         condition: service_healthy
     environment:
       - AWS_ACCESS_KEY_ID=${RUSTFS_ACCESS_KEY}
@@ -64,8 +106,8 @@ services:
     entrypoint: ["/bin/sh", "-c"]
     command:
       - |
-        aws --endpoint-url=http://rustfs:9000 s3 mb s3://chat-app-bucket || true
-        aws --endpoint-url=http://rustfs:9000 s3api put-bucket-policy --bucket chat-app-bucket --policy '{
+        aws --endpoint-url=http://minio:9000 s3 mb s3://chat-app-bucket || true
+        aws --endpoint-url=http://minio:9000 s3api put-bucket-policy --bucket chat-app-bucket --policy '{
           "Version": "2012-10-17",
           "Statement": [
             {
@@ -150,8 +192,8 @@ services:
     volumes:
       - ./server/services/media/assets:/assets:ro
     depends_on:
-      - rustfs
-      - rustfs-init
+      - minio
+      - minio-init
 
   api-gateway:
     build:
@@ -177,3 +219,4 @@ services:
 volumes:
   postgres_data:
   rustfs_data:
+  minio_data:
