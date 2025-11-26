@@ -10,14 +10,9 @@ import { AUTH_TOKEN } from "~/constants";
 import { addCacheBust } from "~/utils";
 
 export const UserPanel = () => {
-	const { data, error, isError } = useGetCurrentUser();
+	const { data } = useGetCurrentUser();
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
-
-	// デバッグ用：本番環境でのデータを確認
-	if (import.meta.env.PROD && !data?.user.iconUrl) {
-		console.log("UserPanel debug:", { data, error, isError });
-	}
 
 	const handleLogout = async () => {
 		localStorage.removeItem(AUTH_TOKEN);
