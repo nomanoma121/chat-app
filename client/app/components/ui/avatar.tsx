@@ -1,21 +1,43 @@
-import { forwardRef } from "react";
-import * as StyledAvatar from "./styled/avatar";
+import { type ComponentProps, forwardRef, useState } from "react";
+import type { AvatarVariantProps } from "styled-system/recipes";
+import { avatar } from "styled-system/recipes";
 
-export interface AvatarProps extends StyledAvatar.RootProps {
+export interface AvatarProps
+	extends Omit<ComponentProps<"div">, "size">,
+		AvatarVariantProps {
 	name?: string;
 	src?: string;
 }
 
 export const Avatar = forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
-	const { name, src, ...rootProps } = props;
+	const { name, src, size = "md", className, ...rootProps } = props;
+	const [imageError, setImageError] = useState(false);
+
+	const handleImageError = () => {
+		setImageError(true);
+	};
+
+	const styles = avatar({ size });
 
 	return (
-		<StyledAvatar.Root ref={ref} {...rootProps}>
-			<StyledAvatar.Fallback>
-				{getInitials(name) || <UserIcon />}
-			</StyledAvatar.Fallback>
-			<StyledAvatar.Image src={src} alt={name} />
-		</StyledAvatar.Root>
+		<div
+			ref={ref}
+			className={[styles.root, className].filter(Boolean).join(" ")}
+			{...rootProps}
+		>
+			{src && !imageError ? (
+				<img
+					src={src}
+					alt={name || "Avatar"}
+					onError={handleImageError}
+					className={styles.image}
+				/>
+			) : (
+				<span className={styles.fallback}>
+					{getInitials(name) || <UserIcon />}
+				</span>
+			)}
+		</div>
 	);
 });
 

@@ -7,6 +7,7 @@ import { Avatar } from "~/components/ui/avatar";
 import { Card } from "~/components/ui/card";
 import { Text } from "~/components/ui/text";
 import { AUTH_TOKEN } from "~/constants";
+import { addCacheBust } from "~/utils";
 
 export const UserPanel = () => {
 	const { data } = useGetCurrentUser();
@@ -51,11 +52,11 @@ export const UserPanel = () => {
 					})}
 				>
 					<Avatar
-						src={data?.user.iconUrl}
-						name={data?.user.name ?? "Unknown User"}
+						src={addCacheBust(data?.user.iconUrl)}
+						name={data?.user.name}
 						className={css({
-							width: "7",
-							height: "7",
+							width: "8",
+							height: "8",
 						})}
 					/>
 					<Text

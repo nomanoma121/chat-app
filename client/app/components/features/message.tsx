@@ -2,6 +2,7 @@ import { forwardRef } from "react";
 import { css, cva } from "styled-system/css";
 import type { Message as TMessage } from "~/api/gen/guildTypeProto.schemas";
 import { Avatar } from "~/components/ui/avatar";
+import { addCacheBust } from "~/utils";
 
 const messageStyles = cva({
 	base: {
@@ -75,7 +76,7 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>(
 				<div className={messageAvatarStyles()}>
 					<Avatar
 						name={message?.sender?.name ?? "Unknown"}
-						src={message?.sender?.iconUrl}
+						src={addCacheBust(message?.sender?.iconUrl)}
 						size="sm"
 					/>
 				</div>

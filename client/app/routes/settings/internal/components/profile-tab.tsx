@@ -17,6 +17,7 @@ import { Text } from "~/components/ui/text";
 import { MEDIA_BASE_URL } from "~/constants";
 import { useToast } from "~/hooks/use-toast";
 import { UserSchema } from "~/schema/user";
+import { addCacheBust } from "~/utils";
 
 const ProfileForm = v.object({
 	displayId: UserSchema.DisplayId,
@@ -33,7 +34,6 @@ export const ProfileTab = () => {
 	const { mutateAsync: updateUser, isPending } = useUpdate();
 	const { mutateAsync: getPresignedUrl } = useGetPresignedUploadURL();
 	const fileInputRef = useRef<HTMLInputElement>(null);
-	const [iconUrl, setIconUrl] = useState<string | undefined>(undefined);
 	const [isUploading, setIsUploading] = useState(false);
 
 	const {
@@ -67,6 +67,7 @@ export const ProfileTab = () => {
 				body: file,
 				headers: {
 					"Content-Type": file.type,
+					"Cache-Control": "public, max-age=60",
 				},
 			});
 
@@ -75,8 +76,6 @@ export const ProfileTab = () => {
 			}
 
 			const url = new URL(uploadUrl);
-			const publicUrl = `${MEDIA_BASE_URL}${url.pathname}?t=${Date.now()}`;
-			setIconUrl(publicUrl);
 
 			await updateUser({
 				data: {
@@ -114,13 +113,12 @@ export const ProfileTab = () => {
 					displayId: formData.displayId,
 					name: formData.name,
 					bio: formData.bio || "",
-					iconUrl: iconUrl || formData.iconUrl || "",
+					iconUrl: formData.iconUrl || "",
 				},
 			});
 			toast.success("プロフィール情報を更新しました");
 			await refetch();
-		} catch (error) {
-			console.error("Profile update error:", error);
+		} catch {
 			toast.error("プロフィール情報の更新に失敗しました");
 		}
 	};
@@ -198,8 +196,8 @@ export const ProfileTab = () => {
 						>
 							<div className={css({ position: "relative" })}>
 								<Avatar
-									name={data?.user.name || "ユーザー"}
-									src={iconUrl || data?.user.iconUrl}
+									name={data?.user.name}
+									src={addCacheBust(data?.user.iconUrl)}
 									size="xl"
 									className={css({
 										width: "80px",

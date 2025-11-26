@@ -22,9 +22,11 @@ func NewRustFSMediaRepository(client *s3.Client, bucketName string) *RustFSMedia
 
 func (r *RustFSMediaRepository) GeneratePresignedURL(ctx context.Context, params handler.GeneratePresignedURLParams) (string, error) {
 	presignClient := s3.NewPresignClient(r.client)
+	cacheControl := "public, max-age=60"
 	request, err := presignClient.PresignPutObject(ctx, &s3.PutObjectInput{
-		Bucket: aws.String(r.bucketName),
-		Key:    aws.String(params.ObjectKey),
+		Bucket:       aws.String(r.bucketName),
+		Key:          aws.String(params.ObjectKey),
+		CacheControl: aws.String(cacheControl),
 	}, s3.WithPresignExpires(params.Expires))
 	if err != nil {
 		return "", err

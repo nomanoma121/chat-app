@@ -5,6 +5,7 @@ import { useListMyGuilds } from "~/api/gen/guild/guild";
 import { GuildIcon } from "~/components/ui/guild-icon";
 import { IconButton } from "~/components/ui/icon-button";
 import { Spinner } from "~/components/ui/spinner";
+import { addCacheBust } from "~/utils";
 
 export const GuildList = () => {
 	const { data, isPending, error } = useListMyGuilds();
@@ -110,7 +111,7 @@ export const GuildList = () => {
 						}
 					>
 						<GuildIcon
-							src={guild.iconUrl}
+							src={addCacheBust(guild.iconUrl)}
 							name={guild.name}
 							alt={guild.name}
 							size={48}

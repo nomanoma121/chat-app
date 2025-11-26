@@ -106,6 +106,7 @@ func uploadToStorage(filePath, presignedURL string) error {
 	}
 
 	req.ContentLength = fileInfo.Size()
+	req.Header.Set("Cache-Control", "public, max-age=60")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)

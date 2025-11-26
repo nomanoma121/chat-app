@@ -20,6 +20,7 @@ import { Text } from "~/components/ui/text";
 import { usePermissions } from "~/hooks/use-permissions";
 import { useToast } from "~/hooks/use-toast";
 import { GuildSchema } from "~/schema/guild";
+import { addCacheBust } from "~/utils";
 
 interface GeneralTabProps {
 	guild: GuildWithMembers;
@@ -38,7 +39,6 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 	const toast = useToast();
 	const { canEditGuild } = usePermissions(guild);
 	const fileInputRef = useRef<HTMLInputElement>(null);
-	const [iconUrl, setIconUrl] = useState(guild?.iconUrl);
 	const [isUploading, setIsUploading] = useState(false);
 
 	const {
@@ -73,6 +73,7 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 				body: file,
 				headers: {
 					"Content-Type": file.type,
+					"Cache-Control": "public, max-age=60",
 				},
 			});
 
@@ -81,9 +82,6 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 			}
 
 			const uploadedUrl = uploadUrl.split("?")[0];
-			// キャッシュバスティング用のタイムスタンプを追加
-			const urlWithCacheBuster = `${uploadedUrl}?t=${Date.now()}`;
-			setIconUrl(urlWithCacheBuster);
 
 			await updateGuild({
 				guildId: guild.id,
@@ -121,7 +119,7 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 				data: {
 					name: data.name,
 					description: data.description || "",
-					iconUrl: iconUrl || guild.iconUrl,
+					iconUrl: guild.iconUrl,
 					defaultChannelId: guild.defaultChannelId,
 				},
 			});
@@ -187,8 +185,8 @@ export const GeneralTab = ({ guild }: GeneralTabProps) => {
 							})}
 						>
 							<Avatar
-								src={iconUrl}
-								name={guild?.name || "サーバー"}
+								src={addCacheBust(guild?.iconUrl)}
+								name={guild?.name}
 								size="lg"
 								className={css({
 									width: "64px",

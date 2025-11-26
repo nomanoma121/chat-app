@@ -20,3 +20,11 @@ export const getDefaultGuildIconUrl = () => {
 	const randomIndex = Math.floor(Math.random() * icons.length);
 	return icons[randomIndex];
 };
+
+export const getCacheBustTimestamp = () => Math.floor(Date.now() / 60000);
+
+export const addCacheBust = (url?: string) => {
+	if (!url) return undefined;
+	const separator = url.includes("?") ? "&" : "?";
+	return `${url}${separator}t=${getCacheBustTimestamp()}`;
+};
