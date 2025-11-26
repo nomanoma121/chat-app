@@ -3,13 +3,20 @@ package main
 import (
 	"context"
 	"net"
+	"net/http"
 	"os"
 	"shared/logger"
+	"syscall"
 	"time"
 	"user-service/internal/handler"
 	"user-service/internal/infrastructure/postgres"
 	"user-service/internal/infrastructure/postgres/gen"
 	"user-service/internal/usecase"
+
+	grpcprom "github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus"
+	"github.com/oklog/run"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	pb "chat-app-proto/gen/user"
 
@@ -22,6 +29,11 @@ import (
 )
 
 var db *pgxpool.Pool
+
+const (
+	grpcAddr = ":50051"
+	httpAddr = ":2112"
+)
 
 func init() {
 	_ = godotenv.Load()
@@ -51,6 +63,11 @@ func main() {
 	defer func() {
 		db.Close()
 	}()
+
+	srvMetrics := grpcprom.NewServerMetrics()
+	reg := prometheus.NewRegistry()
+	reg.MustRegister(srvMetrics)
+
 	userRepo := postgres.NewPostgresUserRepository(gen.New(db))
 	validate := validator.New()
 	userUsecase := usecase.NewUserUsecase(userRepo, usecase.Config{
@@ -58,20 +75,57 @@ func main() {
 	}, validate)
 	userHandler := handler.NewUserHandler(userUsecase, log)
 
-	server := grpc.NewServer()
-	pb.RegisterUserServiceServer(server, userHandler)
-	reflection.Register(server)
+	grpcSrv := grpc.NewServer(
+		grpc.ChainUnaryInterceptor(srvMetrics.UnaryServerInterceptor()),
+	)
+	srvMetrics.InitializeMetrics(grpcSrv)
 
-	port := 50051
-	lis, err := net.Listen("tcp", ":50051")
+	pb.RegisterUserServiceServer(grpcSrv, userHandler)
+	reflection.Register(grpcSrv)
+
+	lis, err := net.Listen("tcp", grpcAddr)
 	if err != nil {
-		log.Error("Failed to listen", "port", port, "error", err)
+		log.Error("Failed to listen", "port", grpcAddr, "error", err)
 		os.Exit(1)
 	}
 
-	log.Info("User service starting", "port", port)
-	if err := server.Serve(lis); err != nil {
+	log.Info("User service starting", "port", grpcAddr)
+	if err := grpcSrv.Serve(lis); err != nil {
 		log.Error("Failed to serve", "error", err)
+		os.Exit(1)
+	}
+
+	g := &run.Group{}
+	g.Add(func() error {
+		l, err := net.Listen("tcp", grpcAddr)
+		if err != nil {
+			return err
+		}
+		log.Info("starting gRPC server", "addr", l.Addr().String())
+		return grpcSrv.Serve(l)
+	}, func(err error) {
+		grpcSrv.GracefulStop()
+		grpcSrv.Stop()
+	})
+
+	httpSrv := &http.Server{Addr: httpAddr}
+	g.Add(func() error {
+		m := http.NewServeMux()
+		// Create HTTP handler for Prometheus metrics.
+		m.Handle("/metrics", promhttp.HandlerFor(reg, promhttp.HandlerOpts{}))
+		httpSrv.Handler = m
+		log.Info("starting HTTP server", "addr", httpSrv.Addr)
+		return httpSrv.ListenAndServe()
+	}, func(error) {
+		if err := httpSrv.Close(); err != nil {
+			log.Error("failed to stop web server", "err", err)
+		}
+	})
+
+	g.Add(run.SignalHandler(context.Background(), syscall.SIGINT, syscall.SIGTERM))
+
+	if err := g.Run(); err != nil {
+		log.Error("program interrupted", "err", err)
 		os.Exit(1)
 	}
 }
