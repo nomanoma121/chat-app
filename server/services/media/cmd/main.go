@@ -6,8 +6,10 @@ import (
 	"media-service/internal/infrastructure/rustfs"
 	"media-service/internal/seeder"
 	"net"
+	"net/http"
 	"os"
 	"shared/logger"
+	"syscall"
 
 	pb "chat-app-proto/gen/media"
 
@@ -15,7 +17,11 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	grpcprom "github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus"
 	"github.com/joho/godotenv"
+	"github.com/oklog/run"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -23,6 +29,8 @@ import (
 
 const (
 	BUCKET_NAME = "chat-app-bucket"
+	grpcAddr    = ":50055"
+	httpAddr    = ":2112"
 )
 
 func init() {
@@ -35,6 +43,10 @@ func init() {
 func main() {
 	log := logger.Default("media-service")
 	ctx := context.Background()
+
+	srvMetrics := grpcprom.NewServerMetrics()
+	reg := prometheus.NewRegistry()
+	reg.MustRegister(srvMetrics)
 
 	rustfsEndpoint := os.Getenv("RUSTFS_ENDPOINT")
 
@@ -58,18 +70,18 @@ func main() {
 
 	mediaRepo := rustfs.NewRustFSMediaRepository(s3Client, BUCKET_NAME)
 	mediaHandler := handler.NewMediaHandler(mediaRepo)
-	server := grpc.NewServer()
-	pb.RegisterMediaServiceServer(server, mediaHandler)
-	reflection.Register(server)
 
-	port := 50055
-	lis, err := net.Listen("tcp", ":50055")
-	if err != nil {
-		log.Error("Failed to listen", "port", port, "error", err)
-		os.Exit(1)
-	}
+	grpcSrv := grpc.NewServer(
+		grpc.ChainUnaryInterceptor(
+			srvMetrics.UnaryServerInterceptor(),
+		),
+	)
+	srvMetrics.InitializeMetrics(grpcSrv)
 
-	log.Info("Media service starting", "port", port)
+	pb.RegisterMediaServiceServer(grpcSrv, mediaHandler)
+	reflection.Register(grpcSrv)
+
+	log.Info("Media service starting")
 
 	seeder := seeder.NewSeeder(mediaRepo)
 	if err := seeder.SeedUserIcons(ctx); err != nil {
@@ -83,8 +95,36 @@ func main() {
 		log.Info("Guild icons seeded successfully")
 	}
 
-	if err := server.Serve(lis); err != nil {
-		log.Error("Failed to serve", "error", err)
+	g := &run.Group{}
+	g.Add(func() error {
+		l, err := net.Listen("tcp", grpcAddr)
+		if err != nil {
+			return err
+		}
+		log.Info("starting gRPC server", "addr", l.Addr().String())
+		return grpcSrv.Serve(l)
+	}, func(err error) {
+		grpcSrv.GracefulStop()
+		grpcSrv.Stop()
+	})
+
+	httpSrv := &http.Server{Addr: httpAddr}
+	g.Add(func() error {
+		m := http.NewServeMux()
+		m.Handle("/metrics", promhttp.HandlerFor(reg, promhttp.HandlerOpts{}))
+		httpSrv.Handler = m
+		log.Info("starting HTTP server", "addr", httpSrv.Addr)
+		return httpSrv.ListenAndServe()
+	}, func(error) {
+		if err := httpSrv.Close(); err != nil {
+			log.Error("failed to stop web server", "err", err)
+		}
+	})
+
+	g.Add(run.SignalHandler(context.Background(), syscall.SIGINT, syscall.SIGTERM))
+
+	if err := g.Run(); err != nil {
+		log.Error("program interrupted", "err", err)
 		os.Exit(1)
 	}
 }
