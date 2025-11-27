@@ -1104,7 +1104,7 @@
       },
       "id": 103,
       "panels": [],
-      "title": "🧠 Go Runtime Metrics",
+      "title": "Go Runtime Metrics",
       "type": "row"
     },
     {
