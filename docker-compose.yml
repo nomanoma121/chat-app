@@ -40,6 +40,7 @@ services:
       - "9090:9090"
     volumes:
       - ./benchmarks/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
 
   grafana:
     image: grafana/grafana:latest
@@ -194,3 +195,5 @@ volumes:
   postgres_data:
   rustfs_data:
   minio_data:
+  prometheus_data:
+  grafana_data:

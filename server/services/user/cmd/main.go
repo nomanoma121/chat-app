@@ -86,18 +86,6 @@ func main() {
 	pb.RegisterUserServiceServer(grpcSrv, userHandler)
 	reflection.Register(grpcSrv)
 
-	lis, err := net.Listen("tcp", grpcAddr)
-	if err != nil {
-		log.Error("Failed to listen", "port", grpcAddr, "error", err)
-		os.Exit(1)
-	}
-
-	log.Info("User service starting", "port", grpcAddr)
-	if err := grpcSrv.Serve(lis); err != nil {
-		log.Error("Failed to serve", "error", err)
-		os.Exit(1)
-	}
-
 	g := &run.Group{}
 	g.Add(func() error {
 		l, err := net.Listen("tcp", grpcAddr)
@@ -114,7 +102,6 @@ func main() {
 	httpSrv := &http.Server{Addr: httpAddr}
 	g.Add(func() error {
 		m := http.NewServeMux()
-		// Create HTTP handler for Prometheus metrics.
 		m.Handle("/metrics", promhttp.HandlerFor(reg, promhttp.HandlerOpts{}))
 		httpSrv.Handler = m
 		log.Info("starting HTTP server", "addr", httpSrv.Addr)
