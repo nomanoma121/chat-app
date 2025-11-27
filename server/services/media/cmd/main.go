@@ -21,6 +21,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/oklog/run"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"google.golang.org/grpc"
@@ -47,6 +48,8 @@ func main() {
 	srvMetrics := grpcprom.NewServerMetrics()
 	reg := prometheus.NewRegistry()
 	reg.MustRegister(srvMetrics)
+	reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
+	reg.MustRegister(collectors.NewGoCollector())
 
 	rustfsEndpoint := os.Getenv("RUSTFS_ENDPOINT")
 

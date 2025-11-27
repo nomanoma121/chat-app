@@ -20,6 +20,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/oklog/run"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -67,6 +68,8 @@ func main() {
 	srvMetrics := grpcprom.NewServerMetrics()
 	reg := prometheus.NewRegistry()
 	reg.MustRegister(srvMetrics)
+	reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
+	reg.MustRegister(collectors.NewGoCollector())
 
 	validate := validator.New()
 

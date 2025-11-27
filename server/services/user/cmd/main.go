@@ -16,6 +16,7 @@ import (
 	grpcprom "github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus"
 	"github.com/oklog/run"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	pb "chat-app-proto/gen/user"
@@ -67,6 +68,8 @@ func main() {
 	srvMetrics := grpcprom.NewServerMetrics()
 	reg := prometheus.NewRegistry()
 	reg.MustRegister(srvMetrics)
+	reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
+	reg.MustRegister(collectors.NewGoCollector())
 
 	userRepo := postgres.NewPostgresUserRepository(gen.New(db))
 	validate := validator.New()
