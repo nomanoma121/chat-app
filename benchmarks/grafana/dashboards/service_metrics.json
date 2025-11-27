@@ -2085,8 +2085,8 @@
     ]
   },
   "timezone": "browser",
-  "title": "Discord Clone - Comprehensive Monitoring",
-  "uid": "discord-clone-dashboard",
+  "title": "Chat App Dashboard",
+  "uid": "chat-app-dashboard",
   "version": 1,
   "weekStart": ""
 }

@@ -1,0 +1,7 @@
+apiVersion: 1
+
+providers:
+  - name: chat-app
+    type: file
+    options:
+      path: /var/grafana/dashboards

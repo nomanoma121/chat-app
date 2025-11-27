@@ -52,6 +52,9 @@ services:
       - prometheus
     volumes:
       - grafana_data:/var/lib/grafana
+      - ./benchmarks/grafana/dashboards:/var/grafana/dashboards:ro
+      - ./benchmarks/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./benchmarks/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
 
   minio:
     image: minio/minio:latest
