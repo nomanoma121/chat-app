@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"realtime-service/internal/event"
+	"realtime-service/internal/metrics"
 
 	"github.com/google/uuid"
 )
@@ -15,9 +16,10 @@ type Hub struct {
 	register      chan *Client
 	unregister    chan *Client
 	broadcast     chan *event.Event
+	metrics       *metrics.WebSocketMetrics
 }
 
-func NewHub() *Hub {
+func NewHub(wsMetrics *metrics.WebSocketMetrics) *Hub {
 	return &Hub{
 		clients:       make(map[uuid.UUID]*Client),
 		subscriptions: NewSubscriptionManager(),
@@ -25,6 +27,7 @@ func NewHub() *Hub {
 		register:      make(chan *Client),
 		unregister:    make(chan *Client),
 		broadcast:     make(chan *event.Event),
+		metrics:       wsMetrics,
 	}
 }
 
@@ -33,15 +36,23 @@ func (h *Hub) Run() {
 		select {
 		case client := <-h.register:
 			h.clients[client.userID] = client
+
+			h.metrics.ActiveConnections.Inc()
+			h.metrics.TotalConnections.Inc()
+			
 			log.Printf("Client registered: %s", client.userID)
 		case client := <-h.unregister:
 			if _, ok := h.clients[client.userID]; ok {
 				delete(h.clients, client.userID)
 				h.subscriptions.UnsubscribeAll(client)
 				close(client.send)
+
+				h.metrics.ActiveConnections.Dec()
+
 				log.Printf("Client unregistered: %s", client.userID)
 			}
 		case event := <-h.broadcast:
+			h.metrics.MessageReceived.Inc()
 			h.handleEvent(event)
 		}
 	}
@@ -69,6 +80,7 @@ func (h *Hub) broadcastToChannel(channelID uuid.UUID, evt *event.Event) {
 	for client := range subscribers {
 		select {
 		case client.send <- message:
+			h.metrics.MessageSent.Inc()
 		default:
 			close(client.send)
 			delete(h.clients, client.userID)
