@@ -45,7 +45,9 @@ func main() {
 	log := logger.Default("media-service")
 	ctx := context.Background()
 
-	srvMetrics := grpcprom.NewServerMetrics()
+	srvMetrics := grpcprom.NewServerMetrics(
+		grpcprom.WithServerHandlingTimeHistogram(),
+	)
 	reg := prometheus.NewRegistry()
 	reg.MustRegister(srvMetrics)
 	reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))

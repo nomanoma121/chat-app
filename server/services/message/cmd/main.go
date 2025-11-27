@@ -68,7 +68,9 @@ func main() {
 		db.Close()
 	}()
 
-	srvMetrics := grpcprom.NewServerMetrics()
+	srvMetrics := grpcprom.NewServerMetrics(
+		grpcprom.WithServerHandlingTimeHistogram(),
+	)
 	reg := prometheus.NewRegistry()
 	reg.MustRegister(srvMetrics)
 	reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
