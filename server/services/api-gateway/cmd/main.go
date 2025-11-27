@@ -14,7 +14,12 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/jwtauth/v5"
+	grpcprom "github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/oklog/run"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
@@ -53,13 +58,22 @@ func main() {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
+	reg := prometheus.NewRegistry()
+	clMetrics := grpcprom.NewClientMetrics()
+	reg.MustRegister(clMetrics)
+	reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
+	reg.MustRegister(collectors.NewGoCollector())
+
 	grpcGatewayMux := runtime.NewServeMux(
 		runtime.WithErrorHandler(utils.CustomErrorHandler),
 	)
 
 	opts := []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithUnaryInterceptor(interceptor.JWTToMetadata()),
+		grpc.WithChainUnaryInterceptor(
+			interceptor.JWTToMetadata(),
+			clMetrics.UnaryClientInterceptor(),
+		),
 	}
 	err := userpb.RegisterUserServiceHandlerFromEndpoint(ctx, grpcGatewayMux, USER_SERVICE_ENDPOINT, opts)
 	if err != nil {
@@ -102,8 +116,33 @@ func main() {
 
 	port := "8000"
 	log.Info("API Gateway starting", "port", port)
-	if err := http.ListenAndServe(":"+port, r); err != nil {
-		log.Error("Failed to serve", "error", err, "port", port)
-		os.Exit(1)
+
+	g := &run.Group{}
+	apiSrv := &http.Server{Addr: ":8000", Handler: r}
+	g.Add(func() error {
+		log.Info("starting HTTP server", "addr", apiSrv.Addr)
+		return apiSrv.ListenAndServe()
+	}, func(err error) {
+		log.Info("shutting down HTTP server", "addr", apiSrv.Addr)
+		if err := apiSrv.Shutdown(ctx); err != nil {
+			log.Error("HTTP server shutdown error", "error", err)
+		}
+	})
+
+	g.Add(func() error {
+		m := http.NewServeMux()
+		m.Handle("/metrics", promhttp.HandlerFor(reg, promhttp.HandlerOpts{}))
+		metricsSrv := &http.Server{
+			Addr:    ":2112",
+			Handler: m,
+		}
+		log.Info("starting Metrics server", "addr", metricsSrv.Addr)
+		return metricsSrv.ListenAndServe()
+	}, func(error) {
+		log.Info("shutting down Metrics server")
+	})
+
+	if err := g.Run(); err != nil {
+		log.Error("API Gateway exited with error", "error", err)
 	}
 }
