@@ -815,7 +815,7 @@
       },
       "id": 102,
       "panels": [],
-      "title": "💬 WebSocket Metrics",
+      "title": "WebSocket Metrics",
       "type": "row"
     },
     {
