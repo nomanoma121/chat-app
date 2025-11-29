@@ -5,7 +5,7 @@ import { uuidv4 } from 'https://jslib.k6.io/k6-utils/1.4.0/index.js';
 
 // テスト設定
 export const options = {
-  vus: 1000,           // 仮想ユーザー数
+  vus: 2000,           // 仮想ユーザー数
   duration: '300s',  // テスト実行時間
 };
 
