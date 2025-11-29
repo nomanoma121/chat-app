@@ -147,6 +147,7 @@ services:
     depends_on:
       - postgres
       - user
+    restart: always
 
   message:
     build:
@@ -163,6 +164,7 @@ services:
       - postgres
       - user
       - guild
+    restart: always
     
   realtime:
     build:
@@ -182,6 +184,7 @@ services:
       - redis
       - user
       - message
+    restart: always
 
   media:
     build:
@@ -199,6 +202,7 @@ services:
     depends_on:
       - minio
       - minio-init
+    restart: always
 
   api-gateway:
     build:
@@ -222,6 +226,7 @@ services:
       - message
       - media
       - realtime
+    restart: always
 
 volumes:
   postgres_data:

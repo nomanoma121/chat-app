@@ -34,7 +34,7 @@ export interface SocketWrapper {
   setInterval(callback: () => void, interval: number): void;
 }
 
-type OnAuthCallback = (socket: SocketWrapper) => void;
+type OnAuthCallback = (socket: SocketWrapper, userId: string) => void;
 type OnMessageCallback = (socket: SocketWrapper, data: any) => void;
 
 interface ConnectOptions {
@@ -76,7 +76,8 @@ export function connect(
     socket.on('message', (raw) => {
       const data = JSON.parse(raw);
       if (data.type === WebSocketEvent.AuthSuccess && onAuth) {
-        onAuth(wrapper);
+        const userId = data.data?.user_id || data.data?.userId || '';
+        onAuth(wrapper, userId);
       }
       if (onMessage) {
         onMessage(wrapper, data);

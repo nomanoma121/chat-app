@@ -20,7 +20,7 @@ import {
 
 const API_BASE_URL = "http://localhost:8000";
 const WS_BASE_URL = "ws://localhost:50054/ws";
-const REDIS_ADDR = "redis://localhost:6379";
+const REDIS_ADDR = "redis://127.0.0.1:6379";
 
 // vus間でデータを共有するためのRedisクライアント
 const redisClient = new redis.Client(REDIS_ADDR);
@@ -30,8 +30,8 @@ export const options = {
     activeUser: {
       executor: "constant-vus",
       exec: "activeUser",
-      vus: 2,
-      duration: "30s",
+      vus: 1000,
+      duration: "5m",
     },
   //   newUser: {
   //     executor: "ramping-vus",
@@ -86,7 +86,7 @@ export const activeUser = async () => {
 
   /* ======== ギルド作成 ======== */
   const { guilds: myGuilds } = client.get<ListMyGuildsResponse>(
-    `/api/users/${registerRes.user.id}/guilds`
+    `/api/users/me/guilds`
   );
   check(myGuilds, {
     "no guilds yet": () => myGuilds === undefined || myGuilds.length === 0,
@@ -120,7 +120,8 @@ export const activeUser = async () => {
   await redisClient.sadd(`invite_codes`, inviteRes.invite.inviteCode);
 
   /* ======== 招待コードを使ってギルドに参加 ======== */
-  const invites = await redisClient.srandmember("invite_codes", 3) as string[];
+  const invitesRaw = await redisClient.srandmember("invite_codes", 3);
+  const invites = Array.isArray(invitesRaw) ? invitesRaw : invitesRaw ? [invitesRaw] : [];
   let joinedGuildIds: string[] = [];
   if (invites) {
     for (let i = 0; i < invites.length; i++) {
@@ -164,10 +165,16 @@ export const activeUser = async () => {
 
       sleep(2);
       for (let i = 0; i < 10; i++) {
-        client.post(
+        const msgRes = client.post(
           `/api/channels/${overviewRes.guild.defaultChannelId}/messages`,
           { content: `Active user message ${i + 1} from ${user.displayId}` }
         );
+        check(msgRes, {
+          "message sent": (r) => r !== undefined && !r.error,
+        });
+        if (msgRes.error) {
+          console.error(`Message ${i + 1} failed: ${JSON.stringify(msgRes)}`);
+        }
         sleep(1);
       }
     },

@@ -17,6 +17,9 @@ export class HttpClient {
     const res = http.get(`${this.baseUrl}${endpoint}`, {
       headers: this.token ? { 'Authorization': `Bearer ${this.token}` } : {},
     });
+    if (res.status >= 400) {
+      console.error(`GET ${endpoint} failed: ${res.status} - ${res.body}`);
+    }
     return res.json() as T;
   }
 
@@ -27,6 +30,9 @@ export class HttpClient {
         ...(this.token ? { 'Authorization': `Bearer ${this.token}` } : {}),
       },
     });
+    if (res.status >= 400) {
+      console.error(`POST ${endpoint} failed: ${res.status} - ${res.body}`);
+    }
     return res.json() as Response;
   }
 
