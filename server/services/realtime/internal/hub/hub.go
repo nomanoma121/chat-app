@@ -5,11 +5,13 @@ import (
 	"log"
 	"realtime-service/internal/event"
 	"realtime-service/internal/metrics"
+	"sync"
 
 	"github.com/google/uuid"
 )
 
 type Hub struct {
+	mu            sync.RWMutex
 	clients       map[uuid.UUID]*Client
 	subscriptions *SubscriptionManager
 	handlers      *EventHandlerRegistry
@@ -35,22 +37,27 @@ func (h *Hub) Run() {
 	for {
 		select {
 		case client := <-h.register:
+			h.mu.Lock()
 			h.clients[client.userID] = client
+			h.mu.Unlock()
 
 			h.metrics.ActiveConnections.Inc()
 			h.metrics.TotalConnections.Inc()
-			
+
 			log.Printf("Client registered: %s", client.userID)
 		case client := <-h.unregister:
-			if _, ok := h.clients[client.userID]; ok {
-				delete(h.clients, client.userID)
-				h.subscriptions.UnsubscribeAll(client)
-				close(client.send)
+			func() {
+				h.mu.Lock()
+				defer h.mu.Unlock()
+				if _, ok := h.clients[client.userID]; ok {
+					delete(h.clients, client.userID)
+					h.subscriptions.UnsubscribeAll(client)
+					close(client.send)
+					h.metrics.ActiveConnections.Dec()
 
-				h.metrics.ActiveConnections.Dec()
-
-				log.Printf("Client unregistered: %s", client.userID)
-			}
+					log.Printf("Client unregistered: %s", client.userID)
+				}
+			}()
 		case event := <-h.broadcast:
 			h.metrics.MessageReceived.Inc()
 			h.handleEvent(event)
@@ -83,7 +90,10 @@ func (h *Hub) broadcastToChannel(channelID uuid.UUID, evt *event.Event) {
 			h.metrics.MessageSent.Inc()
 		default:
 			close(client.send)
+			h.mu.Lock()
 			delete(h.clients, client.userID)
+			h.mu.Unlock()
+
 			h.subscriptions.UnsubscribeAll(client)
 			log.Printf("Failed to send to client %s, cleaned up", client.userID)
 		}
