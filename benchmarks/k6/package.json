@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "typegen": "swagger-typescript-api generate -p ../../docs/openapi.swagger.json -o ./types"
+    "typegen": "swagger-typescript-api generate -p ../../docs/openapi.swagger.json -o ./types",
+    "bench": "k6 run scenarios/realistic.ts",
+    "bench:prometheus": "K6_PROMETHEUS_RW_SERVER_URL=http://localhost:9090/api/v1/write K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM=true k6 run --out experimental-prometheus-rw scenarios/realistic.ts"
   },
   "keywords": [],
   "author": "",

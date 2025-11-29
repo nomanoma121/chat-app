@@ -22,62 +22,73 @@ interface K6Socket {
   pong(): void;
 }
 
-type WebSocketMessage = {
+export type WebSocketMessage = {
   type: typeof WebSocketEvent[keyof typeof WebSocketEvent];
   data: any;
 };
 
-export class WebSocketClient {
-  private socket?: K6Socket;
+export interface SocketWrapper {
+  send(data: WebSocketMessage): void;
+  close(): void;
+  setTimeout(callback: () => void, delay: number): void;
+  setInterval(callback: () => void, interval: number): void;
+}
 
-  constructor(private baseUrl: string, private token?: string) {}
+type OnAuthCallback = (socket: SocketWrapper) => void;
+type OnMessageCallback = (socket: SocketWrapper, data: any) => void;
 
-  public connect(onMessage?: (data: any) => void) {
+interface ConnectOptions {
+  onAuth?: OnAuthCallback;
+  onMessage?: OnMessageCallback;
+  timeout?: number;
+}
 
-    ws.connect(this.baseUrl, {}, (socket: K6Socket) => {
-      this.socket = socket;
+export function connect(
+  baseUrl: string,
+  token: string,
+  options: ConnectOptions
+) {
+  const { onAuth, onMessage, timeout = 120000 } = options;
 
-      socket.on('open', () => {
-        if (this.token) {
-          this.send({
-            type: WebSocketEvent.AuthRequest,
-            data: { token: this.token }
-          });
-        }
-      });
+  ws.connect(baseUrl, {}, (socket: K6Socket) => {
+    const wrapper: SocketWrapper = {
+      send(data: WebSocketMessage) {
+        socket.send(JSON.stringify(data));
+      },
+      close() {
+        socket.close();
+      },
+      setTimeout(callback: () => void, delay: number) {
+        socket.setTimeout(callback, delay);
+      },
+      setInterval(callback: () => void, interval: number) {
+        socket.setInterval(callback, interval);
+      },
+    };
 
-      socket.on('message', (data) => {
-        if (onMessage) {
-          const message = JSON.parse(data);
-          onMessage(message);
-        }
-      });
-
-      socket.on('error', (error) => {
-        console.error('WebSocket error:', error);
-      });
-
-      socket.setTimeout(() => {
-        this.close();
-      }, 30000);
+    socket.on('open', () => {
+      socket.send(JSON.stringify({
+        type: WebSocketEvent.AuthRequest,
+        data: { token }
+      }));
     });
-  }
 
-  public send(data: WebSocketMessage) {
-    if (this.socket) {
-      this.socket.send(JSON.stringify(data));
-    }
-  }
+    socket.on('message', (raw) => {
+      const data = JSON.parse(raw);
+      if (data.type === WebSocketEvent.AuthSuccess && onAuth) {
+        onAuth(wrapper);
+      }
+      if (onMessage) {
+        onMessage(wrapper, data);
+      }
+    });
 
-  public close() {
-    if (this.socket) {
-      this.socket.close();
-    }
-  }
+    socket.on('error', (error) => {
+      console.error('WebSocket error:', error);
+    });
 
-  public setTimeout(callback: () => void, delay: number) {
-    if (this.socket) {
-      this.socket.setTimeout(callback, delay);
-    }
-  }
+    socket.setTimeout(() => {
+      socket.close();
+    }, timeout);
+  });
 }
