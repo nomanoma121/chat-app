@@ -32,10 +32,9 @@ export class WebSocketClient {
 
   constructor(private baseUrl: string, private token?: string) {}
 
-  public connect(endpoint: string, onMessage?: (data: any) => void) {
-    const url = `${this.baseUrl}${endpoint}`;
+  public connect(onMessage?: (data: any) => void) {
 
-    ws.connect(url, {}, (socket: K6Socket) => {
+    ws.connect(this.baseUrl, {}, (socket: K6Socket) => {
       this.socket = socket;
 
       socket.on('open', () => {
