@@ -24,8 +24,26 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:latest
+    environment:
+      DATA_SOURCE_URI: "postgres:5432/chat_app?sslmode=disable"
+      DATA_SOURCE_USER: user
+      DATA_SOURCE_PASS: ${DATABASE_PASSWORD}
+    depends_on:
+      - postgres
+
   redis:
     image: redis:7-alpine
+    ulimits:
+      nofile: 65536
+
+  redis-exporter:
+    image: quay.io/oliver006/redis_exporter:latest
+    environment:
+      - REDIS_ADDR=redis:6379
+    depends_on:
+      - redis
 
   adminer:
     image: adminer
@@ -36,6 +54,11 @@ services:
 
   prometheus:
     image: prom/prometheus:latest
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-remote-write-receiver'
+      - '--enable-feature=native-histograms'
     ports:
       - "9090:9090"
     volumes:
@@ -149,6 +172,8 @@ services:
       - REDIS_URL=redis:6379
       - REALTIME_SERVICE_PORT=50054
       - JWT_SECRET=${JWT_SECRET}
+    ulimits:
+      nofile: 65536
     ports:
       - "50054:50054"
     depends_on:
@@ -187,6 +212,8 @@ services:
       - GUILD_SERVICE_URL=guild:50052
       - MESSAGE_SERVICE_URL=message:50053
       - MEDIA_SERVICE_URL=172.17.0.1:50055
+    ulimits:
+      nofile: 65536
     depends_on:
       - user
       - guild
