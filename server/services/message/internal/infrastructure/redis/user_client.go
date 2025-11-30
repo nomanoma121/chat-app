@@ -3,6 +3,7 @@ package redis
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"message-service/internal/domain"
 	"time"
 
@@ -53,6 +54,7 @@ func (c *CachedUserClient) GetUsersByIDs(ctx context.Context, ids []uuid.UUID) (
 		cacheKey := "user:" + id.String()
 		cachedData, err := c.redis.Get(ctx, cacheKey).Result()
 		if err == nil {
+			fmt.Println("Cache hit for user ID:", id.String())
 			var user domain.User
 			if err := json.Unmarshal([]byte(cachedData), &user); err == nil {
 				userMap[id.String()] = &user
