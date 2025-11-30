@@ -74,13 +74,20 @@ export function connect(
     });
 
     socket.on('message', (raw) => {
-      const data = JSON.parse(raw);
-      if (data.type === WebSocketEvent.AuthSuccess && onAuth) {
-        const userId = data.data?.user_id || data.data?.userId || '';
-        onAuth(wrapper, userId);
-      }
-      if (onMessage) {
-        onMessage(wrapper, data);
+      const messages = raw.split('\n').filter((m: string) => m.trim());
+      for (const msg of messages) {
+        try {
+          const data = JSON.parse(msg);
+          if (data.type === WebSocketEvent.AuthSuccess && onAuth) {
+            const userId = data.data?.user_id || data.data?.userId || '';
+            onAuth(wrapper, userId);
+          }
+          if (onMessage) {
+            onMessage(wrapper, data);
+          }
+        } catch (e) {
+          console.error(`Failed to parse WebSocket message: ${msg}`);
+        }
       }
     });
 
