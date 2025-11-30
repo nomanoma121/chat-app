@@ -126,7 +126,8 @@ func main() {
 	log.Info("Connected to guild service", "url", guildServiceURL)
 
 	messageRepo := postgres.NewPostgresMessageRepository(gen.New(db))
-	userSvc := user.NewUserServiceClient(userConn)
+	userSvc := rds.NewCachedUserClient(redisClient, user.NewUserServiceClient(userConn))
+	
 	guildSvc := user.NewGuildServiceClient(guildConn)
 	redisPub := rds.NewRedisPublisher(redisClient)
 
