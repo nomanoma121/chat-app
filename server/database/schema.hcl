@@ -47,6 +47,12 @@ table "users" {
   unique "email" {
     columns = [column.email]
   }
+  index "idx_display_id" {
+    columns = [column.display_id]
+  }
+  index "idx_email" {
+    columns = [column.email]
+  }
 }
 
 table "messages" {
