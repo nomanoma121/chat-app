@@ -46,7 +46,7 @@ func (p SubscribeChannelsEventProcessor[T]) Process(hub *Hub, evt *event.Event) 
 	hub.mu.RLock()
 	client, ok := hub.clients[e.GetUserID()]
 	hub.mu.RUnlock()
-	
+
 	if !ok {
 		log.Printf("Client not found for user ID: %s", e.GetUserID())
 		return errors.New("client not found for user ID: " + e.GetUserID().String())

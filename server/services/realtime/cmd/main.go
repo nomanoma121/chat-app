@@ -55,7 +55,7 @@ func main() {
 	messageSub := subscriber.NewMessageSubscriber(redisClient, hub)
 	go func() {
 		if err := messageSub.Start(context.Background()); err != nil {
-			log.Error("Message subscriber error: %v", err)
+			log.Error("Message subscriber stopped with error", "err", err)
 		}
 	}()
 	log.Info("Message subscriber started")

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"net/http"
 	"os"
@@ -29,7 +30,6 @@ import (
 	"google.golang.org/grpc/reflection"
 
 	_ "net/http/pprof"
-	"fmt"
 )
 
 var db *pgxpool.Pool

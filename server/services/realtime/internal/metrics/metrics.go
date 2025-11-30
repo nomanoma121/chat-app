@@ -5,7 +5,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
-type WebSocketMetrics struct{
+type WebSocketMetrics struct {
 	ActiveConnections prometheus.Gauge
 	TotalConnections  prometheus.Counter
 	MessageSent       prometheus.Counter
