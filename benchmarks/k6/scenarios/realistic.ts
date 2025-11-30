@@ -30,7 +30,7 @@ export const options = {
     activeUser: {
       executor: "constant-vus",
       exec: "activeUser",
-      vus: 1000,
+      vus: 2000,
       duration: "5m",
     },
   //   newUser: {
@@ -147,10 +147,10 @@ export const activeUser = async () => {
   client.get(`/api/channels/${overviewRes.guild.defaultChannelId}/messages`);
 
   wsConnect(WS_BASE_URL, loginRes.token, {
-    onAuth: (socket) => {
+    onAuth: (socket, userId) => {
       socket.send({
         type: WebSocketEvent.SubscribeChannels,
-        data: { channelId: overviewRes.guild.defaultChannelId },
+        data: { user_id: userId, channel_ids: [overviewRes.guild.defaultChannelId] },
       });
 
       joinedGuildIds.forEach((guildId) => {
@@ -159,7 +159,7 @@ export const activeUser = async () => {
         );
         socket.send({
           type: WebSocketEvent.SubscribeChannels,
-          data: { channelId: res.guild.defaultChannelId },
+          data: { user_id: userId, channel_ids: [res.guild.defaultChannelId] },
         });
       });
 
