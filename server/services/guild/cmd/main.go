@@ -54,7 +54,7 @@ func init() {
 	}
 
 	config.MaxConns = 500
-	config.MinConns = 10
+	config.MinConns = 100
 	config.MaxConnLifetime = time.Hour
 	config.MaxConnIdleTime = 30 * time.Minute
 
