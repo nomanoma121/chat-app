@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"shared/logger"
+	"time"
 
 	mdw "api-gateway/internal/middleware"
 
@@ -59,8 +60,7 @@ func main() {
 
 	tokenAuth = jwtauth.New("HS256", []byte(os.Getenv("JWT_SECRET")), nil)
 
-	ctx := context.Background()
-	ctx, cancel := context.WithCancel(ctx)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	reg := prometheus.NewRegistry()
