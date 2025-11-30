@@ -97,6 +97,9 @@ table "messages" {
     ref_columns = [table.messages.column.id]
     on_delete = SET_NULL
   }
+  index "idx_channel_created_at" {
+    columns = [column.channel_id, column.created_at]
+  }
 }
 
 table "guilds" {
