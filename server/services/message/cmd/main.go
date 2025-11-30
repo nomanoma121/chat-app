@@ -62,7 +62,7 @@ func init() {
 	config.MaxConnIdleTime = 30 * time.Minute
 
 	for i := 0; i < 30; i++ {
-		db, err = pgxpool.New(context.Background(), config.ConnString())
+		db, err = pgxpool.NewWithConfig(context.Background(), config)
 		if err == nil {
 			break
 		}
