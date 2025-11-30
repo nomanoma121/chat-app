@@ -97,6 +97,8 @@ func main() {
 	redisAddr := os.Getenv("REDIS_ADDR")
 	redisClient := redis.NewClient(&redis.Options{
 		Addr: redisAddr,
+		PoolSize: 200,
+		MinIdleConns: 20,
 	})
 
 	userServiceURL := os.Getenv("USER_SERVICE_URL")
