@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"realtime-service/internal/config"
 	"realtime-service/internal/handler"
@@ -17,9 +18,15 @@ import (
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/redis/go-redis/v9"
+
+	_ "net/http/pprof"
 )
 
 func main() {
+	go func() {
+		fmt.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+
 	cfg := config.Load()
 	log := logger.Default("realtime-service")
 

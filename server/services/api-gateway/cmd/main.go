@@ -4,6 +4,7 @@ import (
 	"api-gateway/internal/interceptor"
 	"api-gateway/internal/utils"
 	"context"
+	"fmt"
 	"net/http"
 	"os"
 	"shared/logger"
@@ -29,6 +30,7 @@ import (
 	mediapb "chat-app-proto/gen/media"
 	messagepb "chat-app-proto/gen/message"
 	userpb "chat-app-proto/gen/user"
+	_ "net/http/pprof"
 )
 
 var (
@@ -50,6 +52,9 @@ func init() {
 }
 
 func main() {
+	go func() {
+		fmt.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
 	log := logger.Default("api-gateway")
 
 	tokenAuth = jwtauth.New("HS256", []byte(os.Getenv("JWT_SECRET")), nil)

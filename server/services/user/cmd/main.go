@@ -27,6 +27,9 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+
+	_ "net/http/pprof"
+	"fmt"
 )
 
 var db *pgxpool.Pool
@@ -60,6 +63,10 @@ func init() {
 }
 
 func main() {
+	go func() {
+		fmt.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+
 	log := logger.Default("user-service")
 	defer func() {
 		db.Close()

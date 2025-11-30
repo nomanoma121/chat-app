@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"guild-service/internal/handler"
 	user "guild-service/internal/infrastructure/grpc"
 	"guild-service/internal/infrastructure/postgres"
@@ -22,6 +23,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+
+	_ "net/http/pprof"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"google.golang.org/grpc"
@@ -60,6 +63,10 @@ func init() {
 }
 
 func main() {
+	go func() {
+		fmt.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+
 	log := logger.Default("guild-service")
 	defer func() {
 		db.Close()

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"media-service/internal/handler"
 	"media-service/internal/infrastructure/rustfs"
 	"media-service/internal/seeder"
@@ -24,6 +25,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
+	_ "net/http/pprof"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -42,6 +45,10 @@ func init() {
 }
 
 func main() {
+	go func() {
+		fmt.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+
 	log := logger.Default("media-service")
 	ctx := context.Background()
 

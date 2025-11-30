@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"message-service/internal/handler"
 	user "message-service/internal/infrastructure/grpc"
 	"message-service/internal/infrastructure/postgres"
@@ -30,6 +31,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
+
+	_ "net/http/pprof"
 )
 
 var db *pgxpool.Pool
@@ -63,6 +66,10 @@ func init() {
 }
 
 func main() {
+	go func() {
+		fmt.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+
 	log := logger.Default("message-service")
 	defer func() {
 		db.Close()
