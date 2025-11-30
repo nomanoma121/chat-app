@@ -135,8 +135,10 @@ services:
       dockerfile: Dockerfile
       args:
         SERVICE_NAME: user
+    deploy:
+      replicas: 3
     ports:
-      - "6060:6060"
+      - "6058-6060:6060"
     environment:
       - JWT_SECRET=${JWT_SECRET}
       - DATABASE_URL=${DATABASE_URL}
