@@ -121,6 +121,13 @@ services:
           ]
         }'
         echo "Bucket initialized with public read access"
+  
+  user-service:
+    image: nginx:latest
+    volumes:
+      - ./server/services/user/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - user
 
   user:
     build:
@@ -146,10 +153,10 @@ services:
       - "6061:6060"
     environment:
       - DATABASE_URL=${DATABASE_URL}
-      - USER_SERVICE_URL=user:50051
+      - USER_SERVICE_URL=user-service:50051
     depends_on:
       - postgres
-      - user
+      - user-service
     restart: always
 
   message:
@@ -162,12 +169,12 @@ services:
       - "6062:6060"
     environment:
       - DATABASE_URL=${DATABASE_URL}
-      - USER_SERVICE_URL=user:50051
+      - USER_SERVICE_URL=user-service:50051
       - GUILD_SERVICE_URL=guild:50052
       - REDIS_ADDR=redis:6379
     depends_on:
       - postgres
-      - user
+      - user-service
       - guild
     restart: always
     
@@ -188,7 +195,7 @@ services:
       - "6063:6060"
     depends_on:
       - redis
-      - user
+      - user-service
       - message
     restart: always
 

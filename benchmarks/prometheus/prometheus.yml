@@ -7,8 +7,11 @@ scrape_configs:
       - targets: ['localhost:9090']
 
   - job_name: 'user-service'
-    static_configs:
-      - targets: ['user:2112']
+    dns_sd_configs:
+      - names:
+          - 'user'
+        type: 'A'
+        port: 2112
 
   - job_name: 'guild-service'
     static_configs:
