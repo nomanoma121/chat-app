@@ -46,9 +46,20 @@ func init() {
 	dsn := os.Getenv("DATABASE_URL")
 
 	log.Info("Connecting to database...")
-	var err error
+	
+	config, err := pgxpool.ParseConfig(dsn)
+	if err != nil {
+		log.Error("Failed to parse database config", "error", err)
+		os.Exit(1)
+	}
+
+	config.MaxConns = 500
+	config.MinConns = 10
+	config.MaxConnLifetime = time.Hour
+	config.MaxConnIdleTime = 30 * time.Minute
+
 	for i := 0; i < 30; i++ {
-		db, err = pgxpool.New(context.Background(), dsn)
+		db, err = pgxpool.NewWithConfig(context.Background(), config)
 		if err == nil {
 			break
 		}
