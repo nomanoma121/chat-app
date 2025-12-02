@@ -209,6 +209,7 @@ export function handleSummary(data: Record<string, unknown>) {
     type: string;
     values: Record<string, number>;
     contains?: string;
+    thresholds?: Record<string, { ok: boolean }>;
   }>;
 
   // http_req_duration メトリクスからタグ別のデータを抽出
@@ -234,38 +235,48 @@ export function handleSummary(data: Record<string, unknown>) {
 
   // 閾値を取得
   const getThreshold = (endpoint: string): number | null => {
-    const thresholdKey = `http_req_duration{name:${endpoint}}`;
-    const thresholds = options.thresholds as Record<string, string[]> | undefined;
-    const threshold = thresholds?.[thresholdKey];
-    if (!threshold || !Array.isArray(threshold)) return null;
+    const metricKey = `http_req_duration{name:${endpoint}}`;
+    const metric = metrics[metricKey];
+    if (!metric || !metric.thresholds) return null;
 
-    // "p(95)<500" のような形式から数値を抽出
-    const p95Match = threshold.find((t: string) => t.includes('p(95)<'));
-    if (!p95Match) return null;
-    const match = p95Match.match(/p\(95\)<(\d+)/);
+    // thresholds オブジェクトから "p(95)<数値" のキーを探す
+    const thresholdKeys = Object.keys(metric.thresholds);
+    const p95Key = thresholdKeys.find(k => k.includes('p(95)<'));
+    if (!p95Key) return null;
+
+    const match = p95Key.match(/p\(95\)<(\d+)/);
     return match ? parseInt(match[1]) : null;
   };
 
   let output = '\n\n█ ENDPOINT METRICS (Response Time)\n\n';
   const sortedEndpoints = Object.entries(endpointMetrics).sort((a, b) => b[1].p95 - a[1].p95);
 
+  // パスの最大長を取得
+  const maxPathLength = Math.max(...sortedEndpoints.map(([endpoint]) => {
+    const [, path] = endpoint.split(' ');
+    return path.length;
+  }));
+
   for (const [endpoint, stats] of sortedEndpoints) {
     const threshold = getThreshold(endpoint);
     const exceedsThreshold = threshold !== null && stats.p95 > threshold;
 
-    // 閾値超えの場合は赤色にする
-    const p95Color = exceedsThreshold ? '\x1b[31m' : '';
+    const redColor = '\x1b[31m';
     const resetColor = '\x1b[0m';
 
-    output += `  ${endpoint}\n`;
-    output += `    Requests: ${stats.count}\n`;
-    output += `    Avg: ${stats.avg.toFixed(2)}ms | Med: ${stats.med.toFixed(2)}ms\n`;
-    output += `    Min: ${stats.min.toFixed(2)}ms | Max: ${stats.max.toFixed(2)}ms\n`;
-    output += `    p95: ${p95Color}${stats.p95.toFixed(2)}ms${resetColor} | p99: ${stats.p99.toFixed(2)}ms`;
+    // 閾値超えの場合は赤色にする
+    const p95Color = exceedsThreshold ? redColor : '';
+
+    // メソッドとパスを分割してパディング
+    const [method, path] = endpoint.split(' ');
+    const paddedMethod = method.padEnd(6);
+    const paddedPath = path.padEnd(maxPathLength);
+
+    output += `  ${paddedMethod}${paddedPath}  ${p95Color}${stats.p95.toFixed(2)}ms${resetColor}`;
     if (exceedsThreshold && threshold !== null) {
-      output += ` ${p95Color}(threshold: ${threshold}ms)${resetColor}`;
+      output += ` ${redColor}(threshold: ${threshold}ms)${resetColor}`;
     }
-    output += '\n\n';
+    output += '\n';
   }
 
   return {
