@@ -10,7 +10,8 @@ function normalizeEndpoint(endpoint: string): string {
     .replace(/\/messages\/[^/]+/g, '/messages/:id');
 }
 
-type ResponseWithStatus<T> = T & {
+type ResponseWithStatus<T> = {
+  data: T;
   status: number;
 }
 
@@ -35,7 +36,7 @@ export class HttpClient {
     if (res.status >= 400) {
       console.error(`GET ${endpoint} failed: ${res.status} - ${res.body}`);
     }
-    return res.json() as ResponseWithStatus<T>;
+    return { data: res.json() as T, status: res.status };
   }
 
   public post<Request, Response>(endpoint: string, body: Request): ResponseWithStatus<Response> {
@@ -49,7 +50,7 @@ export class HttpClient {
     if (res.status >= 400) {
       console.error(`POST ${endpoint} failed: ${res.status} - ${res.body}`);
     }
-    return res.json() as ResponseWithStatus<Response>;
+    return { data: res.json() as Response, status: res.status };
   }
 
   public put<Request, Response>(endpoint: string, body: Request): ResponseWithStatus<Response> {
@@ -60,7 +61,7 @@ export class HttpClient {
       },
       tags: { name: `PUT ${normalizeEndpoint(endpoint)}` },
     });
-    return res.json() as ResponseWithStatus<Response>;
+    return { data: res.json() as Response, status: res.status };
   }
 
   public delete<Request, Response>(endpoint: string, params?: Request): ResponseWithStatus<Response> {
@@ -69,7 +70,7 @@ export class HttpClient {
       params: params,
       tags: { name: `DELETE ${normalizeEndpoint(endpoint)}` },
     });
-    return res.json() as ResponseWithStatus<Response>;
+    return { data: res.json() as Response, status: res.status };
   }
 
   public patch<Request, Response>(endpoint: string, body: Request): ResponseWithStatus<Response> {
@@ -80,6 +81,7 @@ export class HttpClient {
       },
       tags: { name: `PATCH ${normalizeEndpoint(endpoint)}` },
     });
-    return res.json() as ResponseWithStatus<Response>;
+
+    return { data: res.json() as Response, status: res.status };
   }
 }

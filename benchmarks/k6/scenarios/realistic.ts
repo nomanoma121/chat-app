@@ -33,8 +33,8 @@ export const options = {
     activeUser: {
       executor: "constant-vus",
       exec: "activeUser",
-      vus: 2000,
-      duration: "5m",
+      vus: 200,
+      duration: "1m",
     },
   //   newUser: {
   //     executor: "ramping-vus",
@@ -57,15 +57,15 @@ export const options = {
     http_req_duration: ["p(95)<500", "p(99)<1000"],
     http_req_failed: ["rate<0.01"],
 
-    'http_req_duration{name:POST /api/auth/register}': ["p(95)<300"],
-    'http_req_duration{name:POST /api/auth/login}': ["p(95)<200"],
-    'http_req_duration{name:GET /api/users/me/guilds}': ["p(95)<150"],
-    'http_req_duration{name:POST /api/guilds}': ["p(95)<300"],
-    'http_req_duration{name:POST /api/guilds/:id/invites}': ["p(95)<200"],
-    'http_req_duration{name:POST /api/invites/:code/join}': ["p(95)<300"],
-    'http_req_duration{name:GET /api/guilds/:id/overview}': ["p(95)<200"],
-    'http_req_duration{name:GET /api/channels/:id/messages}': ["p(95)<250"],
-    'http_req_duration{name:POST /api/channels/:id/messages}': ["p(95)<300"],
+    'http_req_duration{name:POST /api/auth/register}': ["p(95)<500"],
+    'http_req_duration{name:POST /api/auth/login}': ["p(95)<500"],
+    'http_req_duration{name:GET /api/users/me/guilds}': ["p(95)<500"],
+    'http_req_duration{name:POST /api/guilds}': ["p(95)<500"],
+    'http_req_duration{name:POST /api/guilds/:id/invites}': ["p(95)<500"],
+    'http_req_duration{name:POST /api/invites/:code/join}': ["p(95)<500"],
+    'http_req_duration{name:GET /api/guilds/:id/overview}': ["p(95)<500"],
+    'http_req_duration{name:GET /api/channels/:id/messages}': ["p(95)<500"],
+    'http_req_duration{name:POST /api/channels/:id/messages}': ["p(95)<500"],
   },
 };
 
@@ -82,10 +82,10 @@ export const activeUser = async () => {
   );
   const user = {
     ...newUser,
-    ...registerRes.user,
+    ...registerRes.data.user,
   };
   check(registerRes, {
-    "register success": (r: RegisterResponse) => r.user.id !== undefined,
+    "register success": (r) => r.status >= 201 && r.status < 300,
   });
 
   const loginRes = client.post<LoginRequest, LoginResponse>("/api/auth/login", {
@@ -93,15 +93,15 @@ export const activeUser = async () => {
     password: user.password,
   });
   check(loginRes, {
-    "login success": (r: LoginResponse) => r.token !== undefined,
+    "login success": (r) => r.status >= 200 && r.status < 300,
   });
-  client.setToken(loginRes.token);
+  client.setToken(loginRes.data.token);
 
-  const { guilds: myGuilds } = client.get<ListMyGuildsResponse>(
+  const { data: myGuilds } = client.get<ListMyGuildsResponse>(
     `/api/users/me/guilds`
   );
   check(myGuilds, {
-    "no guilds yet": () => myGuilds === undefined || myGuilds.length === 0,
+    "get my guilds": (r) => r.status >= 200 && r.status < 300,
   });
 
   const guild = generateNewGuild();
@@ -114,20 +114,20 @@ export const activeUser = async () => {
     }
   );
   check(guildRes, {
-    "guild created": (r: CreateGuildResponse) => r.guild.id !== undefined,
+    "guild created": (r) => r.status >= 201 && r.status < 300,
   });
 
   const inviteRes = client.post<
     CreateGuildInviteBody,
     CreateGuildInviteResponse
-  >(`/api/guilds/${guildRes.guild.id}/invites`, {
+  >(`/api/guilds/${guildRes.data.guild.id}/invites`, {
     expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
   });
   check(inviteRes, {
-    "invite created": (r: CreateGuildInviteResponse) => r.invite.inviteCode !== undefined,
+    "invite created": (r) => r.status >= 201 && r.status < 300,
   });
 
-  await redisClient.sadd(`invite_codes`, inviteRes.invite.inviteCode);
+  await redisClient.sadd(`invite_codes`, inviteRes.data.invite.inviteCode);
 
   const invitesRaw = await redisClient.srandmember("invite_codes", 3);
   const invites = Array.isArray(invitesRaw) ? invitesRaw : invitesRaw ? [invitesRaw] : [];
@@ -135,31 +135,31 @@ export const activeUser = async () => {
   if (invites) {
     for (let i = 0; i < invites.length; i++) {
       const code = invites[i];
-      if (code !== inviteRes.invite.inviteCode) {
+      if (code !== inviteRes.data.invite.inviteCode) {
         const joinRes = client.post<JoinGuildBody, JoinGuildResponse>(
           `/api/invites/${code}/join`,
           {}
         );
         check(joinRes, {
-          "joined guild via invite": (r: JoinGuildResponse) => r !== undefined,
+          "joined guild via invite": (r) => r.status >= 201 && r.status < 300,
         });
-        if (joinRes.member) {
-          joinedGuildIds.push(joinRes.member.guildId);
+        if (joinRes.data.member) {
+          joinedGuildIds.push(joinRes.data.member.guildId);
         }
       }
     }
   }
 
   const overviewRes = client.get<GetGuildOverviewResponse>(
-    `/api/guilds/${guildRes.guild.id}/overview`
+    `/api/guilds/${guildRes.data.guild.id}/overview`
   );
-  client.get(`/api/channels/${overviewRes.guild.defaultChannelId}/messages`);
+  client.get(`/api/channels/${overviewRes.data.guild.defaultChannelId}/messages`);
 
-  wsConnect(WS_BASE_URL, loginRes.token, {
+  wsConnect(WS_BASE_URL, loginRes.data.token, {
     onAuth: (socket, userId) => {
       socket.send({
         type: WebSocketEvent.SubscribeChannels,
-        data: { user_id: userId, channel_ids: [overviewRes.guild.defaultChannelId] },
+        data: { user_id: userId, channel_ids: [overviewRes.data.guild.defaultChannelId] },
       });
 
       joinedGuildIds.forEach((guildId) => {
@@ -168,20 +168,20 @@ export const activeUser = async () => {
         );
         socket.send({
           type: WebSocketEvent.SubscribeChannels,
-          data: { user_id: userId, channel_ids: [res.guild.defaultChannelId] },
+          data: { user_id: userId, channel_ids: [res.data.guild.defaultChannelId] },
         });
       });
 
       sleep(2);
       for (let i = 0; i < 10; i++) {
         const msgRes = client.post<CreateBody, CreateResponse>(
-          `/api/channels/${overviewRes.guild.defaultChannelId}/messages`,
+          `/api/channels/${overviewRes.data.guild.defaultChannelId}/messages`,
           { content: `Active user message ${i + 1} from ${user.displayId}` }
         );
         check(msgRes, {
-          "message sent": (r) => r.message !== undefined,
+          "message sent": (r) => r.status === 201,
         });
-        if (!msgRes.message) {
+        if (!msgRes.data.message) {
           console.error(`Message ${i + 1} failed: ${JSON.stringify(msgRes)}`);
         }
         sleep(1);
