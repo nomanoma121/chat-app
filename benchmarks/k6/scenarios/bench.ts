@@ -3,26 +3,6 @@ import redis from "k6/experimental/redis";
 import { generateNewUser, generateNewGuild } from "../helpers/utils.ts";
 import { Client } from "../helpers/client.ts";
 import { connect as wsConnect, WebSocketEvent, type WebSocketMessage } from "../helpers/websocket.ts";
-import {
-  CreateBody,
-  CreateCategoryBody,
-  CreateCategoryResponse,
-  CreateChannelBody,
-  CreateChannelResponse,
-  CreateGuildInviteBody,
-  CreateGuildInviteResponse,
-  CreateGuildRequest,
-  CreateGuildResponse,
-  CreateResponse,
-  GetGuildOverviewResponse,
-  JoinGuildBody,
-  JoinGuildResponse,
-  ListMyGuildsResponse,
-  LoginRequest,
-  LoginResponse,
-  RegisterRequest,
-  RegisterResponse,
-} from "../types/Api.ts";
 
 const API_BASE_URL = "http://localhost:8000";
 const WS_BASE_URL = "ws://localhost:50054/ws";
@@ -67,6 +47,7 @@ export const options = {
 
     'http_req_duration{name:POST /api/auth/register}': ["p(95)<500"],
     'http_req_duration{name:POST /api/auth/login}': ["p(95)<500"],
+    'http_req_duration{name:GET /api/auth/me}': ["p(95)<500"],
     'http_req_duration{name:GET /api/users/me/guilds}': ["p(95)<500"],
     'http_req_duration{name:POST /api/guilds}': ["p(95)<500"],
     'http_req_duration{name:POST /api/guilds/:id/invites}': ["p(95)<500"],
@@ -74,6 +55,11 @@ export const options = {
     'http_req_duration{name:GET /api/guilds/:id/overview}': ["p(95)<500"],
     'http_req_duration{name:GET /api/channels/:id/messages}': ["p(95)<500"],
     'http_req_duration{name:POST /api/channels/:id/messages}': ["p(95)<500"],
+    'http_req_duration{name:GET /api/guilds/:id/invites}': ["p(95)<500"],
+    'http_req_duration{name:GET /api/guilds/:id}': ["p(95)<500"],
+    'http_req_duration{name:GET /api/invites/:code}': ["p(95)<500"],
+    'http_req_duration{name:POST /api/guilds/:id/categories}': ["p(95)<500"],
+    'http_req_duration{name:POST /api/categories/:id/channels}': ["p(95)<500"],
   },
 };
 
@@ -91,6 +77,11 @@ export const activeUser = async () => {
     "login success": (r) => r.success,
   });
 
+  const authMeResult = client.authMe();
+  check({ success: authMeResult.success }, {
+    "auth me success": (r) => r.success,
+  });
+
   const myGuildsResult = client.getMyGuilds();
   check({ success: myGuildsResult.success }, {
     "get my guilds": (r) => r.success,
@@ -102,7 +93,16 @@ export const activeUser = async () => {
     "guild created": (r) => r.success,
   });
 
-  // カテゴリとテキストチャンネルをそれぞれ3つずつ作成
+  const overviewResult = client.getGuildOverview(guildResult.guildId);
+  check({ success: overviewResult.success }, {
+    "get guild overview": (r) => r.success,
+  });
+
+  const getGuildRes = client.getGuild(guildResult.guildId);
+  check({ success: getGuildRes.success }, {
+    "get guild": (r) => r.success,
+  });
+
   for (let i = 1; i <= 3; i++) {
     const categoryResult = client.createCategory(guildResult.guildId, `Category ${i}`);
     check({ success: categoryResult.success }, {
@@ -117,6 +117,11 @@ export const activeUser = async () => {
     }
   }
 
+  const getInvitesRes = client.getInvites(guildResult.guildId);
+  check({ success: getInvitesRes.success }, {
+    "get invites": (r) => r.success,
+  });
+
   const inviteResult = client.createInvite(
     guildResult.guildId,
     new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
@@ -126,7 +131,6 @@ export const activeUser = async () => {
   });
 
   await redisClient.sadd(`invite_codes`, inviteResult.inviteCode);
-  sleep(1);
 
   const invitesRaw = await redisClient.srandmember("invite_codes", 3);
   const invites = Array.isArray(invitesRaw) ? invitesRaw : invitesRaw ? [invitesRaw] : [];
@@ -134,6 +138,11 @@ export const activeUser = async () => {
   if (invites) {
     for (let i = 0; i < invites.length; i++) {
       const code = invites[i];
+      const inviteDetail = client.getInvite(code);
+      check({ success: inviteDetail.success }, {
+        "get invite detail": (r) => r.success,
+      });
+
       if (code !== inviteResult.inviteCode) {
         const joinResult = client.joinGuild(code);
         check({ success: joinResult.success }, {
@@ -146,12 +155,8 @@ export const activeUser = async () => {
     }
   }
 
-  const overviewResult = client.getGuildOverview(guildResult.guildId!);
-  check({ success: overviewResult.success }, {
-    "get guild overview": (r) => r.success,
-  });
 
-  const messagesResult = client.getMessages(overviewResult.defaultChannelId!);
+  const messagesResult = client.getMessages(overviewResult.defaultChannelId);
   check({ success: messagesResult.success }, {
     "get messages": (r) => r.success,
   });

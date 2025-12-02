@@ -18,6 +18,8 @@ import {
   ListMyGuildsResponse,
   CreateBody,
   CreateResponse,
+  AuthMeResponse,
+  GetGuildInvitesResponse,
 } from '../types/Api.ts';
 
 export class Client {
@@ -44,9 +46,20 @@ export class Client {
     return { success: res.status >= 200 && res.status < 300, token: this.token };
   }
 
+  authMe() {
+    const res = this.http.get<AuthMeResponse>('/api/auth/me');
+    this.userId = res.data.userId;
+    return { success: res.status >= 200 && res.status < 300, userId: this.userId };
+  }
+
   getMyGuilds() {
     const res = this.http.get<ListMyGuildsResponse>('/api/users/me/guilds');
     return { success: res.status >= 200 && res.status < 300, guilds: res.data.guilds || [] };
+  }
+
+  getGuild(guildId: string) {
+    const res = this.http.get(`/api/guilds/${guildId}`);
+    return { success: res.status >= 200 && res.status < 300 };
   }
 
   createGuild(guildData: CreateGuildRequest) {
@@ -69,6 +82,21 @@ export class Client {
       { name }
     );
     return { success: res.status >= 200 && res.status < 300, channelId: res.data.channel.id };
+  }
+
+  getInvites(guildId: string) {
+    const res = this.http.get<GetGuildInvitesResponse>(
+      `/api/guilds/${guildId}/invites`
+    );
+    return {
+      success: res.status >= 200 && res.status < 300,
+      invites: res.data.invites || []
+    };
+  }
+
+  getInvite(inviteCode: string) {
+    const res = this.http.get(`/api/invites/${inviteCode}`);
+    return { success: res.status >= 200 && res.status < 300 };
   }
 
   createInvite(guildId: string, expiresAt: string) {
