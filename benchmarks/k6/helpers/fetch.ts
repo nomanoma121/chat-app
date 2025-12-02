@@ -1,5 +1,15 @@
 import http from 'k6/http';
 
+// 動的なIDを:idに置換してエンドポイントを正規化
+function normalizeEndpoint(endpoint: string): string {
+  return endpoint
+    .replace(/\/guilds\/[^/]+/g, '/guilds/:id')
+    .replace(/\/channels\/[^/]+/g, '/channels/:id')
+    .replace(/\/users\/(?!me\/)[^/]+/g, '/users/:id')
+    .replace(/\/invites\/[^/]+/g, '/invites/:code')
+    .replace(/\/messages\/[^/]+/g, '/messages/:id');
+}
+
 export class HttpClient {
   private baseUrl: string;
   private token?: string;
@@ -16,7 +26,7 @@ export class HttpClient {
   public get<T>(endpoint: string): T {
     const res = http.get(`${this.baseUrl}${endpoint}`, {
       headers: this.token ? { 'Authorization': `Bearer ${this.token}` } : {},
-      tags: { name: `GET ${endpoint}` },
+      tags: { name: `GET ${normalizeEndpoint(endpoint)}` },
     });
     if (res.status >= 400) {
       console.error(`GET ${endpoint} failed: ${res.status} - ${res.body}`);
@@ -30,7 +40,7 @@ export class HttpClient {
         'Content-Type': 'application/json',
         ...(this.token ? { 'Authorization': `Bearer ${this.token}` } : {}),
       },
-      tags: { name: `POST ${endpoint}` },
+      tags: { name: `POST ${normalizeEndpoint(endpoint)}` },
     });
     if (res.status >= 400) {
       console.error(`POST ${endpoint} failed: ${res.status} - ${res.body}`);
@@ -44,7 +54,7 @@ export class HttpClient {
         'Content-Type': 'application/json',
         ...(this.token ? { 'Authorization': `Bearer ${this.token}` } : {}),
       },
-      tags: { name: `PUT ${endpoint}` },
+      tags: { name: `PUT ${normalizeEndpoint(endpoint)}` },
     });
     return res.json() as Response;
   }
@@ -53,7 +63,7 @@ export class HttpClient {
     const res = http.del(`${this.baseUrl}${endpoint}`, null, {
       headers: this.token ? { 'Authorization': `Bearer ${this.token}` } : {},
       params: params,
-      tags: { name: `DELETE ${endpoint}` },
+      tags: { name: `DELETE ${normalizeEndpoint(endpoint)}` },
     });
     return res.json() as Response;
   }
@@ -64,7 +74,7 @@ export class HttpClient {
         'Content-Type': 'application/json',
         ...(this.token ? { 'Authorization': `Bearer ${this.token}` } : {}),
       },
-      tags: { name: `PATCH ${endpoint}` },
+      tags: { name: `PATCH ${normalizeEndpoint(endpoint)}` },
     });
     return res.json() as Response;
   }

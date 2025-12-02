@@ -49,9 +49,20 @@ export const options = {
   //     vus: 1000,
   //   },
   },
+  summaryTrendStats: ['count', 'avg', 'min', 'med', 'max', 'p(95)', 'p(99)'],
   thresholds: {
-    http_req_duration: ["p(95)<500"],
+    http_req_duration: ["p(95)<500", "p(99)<1000"],
     http_req_failed: ["rate<0.01"],
+
+    'http_req_duration{name:POST /api/auth/register}': ["p(95)<300"],
+    'http_req_duration{name:POST /api/auth/login}': ["p(95)<200"],
+    'http_req_duration{name:GET /api/users/me/guilds}': ["p(95)<150"],
+    'http_req_duration{name:POST /api/guilds}': ["p(95)<300"],
+    'http_req_duration{name:POST /api/guilds/:id/invites}': ["p(95)<200"],
+    'http_req_duration{name:POST /api/invites/:code/join}': ["p(95)<300"],
+    'http_req_duration{name:GET /api/guilds/:id/overview}': ["p(95)<200"],
+    'http_req_duration{name:GET /api/channels/:id/messages}': ["p(95)<250"],
+    'http_req_duration{name:POST /api/channels/:id/messages}': ["p(95)<300"],
   },
 };
 
@@ -61,7 +72,6 @@ export const options = {
 export const activeUser = async () => {
   const client = new HttpClient(API_BASE_URL);
 
-  /* ======== ユーザー登録とログイン ======== */
   const newUser = generateNewUser();
   const registerRes = client.post<RegisterRequest, RegisterResponse>(
     "/api/auth/register",
@@ -84,7 +94,6 @@ export const activeUser = async () => {
   });
   client.setToken(loginRes.token);
 
-  /* ======== ギルド作成 ======== */
   const { guilds: myGuilds } = client.get<ListMyGuildsResponse>(
     `/api/users/me/guilds`
   );
@@ -105,7 +114,6 @@ export const activeUser = async () => {
     "guild created": (r: CreateGuildResponse) => r.guild.id !== undefined,
   });
 
-  /* ======== 招待urlを作成 ======== */
   const inviteRes = client.post<
     CreateGuildInviteBody,
     CreateGuildInviteResponse
@@ -116,10 +124,8 @@ export const activeUser = async () => {
     "invite created": (r: CreateGuildInviteResponse) => r.invite.inviteCode !== undefined,
   });
 
-  // Redisに招待コードを保存
   await redisClient.sadd(`invite_codes`, inviteRes.invite.inviteCode);
 
-  /* ======== 招待コードを使ってギルドに参加 ======== */
   const invitesRaw = await redisClient.srandmember("invite_codes", 3);
   const invites = Array.isArray(invitesRaw) ? invitesRaw : invitesRaw ? [invitesRaw] : [];
   let joinedGuildIds: string[] = [];
@@ -193,3 +199,52 @@ export const newUser = () => {};
 export const spikeLoad = () => {};
 
 export const luckers = () => {};
+
+// エンドポイントごとのメトリクスを表示するカスタムサマリー
+import { textSummary } from 'https://jslib.k6.io/k6-summary/0.1.0/index.js';
+
+export function handleSummary(data: Record<string, unknown>) {
+  const metrics = data.metrics as Record<string, {
+    type: string;
+    values: Record<string, number>;
+    contains?: string;
+  }>;
+
+  // http_req_duration メトリクスからタグ別のデータを抽出
+  const endpointMetrics: Record<string, { count: number; avg: number; p95: number; p99: number; min: number; max: number; med: number }> = {};
+
+  for (const [key, metric] of Object.entries(metrics)) {
+    // http_req_duration{name:エンドポイント名} 形式のメトリクスを抽出
+    const match = key.match(/^http_req_duration\{name:(.+)\}$/);
+    if (match && metric.type === 'trend') {
+      const endpoint = match[1];
+
+      endpointMetrics[endpoint] = {
+        count: metric.values.count || 0,
+        avg: metric.values.avg || 0,
+        med: metric.values.med || 0,
+        p95: metric.values['p(95)'] || 0,
+        p99: metric.values['p(99)'] || 0,
+        min: metric.values.min || 0,
+        max: metric.values.max || 0,
+      };
+    }
+  }
+
+  // エンドポイント別結果を整形
+  let output = '\n\n█ ENDPOINT METRICS (Response Time)\n\n';
+  const sortedEndpoints = Object.entries(endpointMetrics).sort((a, b) => b[1].count - a[1].count);
+
+  for (const [endpoint, stats] of sortedEndpoints) {
+    output += `  ${endpoint}\n`;
+    output += `    Requests: ${stats.count}\n`;
+    output += `    Avg: ${stats.avg.toFixed(2)}ms | Med: ${stats.med.toFixed(2)}ms\n`;
+    output += `    Min: ${stats.min.toFixed(2)}ms | Max: ${stats.max.toFixed(2)}ms\n`;
+    output += `    p95: ${stats.p95.toFixed(2)}ms | p99: ${stats.p99.toFixed(2)}ms\n\n`;
+  }
+
+  return {
+    stdout: textSummary(data, { indent: ' ', enableColors: true }) + output,
+    'summary.json': JSON.stringify(data, null, 2),
+  };
+}
