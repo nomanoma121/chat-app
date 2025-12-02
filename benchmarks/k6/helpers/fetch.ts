@@ -16,6 +16,7 @@ export class HttpClient {
   public get<T>(endpoint: string): T {
     const res = http.get(`${this.baseUrl}${endpoint}`, {
       headers: this.token ? { 'Authorization': `Bearer ${this.token}` } : {},
+      tags: { name: `GET ${endpoint}` },
     });
     if (res.status >= 400) {
       console.error(`GET ${endpoint} failed: ${res.status} - ${res.body}`);
@@ -29,6 +30,7 @@ export class HttpClient {
         'Content-Type': 'application/json',
         ...(this.token ? { 'Authorization': `Bearer ${this.token}` } : {}),
       },
+      tags: { name: `POST ${endpoint}` },
     });
     if (res.status >= 400) {
       console.error(`POST ${endpoint} failed: ${res.status} - ${res.body}`);
@@ -42,6 +44,7 @@ export class HttpClient {
         'Content-Type': 'application/json',
         ...(this.token ? { 'Authorization': `Bearer ${this.token}` } : {}),
       },
+      tags: { name: `PUT ${endpoint}` },
     });
     return res.json() as Response;
   }
@@ -50,6 +53,7 @@ export class HttpClient {
     const res = http.del(`${this.baseUrl}${endpoint}`, null, {
       headers: this.token ? { 'Authorization': `Bearer ${this.token}` } : {},
       params: params,
+      tags: { name: `DELETE ${endpoint}` },
     });
     return res.json() as Response;
   }
@@ -60,6 +64,7 @@ export class HttpClient {
         'Content-Type': 'application/json',
         ...(this.token ? { 'Authorization': `Bearer ${this.token}` } : {}),
       },
+      tags: { name: `PATCH ${endpoint}` },
     });
     return res.json() as Response;
   }
