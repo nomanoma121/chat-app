@@ -22,6 +22,10 @@ import {
   GetGuildInvitesResponse,
 } from '../types/Api.ts';
 
+export interface ResponseStatus {
+  success: boolean;
+};
+
 export class Client {
   private http: HttpClient;
   private userId?: string;

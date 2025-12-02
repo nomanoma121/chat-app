@@ -1,3 +1,4 @@
+// @ts-ignore
 import http from 'k6/http';
 
 function normalizeEndpoint(endpoint: string): string {

@@ -1,7 +1,9 @@
+// @ts-ignore
 import { check, sleep } from "k6";
+// @ts-ignore
 import redis from "k6/experimental/redis";
 import { generateNewUser, generateNewGuild } from "../helpers/utils.ts";
-import { Client } from "../helpers/client.ts";
+import { Client, type ResponseStatus } from "../helpers/client.ts";
 import { connect as wsConnect, WebSocketEvent, type WebSocketMessage } from "../helpers/websocket.ts";
 
 const API_BASE_URL = "http://localhost:8000";
@@ -69,57 +71,57 @@ export const activeUser = async () => {
   const newUser = generateNewUser();
   const registerResult = client.register(newUser);
   check({ success: registerResult.success }, {
-    "register success": (r) => r.success,
+    "register success": (r: ResponseStatus) => r.success,
   });
 
   const loginResult = client.login(newUser.email, newUser.password);
   check({ success: loginResult.success }, {
-    "login success": (r) => r.success,
+    "login success": (r: ResponseStatus) => r.success,
   });
 
   const authMeResult = client.authMe();
   check({ success: authMeResult.success }, {
-    "auth me success": (r) => r.success,
+    "auth me success": (r: ResponseStatus) => r.success,
   });
 
   const myGuildsResult = client.getMyGuilds();
   check({ success: myGuildsResult.success }, {
-    "get my guilds": (r) => r.success,
+    "get my guilds": (r: ResponseStatus) => r.success,
   });
 
   const guild = generateNewGuild();
   const guildResult = client.createGuild(guild);
   check({ success: guildResult.success }, {
-    "guild created": (r) => r.success,
+    "guild created": (r: ResponseStatus) => r.success,
   });
 
   const overviewResult = client.getGuildOverview(guildResult.guildId);
   check({ success: overviewResult.success }, {
-    "get guild overview": (r) => r.success,
+    "get guild overview": (r: ResponseStatus) => r.success,
   });
 
   const getGuildRes = client.getGuild(guildResult.guildId);
   check({ success: getGuildRes.success }, {
-    "get guild": (r) => r.success,
+    "get guild": (r: ResponseStatus) => r.success,
   });
 
   for (let i = 1; i <= 3; i++) {
     const categoryResult = client.createCategory(guildResult.guildId, `Category ${i}`);
     check({ success: categoryResult.success }, {
-      "category created": (r) => r.success,
+      "category created": (r: ResponseStatus) => r.success,
     });
 
     for (let j = 1; j <= 3; j++) {
       const channelResult = client.createChannel(categoryResult.categoryId, `channel-${j}`);
       check({ success: channelResult.success }, {
-        "text channel created": (r) => r.success,
+        "text channel created": (r: ResponseStatus) => r.success,
       });
     }
   }
 
   const getInvitesRes = client.getInvites(guildResult.guildId);
   check({ success: getInvitesRes.success }, {
-    "get invites": (r) => r.success,
+    "get invites": (r: ResponseStatus) => r.success,
   });
 
   const inviteResult = client.createInvite(
@@ -127,7 +129,7 @@ export const activeUser = async () => {
     new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
   );
   check({ success: inviteResult.success }, {
-    "invite created": (r) => r.success,
+    "invite created": (r: ResponseStatus) => r.success,
   });
 
   await redisClient.sadd(`invite_codes`, inviteResult.inviteCode);
@@ -140,13 +142,13 @@ export const activeUser = async () => {
       const code = invites[i];
       const inviteDetail = client.getInvite(code);
       check({ success: inviteDetail.success }, {
-        "get invite detail": (r) => r.success,
+        "get invite detail": (r: ResponseStatus) => r.success,
       });
 
       if (code !== inviteResult.inviteCode) {
         const joinResult = client.joinGuild(code);
         check({ success: joinResult.success }, {
-          "joined guild via invite": (r) => r.success,
+          "joined guild via invite": (r: ResponseStatus) => r.success,
         });
         if (joinResult.guildId) {
           joinedGuildIds.push(joinResult.guildId);
@@ -158,7 +160,7 @@ export const activeUser = async () => {
 
   const messagesResult = client.getMessages(overviewResult.defaultChannelId);
   check({ success: messagesResult.success }, {
-    "get messages": (r) => r.success,
+    "get messages": (r: ResponseStatus) => r.success,
   });
 
   wsConnect(WS_BASE_URL, loginResult.token!, {
@@ -185,7 +187,7 @@ export const activeUser = async () => {
         }
         const msgResult = client.sendMessage(channelId, `Active user message ${i + 1} from ${registerResult.userId}`);
         check({ success: msgResult }, {
-          "message sent": (r) => r.success,
+          "message sent": (r: ResponseStatus) => r.success,
         });
         if (!msgResult) {
           console.error(`Message ${i + 1} failed`);
