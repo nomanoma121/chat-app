@@ -3,6 +3,7 @@ import { check, sleep } from "k6";
 // @ts-expect-error
 import redis from "k6/experimental/redis";
 import { Client, type ResponseStatus } from "../helpers/client.ts";
+import { generateBenchOptions } from "../helpers/options.ts";
 import { generateNewGuild, generateNewUser } from "../helpers/utils.ts";
 import {
 	WebSocketEvent,
@@ -14,6 +15,9 @@ const API_BASE_URL = "http://localhost:8000";
 const WS_BASE_URL = "ws://localhost:50054/ws";
 const REDIS_ADDR = "redis://127.0.0.1:6379";
 
+const VUS = 5000;
+const DURATION_MINUTES = 15;
+
 // vus間でデータを共有するためのRedisクライアント
 const redisClient = new redis.Client(REDIS_ADDR);
 
@@ -22,52 +26,10 @@ export function setup() {
 	redisClient.del("invite_codes");
 }
 
-export const options = {
-	scenarios: {
-		activeUser: {
-			executor: "constant-vus",
-			exec: "activeUser",
-			vus: 100,
-			duration: "1m",
-		},
-		//   newUser: {
-		//     executor: "ramping-vus",
-		//     exec: "newUser",
-		//     vus: 1000,
-		//   },
-		//   spikeLoad: {
-		//     executor: "ramping-vus",
-		//     exec: "spikeLoad",
-		//     vus: 1000,
-		//   },
-		//   luckers: {
-		//     executor: "constant-arrival-rate",
-		//     exec: "luckers",
-		//     vus: 1000,
-		//   },
-	},
-	summaryTrendStats: ["count", "avg", "min", "med", "max", "p(95)", "p(99)"],
-	thresholds: {
-		http_req_duration: ["p(95)<500", "p(99)<1000"],
-		http_req_failed: ["rate<0.01"],
-
-		"http_req_duration{name:POST /api/auth/register}": ["p(95)<500"],
-		"http_req_duration{name:POST /api/auth/login}": ["p(95)<500"],
-		"http_req_duration{name:GET /api/auth/me}": ["p(95)<500"],
-		"http_req_duration{name:GET /api/users/me/guilds}": ["p(95)<500"],
-		"http_req_duration{name:POST /api/guilds}": ["p(95)<500"],
-		"http_req_duration{name:POST /api/guilds/:id/invites}": ["p(95)<500"],
-		"http_req_duration{name:POST /api/invites/:code/join}": ["p(95)<500"],
-		"http_req_duration{name:GET /api/guilds/:id/overview}": ["p(95)<500"],
-		"http_req_duration{name:GET /api/channels/:id/messages}": ["p(95)<500"],
-		"http_req_duration{name:POST /api/channels/:id/messages}": ["p(95)<500"],
-		"http_req_duration{name:GET /api/guilds/:id/invites}": ["p(95)<500"],
-		"http_req_duration{name:GET /api/guilds/:id}": ["p(95)<500"],
-		"http_req_duration{name:GET /api/invites/:code}": ["p(95)<500"],
-		"http_req_duration{name:POST /api/guilds/:id/categories}": ["p(95)<500"],
-		"http_req_duration{name:POST /api/categories/:id/channels}": ["p(95)<500"],
-	},
-};
+export const options = generateBenchOptions({
+	vus: VUS,
+	durationMinutes: DURATION_MINUTES,
+});
 
 export const activeUser = async () => {
 	const client = new Client(API_BASE_URL);
@@ -269,8 +231,173 @@ export const activeUser = async () => {
 	});
 };
 
-export const newUser = () => {};
+// ============================================
+// New User: 新規ユーザーが初めてアプリを使う
+// ============================================
+export const newUser = async () => {
+	const client = new Client(API_BASE_URL);
 
-export const spikeLoad = () => {};
+	const newUser = generateNewUser();
+	const registerResult = client.register(newUser);
+	check(
+		{ success: registerResult.success },
+		{
+			"new user register": (r: ResponseStatus) => r.success,
+		},
+	);
 
-export const luckers = () => {};
+	const loginResult = client.login(newUser.email, newUser.password);
+	check(
+		{ success: loginResult.success },
+		{
+			"new user login": (r: ResponseStatus) => r.success,
+		},
+	);
+
+	const myGuildsResult = client.getMyGuilds();
+	check(
+		{ success: myGuildsResult.success },
+		{
+			"new user get guilds": (r: ResponseStatus) => r.success,
+		},
+	);
+
+	// Redisから招待コードを取得してギルドに参加
+	const invitesRaw = await redisClient.srandmember("invite_codes", 1);
+	const inviteCode = Array.isArray(invitesRaw) ? invitesRaw[0] : invitesRaw;
+
+	if (inviteCode) {
+		const inviteDetail = client.getInvite(inviteCode);
+		check(
+			{ success: inviteDetail.success },
+			{
+				"new user get invite": (r: ResponseStatus) => r.success,
+			},
+		);
+
+		const joinResult = client.joinGuild(inviteCode);
+		check(
+			{ success: joinResult.success },
+			{
+				"new user join guild": (r: ResponseStatus) => r.success,
+			},
+		);
+
+		if (joinResult.guildId) {
+			const overviewResult = client.getGuildOverview(joinResult.guildId);
+			check(
+				{ success: overviewResult.success },
+				{
+					"new user get overview": (r: ResponseStatus) => r.success,
+				},
+			);
+
+			// 数件メッセージを送信
+			for (let i = 0; i < 3; i++) {
+				const msgResult = client.sendMessage(
+					overviewResult.defaultChannelId,
+					`New user message ${i + 1}`,
+				);
+				check(
+					{ success: msgResult },
+					{
+						"new user send message": (r: ResponseStatus) => r.success,
+					},
+				);
+				sleep(2);
+			}
+		}
+	}
+};
+
+// ============================================
+// Spike Load: 短時間で大量のリクエスト
+// ============================================
+export const spikeLoad = async () => {
+	const client = new Client(API_BASE_URL);
+
+	const newUser = generateNewUser();
+	client.register(newUser);
+	client.login(newUser.email, newUser.password);
+
+	// Redisから招待コード取得
+	const invitesRaw = await redisClient.srandmember("invite_codes", 1);
+	const inviteCode = Array.isArray(invitesRaw) ? invitesRaw[0] : invitesRaw;
+
+	if (inviteCode) {
+		const joinResult = client.joinGuild(inviteCode);
+		if (joinResult.guildId) {
+			const overviewResult = client.getGuildOverview(joinResult.guildId);
+
+			// 短時間に集中してメッセージ送信
+			for (let i = 0; i < 5; i++) {
+				client.sendMessage(
+					overviewResult.defaultChannelId,
+					`Spike load message ${i + 1}`,
+				);
+				sleep(0.1); // 短い間隔
+			}
+		}
+	}
+};
+
+// ============================================
+// Lurkers: 読み取り専用ユーザー
+// ============================================
+export const luckers = async () => {
+	const client = new Client(API_BASE_URL);
+
+	const newUser = generateNewUser();
+	const registerResult = client.register(newUser);
+	check(
+		{ success: registerResult.success },
+		{
+			"lurker register": (r: ResponseStatus) => r.success,
+		},
+	);
+
+	const loginResult = client.login(newUser.email, newUser.password);
+	check(
+		{ success: loginResult.success },
+		{
+			"lurker login": (r: ResponseStatus) => r.success,
+		},
+	);
+
+	// Redisから招待コード取得
+	const invitesRaw = await redisClient.srandmember("invite_codes", 1);
+	const inviteCode = Array.isArray(invitesRaw) ? invitesRaw[0] : invitesRaw;
+
+	if (inviteCode) {
+		const joinResult = client.joinGuild(inviteCode);
+		if (joinResult.guildId) {
+			const overviewResult = client.getGuildOverview(joinResult.guildId);
+
+			// WebSocket接続してメッセージを受信するだけ
+			wsConnect(WS_BASE_URL, loginResult.token, {
+				onAuth: (socket, userId) => {
+					socket.send({
+						type: WebSocketEvent.SubscribeChannels,
+						data: {
+							user_id: userId,
+							channel_ids: [overviewResult.defaultChannelId],
+						},
+					});
+
+					// 定期的にメッセージ履歴を取得（読むだけ）
+					for (let i = 0; i < 10; i++) {
+						client.getMessages(overviewResult.defaultChannelId);
+						sleep(5);
+					}
+				},
+				onMessage: (_socket, data) => {
+					check(data, {
+						"lurker received message": (d: WebSocketMessage) =>
+							d !== undefined,
+					});
+				},
+				timeout: 60000,
+			});
+		}
+	}
+};
