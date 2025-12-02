@@ -1,6 +1,5 @@
 import http from 'k6/http';
 
-// 動的なIDを:idに置換してエンドポイントを正規化
 function normalizeEndpoint(endpoint: string): string {
   return endpoint
     .replace(/\/guilds\/[^/]+/g, '/guilds/:id')

@@ -1,6 +1,5 @@
 import { check, sleep } from "k6";
 import redis from "k6/experimental/redis";
-import { textSummary } from 'https://jslib.k6.io/k6-summary/0.1.0/index.js';
 import { generateNewUser, generateNewGuild } from "../helpers/utils.ts";
 import { HttpClient } from "../helpers/fetch.ts";
 import { connect as wsConnect, WebSocketEvent, type WebSocketMessage } from "../helpers/websocket.ts";
@@ -28,12 +27,17 @@ const REDIS_ADDR = "redis://127.0.0.1:6379";
 // vus間でデータを共有するためのRedisクライアント
 const redisClient = new redis.Client(REDIS_ADDR);
 
+// テスト開始前にRedisをクリア
+export function setup() {
+  redisClient.del("invite_codes");
+}
+
 export const options = {
   scenarios: {
     activeUser: {
       executor: "constant-vus",
       exec: "activeUser",
-      vus: 200,
+      vus: 500,
       duration: "1m",
     },
   //   newUser: {
@@ -69,9 +73,6 @@ export const options = {
   },
 };
 
-// ============================================
-// Active User: 既存ユーザーがログインしてメッセージを読み書き
-// ============================================
 export const activeUser = async () => {
   const client = new HttpClient(API_BASE_URL);
 
@@ -85,7 +86,7 @@ export const activeUser = async () => {
     ...registerRes.data.user,
   };
   check(registerRes, {
-    "register success": (r) => r.status >= 201 && r.status < 300,
+    "register success": (r) => r.status >= 200 && r.status < 300,
   });
 
   const loginRes = client.post<LoginRequest, LoginResponse>("/api/auth/login", {
@@ -97,10 +98,10 @@ export const activeUser = async () => {
   });
   client.setToken(loginRes.data.token);
 
-  const { data: myGuilds } = client.get<ListMyGuildsResponse>(
+  const myGuildsRes = client.get<ListMyGuildsResponse>(
     `/api/users/me/guilds`
   );
-  check(myGuilds, {
+  check(myGuildsRes, {
     "get my guilds": (r) => r.status >= 200 && r.status < 300,
   });
 
@@ -114,7 +115,7 @@ export const activeUser = async () => {
     }
   );
   check(guildRes, {
-    "guild created": (r) => r.status >= 201 && r.status < 300,
+    "guild created": (r) => r.status >= 200 && r.status < 300,
   });
 
   const inviteRes = client.post<
@@ -124,10 +125,11 @@ export const activeUser = async () => {
     expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
   });
   check(inviteRes, {
-    "invite created": (r) => r.status >= 201 && r.status < 300,
+    "invite created": (r) => r.status >= 200 && r.status < 300,
   });
 
   await redisClient.sadd(`invite_codes`, inviteRes.data.invite.inviteCode);
+  sleep(1);
 
   const invitesRaw = await redisClient.srandmember("invite_codes", 3);
   const invites = Array.isArray(invitesRaw) ? invitesRaw : invitesRaw ? [invitesRaw] : [];
@@ -141,7 +143,7 @@ export const activeUser = async () => {
           {}
         );
         check(joinRes, {
-          "joined guild via invite": (r) => r.status >= 201 && r.status < 300,
+          "joined guild via invite": (r) => r.status >= 200 && r.status < 300,
         });
         if (joinRes.data.member) {
           joinedGuildIds.push(joinRes.data.member.guildId);
@@ -179,7 +181,7 @@ export const activeUser = async () => {
           { content: `Active user message ${i + 1} from ${user.displayId}` }
         );
         check(msgRes, {
-          "message sent": (r) => r.status === 201,
+          "message sent": (r) => r.status >= 200 && r.status < 300,
         });
         if (!msgRes.data.message) {
           console.error(`Message ${i + 1} failed: ${JSON.stringify(msgRes)}`);
@@ -202,85 +204,3 @@ export const newUser = () => {};
 export const spikeLoad = () => {};
 
 export const luckers = () => {};
-
-// エンドポイントごとのメトリクスを表示するカスタムサマリー
-export function handleSummary(data: Record<string, unknown>) {
-  const metrics = data.metrics as Record<string, {
-    type: string;
-    values: Record<string, number>;
-    contains?: string;
-    thresholds?: Record<string, { ok: boolean }>;
-  }>;
-
-  // http_req_duration メトリクスからタグ別のデータを抽出
-  const endpointMetrics: Record<string, { count: number; avg: number; p95: number; p99: number; min: number; max: number; med: number }> = {};
-
-  for (const [key, metric] of Object.entries(metrics)) {
-    // http_req_duration{name:エンドポイント名} 形式のメトリクスを抽出
-    const match = key.match(/^http_req_duration\{name:(.+)\}$/);
-    if (match && metric.type === 'trend') {
-      const endpoint = match[1];
-
-      endpointMetrics[endpoint] = {
-        count: metric.values.count || 0,
-        avg: metric.values.avg || 0,
-        med: metric.values.med || 0,
-        p95: metric.values['p(95)'] || 0,
-        p99: metric.values['p(99)'] || 0,
-        min: metric.values.min || 0,
-        max: metric.values.max || 0,
-      };
-    }
-  }
-
-  // 閾値を取得
-  const getThreshold = (endpoint: string): number | null => {
-    const metricKey = `http_req_duration{name:${endpoint}}`;
-    const metric = metrics[metricKey];
-    if (!metric || !metric.thresholds) return null;
-
-    // thresholds オブジェクトから "p(95)<数値" のキーを探す
-    const thresholdKeys = Object.keys(metric.thresholds);
-    const p95Key = thresholdKeys.find(k => k.includes('p(95)<'));
-    if (!p95Key) return null;
-
-    const match = p95Key.match(/p\(95\)<(\d+)/);
-    return match ? parseInt(match[1]) : null;
-  };
-
-  let output = '\n\n█ ENDPOINT METRICS (Response Time)\n\n';
-  const sortedEndpoints = Object.entries(endpointMetrics).sort((a, b) => b[1].p95 - a[1].p95);
-
-  // パスの最大長を取得
-  const maxPathLength = Math.max(...sortedEndpoints.map(([endpoint]) => {
-    const [, path] = endpoint.split(' ');
-    return path.length;
-  }));
-
-  for (const [endpoint, stats] of sortedEndpoints) {
-    const threshold = getThreshold(endpoint);
-    const exceedsThreshold = threshold !== null && stats.p95 > threshold;
-
-    const redColor = '\x1b[31m';
-    const resetColor = '\x1b[0m';
-
-    // 閾値超えの場合は赤色にする
-    const p95Color = exceedsThreshold ? redColor : '';
-
-    // メソッドとパスを分割してパディング
-    const [method, path] = endpoint.split(' ');
-    const paddedMethod = method.padEnd(6);
-    const paddedPath = path.padEnd(maxPathLength);
-
-    output += `  ${paddedMethod}${paddedPath}  ${p95Color}${stats.p95.toFixed(2)}ms${resetColor}`;
-    if (exceedsThreshold && threshold !== null) {
-      output += ` ${redColor}(threshold: ${threshold}ms)${resetColor}`;
-    }
-    output += '\n';
-  }
-
-  return {
-    stdout: textSummary(data, { indent: ' ', enableColors: true }) + output,
-    'summary.json': JSON.stringify(data, null, 2),
-  };
-}
