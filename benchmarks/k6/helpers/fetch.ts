@@ -10,6 +10,10 @@ function normalizeEndpoint(endpoint: string): string {
     .replace(/\/messages\/[^/]+/g, '/messages/:id');
 }
 
+type ResponseWithStatus<T> = T & {
+  status: number;
+}
+
 export class HttpClient {
   private baseUrl: string;
   private token?: string;
@@ -23,7 +27,7 @@ export class HttpClient {
     this.token = token;
   }
   
-  public get<T>(endpoint: string): T {
+  public get<T>(endpoint: string): ResponseWithStatus<T> {
     const res = http.get(`${this.baseUrl}${endpoint}`, {
       headers: this.token ? { 'Authorization': `Bearer ${this.token}` } : {},
       tags: { name: `GET ${normalizeEndpoint(endpoint)}` },
@@ -31,10 +35,10 @@ export class HttpClient {
     if (res.status >= 400) {
       console.error(`GET ${endpoint} failed: ${res.status} - ${res.body}`);
     }
-    return res.json() as T;
+    return res.json() as ResponseWithStatus<T>;
   }
 
-  public post<Request, Response>(endpoint: string, body: Request): Response {
+  public post<Request, Response>(endpoint: string, body: Request): ResponseWithStatus<Response> {
     const res = http.post(`${this.baseUrl}${endpoint}`, JSON.stringify(body), {
       headers: {
         'Content-Type': 'application/json',
@@ -45,10 +49,10 @@ export class HttpClient {
     if (res.status >= 400) {
       console.error(`POST ${endpoint} failed: ${res.status} - ${res.body}`);
     }
-    return res.json() as Response;
+    return res.json() as ResponseWithStatus<Response>;
   }
 
-  public put<Request, Response>(endpoint: string, body: Request): Response {
+  public put<Request, Response>(endpoint: string, body: Request): ResponseWithStatus<Response> {
     const res = http.put(`${this.baseUrl}${endpoint}`, JSON.stringify(body), {
       headers: {
         'Content-Type': 'application/json',
@@ -56,19 +60,19 @@ export class HttpClient {
       },
       tags: { name: `PUT ${normalizeEndpoint(endpoint)}` },
     });
-    return res.json() as Response;
+    return res.json() as ResponseWithStatus<Response>;
   }
 
-  public delete<Request, Response>(endpoint: string, params?: Request): Response {
+  public delete<Request, Response>(endpoint: string, params?: Request): ResponseWithStatus<Response> {
     const res = http.del(`${this.baseUrl}${endpoint}`, null, {
       headers: this.token ? { 'Authorization': `Bearer ${this.token}` } : {},
       params: params,
       tags: { name: `DELETE ${normalizeEndpoint(endpoint)}` },
     });
-    return res.json() as Response;
+    return res.json() as ResponseWithStatus<Response>;
   }
 
-  public patch<Request, Response>(endpoint: string, body: Request): Response {
+  public patch<Request, Response>(endpoint: string, body: Request): ResponseWithStatus<Response> {
     const res = http.patch(`${this.baseUrl}${endpoint}`, JSON.stringify(body), {
       headers: {
         'Content-Type': 'application/json',
@@ -76,6 +80,6 @@ export class HttpClient {
       },
       tags: { name: `PATCH ${normalizeEndpoint(endpoint)}` },
     });
-    return res.json() as Response;
+    return res.json() as ResponseWithStatus<Response>;
   }
 }

@@ -1,13 +1,16 @@
 import { check, sleep } from "k6";
 import redis from "k6/experimental/redis";
+import { textSummary } from 'https://jslib.k6.io/k6-summary/0.1.0/index.js';
 import { generateNewUser, generateNewGuild } from "../helpers/utils.ts";
 import { HttpClient } from "../helpers/fetch.ts";
 import { connect as wsConnect, WebSocketEvent, type WebSocketMessage } from "../helpers/websocket.ts";
 import {
+  CreateBody,
   CreateGuildInviteBody,
   CreateGuildInviteResponse,
   CreateGuildRequest,
   CreateGuildResponse,
+  CreateResponse,
   GetGuildOverviewResponse,
   JoinGuildBody,
   JoinGuildResponse,
@@ -171,14 +174,14 @@ export const activeUser = async () => {
 
       sleep(2);
       for (let i = 0; i < 10; i++) {
-        const msgRes = client.post(
+        const msgRes = client.post<CreateBody, CreateResponse>(
           `/api/channels/${overviewRes.guild.defaultChannelId}/messages`,
           { content: `Active user message ${i + 1} from ${user.displayId}` }
         );
         check(msgRes, {
-          "message sent": (r) => r !== undefined && !r.error,
+          "message sent": (r) => r.message !== undefined,
         });
-        if (msgRes.error) {
+        if (!msgRes.message) {
           console.error(`Message ${i + 1} failed: ${JSON.stringify(msgRes)}`);
         }
         sleep(1);
@@ -201,8 +204,6 @@ export const spikeLoad = () => {};
 export const luckers = () => {};
 
 // エンドポイントごとのメトリクスを表示するカスタムサマリー
-import { textSummary } from 'https://jslib.k6.io/k6-summary/0.1.0/index.js';
-
 export function handleSummary(data: Record<string, unknown>) {
   const metrics = data.metrics as Record<string, {
     type: string;
@@ -231,16 +232,40 @@ export function handleSummary(data: Record<string, unknown>) {
     }
   }
 
-  // エンドポイント別結果を整形
+  // 閾値を取得
+  const getThreshold = (endpoint: string): number | null => {
+    const thresholdKey = `http_req_duration{name:${endpoint}}`;
+    const thresholds = options.thresholds as Record<string, string[]> | undefined;
+    const threshold = thresholds?.[thresholdKey];
+    if (!threshold || !Array.isArray(threshold)) return null;
+
+    // "p(95)<500" のような形式から数値を抽出
+    const p95Match = threshold.find((t: string) => t.includes('p(95)<'));
+    if (!p95Match) return null;
+    const match = p95Match.match(/p\(95\)<(\d+)/);
+    return match ? parseInt(match[1]) : null;
+  };
+
   let output = '\n\n█ ENDPOINT METRICS (Response Time)\n\n';
-  const sortedEndpoints = Object.entries(endpointMetrics).sort((a, b) => b[1].count - a[1].count);
+  const sortedEndpoints = Object.entries(endpointMetrics).sort((a, b) => b[1].p95 - a[1].p95);
 
   for (const [endpoint, stats] of sortedEndpoints) {
+    const threshold = getThreshold(endpoint);
+    const exceedsThreshold = threshold !== null && stats.p95 > threshold;
+
+    // 閾値超えの場合は赤色にする
+    const p95Color = exceedsThreshold ? '\x1b[31m' : '';
+    const resetColor = '\x1b[0m';
+
     output += `  ${endpoint}\n`;
     output += `    Requests: ${stats.count}\n`;
     output += `    Avg: ${stats.avg.toFixed(2)}ms | Med: ${stats.med.toFixed(2)}ms\n`;
     output += `    Min: ${stats.min.toFixed(2)}ms | Max: ${stats.max.toFixed(2)}ms\n`;
-    output += `    p95: ${stats.p95.toFixed(2)}ms | p99: ${stats.p99.toFixed(2)}ms\n\n`;
+    output += `    p95: ${p95Color}${stats.p95.toFixed(2)}ms${resetColor} | p99: ${stats.p99.toFixed(2)}ms`;
+    if (exceedsThreshold && threshold !== null) {
+      output += ` ${p95Color}(threshold: ${threshold}ms)${resetColor}`;
+    }
+    output += '\n\n';
   }
 
   return {
