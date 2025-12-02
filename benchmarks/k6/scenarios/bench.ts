@@ -1,10 +1,14 @@
 import { check, sleep } from "k6";
 import redis from "k6/experimental/redis";
 import { generateNewUser, generateNewGuild } from "../helpers/utils.ts";
-import { HttpClient } from "../helpers/fetch.ts";
+import { Client } from "../helpers/client.ts";
 import { connect as wsConnect, WebSocketEvent, type WebSocketMessage } from "../helpers/websocket.ts";
 import {
   CreateBody,
+  CreateCategoryBody,
+  CreateCategoryResponse,
+  CreateChannelBody,
+  CreateChannelResponse,
   CreateGuildInviteBody,
   CreateGuildInviteResponse,
   CreateGuildRequest,
@@ -37,7 +41,7 @@ export const options = {
     activeUser: {
       executor: "constant-vus",
       exec: "activeUser",
-      vus: 500,
+      vus: 100,
       duration: "1m",
     },
   //   newUser: {
@@ -74,61 +78,54 @@ export const options = {
 };
 
 export const activeUser = async () => {
-  const client = new HttpClient(API_BASE_URL);
+  const client = new Client(API_BASE_URL);
 
   const newUser = generateNewUser();
-  const registerRes = client.post<RegisterRequest, RegisterResponse>(
-    "/api/auth/register",
-    newUser
-  );
-  const user = {
-    ...newUser,
-    ...registerRes.data.user,
-  };
-  check(registerRes, {
-    "register success": (r) => r.status >= 200 && r.status < 300,
+  const registerResult = client.register(newUser);
+  check({ success: registerResult.success }, {
+    "register success": (r) => r.success,
   });
 
-  const loginRes = client.post<LoginRequest, LoginResponse>("/api/auth/login", {
-    email: user.email,
-    password: user.password,
+  const loginResult = client.login(newUser.email, newUser.password);
+  check({ success: loginResult.success }, {
+    "login success": (r) => r.success,
   });
-  check(loginRes, {
-    "login success": (r) => r.status >= 200 && r.status < 300,
-  });
-  client.setToken(loginRes.data.token);
 
-  const myGuildsRes = client.get<ListMyGuildsResponse>(
-    `/api/users/me/guilds`
-  );
-  check(myGuildsRes, {
-    "get my guilds": (r) => r.status >= 200 && r.status < 300,
+  const myGuildsResult = client.getMyGuilds();
+  check({ success: myGuildsResult.success }, {
+    "get my guilds": (r) => r.success,
   });
 
   const guild = generateNewGuild();
-  const guildRes = client.post<CreateGuildRequest, CreateGuildResponse>(
-    "/api/guilds",
-    {
-      name: guild.name,
-      description: guild.description,
-      iconUrl: guild.iconUrl,
+  const guildResult = client.createGuild(guild);
+  check({ success: guildResult.success }, {
+    "guild created": (r) => r.success,
+  });
+
+  // カテゴリとテキストチャンネルをそれぞれ3つずつ作成
+  for (let i = 1; i <= 3; i++) {
+    const categoryResult = client.createCategory(guildResult.guildId, `Category ${i}`);
+    check({ success: categoryResult.success }, {
+      "category created": (r) => r.success,
+    });
+
+    for (let j = 1; j <= 3; j++) {
+      const channelResult = client.createChannel(categoryResult.categoryId, `channel-${j}`);
+      check({ success: channelResult.success }, {
+        "text channel created": (r) => r.success,
+      });
     }
+  }
+
+  const inviteResult = client.createInvite(
+    guildResult.guildId,
+    new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
   );
-  check(guildRes, {
-    "guild created": (r) => r.status >= 200 && r.status < 300,
+  check({ success: inviteResult.success }, {
+    "invite created": (r) => r.success,
   });
 
-  const inviteRes = client.post<
-    CreateGuildInviteBody,
-    CreateGuildInviteResponse
-  >(`/api/guilds/${guildRes.data.guild.id}/invites`, {
-    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-  });
-  check(inviteRes, {
-    "invite created": (r) => r.status >= 200 && r.status < 300,
-  });
-
-  await redisClient.sadd(`invite_codes`, inviteRes.data.invite.inviteCode);
+  await redisClient.sadd(`invite_codes`, inviteResult.inviteCode);
   sleep(1);
 
   const invitesRaw = await redisClient.srandmember("invite_codes", 3);
@@ -137,54 +134,56 @@ export const activeUser = async () => {
   if (invites) {
     for (let i = 0; i < invites.length; i++) {
       const code = invites[i];
-      if (code !== inviteRes.data.invite.inviteCode) {
-        const joinRes = client.post<JoinGuildBody, JoinGuildResponse>(
-          `/api/invites/${code}/join`,
-          {}
-        );
-        check(joinRes, {
-          "joined guild via invite": (r) => r.status >= 200 && r.status < 300,
+      if (code !== inviteResult.inviteCode) {
+        const joinResult = client.joinGuild(code);
+        check({ success: joinResult.success }, {
+          "joined guild via invite": (r) => r.success,
         });
-        if (joinRes.data.member) {
-          joinedGuildIds.push(joinRes.data.member.guildId);
+        if (joinResult.guildId) {
+          joinedGuildIds.push(joinResult.guildId);
         }
       }
     }
   }
 
-  const overviewRes = client.get<GetGuildOverviewResponse>(
-    `/api/guilds/${guildRes.data.guild.id}/overview`
-  );
-  client.get(`/api/channels/${overviewRes.data.guild.defaultChannelId}/messages`);
+  const overviewResult = client.getGuildOverview(guildResult.guildId!);
+  check({ success: overviewResult.success }, {
+    "get guild overview": (r) => r.success,
+  });
 
-  wsConnect(WS_BASE_URL, loginRes.data.token, {
+  const messagesResult = client.getMessages(overviewResult.defaultChannelId!);
+  check({ success: messagesResult.success }, {
+    "get messages": (r) => r.success,
+  });
+
+  wsConnect(WS_BASE_URL, loginResult.token!, {
     onAuth: (socket, userId) => {
       socket.send({
         type: WebSocketEvent.SubscribeChannels,
-        data: { user_id: userId, channel_ids: [overviewRes.data.guild.defaultChannelId] },
+        data: { user_id: userId, channel_ids: [client.getCurrentChannelId()] },
       });
 
       joinedGuildIds.forEach((guildId) => {
-        const res = client.get<GetGuildOverviewResponse>(
-          `/api/guilds/${guildId}/overview`
-        );
+        client.getGuildOverview(guildId);
         socket.send({
           type: WebSocketEvent.SubscribeChannels,
-          data: { user_id: userId, channel_ids: [res.data.guild.defaultChannelId] },
+          data: { user_id: userId, channel_ids: [client.getCurrentChannelId()] },
         });
       });
 
       sleep(2);
       for (let i = 0; i < 10; i++) {
-        const msgRes = client.post<CreateBody, CreateResponse>(
-          `/api/channels/${overviewRes.data.guild.defaultChannelId}/messages`,
-          { content: `Active user message ${i + 1} from ${user.displayId}` }
-        );
-        check(msgRes, {
-          "message sent": (r) => r.status >= 200 && r.status < 300,
+        const channelId = client.getCurrentChannelId();
+        if (!channelId) {
+          console.error("No current channel ID");
+          continue;
+        }
+        const msgResult = client.sendMessage(channelId, `Active user message ${i + 1} from ${registerResult.userId}`);
+        check({ success: msgResult }, {
+          "message sent": (r) => r.success,
         });
-        if (!msgRes.data.message) {
-          console.error(`Message ${i + 1} failed: ${JSON.stringify(msgRes)}`);
+        if (!msgResult) {
+          console.error(`Message ${i + 1} failed`);
         }
         sleep(1);
       }
