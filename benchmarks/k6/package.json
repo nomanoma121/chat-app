@@ -6,13 +6,16 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "typegen": "swagger-typescript-api generate -p ../../docs/openapi.swagger.json -o ./types",
-    "bench": "K6_WEB_DASHBOARD=true k6 run scenarios/bench.ts"
+    "bench": "K6_WEB_DASHBOARD=true k6 run scenarios/bench.ts",
+    "fix": "biome check --write ./scenarios ./helpers",
+    "lint": "biome lint ./scenarios ./helpers"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.15.0",
   "devDependencies": {
+    "@biomejs/biome": "2.3.8",
     "swagger-typescript-api": "^13.2.16"
   }
 }
