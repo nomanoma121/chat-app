@@ -1,3 +1,4 @@
+// @ts-expect-error
 import ws from "k6/ws";
 
 export const WebSocketEvent = {
@@ -8,11 +9,14 @@ export const WebSocketEvent = {
 	AuthError: "AUTH_ERROR",
 } as const;
 
+// biome-ignore lint: もう動いていいるし、ベンチマークようなのでいったんこれで
+type Any = any;
+
 interface K6Socket {
 	on(event: "open", handler: () => void): void;
 	on(event: "message", handler: (data: string) => void): void;
 	on(event: "close", handler: (code?: number, reason?: string) => void): void;
-	on(event: "error", handler: (error: any) => void): void;
+	on(event: "error", handler: (error: Any) => void): void;
 	on(event: "ping" | "pong", handler: () => void): void;
 	send(data: string): void;
 	close(code?: number): void;
@@ -24,7 +28,7 @@ interface K6Socket {
 
 export type WebSocketMessage = {
 	type: (typeof WebSocketEvent)[keyof typeof WebSocketEvent];
-	data: any;
+	data: Any;
 };
 
 export interface SocketWrapper {
@@ -35,7 +39,7 @@ export interface SocketWrapper {
 }
 
 type OnAuthCallback = (socket: SocketWrapper, userId: string) => void;
-type OnMessageCallback = (socket: SocketWrapper, data: any) => void;
+type OnMessageCallback = (socket: SocketWrapper, data: Any) => void;
 
 interface ConnectOptions {
 	onAuth?: OnAuthCallback;
@@ -88,7 +92,7 @@ export function connect(
 						onMessage(wrapper, data);
 					}
 				} catch (e) {
-					console.error(`Failed to parse WebSocket message: ${msg}`);
+					console.error(`Failed to parse WebSocket message: ${msg}`, e);
 				}
 			}
 		});

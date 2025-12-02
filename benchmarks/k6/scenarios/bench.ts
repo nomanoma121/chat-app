@@ -218,7 +218,7 @@ export const activeUser = async () => {
 		},
 	);
 
-	wsConnect(WS_BASE_URL, loginResult.token!, {
+	wsConnect(WS_BASE_URL, loginResult.token, {
 		onAuth: (socket, userId) => {
 			socket.send({
 				type: WebSocketEvent.SubscribeChannels,
