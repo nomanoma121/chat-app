@@ -8,8 +8,8 @@ export const generateBenchOptions = ({
 	durationMinutes,
 }: BenchmarkOptions) => {
 	// 各シナリオの割合
-	const ACTIVE_USER_RATIO = 0.2; 
-	const NEW_USER_RATIO = 0.05; 
+	const ACTIVE_USER_RATIO = 0.2;
+	const NEW_USER_RATIO = 0.05;
 	const LURKERS_RATIO = 0.7;
 	const SPIKE_LOAD_RATIO = 0.8;
 
@@ -17,6 +17,13 @@ export const generateBenchOptions = ({
 	const NEW_USER_BASE_RATE = (vus * NEW_USER_RATIO) / 20;
 
 	const duration = `${durationMinutes}m`;
+	const durationSeconds = durationMinutes * 60;
+
+	const spikeWarmup = Math.floor(durationSeconds / 3);
+	const spikeRampUp = Math.floor(durationSeconds / 12);
+	const spikePeak = Math.floor(durationSeconds / 6);
+	const spikeRampDown = Math.floor(durationSeconds / 12);
+	const spikeCooldown = Math.floor(durationSeconds / 3);
 
 	return {
 		scenarios: {
@@ -43,14 +50,13 @@ export const generateBenchOptions = ({
 				exec: "spikeLoad",
 				startVUs: 0,
 				stages: [
-					{ duration: `45s`, target: Math.floor(vus * SPIKE_LOAD_RATIO * 0.1) },
-					{ duration: "30s", target: Math.floor(vus * SPIKE_LOAD_RATIO * 0.5) },
-					{ duration: "30s", target: Math.floor(vus * SPIKE_LOAD_RATIO) },
-					{ duration: "30s", target: Math.floor(vus * SPIKE_LOAD_RATIO * 0.5) },
-          { duration: "45s", target: Math.floor(vus * SPIKE_LOAD_RATIO * 0.1) },
+					{ duration: `${spikeWarmup}s`, target: Math.floor(vus * SPIKE_LOAD_RATIO * 0.1) },
+					{ duration: `${spikeRampUp}s`, target: Math.floor(vus * SPIKE_LOAD_RATIO * 0.5) },
+					{ duration: `${spikePeak}s`, target: Math.floor(vus * SPIKE_LOAD_RATIO) },
+					{ duration: `${spikeRampDown}s`, target: Math.floor(vus * SPIKE_LOAD_RATIO * 0.5) },
+					{ duration: `${spikeCooldown}s`, target: Math.floor(vus * SPIKE_LOAD_RATIO * 0.1) },
 				],
 				gracefulRampDown: "10s",
-				duration: duration,
 			},
 			// lurkers（ROM専）: 全体の70% - 読み取り専用
 			lurkers: {
