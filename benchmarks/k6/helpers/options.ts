@@ -50,6 +50,7 @@ export const generateBenchOptions = ({
           { duration: "45s", target: Math.floor(vus * SPIKE_LOAD_RATIO * 0.1) },
 				],
 				gracefulRampDown: "10s",
+				duration: duration,
 			},
 			// lurkers（ROM専）: 全体の70% - 読み取り専用
 			lurkers: {
