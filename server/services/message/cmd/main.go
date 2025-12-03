@@ -96,8 +96,8 @@ func main() {
 
 	redisAddr := os.Getenv("REDIS_ADDR")
 	redisClient := redis.NewClient(&redis.Options{
-		Addr: redisAddr,
-		PoolSize: 200,
+		Addr:         redisAddr,
+		PoolSize:     200,
 		MinIdleConns: 20,
 	})
 
@@ -129,7 +129,7 @@ func main() {
 
 	messageRepo := postgres.NewPostgresMessageRepository(gen.New(db))
 	userSvc := rds.NewCachedUserClient(redisClient, user.NewUserServiceClient(userConn))
-	
+
 	guildSvc := user.NewGuildServiceClient(guildConn)
 	redisPub := rds.NewRedisPublisher(redisClient)
 

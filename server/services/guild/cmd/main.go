@@ -46,7 +46,7 @@ func init() {
 	dsn := os.Getenv("DATABASE_URL")
 
 	log.Info("Connecting to database...")
-	
+
 	config, err := pgxpool.ParseConfig(dsn)
 	if err != nil {
 		log.Error("Failed to parse database config", "error", err)
