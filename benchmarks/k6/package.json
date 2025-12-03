@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "typegen": "swagger-typescript-api generate -p ../../docs/openapi.swagger.json -o ./types",
     "bench": "K6_WEB_DASHBOARD=true k6 run scenarios/bench.ts",
+    "bench:light": "K6_WEB_DASHBOARD=true k6 run scenarios/bench-light.ts",
     "fix": "biome check --write ./scenarios ./helpers",
     "lint": "biome lint ./scenarios ./helpers"
   },

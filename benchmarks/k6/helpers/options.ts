@@ -14,19 +14,36 @@ export const generateBenchOptions = ({
 	const SPIKE_LOAD_RATIO = 0.2; // スパイク時の割合
 
 	// 新規ユーザーのarrival-rate計算用
-	const NEW_USER_BASE_RATE = (vus * NEW_USER_RATIO) / 50;
+	const NEW_USER_BASE_RATE = (vus * NEW_USER_RATIO) / 20;
 
-	const warmupTime = `${Math.floor(durationMinutes * 0.1)}m`; // 10%
-	const normalTime = `${Math.floor(durationMinutes * 0.4)}m`; // 40%
-	const peakTime = `${Math.floor(durationMinutes * 0.2)}m`; // 20%
-	const cooldownTime = `${Math.floor(durationMinutes * 0.2)}m`; // 20%
-	const endTime = `${Math.floor(durationMinutes * 0.1)}m`; // 10%
+	// 秒単位で計算して合計時間をきっちり合わせる
+	const totalSeconds = durationMinutes * 60;
 
-	const spikeWaitTime = `${Math.floor(durationMinutes * 0.47)}m`;
-	const spikeRampUpTime = "30s";
-	const spikeDurationTime = "1m";
-	const spikeRampDownTime = "30s";
-	const spikeEndWaitTime = `${Math.floor(durationMinutes * 0.47)}m`;
+	// activeUser, lurkers用のステージ時間
+	const warmupSec = Math.floor(totalSeconds * 0.1);
+	const normalSec = Math.floor(totalSeconds * 0.4);
+	const peakSec = Math.floor(totalSeconds * 0.2);
+	const cooldownSec = Math.floor(totalSeconds * 0.2);
+	const endSec = Math.floor(totalSeconds * 0.1);
+
+	const warmupTime = `${warmupSec}s`;
+	const normalTime = `${normalSec}s`;
+	const peakTime = `${peakSec}s`;
+	const cooldownTime = `${cooldownSec}s`;
+	const endTime = `${endSec}s`;
+
+	// spikeLoad用の時間計算
+	const spikeRampUpSec = 30;
+	const spikeDurationSec = 60;
+	const spikeRampDownSec = 30;
+	const spikeWaitSec = Math.floor((totalSeconds - spikeRampUpSec - spikeDurationSec - spikeRampDownSec) / 2);
+	const spikeEndWaitSec = totalSeconds - (spikeWaitSec + spikeRampUpSec + spikeDurationSec + spikeRampDownSec);
+
+	const spikeWaitTime = `${spikeWaitSec}s`;
+	const spikeRampUpTime = `${spikeRampUpSec}s`;
+	const spikeDurationTime = `${spikeDurationSec}s`;
+	const spikeRampDownTime = `${spikeRampDownSec}s`;
+	const spikeEndWaitTime = `${spikeEndWaitSec}s`;
 
 	return {
 		scenarios: {
@@ -48,15 +65,15 @@ export const generateBenchOptions = ({
 			newUser: {
 				executor: "ramping-arrival-rate",
 				exec: "newUser",
-				startRate: Math.floor(NEW_USER_BASE_RATE),
+				startRate: Math.max(1, Math.floor(NEW_USER_BASE_RATE)),
 				timeUnit: "1s",
-				preAllocatedVUs: Math.floor(vus * NEW_USER_RATIO * 0.2),
-				maxVUs: Math.floor(vus * NEW_USER_RATIO),
+				preAllocatedVUs: Math.max(1, Math.floor(vus * NEW_USER_RATIO * 0.2)),
+				maxVUs: Math.max(1, Math.floor(vus * NEW_USER_RATIO)),
 				stages: [
-					{ duration: warmupTime, target: Math.floor(NEW_USER_BASE_RATE * 2) },
-					{ duration: normalTime, target: Math.floor(NEW_USER_BASE_RATE * 5) },
-					{ duration: peakTime, target: Math.floor(NEW_USER_BASE_RATE * 3) },
-					{ duration: cooldownTime, target: Math.floor(NEW_USER_BASE_RATE) },
+					{ duration: warmupTime, target: Math.max(1, Math.floor(NEW_USER_BASE_RATE * 2)) },
+					{ duration: normalTime, target: Math.max(1, Math.floor(NEW_USER_BASE_RATE * 5)) },
+					{ duration: peakTime, target: Math.max(1, Math.floor(NEW_USER_BASE_RATE * 3)) },
+					{ duration: cooldownTime, target: Math.max(1, Math.floor(NEW_USER_BASE_RATE)) },
 				],
 			},
 			// スパイク負荷: 不定期に発生する急激な負荷
