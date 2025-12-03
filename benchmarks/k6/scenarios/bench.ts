@@ -25,7 +25,7 @@ export function setup() {
 	const redisClient = getRedisClient();
 	redisClient.del("invite_codes");
 
-	console.log("Starting warmup... Wait for 50 seconds.");
+	console.log("Starting warmup...");
 	const warmupStart = Date.now();
 	const warmupDuration = 50 * 1000;
 
@@ -58,10 +58,6 @@ export function setup() {
 			if (inviteResult.inviteCode) {
 				redisClient.sadd("invite_codes", inviteResult.inviteCode);
 			}
-		}
-
-		if (Date.now() - warmupStart >= warmupDuration / 2) {
-			console.log("Warmup is halfway done...");
 		}
 
 		sleep(0.1);

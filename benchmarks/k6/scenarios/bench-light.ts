@@ -8,7 +8,7 @@ import { activeUser, luckers, newUser, spikeLoad } from "./bench.ts";
 
 const API_BASE_URL = "http://localhost:8000";
 
-const VUS = 100;
+const VUS = 300;
 const DURATION_MINUTES = 3;
 
 export const options = generateBenchOptions({
@@ -33,6 +33,9 @@ export function setup() {
 
 		const guild = generateNewGuild();
 		const guildResult = client.createGuild(guild);
+
+    const { defaultChannelId } = client.getGuildOverview(guildResult.guildId);
+		client.sendMessage(defaultChannelId, "Warmup message");
 
 		if (guildResult.guildId) {
 			const categoryResult = client.createCategory(
