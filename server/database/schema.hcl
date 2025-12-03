@@ -97,6 +97,9 @@ table "messages" {
     ref_columns = [table.messages.column.id]
     on_delete = SET_NULL
   }
+  index "idx_channel_created_at" {
+    columns = [column.channel_id, column.created_at]
+  }
 }
 
 table "guilds" {
@@ -162,7 +165,7 @@ table "members" {
     type = timestamp
   }
   primary_key {
-    columns = [column.user_id, column.guild_id]
+    columns = [column.guild_id, column.user_id]
   }
   foreign_key "user" {
     columns = [column.user_id]
@@ -173,6 +176,9 @@ table "members" {
     columns = [column.guild_id]
     ref_columns = [table.guilds.column.id]
     on_delete = CASCADE
+  }
+  index "idx_members_user_id" {
+    columns = [column.user_id]
   }
 }
 
@@ -206,6 +212,9 @@ table "categories" {
     ref_columns = [table.guilds.column.id]
     on_delete = CASCADE
   }
+  index "idx_guild" {
+    columns = [column.guild_id]
+  }
 }
 
 table "channels" {
@@ -237,6 +246,9 @@ table "channels" {
     columns = [column.category_id]
     ref_columns = [table.categories.column.id]
     on_delete = CASCADE
+  }
+  index "idx_category" {
+    columns = [column.category_id]
   }
 }
 
@@ -283,5 +295,8 @@ table "invites" {
     columns = [column.guild_id]
     ref_columns = [table.guilds.column.id]
     on_delete = CASCADE
+  }
+  index "idx_guild_id" {
+    columns = [column.guild_id]
   }
 }

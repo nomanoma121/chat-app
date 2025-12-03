@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"message-service/internal/handler"
 	user "message-service/internal/infrastructure/grpc"
 	"message-service/internal/infrastructure/postgres"
@@ -9,23 +10,37 @@ import (
 	rds "message-service/internal/infrastructure/redis"
 	"message-service/internal/usecase"
 	"net"
+	"net/http"
 	"os"
 	"shared/logger"
+	"syscall"
 	"time"
 
 	pb "chat-app-proto/gen/message"
 
 	"github.com/go-playground/validator"
+	grpcprom "github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus"
 	"github.com/joho/godotenv"
+	"github.com/oklog/run"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/redis/go-redis/v9"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
+
+	_ "net/http/pprof"
 )
 
 var db *pgxpool.Pool
+
+const (
+	grpcAddr = ":50053"
+	httpAddr = ":2112"
+)
 
 func init() {
 	_ = godotenv.Load()
@@ -34,9 +49,20 @@ func init() {
 	dsn := os.Getenv("DATABASE_URL")
 
 	log.Info("Connecting to database...")
-	var err error
+
+	config, err := pgxpool.ParseConfig(dsn)
+	if err != nil {
+		log.Error("Failed to parse database config", "error", err)
+		os.Exit(1)
+	}
+
+	config.MaxConns = 500
+	config.MinConns = 10
+	config.MaxConnLifetime = time.Hour
+	config.MaxConnIdleTime = 30 * time.Minute
+
 	for i := 0; i < 30; i++ {
-		db, err = pgxpool.New(context.Background(), dsn)
+		db, err = pgxpool.NewWithConfig(context.Background(), config)
 		if err == nil {
 			break
 		}
@@ -51,14 +77,28 @@ func init() {
 }
 
 func main() {
-	log := logger.Default("user-service")
+	go func() {
+		fmt.Println(http.ListenAndServe(":6060", nil))
+	}()
+
+	log := logger.Default("message-service")
 	defer func() {
 		db.Close()
 	}()
 
+	srvMetrics := grpcprom.NewServerMetrics(
+		grpcprom.WithServerHandlingTimeHistogram(),
+	)
+	reg := prometheus.NewRegistry()
+	reg.MustRegister(srvMetrics)
+	reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
+	reg.MustRegister(collectors.NewGoCollector())
+
 	redisAddr := os.Getenv("REDIS_ADDR")
 	redisClient := redis.NewClient(&redis.Options{
-		Addr: redisAddr,
+		Addr:         redisAddr,
+		PoolSize:     200,
+		MinIdleConns: 20,
 	})
 
 	userServiceURL := os.Getenv("USER_SERVICE_URL")
@@ -88,7 +128,8 @@ func main() {
 	log.Info("Connected to guild service", "url", guildServiceURL)
 
 	messageRepo := postgres.NewPostgresMessageRepository(gen.New(db))
-	userSvc := user.NewUserServiceClient(userConn)
+	userSvc := rds.NewCachedUserClient(redisClient, user.NewUserServiceClient(userConn))
+
 	guildSvc := user.NewGuildServiceClient(guildConn)
 	redisPub := rds.NewRedisPublisher(redisClient)
 
@@ -104,20 +145,46 @@ func main() {
 
 	messageHandler := handler.NewMessageHandler(messageUsecase, log)
 
-	server := grpc.NewServer()
-	pb.RegisterMessageServiceServer(server, messageHandler)
-	reflection.Register(server)
+	grpcSrv := grpc.NewServer(
+		grpc.ChainUnaryInterceptor(
+			srvMetrics.UnaryServerInterceptor(),
+		),
+	)
+	srvMetrics.InitializeMetrics(grpcSrv)
 
-	port := 50053
-	lis, err := net.Listen("tcp", ":50053")
-	if err != nil {
-		log.Error("Failed to listen", "port", port, "error", err)
-		os.Exit(1)
-	}
+	pb.RegisterMessageServiceServer(grpcSrv, messageHandler)
+	reflection.Register(grpcSrv)
 
-	log.Info("Message service starting", "port", port)
-	if err := server.Serve(lis); err != nil {
-		log.Error("Failed to serve", "error", err)
+	g := &run.Group{}
+	g.Add(func() error {
+		l, err := net.Listen("tcp", grpcAddr)
+		if err != nil {
+			return err
+		}
+		log.Info("starting gRPC server", "addr", l.Addr().String())
+		return grpcSrv.Serve(l)
+	}, func(err error) {
+		grpcSrv.GracefulStop()
+		grpcSrv.Stop()
+	})
+
+	httpSrv := &http.Server{Addr: httpAddr}
+	g.Add(func() error {
+		m := http.NewServeMux()
+		m.Handle("/metrics", promhttp.HandlerFor(reg, promhttp.HandlerOpts{}))
+		httpSrv.Handler = m
+		log.Info("starting HTTP server", "addr", httpSrv.Addr)
+		return httpSrv.ListenAndServe()
+	}, func(error) {
+		if err := httpSrv.Close(); err != nil {
+			log.Error("failed to stop web server", "err", err)
+		}
+	})
+
+	g.Add(run.SignalHandler(context.Background(), syscall.SIGINT, syscall.SIGTERM))
+
+	if err := g.Run(); err != nil {
+		log.Error("program interrupted", "err", err)
 		os.Exit(1)
 	}
 }

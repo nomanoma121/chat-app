@@ -19,13 +19,34 @@ services:
       POSTGRES_DB: chat_app
       POSTGRES_USER: user
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    command: postgres -c max_connections=5000
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:latest
+    environment:
+      DATA_SOURCE_URI: "postgres:5432/chat_app?sslmode=disable"
+      DATA_SOURCE_USER: user
+      DATA_SOURCE_PASS: ${DATABASE_PASSWORD}
+    depends_on:
+      - postgres
+
   redis:
     image: redis:7-alpine
+    ports: 
+      - "6379:6379"
+    ulimits:
+      nofile: 65536
+
+  redis-exporter:
+    image: quay.io/oliver006/redis_exporter:latest
+    environment:
+      - REDIS_ADDR=redis:6379
+    depends_on:
+      - redis
 
   adminer:
     image: adminer
@@ -34,49 +55,30 @@ services:
     depends_on:
       - postgres
 
-  # rustfs:
-  #   image: rustfs/rustfs:latest
-  #   ports:
-  #     - "9000:9000"
-  #     - "9001:9001"
-  #   environment:
-  #     - RUSTFS_VOLUMES=/data
-  #     - RUSTFS_CONSOLE_ENABLE=true
-  #     - RUSTFS_ACCESS_KEY=${RUSTFS_ACCESS_KEY}
-  #     - RUSTFS_SECRET_KEY=${RUSTFS_SECRET_KEY}
-  #   volumes:
-  #     - rustfs_data:/data
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "pidof rustfs || exit 1"]
-  #     interval: 3s
-  #     timeout: 2s
-  #     retries: 10
-  #     start_period: 5s
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-remote-write-receiver'
+      - '--enable-feature=native-histograms'
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./benchmarks/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
 
-  # rustfs-init:
-  #   image: amazon/aws-cli:latest
-  #   depends_on:
-  #     rustfs:
-  #       condition: service_healthy
-  #   environment:
-  #     - AWS_ACCESS_KEY_ID=${RUSTFS_ACCESS_KEY}
-  #     - AWS_SECRET_ACCESS_KEY=${RUSTFS_SECRET_KEY}
-  #   entrypoint: ["/bin/sh", "-c"]
-  #   command:
-  #     - |
-  #       aws --endpoint-url=http://rustfs:9000 s3 mb s3://chat-app-bucket || true
-  #       aws --endpoint-url=http://rustfs:9000 s3api put-bucket-policy --bucket chat-app-bucket --policy '{
-  #         "Version": "2012-10-17",
-  #         "Statement": [
-  #           {
-  #             "Effect": "Allow",
-  #             "Principal": {"AWS": ["*"]},
-  #             "Action": ["s3:GetObject"],
-  #             "Resource": ["arn:aws:s3:::chat-app-bucket/*"]
-  #           }
-  #         ]
-  #       }'
-  #       echo "Bucket initialized with public read access"
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./benchmarks/grafana/dashboards:/var/grafana/dashboards:ro
+      - ./benchmarks/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./benchmarks/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
 
   minio:
     image: minio/minio:latest
@@ -119,6 +121,13 @@ services:
           ]
         }'
         echo "Bucket initialized with public read access"
+  
+  user-service:
+    image: nginx:latest
+    volumes:
+      - ./server/services/user/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - user
 
   user:
     build:
@@ -126,6 +135,10 @@ services:
       dockerfile: Dockerfile
       args:
         SERVICE_NAME: user
+    deploy:
+      replicas: 3
+    ports:
+      - "6058-6060:6060"
     environment:
       - JWT_SECRET=${JWT_SECRET}
       - DATABASE_URL=${DATABASE_URL}
@@ -138,12 +151,15 @@ services:
       dockerfile: Dockerfile
       args:
         SERVICE_NAME: guild
+    ports:
+      - "6061:6060"
     environment:
       - DATABASE_URL=${DATABASE_URL}
-      - USER_SERVICE_URL=user:50051
+      - USER_SERVICE_URL=user-service:50051
     depends_on:
       - postgres
-      - user
+      - user-service
+    restart: always
 
   message:
     build:
@@ -151,15 +167,18 @@ services:
       dockerfile: Dockerfile
       args:
         SERVICE_NAME: message
+    ports:
+      - "6062:6060"
     environment:
       - DATABASE_URL=${DATABASE_URL}
-      - USER_SERVICE_URL=user:50051
+      - USER_SERVICE_URL=user-service:50051
       - GUILD_SERVICE_URL=guild:50052
       - REDIS_ADDR=redis:6379
     depends_on:
       - postgres
-      - user
+      - user-service
       - guild
+    restart: always
     
   realtime:
     build:
@@ -171,12 +190,16 @@ services:
       - REDIS_URL=redis:6379
       - REALTIME_SERVICE_PORT=50054
       - JWT_SECRET=${JWT_SECRET}
+    ulimits:
+      nofile: 65536
     ports:
       - "50054:50054"
+      - "6063:6060"
     depends_on:
       - redis
-      - user
+      - user-service
       - message
+    restart: always
 
   media:
     build:
@@ -184,6 +207,8 @@ services:
       dockerfile: Dockerfile
       args:
         SERVICE_NAME: media
+    ports:
+      - "6064:6060"
     network_mode: host
     environment:
       - RUSTFS_ENDPOINT=${MEDIA_BASE_URL}
@@ -194,6 +219,7 @@ services:
     depends_on:
       - minio
       - minio-init
+    restart: always
 
   api-gateway:
     build:
@@ -203,20 +229,26 @@ services:
         SERVICE_NAME: api-gateway
     ports:
       - "8000:8000"
+      - "6065:6060"
     environment:
       - JWT_SECRET=${JWT_SECRET}
       - USER_SERVICE_URL=user:50051
       - GUILD_SERVICE_URL=guild:50052
       - MESSAGE_SERVICE_URL=message:50053
       - MEDIA_SERVICE_URL=172.17.0.1:50055
+    ulimits:
+      nofile: 65536
     depends_on:
       - user
       - guild
       - message
       - media
       - realtime
+    restart: always
 
 volumes:
   postgres_data:
   rustfs_data:
   minio_data:
+  prometheus_data:
+  grafana_data:

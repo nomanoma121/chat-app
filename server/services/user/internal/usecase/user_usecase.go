@@ -90,7 +90,7 @@ func (u *userUsecase) Register(ctx context.Context, params *RegisterParams) (*do
 		return nil, domain.ErrDisplayIDAlreadyExists
 	}
 
-	passwordHash, err := bcrypt.GenerateFromPassword([]byte(params.Password), bcrypt.DefaultCost)
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(params.Password), bcrypt.MinCost)
 	if err != nil {
 		return nil, err
 	}

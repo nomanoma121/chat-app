@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"guild-service/internal/domain"
+	"sync"
 	"time"
 
 	"github.com/go-playground/validator"
@@ -160,19 +161,30 @@ func (u *guildUsecase) GetByID(ctx context.Context, userID, guildID uuid.UUID) (
 		return nil, domain.ErrGuildNotFound
 	}
 
-	guild, err := u.store.Guilds().GetByID(ctx, guildID)
-	if err != nil {
-		return nil, err
-	}
+	var guild *domain.Guild
+	var members []domain.Member
+	var errGuild, errMembers error
 
-	count, err := u.store.Members().CountByGuildID(ctx, guild.ID)
-	if err != nil {
-		return nil, err
-	}
+	var wg sync.WaitGroup
+	wg.Add(2)
 
-	members, err := u.store.Members().GetMembersByGuildID(ctx, guild.ID)
-	if err != nil {
-		return nil, err
+	go func() {
+		defer wg.Done()
+		guild, errGuild = u.store.Guilds().GetByID(ctx, guildID)
+	}()
+
+	go func() {
+		defer wg.Done()
+		members, errMembers = u.store.Members().GetMembersByGuildID(ctx, guildID)
+	}()
+
+	wg.Wait()
+
+	if errGuild != nil {
+		return nil, errGuild
+	}
+	if errMembers != nil {
+		return nil, errMembers
 	}
 
 	memberUserIDs := make([]uuid.UUID, 0, len(members))
@@ -198,7 +210,7 @@ func (u *guildUsecase) GetByID(ctx context.Context, userID, guildID uuid.UUID) (
 
 	return &GetByIDResult{
 		Guild:       guild,
-		MemberCount: count,
+		MemberCount: int32(len(members)),
 		Members:     members,
 	}, nil
 }

@@ -1,6 +1,4 @@
-.PHONY: migrate-create migrate-apply db-reset-clean schema-to-sql sqlc-generate generate schema-docs migrate-hash-fix lint lint-guild lint-user lint-api-gateway lint-all fix
-
-# Variables
+.PHONY: migrate-create migrate-apply db-reset-clean schema-to-sql sqlc-generate generate schema-docs migrate-hash-fix lint-all fix pprof-api-gateway pprof-user pprof-realtime pprof-message pprof-media pprof-guild pprof-check
 DATABASE_URL := postgres://user:password@localhost:5432/chat_app?sslmode=disable
 DEV_URL := postgres://user:password@localhost:5432/chat_app?sslmode=disable
 SCHEMA_FILE := file://database/schema.hcl
@@ -94,3 +92,31 @@ fix:
 	golangci-lint run --fix ./services/user/... ./services/guild/... ./services/api-gateway/... ./services/message/... ./services/realtime/... ./services/media/... ./shared/... ./api/...
 	@echo "✅ Auto-fix complete!"
 
+# pprof profiling targets
+pprof-api-gateway:
+	@echo "Fetching CPU profile from API Gateway (localhost:6065)..."
+	go tool pprof http://localhost:6065/debug/pprof/profile
+
+pprof-user:
+	@echo "Fetching CPU profile from User service (localhost:6060)..."
+	go tool pprof http://localhost:6060/debug/pprof/profile
+
+pprof-realtime:
+	@echo "Fetching CPU profile from Realtime service (localhost:6063)..."
+	go tool pprof http://localhost:6063/debug/pprof/profile
+
+pprof-message:
+	@echo "Fetching CPU profile from Message service (localhost:6062)..."
+	go tool pprof http://localhost:6062/debug/pprof/profile
+
+pprof-media:
+	@echo "Fetching CPU profile from Media service (localhost:6064)..."
+	go tool pprof http://localhost:6064/debug/pprof/profile
+
+pprof-guild:
+	@echo "Fetching CPU profile from Guild service (localhost:6061)..."
+	go tool pprof http://localhost:6061/debug/pprof/profile
+
+pprof-check:
+	$(eval latest := $(shell ls -rt ~/pprof/ | tail -n 1))
+	go tool pprof -http=localhost:6070 ~/pprof/$(latest)
