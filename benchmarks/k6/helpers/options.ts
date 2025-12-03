@@ -8,73 +8,34 @@ export const generateBenchOptions = ({
 	durationMinutes,
 }: BenchmarkOptions) => {
 	// 各シナリオの割合
-	const ACTIVE_USER_RATIO = 0.2; // 20%
-	const NEW_USER_RATIO = 0.05; // 5%
-	const LURKERS_RATIO = 0.7; // 70%
-	const SPIKE_LOAD_RATIO = 0.2; // スパイク時の割合
+	const ACTIVE_USER_RATIO = 0.2; 
+	const NEW_USER_RATIO = 0.05; 
+	const LURKERS_RATIO = 0.7;
+	const SPIKE_LOAD_RATIO = 0.8;
 
 	// 新規ユーザーのarrival-rate計算用
 	const NEW_USER_BASE_RATE = (vus * NEW_USER_RATIO) / 20;
 
-	// 秒単位で計算して合計時間をきっちり合わせる
-	const totalSeconds = durationMinutes * 60;
-
-	// activeUser, lurkers用のステージ時間
-	const warmupSec = Math.floor(totalSeconds * 0.1);
-	const normalSec = Math.floor(totalSeconds * 0.4);
-	const peakSec = Math.floor(totalSeconds * 0.2);
-	const cooldownSec = Math.floor(totalSeconds * 0.2);
-	const endSec = Math.floor(totalSeconds * 0.1);
-
-	const warmupTime = `${warmupSec}s`;
-	const normalTime = `${normalSec}s`;
-	const peakTime = `${peakSec}s`;
-	const cooldownTime = `${cooldownSec}s`;
-	const endTime = `${endSec}s`;
-
-	// spikeLoad用の時間計算
-	const spikeRampUpSec = 30;
-	const spikeDurationSec = 60;
-	const spikeRampDownSec = 30;
-	const spikeWaitSec = Math.floor((totalSeconds - spikeRampUpSec - spikeDurationSec - spikeRampDownSec) / 2);
-	const spikeEndWaitSec = totalSeconds - (spikeWaitSec + spikeRampUpSec + spikeDurationSec + spikeRampDownSec);
-
-	const spikeWaitTime = `${spikeWaitSec}s`;
-	const spikeRampUpTime = `${spikeRampUpSec}s`;
-	const spikeDurationTime = `${spikeDurationSec}s`;
-	const spikeRampDownTime = `${spikeRampDownSec}s`;
-	const spikeEndWaitTime = `${spikeEndWaitSec}s`;
+	const duration = `${durationMinutes}m`;
 
 	return {
 		scenarios: {
 			// アクティブユーザー: 全体の20% - メッセージを積極的に送信
 			activeUser: {
-				executor: "ramping-vus",
+				executor: "constant-vus",
 				exec: "activeUser",
-				startVUs: 0,
-				stages: [
-					{ duration: warmupTime, target: Math.floor(vus * ACTIVE_USER_RATIO * 0.7) },
-					{ duration: normalTime, target: Math.floor(vus * ACTIVE_USER_RATIO * 0.7) },
-					{ duration: peakTime, target: Math.floor(vus * ACTIVE_USER_RATIO) },
-					{ duration: cooldownTime, target: Math.floor(vus * ACTIVE_USER_RATIO * 0.7) },
-					{ duration: endTime, target: 0 },
-				],
-				gracefulRampDown: "30s",
+				vus: Math.floor(vus * ACTIVE_USER_RATIO),
+				duration: duration,
 			},
 			// 新規ユーザー: 全体の5% - 新規登録して参加
 			newUser: {
-				executor: "ramping-arrival-rate",
+				executor: "constant-arrival-rate",
 				exec: "newUser",
-				startRate: Math.max(1, Math.floor(NEW_USER_BASE_RATE)),
+				rate: Math.max(1, Math.floor(NEW_USER_BASE_RATE * 5)),
 				timeUnit: "1s",
+				duration: duration,
 				preAllocatedVUs: Math.max(1, Math.floor(vus * NEW_USER_RATIO * 0.2)),
 				maxVUs: Math.max(1, Math.floor(vus * NEW_USER_RATIO)),
-				stages: [
-					{ duration: warmupTime, target: Math.max(1, Math.floor(NEW_USER_BASE_RATE * 2)) },
-					{ duration: normalTime, target: Math.max(1, Math.floor(NEW_USER_BASE_RATE * 5)) },
-					{ duration: peakTime, target: Math.max(1, Math.floor(NEW_USER_BASE_RATE * 3)) },
-					{ duration: cooldownTime, target: Math.max(1, Math.floor(NEW_USER_BASE_RATE)) },
-				],
 			},
 			// スパイク負荷: 不定期に発生する急激な負荷
 			spikeLoad: {
@@ -82,27 +43,20 @@ export const generateBenchOptions = ({
 				exec: "spikeLoad",
 				startVUs: 0,
 				stages: [
-					{ duration: spikeWaitTime, target: 0 },
-					{ duration: spikeRampUpTime, target: Math.floor(vus * SPIKE_LOAD_RATIO) },
-					{ duration: spikeDurationTime, target: Math.floor(vus * SPIKE_LOAD_RATIO) },
-					{ duration: spikeRampDownTime, target: 0 },
-					{ duration: spikeEndWaitTime, target: 0 },
+					{ duration: `45s`, target: Math.floor(vus * SPIKE_LOAD_RATIO * 0.1) },
+					{ duration: "30s", target: Math.floor(vus * SPIKE_LOAD_RATIO * 0.5) },
+					{ duration: "30s", target: Math.floor(vus * SPIKE_LOAD_RATIO) },
+					{ duration: "30s", target: Math.floor(vus * SPIKE_LOAD_RATIO * 0.5) },
+          { duration: "45s", target: Math.floor(vus * SPIKE_LOAD_RATIO * 0.1) },
 				],
 				gracefulRampDown: "10s",
 			},
 			// lurkers（ROM専）: 全体の70% - 読み取り専用
 			lurkers: {
-				executor: "ramping-vus",
+				executor: "constant-vus",
 				exec: "luckers",
-				startVUs: 0,
-				stages: [
-					{ duration: warmupTime, target: Math.floor(vus * LURKERS_RATIO * 0.6) },
-					{ duration: peakTime, target: Math.floor(vus * LURKERS_RATIO * 0.6) },
-					{ duration: normalTime, target: Math.floor(vus * LURKERS_RATIO) },
-					{ duration: peakTime, target: Math.floor(vus * LURKERS_RATIO * 0.6) },
-					{ duration: endTime, target: 0 },
-				],
-				gracefulRampDown: "30s",
+				vus: Math.floor(vus * LURKERS_RATIO),
+				duration: duration,
 			},
 		},
 		summaryTrendStats: ["count", "avg", "min", "med", "max", "p(95)", "p(99)"],
