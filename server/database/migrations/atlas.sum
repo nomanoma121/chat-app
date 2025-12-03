@@ -1,4 +1,4 @@
-h1:dVh49NfoN1Gc2fe1FY91DtUS40NPgK2TBaS1FrJWpvA=
+h1:E0kNkLhuuRKNakpNTYYQSMX952rHuVjU+BO76acz4Ks=
 20250904122118_create_user_table.sql h1:srlrjrWl2jQuSzHxpCdH6tHur2Ztuf8dJVQ1m1DpURQ=
 20250913204114_create_mvp_table.sql h1:+TcdUaLqLsWQCg9D9ryYlrY6wQ7sXOgbrj9+SaXRUQE=
 20250917074634_fix_guild_service_schema.sql h1:9j1maAyHblqnYo7AqmstmBz3eC6yRfEScUdiL5PCFJE=
@@ -8,3 +8,4 @@ h1:dVh49NfoN1Gc2fe1FY91DtUS40NPgK2TBaS1FrJWpvA=
 20251130213646_create-message-index.sql h1:nKthQ8TufleZr9dv9sT10S0rR7TJNbKsinEc60Bzv1M=
 20251130232348_create-guild-index.sql h1:O5ieBcz2XMhzbIVQjv2qSZX34+yAJ5DmqL2bXCsXdwc=
 20251130235617_create-user-index.sql h1:YgMd9yzpZmBr76LKVDmq1VTdgrrvjTipT8t27k35uH8=
+20251203060945_add-invite-index.sql h1:BtAcl/BBjxdEljI6+QZF7JMufh1Zb0ln7gABlJKUA3A=

@@ -47,12 +47,6 @@ table "users" {
   unique "email" {
     columns = [column.email]
   }
-  index "idx_display_id" {
-    columns = [column.display_id]
-  }
-  index "idx_email" {
-    columns = [column.email]
-  }
 }
 
 table "messages" {
@@ -149,9 +143,6 @@ table "guilds" {
     columns = [column.owner_id]
     ref_columns = [table.users.column.id]
     on_delete = RESTRICT
-  }
-  index "idx_user_created_at" {
-    columns = [column.owner_id, column.created_at]
   }
 }
 
@@ -304,5 +295,8 @@ table "invites" {
     columns = [column.guild_id]
     ref_columns = [table.guilds.column.id]
     on_delete = CASCADE
+  }
+  index "idx_guild_id" {
+    columns = [column.guild_id]
   }
 }
