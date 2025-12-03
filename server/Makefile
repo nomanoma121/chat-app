@@ -1,6 +1,4 @@
-.PHONY: migrate-create migrate-apply db-reset-clean schema-to-sql sqlc-generate generate schema-docs migrate-hash-fix lint-all fix pprof-api-gateway pprof-user pprof-realtime pprof-message pprof-media pprof-guild
-
-# Variables
+.PHONY: migrate-create migrate-apply db-reset-clean schema-to-sql sqlc-generate generate schema-docs migrate-hash-fix lint-all fix pprof-api-gateway pprof-user pprof-realtime pprof-message pprof-media pprof-guild pprof-check
 DATABASE_URL := postgres://user:password@localhost:5432/chat_app?sslmode=disable
 DEV_URL := postgres://user:password@localhost:5432/chat_app?sslmode=disable
 SCHEMA_FILE := file://database/schema.hcl
@@ -118,3 +116,7 @@ pprof-media:
 pprof-guild:
 	@echo "Fetching CPU profile from Guild service (localhost:6061)..."
 	go tool pprof http://localhost:6061/debug/pprof/profile
+
+pprof-check:
+	$(eval latest := $(shell ls -rt ~/pprof/ | tail -n 1))
+	go tool pprof -http=localhost:6070 ~/pprof/$(latest)
