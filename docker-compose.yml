@@ -140,7 +140,7 @@ services:
       args:
         SERVICE_NAME: user
     deploy:
-      replicas: 1
+      replicas: 3
     ports:
       - "6058-6060:6060"
     environment:
