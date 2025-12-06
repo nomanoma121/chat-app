@@ -120,3 +120,9 @@ pprof-guild:
 pprof-check:
 	$(eval latest := $(shell ls -rt ~/pprof/ | tail -n 1))
 	go tool pprof -http=localhost:6070 ~/pprof/$(latest)
+
+pg-stats-init:
+	docker exec -it postgres psql -U user -d chat_app -c "CREATE EXTENSION IF NOT EXISTS pg_stat_statements;"
+
+pg-stats-top:
+	docker exec chat-app-postgres-1 psql -U user -d chat_app -c "SELECT LEFT(query, 80) AS query, calls, ROUND(total_exec_time::numeric, 2) AS total_ms, ROUND(mean_exec_time::numeric, 2) AS mean_ms FROM pg_stat_statements WHERE calls > 100 ORDER BY mean_exec_time DESC LIMIT 20;"
