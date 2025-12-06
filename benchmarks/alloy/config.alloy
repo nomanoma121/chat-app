@@ -1,0 +1,97 @@
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+prometheus.scrape "user_service" {
+  targets = [
+    {"__address__" = "user:2112"},
+  ]
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
+prometheus.scrape "guild_service" {
+  targets = [
+    {"__address__" = "guild:2112"},
+  ]
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
+prometheus.scrape "message_service" {
+  targets = [
+    {"__address__" = "message:2112"},
+  ]
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
+prometheus.scrape "realtime_service" {
+  targets = [
+    {"__address__" = "realtime:2112"},
+  ]
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
+prometheus.scrape "api_gateway" {
+  targets = [
+    {"__address__" = "api-gateway:2112"},
+  ]
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
+prometheus.scrape "postgres_exporter" {
+  targets = [
+    {"__address__" = "postgres-exporter:9187"},
+  ]
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
+prometheus.scrape "redis_exporter" {
+  targets = [
+    {"__address__" = "redis-exporter:9121"},
+  ]
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
+prometheus.remote_write "default" {
+  endpoint {
+    url = "http://prometheus:9090/api/v1/write"
+  }
+}
+
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+}
+
+loki.source.docker "containers" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.docker.containers.targets
+  forward_to = [loki.write.default.receiver]
+}
+
+loki.write "default" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
+
+otelcol.receiver.otlp "default" {
+  grpc {
+    endpoint = "0.0.0.0:4317"
+  }
+  http {
+    endpoint = "0.0.0.0:4318"
+  }
+
+  output {
+    traces = [otelcol.exporter.otlp.tempo.input]
+  }
+}
+
+otelcol.exporter.otlp "tempo" {
+  client {
+    endpoint = "tempo:4317"
+    tls {
+      insecure = true
+    }
+  }
+}
