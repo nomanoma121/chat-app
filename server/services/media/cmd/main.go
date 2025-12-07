@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"shared/logger"
+	"shared/tracing"
 	"syscall"
 
 	pb "chat-app-proto/gen/media"
@@ -24,6 +25,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 
 	_ "net/http/pprof"
 
@@ -60,6 +62,17 @@ func main() {
 	reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
 	reg.MustRegister(collectors.NewGoCollector())
 
+	tp, err := tracing.InitTracer(ctx, "media-service")
+	if err != nil {
+		log.Error("Failed to initialize tracer", "error", err)
+		os.Exit(1)
+	}
+	defer func() {
+		if err := tp.Shutdown(ctx); err != nil {
+			log.Error("Failed to shutdown tracer", "error", err)
+		}
+	}()
+
 	rustfsEndpoint := os.Getenv("RUSTFS_ENDPOINT")
 
 	sdkConfig, err := config.LoadDefaultConfig(ctx,
@@ -84,6 +97,7 @@ func main() {
 	mediaHandler := handler.NewMediaHandler(mediaRepo)
 
 	grpcSrv := grpc.NewServer(
+		grpc.StatsHandler(otelgrpc.NewServerHandler()),
 		grpc.ChainUnaryInterceptor(
 			srvMetrics.UnaryServerInterceptor(),
 		),

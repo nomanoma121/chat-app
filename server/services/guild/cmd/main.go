@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"shared/logger"
+	"shared/tracing"
 	"syscall"
 	"time"
 
@@ -30,6 +31,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
+
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 )
 
 var db *pgxpool.Pool
@@ -83,6 +86,18 @@ func main() {
 		db.Close()
 	}()
 
+	ctx := context.Background()
+	tp, err := tracing.InitTracer(ctx, "guild-service")
+	if err != nil {
+		log.Error("Failed to initialize tracer", "error", err)
+		os.Exit(1)
+	}
+	defer func() {
+		if err := tp.Shutdown(ctx); err != nil {
+			log.Error("Failed to shutdown tracer", "error", err)
+		}
+	}()
+
 	srvMetrics := grpcprom.NewServerMetrics(
 		grpcprom.WithServerHandlingTimeHistogram(),
 	)
@@ -121,6 +136,7 @@ func main() {
 	})
 
 	grpcSrv := grpc.NewServer(
+		grpc.StatsHandler(otelgrpc.NewServerHandler()),
 		grpc.ChainUnaryInterceptor(
 			srvMetrics.UnaryServerInterceptor(),
 		),

@@ -10,6 +10,7 @@ import (
 	"realtime-service/internal/metrics"
 	"realtime-service/internal/subscriber"
 	"shared/logger"
+	"shared/tracing"
 	"syscall"
 	"time"
 
@@ -18,6 +19,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/redis/go-redis/v9"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 
 	_ "net/http/pprof"
 )
@@ -36,6 +38,16 @@ func main() {
 	reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
 	reg.MustRegister(collectors.NewGoCollector())
 	reg.MustRegister(wsMetrics)
+
+	tp, err := tracing.InitTracer(context.Background(), "realtime-service")
+	if err != nil {
+		log.Error("Failed to initialize tracer", "error", err)
+	}
+	defer func() {
+		if err := tp.Shutdown(context.Background()); err != nil {
+			log.Error("Error shutting down tracer provider", "error", err)
+		}
+	}()
 
 	redisClient := redis.NewClient(&redis.Options{
 		Addr: cfg.RedisAddr,
@@ -62,7 +74,11 @@ func main() {
 
 	wsHandler := handler.NewWebSocketHandler(hub, cfg.JWTSecret)
 	wsMux := http.NewServeMux()
-	wsMux.HandleFunc("/ws", wsHandler.ServeHTTP)
+
+	wsMux.Handle("/ws", otelhttp.NewHandler(
+		http.HandlerFunc(wsHandler.ServeHTTP),
+		"websocket",
+	))
 
 	addr := ":" + cfg.Port
 

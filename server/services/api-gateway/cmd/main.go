@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"shared/logger"
+	"shared/tracing"
 	"time"
 
 	mdw "api-gateway/internal/middleware"
@@ -22,6 +23,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
@@ -69,18 +72,30 @@ func main() {
 	reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
 	reg.MustRegister(collectors.NewGoCollector())
 
+	tp, err := tracing.InitTracer(ctx, "api-gateway")
+	if err != nil {
+		log.Error("Failed to initialize tracer", "error", err)
+		os.Exit(1)
+	}
+	defer func() {
+		if err := tp.Shutdown(ctx); err != nil {
+			log.Error("Error shutting down tracer provider", "error", err)
+		}
+	}()
+
 	grpcGatewayMux := runtime.NewServeMux(
 		runtime.WithErrorHandler(utils.CustomErrorHandler),
 	)
 
 	opts := []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithStatsHandler(otelgrpc.NewClientHandler()),
 		grpc.WithChainUnaryInterceptor(
 			interceptor.JWTToMetadata(),
 			clMetrics.UnaryClientInterceptor(),
 		),
 	}
-	err := userpb.RegisterUserServiceHandlerFromEndpoint(ctx, grpcGatewayMux, USER_SERVICE_ENDPOINT, opts)
+	err = userpb.RegisterUserServiceHandlerFromEndpoint(ctx, grpcGatewayMux, USER_SERVICE_ENDPOINT, opts)
 	if err != nil {
 		log.Error("Failed to register user service handler", "error", err, "endpoint", USER_SERVICE_ENDPOINT)
 		os.Exit(1)
@@ -124,7 +139,10 @@ func main() {
 	log.Info("API Gateway starting", "port", port)
 
 	g := &run.Group{}
-	apiSrv := &http.Server{Addr: ":8000", Handler: r}
+	apiSrv := &http.Server{
+		Addr:    ":8000",
+		Handler: otelhttp.NewHandler(r, "api-gateway"),
+	}
 	g.Add(func() error {
 		log.Info("starting HTTP server", "addr", apiSrv.Addr)
 		return apiSrv.ListenAndServe()

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"shared/logger"
+	"shared/tracing"
 	"syscall"
 	"time"
 	"user-service/internal/handler"
@@ -19,6 +20,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 
 	pb "chat-app-proto/gen/user"
 
@@ -80,6 +82,17 @@ func main() {
 	reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
 	reg.MustRegister(collectors.NewGoCollector())
 
+	tp, err := tracing.InitTracer(context.Background(), "user-service")
+	if err != nil {
+		log.Error("Failed to initialize tracer", "error", err)
+		os.Exit(1)
+	}
+	defer func() {
+		if err := tp.Shutdown(context.Background()); err != nil {
+			log.Error("Failed to shutdown tracer", "error", err)
+		}
+	}()
+
 	userRepo := postgres.NewPostgresUserRepository(gen.New(db))
 	validate := validator.New()
 	userUsecase := usecase.NewUserUsecase(userRepo, usecase.Config{
@@ -88,6 +101,7 @@ func main() {
 	userHandler := handler.NewUserHandler(userUsecase, log)
 
 	grpcSrv := grpc.NewServer(
+		grpc.StatsHandler(otelgrpc.NewServerHandler()),
 		grpc.ChainUnaryInterceptor(srvMetrics.UnaryServerInterceptor()),
 	)
 	srvMetrics.InitializeMetrics(grpcSrv)
