@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"os"
 	"realtime-service/internal/config"
 	"realtime-service/internal/handler"
 	"realtime-service/internal/hub"
@@ -42,6 +43,7 @@ func main() {
 	tp, err := tracing.InitTracer(context.Background(), "realtime-service")
 	if err != nil {
 		log.Error("Failed to initialize tracer", "error", err)
+		os.Exit(1)
 	}
 	defer func() {
 		if err := tp.Shutdown(context.Background()); err != nil {
