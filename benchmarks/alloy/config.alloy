@@ -65,7 +65,21 @@ discovery.docker "containers" {
 loki.source.docker "containers" {
   host       = "unix:///var/run/docker.sock"
   targets    = discovery.docker.containers.targets
+  forward_to = [loki.relabel.docker_service.receiver]
+}
+
+loki.relabel "docker_service" {
   forward_to = [loki.write.default.receiver]
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "service"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    target_label  = "container"
+  }
 }
 
 loki.write "default" {

@@ -115,7 +115,7 @@ func main() {
 	})
 
 	userServiceURL := os.Getenv("USER_SERVICE_URL")
-	userConn, err := grpc.NewClient(userServiceURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	userConn, err := grpc.NewClient(userServiceURL, grpc.WithStatsHandler(otelgrpc.NewClientHandler()), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Error("Failed to connect to user service", "error", err)
 		os.Exit(1)
@@ -128,7 +128,7 @@ func main() {
 	log.Info("Connected to user service", "url", userServiceURL)
 
 	guildServiceURL := os.Getenv("GUILD_SERVICE_URL")
-	guildConn, err := grpc.NewClient(guildServiceURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	guildConn, err := grpc.NewClient(guildServiceURL, grpc.WithStatsHandler(otelgrpc.NewClientHandler()), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Error("Failed to connect to guild service", "error", err)
 		os.Exit(1)
