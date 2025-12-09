@@ -66,11 +66,40 @@ services:
       - '--storage.tsdb.path=/prometheus'
       - '--web.enable-remote-write-receiver'
       - '--enable-feature=native-histograms'
-    ports:
-      - "9090:9090"
     volumes:
       - ./benchmarks/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
+
+  tempo:
+    image: grafana/tempo:latest
+    command:
+      - "-config.file=/etc/tempo.yaml"
+    volumes:
+      - ./benchmarks/tempo/tempo.yaml:/etc/tempo.yaml:ro
+      - tempo_data:/var/tempo
+
+  loki:
+    image: grafana/loki:latest
+    command: -config.file=/etc/loki/loki.yaml
+    volumes:
+      - ./benchmarks/loki/loki.yaml:/etc/loki/loki.yaml:ro
+      - loki_data:/loki
+
+  alloy:
+    image: grafana/alloy:latest
+    ports:
+      - "12345:12345"
+    depends_on:
+      - prometheus
+      - tempo
+      - loki
+    volumes:
+      - ./benchmarks/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - /etc/alloy/config.alloy
 
   grafana:
     image: grafana/grafana:latest
@@ -78,6 +107,9 @@ services:
       - "3000:3000"
     depends_on:
       - prometheus
+      - alloy
+      - tempo
+      - loki
     volumes:
       - grafana_data:/var/lib/grafana
       - ./benchmarks/grafana/dashboards:/var/grafana/dashboards:ro
@@ -256,3 +288,5 @@ volumes:
   minio_data:
   prometheus_data:
   grafana_data:
+  tempo_data:
+  loki_data:

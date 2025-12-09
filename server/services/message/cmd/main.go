@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"os"
 	"shared/logger"
+	"shared/tracing"
 	"syscall"
 	"time"
 
@@ -25,6 +26,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/redis/go-redis/v9"
@@ -94,6 +96,17 @@ func main() {
 	reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
 	reg.MustRegister(collectors.NewGoCollector())
 
+	tp, err := tracing.InitTracer(context.Background(), "message-service")
+	if err != nil {
+		log.Error("Failed to initialize tracer", "error", err)
+		os.Exit(1)
+	}
+	defer func() {
+		if err := tp.Shutdown(context.Background()); err != nil {
+			log.Error("Failed to shutdown tracer", "error", err)
+		}
+	}()
+
 	redisAddr := os.Getenv("REDIS_ADDR")
 	redisClient := redis.NewClient(&redis.Options{
 		Addr:         redisAddr,
@@ -102,7 +115,7 @@ func main() {
 	})
 
 	userServiceURL := os.Getenv("USER_SERVICE_URL")
-	userConn, err := grpc.NewClient(userServiceURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	userConn, err := grpc.NewClient(userServiceURL, grpc.WithStatsHandler(otelgrpc.NewClientHandler()), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Error("Failed to connect to user service", "error", err)
 		os.Exit(1)
@@ -115,7 +128,7 @@ func main() {
 	log.Info("Connected to user service", "url", userServiceURL)
 
 	guildServiceURL := os.Getenv("GUILD_SERVICE_URL")
-	guildConn, err := grpc.NewClient(guildServiceURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	guildConn, err := grpc.NewClient(guildServiceURL, grpc.WithStatsHandler(otelgrpc.NewClientHandler()), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Error("Failed to connect to guild service", "error", err)
 		os.Exit(1)
@@ -146,6 +159,7 @@ func main() {
 	messageHandler := handler.NewMessageHandler(messageUsecase, log)
 
 	grpcSrv := grpc.NewServer(
+		grpc.StatsHandler(otelgrpc.NewServerHandler()),
 		grpc.ChainUnaryInterceptor(
 			srvMetrics.UnaryServerInterceptor(),
 		),
