@@ -1,8 +1,99 @@
+# Alloy Helm values
+# Chart: grafana/alloy
+
+# コントローラータイプ（DaemonSet - 各ノードでログ収集）
+controller:
+  type: daemonset
+
+# Alloy設定
 alloy:
   configMap:
     content: |-
-      // Write your Alloy config here:
       logging {
-        level = "info"
+        level  = "info"
         format = "logfmt"
       }
+
+      // Kubernetes Podログ収集
+      discovery.kubernetes "pods" {
+        role = "pod"
+      }
+
+      discovery.relabel "pod_logs" {
+        targets = discovery.kubernetes.pods.targets
+
+        // appラベルをserviceに
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app"]
+          target_label  = "service"
+        }
+
+        // namespace
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+        }
+
+        // pod名
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+
+        // container名
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label  = "container"
+        }
+      }
+
+      loki.source.kubernetes "pods" {
+        targets    = discovery.relabel.pod_logs.output
+        forward_to = [loki.write.default.receiver]
+      }
+
+      loki.write "default" {
+        endpoint {
+          url = "http://loki:3100/loki/api/v1/push"
+        }
+      }
+
+      // OTLPレシーバー（トレース）
+      otelcol.receiver.otlp "default" {
+        grpc {
+          endpoint = "0.0.0.0:4317"
+        }
+        http {
+          endpoint = "0.0.0.0:4318"
+        }
+
+        output {
+          traces = [otelcol.exporter.otlp.tempo.input]
+        }
+      }
+
+      otelcol.exporter.otlp "tempo" {
+        client {
+          endpoint = "tempo:4317"
+          tls {
+            insecure = true
+          }
+        }
+      }
+
+# RBAC（Kubernetes APIアクセスに必要）
+rbac:
+  create: true
+
+# ServiceAccount
+serviceAccount:
+  create: true
+
+# リソース制限
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

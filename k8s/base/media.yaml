@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: media
+  labels:
+    app: media
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: media
+  template:
+    metadata:
+      labels:
+        app: media
+    spec:
+      containers:
+        - name: media
+          image: chat-app-media:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 50055
+              name: grpc
+            - containerPort: 6060
+              name: pprof
+            - containerPort: 2112
+              name: metrics
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: app-secrets
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: media
+spec:
+  selector:
+    app: media
+  ports:
+    - name: grpc
+      protocol: TCP
+      port: 50055
+      targetPort: 50055
+    - name: pprof
+      protocol: TCP
+      port: 6060
+      targetPort: 6060
+    - name: metrics
+      protocol: TCP
+      port: 2112
+      targetPort: 2112

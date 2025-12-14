@@ -1,0 +1,49 @@
+# PostgreSQL Helm values
+# Chart: bitnami/postgresql
+
+# Image設定
+image:
+  registry: docker.io
+  repository: bitnami/postgresql
+  tag: "16"
+
+# 認証情報
+auth:
+  database: chat_app
+  username: user
+  password: "" # helm install時に --set auth.password=xxx で指定
+
+# Primary設定
+primary:
+  # Persistence
+  persistence:
+    enabled: true
+    size: 10Gi
+
+  # カスタムPostgreSQL設定
+  extendedConfiguration: |
+    listen_addresses = '*'
+    shared_preload_libraries = 'pg_stat_statements'
+    pg_stat_statements.max = 10000
+    pg_stat_statements.track = all
+    max_connections = 5000
+
+  # リソース制限（k3s向け）
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+
+# メトリクス（postgres-exporter）
+metrics:
+  enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi

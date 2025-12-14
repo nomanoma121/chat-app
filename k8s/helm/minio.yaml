@@ -1,0 +1,50 @@
+# MinIO Helm values
+# Chart: minio/minio
+
+# Mode（standalone）
+mode: standalone
+
+# 認証情報（環境変数から）
+rootUser: "" # RUSTFS_ACCESS_KEYから設定
+rootPassword: "" # RUSTFS_SECRET_KEYから設定
+
+# Persistence
+persistence:
+  enabled: true
+  size: 10Gi
+
+# リソース制限
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# Console有効
+consoleService:
+  type: ClusterIP
+
+# バケット初期化
+buckets:
+  - name: chat-app-bucket
+    policy: download
+    purge: false
+
+# Policies（public read access）
+policies:
+  - name: chat-app-bucket-policy
+    statements:
+      - resources:
+          - "arn:aws:s3:::chat-app-bucket/*"
+        actions:
+          - "s3:GetObject"
+        effect: "Allow"
+        principal:
+          AWS:
+            - "*"
+
+# Serviceアカウント
+serviceAccount:
+  create: true

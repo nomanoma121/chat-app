@@ -17,7 +17,9 @@ configMapGenerator:
       - MESSAGE_SERVICE_URL=message:50053
       - REALTIME_SERVICE_URL=realtime:50054
       - MEDIA_SERVICE_URL=media:50055
+      - REDIS_ADDR=redis-master:6379
 
+secretGenerator:
   - name: app-secrets
-    files:
+    envs:
       - ../../.env
