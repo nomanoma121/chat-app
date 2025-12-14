@@ -11,7 +11,7 @@ type Config struct {
 func Load() *Config {
 	return &Config{
 		Port:      getEnv("REALTIME_SERVICE_PORT", "50053"),
-		RedisAddr: getEnv("REDIS_URL", "localhost:6379"),
+		RedisAddr: getEnv("REDIS_ADDR", "localhost:6379"),
 		JWTSecret: getEnv("JWT_SECRET", "mysecret"),
 	}
 }

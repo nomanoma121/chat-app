@@ -1,12 +1,6 @@
 # PostgreSQL Helm values
 # Chart: bitnami/postgresql
 
-# Image設定
-image:
-  registry: docker.io
-  repository: bitnami/postgresql
-  tag: "16"
-
 # 認証情報
 auth:
   database: chat_app
