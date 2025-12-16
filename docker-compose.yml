@@ -223,7 +223,7 @@ services:
       args:
         SERVICE_NAME: realtime
     environment:
-      - REDIS_URL=redis:6379
+      - REDIS_ADDR=redis:6379
       - REALTIME_SERVICE_PORT=50054
       - JWT_SECRET=${JWT_SECRET}
     ulimits:

@@ -1,6 +1,9 @@
 # PostgreSQL Helm values
 # Chart: bitnami/postgresql
 
+# サービス名を"postgres"に設定
+fullnameOverride: postgres
+
 # 認証情報
 auth:
   database: chat_app
@@ -25,11 +28,11 @@ primary:
   # リソース制限（k3s向け）
   resources:
     requests:
-      cpu: 250m
-      memory: 256Mi
-    limits:
       cpu: 1000m
-      memory: 1Gi
+      memory: 1000Mi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
 
 # メトリクス（postgres-exporter）
 metrics:
