@@ -1,0 +1,64 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana
+  namespace: argocd
+spec:
+  project: chat-app
+  source:
+    chart: grafana
+    repoURL: https://grafana.github.io/helm-charts
+    targetRevision: 7.0.0
+    helm:
+      values: |
+        adminUser: admin
+        adminPassword: admin
+        persistence:
+          enabled: true
+          size: 10Gi
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        datasources:
+          datasources.yaml:
+            apiVersion: 1
+            datasources:
+              - name: Prometheus
+                type: prometheus
+                access: proxy
+                url: http://prometheus-server:80
+                isDefault: true
+                editable: false
+              - name: Loki
+                type: loki
+                access: proxy
+                url: http://loki:3100
+                editable: false
+              - name: Tempo
+                type: tempo
+                access: proxy
+                url: http://tempo:3100
+                editable: false
+                jsonData:
+                  tracesToLogsV2:
+                    datasourceUid: loki
+                  tracesToMetrics:
+                    datasourceUid: prometheus
+                  serviceMap:
+                    datasourceUid: prometheus
+        service:
+          type: ClusterIP
+          port: 80
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
