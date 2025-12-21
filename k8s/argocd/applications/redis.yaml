@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: redis
+  namespace: argocd
+spec:
+  project: chat-app
+  sources:
+    - chart: redis
+      repoURL: https://charts.bitnami.com/bitnami
+      targetRevision: 17.11.3
+      helm:
+        valueFiles:
+          - $values/redis.yaml
+    - repoURL: https://github.com/nomanoma121/chat-app
+      targetRevision: main
+      ref: values
+      path: k8s/argocd/values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: database
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
