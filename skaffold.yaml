@@ -1,0 +1,76 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: chat-app
+
+build:
+  local:
+    push: false
+    useBuildkit: true
+  artifacts:
+    - image: chat-app-api-gateway
+      context: .
+      docker:
+        dockerfile: services/api-gateway/Dockerfile
+
+    - image: chat-app-user
+      context: .
+      docker:
+        dockerfile: services/user/Dockerfile
+
+    - image: chat-app-guild
+      context: .
+      docker:
+        dockerfile: services/guild/Dockerfile
+
+    - image: chat-app-message
+      context: .
+      docker:
+        dockerfile: services/message/Dockerfile
+
+    - image: chat-app-realtime
+      context: .
+      docker:
+        dockerfile: services/realtime/Dockerfile
+
+    - image: chat-app-media
+      context: .
+      docker:
+        dockerfile: services/media/Dockerfile
+
+manifests:
+  kustomize:
+    paths:
+      - k8s/overlays/local
+
+deploy:
+  kubectl: {}
+  logs:
+    prefix: pod
+
+portForward:
+  - resourceType: service
+    resourceName: gateway
+    namespace: chat-app-local
+    port: 8000
+    localPort: 8000
+
+  - resourceType: service
+    resourceName: realtime
+    namespace: chat-app-local
+    port: 50054
+    localPort: 50054
+
+  - resourceType: service
+    resourceName: media
+    namespace: chat-app-local
+    port: 5001
+    localPort: 5001
+
+  - resourceType: service
+    resourceName: redis
+    namespace: chat-app-local
+    port: 6379
+    localPort: 6379
+    
+fileSyncMode: auto
