@@ -8,7 +8,6 @@ spec:
   sources:
     - chart: redis
       repoURL: https://charts.bitnami.com/bitnami
-      targetRevision: 17.11.3
       helm:
         valueFiles:
           - $values/redis.yaml

@@ -51,22 +51,22 @@ datasources:
             datasourceUid: prometheus
 
 # Dashboards設定
-dashboardProviders:
-  dashboardproviders.yaml:
-    apiVersion: 1
-    providers:
-      - name: default
-        orgId: 1
-        folder: ""
-        type: file
-        disableDeletion: false
-        editable: true
-        options:
-          path: /var/lib/grafana/dashboards/default
+# dashboardProviders:
+#   dashboardproviders.yaml:
+#     apiVersion: 1
+#     providers:
+#       - name: default
+#         orgId: 1
+#         folder: ""
+#         type: file
+#         disableDeletion: false
+#         editable: true
+#         options:
+#           path: /var/lib/grafana/dashboards/default
 
 # DashboardsのインポートはConfigMapから
-dashboardsConfigMaps:
-  default: grafana-dashboards
+# dashboardsConfigMaps:
+#   default: grafana-dashboards
 
 # Service設定
 service:
