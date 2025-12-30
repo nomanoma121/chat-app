@@ -5,6 +5,9 @@ logging {
 
 discovery.kubernetes "pods" {
   role = "pod"
+  namespaces {
+    names = ["chat-app-local", "database", "storage", "monitoring"]
+  }
 }
 
 discovery.relabel "pod_logs" {
