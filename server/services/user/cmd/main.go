@@ -34,7 +34,10 @@ import (
 	_ "net/http/pprof"
 )
 
-var db *pgxpool.Pool
+var (
+	db *pgxpool.Pool
+	otelEndpoint string
+)
 
 const (
 	grpcAddr = ":50051"
@@ -43,6 +46,8 @@ const (
 
 func init() {
 	_ = godotenv.Load()
+
+	otelEndpoint = os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
 
 	log := logger.Default("user-service")
 	dsn := os.Getenv("DATABASE_URL")
@@ -82,7 +87,7 @@ func main() {
 	reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
 	reg.MustRegister(collectors.NewGoCollector())
 
-	tp, err := tracing.InitTracer(context.Background(), "user-service")
+	tp, err := tracing.InitTracer(context.Background(), otelEndpoint, "user-service")
 	if err != nil {
 		log.Error("Failed to initialize tracer", "error", err)
 		os.Exit(1)

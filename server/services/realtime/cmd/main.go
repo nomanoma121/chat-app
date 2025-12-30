@@ -15,6 +15,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/oklog/run"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
@@ -24,6 +25,16 @@ import (
 
 	_ "net/http/pprof"
 )
+
+var (
+	otelEndpoint string
+)
+
+func init() {
+	_ = godotenv.Load()
+
+	otelEndpoint = os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
+}
 
 func main() {
 	go func() {
@@ -40,7 +51,7 @@ func main() {
 	reg.MustRegister(collectors.NewGoCollector())
 	reg.MustRegister(wsMetrics)
 
-	tp, err := tracing.InitTracer(context.Background(), "realtime-service")
+	tp, err := tracing.InitTracer(context.Background(), otelEndpoint, "realtime-service")
 	if err != nil {
 		log.Error("Failed to initialize tracer", "error", err)
 		os.Exit(1)

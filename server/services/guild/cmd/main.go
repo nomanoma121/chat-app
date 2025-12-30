@@ -35,7 +35,10 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 )
 
-var db *pgxpool.Pool
+var (
+	db *pgxpool.Pool
+	otelEndpoint string
+)
 
 const (
 	grpcAddr = ":50052"
@@ -44,6 +47,8 @@ const (
 
 func init() {
 	_ = godotenv.Load()
+
+	otelEndpoint = os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
 
 	log := logger.Default("guild-service")
 	dsn := os.Getenv("DATABASE_URL")
@@ -87,7 +92,7 @@ func main() {
 	}()
 
 	ctx := context.Background()
-	tp, err := tracing.InitTracer(ctx, "guild-service")
+	tp, err := tracing.InitTracer(ctx, otelEndpoint, "guild-service")
 	if err != nil {
 		log.Error("Failed to initialize tracer", "error", err)
 		os.Exit(1)
