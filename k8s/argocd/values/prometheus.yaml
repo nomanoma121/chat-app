@@ -29,7 +29,7 @@ serverFiles:
           - targets:
               - localhost:9090
 
-      - job_name: kubernetes-pods
+      - job_name: app
         kubernetes_sd_configs:
           - role: pod
         relabel_configs:
@@ -38,10 +38,13 @@ serverFiles:
             regex: "2112"
           - source_labels: [__meta_kubernetes_pod_label_app]
             target_label: service
+          - source_labels: [__meta_kubernetes_pod_label_app]
+            target_label: job
+            replacement: $1
           - source_labels: [__meta_kubernetes_namespace]
             target_label: namespace
           - source_labels: [__meta_kubernetes_pod_name]
-            target_label: pod
+            target_label: pod  
 
       - job_name: postgresql
         kubernetes_sd_configs:
