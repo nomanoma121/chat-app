@@ -8,12 +8,12 @@ spec:
   sources:
     - chart: postgresql
       repoURL: https://charts.bitnami.com/bitnami
-      targetRevision: 12.1.0
+      targetRevision: 18.1.14
       helm:
         valueFiles:
-          - $values/postgres.yaml
+          - $values/k8s/argocd/values/postgres.yaml
     - repoURL: https://github.com/nomanoma121/chat-app
-      targetRevision: main
+      targetRevision: feat/introduce-k8s
       ref: values
       path: k8s/argocd/values
   destination:

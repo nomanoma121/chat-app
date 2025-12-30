@@ -1,21 +1,13 @@
-# Redis Helm values
-# Chart: bitnami/redis
-
-# アーキテクチャ（standalone）
 architecture: standalone
 
-# 認証無効（docker-composeと同じ）
 auth:
   enabled: false
 
-# Master設定
 master:
-  # Persistence
   persistence:
     enabled: true
     size: 8Gi
 
-  # リソース制限
   resources:
     requests:
       cpu: 100m
@@ -24,7 +16,6 @@ master:
       cpu: 500m
       memory: 512Mi
 
-# メトリクス（redis-exporter）
 metrics:
   enabled: true
   resources:

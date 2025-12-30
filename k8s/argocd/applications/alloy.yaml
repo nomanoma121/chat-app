@@ -8,12 +8,12 @@ spec:
   sources:
     - chart: alloy
       repoURL: https://grafana.github.io/helm-charts
-      targetRevision: 0.1.0
+      targetRevision: 1.5.1
       helm:
         valueFiles:
-          - $values/alloy.yaml
+          - $values/k8s/argocd/values/alloy.yaml
     - repoURL: https://github.com/nomanoma121/chat-app
-      targetRevision: main
+      targetRevision: feat/introduce-k8s
       ref: values
       path: k8s/argocd/values
   destination:

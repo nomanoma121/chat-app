@@ -1,19 +1,11 @@
-# MinIO Helm values
-# Chart: minio/minio
-
-# Mode（standalone）
 mode: standalone
 
-# 認証情報（環境変数から）
-rootUser: "" # RUSTFS_ACCESS_KEYから設定
-rootPassword: "" # RUSTFS_SECRET_KEYから設定
+existingSecret: minio-secret
 
-# Persistence
 persistence:
   enabled: true
   size: 10Gi
 
-# リソース制限
 resources:
   requests:
     cpu: 100m
@@ -22,17 +14,14 @@ resources:
     cpu: 500m
     memory: 512Mi
 
-# Console有効
 consoleService:
   type: ClusterIP
 
-# バケット初期化
 buckets:
   - name: chat-app-bucket
     policy: download
     purge: false
 
-# Policies（public read access）
 policies:
   - name: chat-app-bucket-policy
     statements:
@@ -45,6 +34,5 @@ policies:
           AWS:
             - "*"
 
-# Serviceアカウント
 serviceAccount:
   create: true

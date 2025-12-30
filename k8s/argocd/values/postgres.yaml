@@ -1,23 +1,18 @@
-# PostgreSQL Helm values
-# Chart: bitnami/postgresql
-
-# サービス名を"postgres"に設定
 fullnameOverride: postgres
 
-# 認証情報
 auth:
   database: chat_app
   username: user
-  password: "" # helm install時に --set auth.password=xxx で指定
+  existingSecret: postgres-secret
+  secretKeys:
+    adminPasswordKey: password
+    userPasswordKey: password
 
-# Primary設定
 primary:
-  # Persistence
   persistence:
     enabled: true
     size: 10Gi
 
-  # カスタムPostgreSQL設定
   extendedConfiguration: |
     listen_addresses = '*'
     shared_preload_libraries = 'pg_stat_statements'
@@ -25,7 +20,6 @@ primary:
     pg_stat_statements.track = all
     max_connections = 5000
 
-  # リソース制限（k3s向け）
   resources:
     requests:
       cpu: 1000m
@@ -34,7 +28,6 @@ primary:
       cpu: 2000m
       memory: 2Gi
 
-# メトリクス（postgres-exporter）
 metrics:
   enabled: true
   resources:

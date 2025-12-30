@@ -1,16 +1,13 @@
-# Grafana Helm values
-# Chart: grafana/grafana
-
-# Admin設定
 adminUser: admin
 adminPassword: admin
 
-# Persistence
+initChownData:
+  enabled: false
+
 persistence:
   enabled: true
   size: 10Gi
 
-# リソース制限
 resources:
   requests:
     cpu: 100m
@@ -19,7 +16,6 @@ resources:
     cpu: 500m
     memory: 512Mi
 
-# Datasources設定
 datasources:
   datasources.yaml:
     apiVersion: 1
@@ -40,7 +36,7 @@ datasources:
       - name: Tempo
         type: tempo
         access: proxy
-        url: http://tempo:3100
+        url: http://tempo:3200
         editable: false
         jsonData:
           tracesToLogsV2:
@@ -50,25 +46,18 @@ datasources:
           serviceMap:
             datasourceUid: prometheus
 
-# Dashboards設定
-# dashboardProviders:
-#   dashboardproviders.yaml:
-#     apiVersion: 1
-#     providers:
-#       - name: default
-#         orgId: 1
-#         folder: ""
-#         type: file
-#         disableDeletion: false
-#         editable: true
-#         options:
-#           path: /var/lib/grafana/dashboards/default
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: default
+        type: file
+        options:
+          path: /var/lib/grafana/dashboards/default
 
-# DashboardsのインポートはConfigMapから
-# dashboardsConfigMaps:
-#   default: grafana-dashboards
+dashboardsConfigMaps:
+  default: grafana-dashboards
 
-# Service設定
 service:
-  type: ClusterIP
-  port: 80
+  type: NodePort
+  nodePort: 30300

@@ -1,10 +1,5 @@
-# Loki Helm values
-# Chart: grafana/loki
-
-# デプロイメントモード（Monolithic）
 deploymentMode: SingleBinary
 
-# SingleBinary設定
 singleBinary:
   replicas: 1
   persistence:
@@ -18,7 +13,6 @@ singleBinary:
       cpu: 1000m
       memory: 1Gi
 
-# Loki設定
 loki:
   auth_enabled: false
 
@@ -49,7 +43,6 @@ loki:
     retention_enabled: true
     delete_request_store: filesystem
 
-# 他のコンポーネント無効化
 backend:
   replicas: 0
 read:
@@ -57,10 +50,8 @@ read:
 write:
   replicas: 0
 
-# Gatewayの無効化
 gateway:
   enabled: false
 
-# テスト無効化
 test:
   enabled: false

@@ -8,12 +8,12 @@ spec:
   sources:
     - chart: grafana
       repoURL: https://grafana.github.io/helm-charts
-      targetRevision: 7.0.0
+      targetRevision: 10.4.0
       helm:
         valueFiles:
-          - $values/grafana.yaml
+          - $values/k8s/argocd/values/grafana.yaml
     - repoURL: https://github.com/nomanoma121/chat-app
-      targetRevision: main
+      targetRevision: feat/introduce-k8s
       ref: values
       path: k8s/argocd/values
   destination:

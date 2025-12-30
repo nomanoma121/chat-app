@@ -8,11 +8,12 @@ spec:
   sources:
     - chart: redis
       repoURL: https://charts.bitnami.com/bitnami
+      targetRevision: "*"
       helm:
         valueFiles:
-          - $values/redis.yaml
+          - $values/k8s/argocd/values/redis.yaml
     - repoURL: https://github.com/nomanoma121/chat-app
-      targetRevision: main
+      targetRevision: feat/introduce-k8s
       ref: values
       path: k8s/argocd/values
   destination:

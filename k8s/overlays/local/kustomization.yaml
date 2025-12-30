@@ -5,8 +5,3 @@ namespace: chat-app-local
 
 resources:
   - ../../base
-
-secretGenerator:
-  - name: app-secrets
-    envs:
-      - .env

@@ -8,12 +8,12 @@ spec:
   sources:
     - chart: loki
       repoURL: https://grafana.github.io/helm-charts
-      targetRevision: 5.0.0
+      targetRevision: 6.49.0
       helm:
         valueFiles:
-          - $values/loki.yaml
+          - $values/k8s/argocd/values/loki.yaml
     - repoURL: https://github.com/nomanoma121/chat-app
-      targetRevision: main
+      targetRevision: feat/introduce-k8s
       ref: values
       path: k8s/argocd/values
   destination:
