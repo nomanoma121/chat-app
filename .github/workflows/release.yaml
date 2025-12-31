@@ -4,29 +4,54 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  ORG: nomanoma121
+  APP: chat-app
 
 jobs:
   prepare:
     runs-on: ubuntu-latest
     outputs:
-      sha_tag: ${{ steps.meta.outputs.SHA_TAG }}
+      version: ${{ steps.meta.outputs.VERSION }}
     steps:
-      - name: Set tags
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate version
         id: meta
         run: |
-          SHA_TAG=${GITHUB_SHA::12}
-          echo "SHA_TAG=$SHA_TAG" >> $GITHUB_OUTPUT
+          BASE_VERSION="v$(date +'%y.%m.%d')"
+
+          EXISTING_TAGS=$(git tag -l "${BASE_VERSION}*" | sort -V)
+
+          if [ -z "$EXISTING_TAGS" ]; then
+            VERSION="$BASE_VERSION"
+          else
+            LATEST=$(echo "$EXISTING_TAGS" | tail -1)
+            if [ "$LATEST" = "$BASE_VERSION" ]; then
+              VERSION="${BASE_VERSION}.1"
+            else
+              SUFFIX=$(echo "$LATEST" | sed "s/${BASE_VERSION}\.//")
+              NEXT=$((SUFFIX + 1))
+              VERSION="${BASE_VERSION}.${NEXT}"
+            fi
+          fi
+
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Generated version: $VERSION"
 
   build-frontend:
     needs: prepare
     runs-on: ubuntu-latest
-    outputs:
-      digest: ${{ steps.build-frontend.outputs.digest }}
     permissions:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
       - name: Login to GHCR
         uses: docker/login-action@v3
@@ -39,6 +64,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build & Push frontend
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: ./client
@@ -50,15 +76,24 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.ORG }}/${{ env.APP }}-frontend:latest
-            ${{ env.REGISTRY }}/${{ env.ORG }}/${{ env.APP }}-frontend:${{ needs.prepare.outputs.sha_tag }}
+            ${{ env.REGISTRY }}/${{ env.ORG }}/${{ env.APP }}-frontend:${{ needs.prepare.outputs.version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Save frontend digest
+        run: |
+          mkdir -p /tmp/digests
+          echo "${{ steps.build.outputs.digest }}" > /tmp/digests/frontend
+
+      - name: Upload frontend digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digest-frontend
+          path: /tmp/digests/frontend
 
   build-backend:
     needs: prepare
     runs-on: ubuntu-latest
-    outputs:
-      digest: ${{ steps.build-backend.outputs.digest }}
     permissions:
       contents: read
       packages: write
@@ -66,7 +101,7 @@ jobs:
       matrix:
         service: [user, guild, message, realtime, media, api-gateway]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
       - name: Login to GHCR
         uses: docker/login-action@v3
@@ -79,6 +114,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build & Push ${{ matrix.service }}
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: ./server
@@ -87,38 +123,79 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.ORG }}/${{ env.APP }}-${{ matrix.service }}:latest
-            ${{ env.REGISTRY }}/${{ env.ORG }}/${{ env.APP }}-${{ matrix.service }}:${{ needs.prepare.outputs.sha_tag }}
+            ${{ env.REGISTRY }}/${{ env.ORG }}/${{ env.APP }}-${{ matrix.service }}:${{ needs.prepare.outputs.version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-  
-  update-image:
-    needs: [build-frontend, build-backend]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v6
 
-      - name: Update version file
+      - name: Save digest
         run: |
-          echo "${{ needs.prepare.outputs.sha_tag }}" > VERSION
+          mkdir -p /tmp/digests
+          echo "${{ steps.build.outputs.digest }}" > /tmp/digests/${{ matrix.service }}
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digest-${{ matrix.service }}
+          path: /tmp/digests/${{ matrix.service }}
 
   create-release-pr:
-    needs: [build-frontend, build-backend]
+    needs: [prepare, build-frontend, build-backend]
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all digests
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/digests
+          pattern: digest-*
+          merge-multiple: true
+
+      - name: Setup yq
+        uses: mikefarah/yq@v4
+
+      - name: Update manifests
+        run: |
+          VERSION="${{ needs.prepare.outputs.version }}"
+          REGISTRY="${{ env.REGISTRY }}/${{ env.ORG }}/${{ env.APP }}"
+
+          update_image() {
+            local file=$1 service=$2
+            DIGEST=$(cat "/tmp/digests/$service")
+            yq -i "(select(.kind == \"Deployment\") | .spec.template.spec.containers[0].image) = \"${REGISTRY}-${service}:${VERSION}@${DIGEST}\"" "$file"
+          }
+
+          update_image k8s/base/gateway.yaml api-gateway
+          update_image k8s/base/user.yaml user
+          update_image k8s/base/guild.yaml guild
+          update_image k8s/base/message.yaml message
+          update_image k8s/base/media.yaml media
+          update_image k8s/base/realtime.yaml realtime
+
+      - name: Generate release body
+        id: body
+        run: |
+          DATE=$(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M:%S JST')
+          BODY="## Release ${{ needs.prepare.outputs.version }}\n\n"
+          BODY="${BODY}**Date:** ${DATE}\n\n"
+          BODY="${BODY}### Image Digests\n"
+          for f in /tmp/digests/*; do
+            service=$(basename "$f")
+            digest=$(cat "$f")
+            BODY="${BODY}- **${service}**: \`${digest}\`\n"
+          done
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$BODY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create Release Pull Request
-        uses: peter-evans/create-pull-request@v8
+        uses: peter-evans/create-pull-request@v7
         with:
-          commit-message: "Release ${{ needs.prepare.outputs.sha_tag }}"
-          branch: "release-${{ needs.prepare.outputs.sha_tag }}"
-          title: "Release ${{ needs.prepare.outputs.sha_tag }}"
-          body: "This PR prepares the release for commit ${{ needs.prepare.outputs.sha_tag }}."
+          commit-message: "Release ${{ needs.prepare.outputs.version }}"
+          branch: "release/${{ needs.prepare.outputs.version }}"
+          title: "Release ${{ needs.prepare.outputs.version }}"
+          body: ${{ steps.body.outputs.body }}
           labels: release
-
-
-
