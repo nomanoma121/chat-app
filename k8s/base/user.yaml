@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: user
-          image: chat-app-user:latest
+          image: ghcr.io/nomanoma121/chat-app-user:v25.12.31@sha256:a2c6ff0a21055ddf77da5db37ae347d66dfd853b1c84d7e568a411b56a87b8d3
           ports:
             - containerPort: 50051
               name: grpc
@@ -56,4 +56,4 @@ spec:
     - name: metrics
       protocol: TCP
       port: 2112
-      targetPort: 2112 
+      targetPort: 2112
