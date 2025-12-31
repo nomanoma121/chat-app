@@ -1,0 +1,38 @@
+persistence:
+  enabled: true
+  size: 10Gi
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+tempo:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+        http:
+          endpoint: 0.0.0.0:4318
+
+  storage:
+    trace:
+      backend: local
+      local:
+        path: /var/tempo/traces
+
+  metricsGenerator:
+    enabled: true
+    remoteWriteUrl: http://prometheus-server:80/api/v1/write
+
+  retention: 24h
+
+service:
+  type: ClusterIP
+
+tempoQuery:
+  enabled: false

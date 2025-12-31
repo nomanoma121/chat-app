@@ -1,0 +1,39 @@
+fullnameOverride: postgres
+
+auth:
+  database: chat_app
+  username: user
+  existingSecret: postgres-secret
+  secretKeys:
+    adminPasswordKey: password
+    userPasswordKey: password
+
+primary:
+  persistence:
+    enabled: true
+    size: 10Gi
+
+  extendedConfiguration: |
+    listen_addresses = '*'
+    shared_preload_libraries = 'pg_stat_statements'
+    pg_stat_statements.max = 10000
+    pg_stat_statements.track = all
+    max_connections = 5000
+
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 1000Mi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+
+metrics:
+  enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi

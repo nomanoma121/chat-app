@@ -12,9 +12,9 @@ import (
 )
 
 // InitTracer initializes OpenTelemetry tracer for the service
-func InitTracer(ctx context.Context, serviceName string) (*sdktrace.TracerProvider, error) {
+func InitTracer(ctx context.Context, otelEndpoint string, serviceName string) (*sdktrace.TracerProvider, error) {
 	exporter, err := otlptracegrpc.New(ctx,
-		otlptracegrpc.WithEndpoint("alloy:4317"),
+		otlptracegrpc.WithEndpoint(otelEndpoint),
 		otlptracegrpc.WithInsecure(),
 	)
 	if err != nil {

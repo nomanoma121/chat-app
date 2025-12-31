@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: chat-app
+  namespace: argocd
+spec:
+  project: chat-app
+  source:
+    repoURL: https://github.com/nomanoma121/chat-app
+    path: k8s/overlays/prod
+    targetRevision: main
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: chat-app-prod
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

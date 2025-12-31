@@ -43,6 +43,7 @@ var (
 	MESSAGE_SERVICE_ENDPOINT string
 	MEDIA_SERVICE_ENDPOINT   string
 	REALTIME_SERVICE_URL     string
+	otelEndpoint             string
 	tokenAuth                *jwtauth.JWTAuth
 )
 
@@ -53,6 +54,7 @@ func init() {
 	GUILD_SERVICE_ENDPOINT = os.Getenv("GUILD_SERVICE_URL")
 	MESSAGE_SERVICE_ENDPOINT = os.Getenv("MESSAGE_SERVICE_URL")
 	MEDIA_SERVICE_ENDPOINT = os.Getenv("MEDIA_SERVICE_URL")
+	otelEndpoint = os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
 }
 
 func main() {
@@ -72,7 +74,7 @@ func main() {
 	reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
 	reg.MustRegister(collectors.NewGoCollector())
 
-	tp, err := tracing.InitTracer(ctx, "api-gateway")
+	tp, err := tracing.InitTracer(ctx, otelEndpoint, "api-gateway")
 	if err != nil {
 		log.Error("Failed to initialize tracer", "error", err)
 		os.Exit(1)

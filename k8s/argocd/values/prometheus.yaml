@@ -1,0 +1,63 @@
+server:
+  persistentVolume:
+    enabled: true
+    size: 10Gi
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+
+  global:
+    scrape_interval: 15s
+    evaluation_interval: 15s
+
+  enableRemoteWriteReceiver: true
+
+  extraFlags:
+    - web.enable-remote-write-receiver
+    - enable-feature=native-histograms
+
+serverFiles:
+  prometheus.yml:
+    scrape_configs:
+      - job_name: prometheus
+        static_configs:
+          - targets:
+              - localhost:9090
+
+      - job_name: app
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_container_port_number]
+            action: keep
+            regex: "2112"
+          - source_labels: [__meta_kubernetes_pod_label_app]
+            target_label: service
+          - source_labels: [__meta_kubernetes_pod_label_app]
+            target_label: job
+            replacement: $1
+          - source_labels: [__meta_kubernetes_namespace]
+            target_label: namespace
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: pod  
+
+      - job_name: postgresql
+        kubernetes_sd_configs:
+          - role: service
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_service_name]
+            action: keep
+            regex: .*postgresql.*metrics
+
+      - job_name: redis
+        kubernetes_sd_configs:
+          - role: service
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_service_name]
+            action: keep
+            regex: .*redis.*metrics

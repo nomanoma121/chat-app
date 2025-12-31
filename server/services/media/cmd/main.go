@@ -33,6 +33,8 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+var otelEndpoint string
+
 const (
 	BUCKET_NAME = "chat-app-bucket"
 	grpcAddr    = ":50055"
@@ -41,6 +43,8 @@ const (
 
 func init() {
 	_ = godotenv.Load()
+
+	otelEndpoint = os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
 
 	log := logger.Default("media-service")
 	log.Info("Starting Media Service...")
@@ -62,7 +66,7 @@ func main() {
 	reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
 	reg.MustRegister(collectors.NewGoCollector())
 
-	tp, err := tracing.InitTracer(ctx, "media-service")
+	tp, err := tracing.InitTracer(ctx, otelEndpoint, "media-service")
 	if err != nil {
 		log.Error("Failed to initialize tracer", "error", err)
 		os.Exit(1)
