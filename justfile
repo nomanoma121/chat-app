@@ -21,7 +21,7 @@ argocd-secrets:
   kubectl create namespace storage --dry-run=client -o yaml | kubectl apply -f -
   kubectl create namespace database --dry-run=client -o yaml | kubectl apply -f -
   kubectl create secret generic app-secrets \
-    --from-env-file=k8s/overlays/prod/.env \
+    --from-env-file=.env \
     -n chat-app-prod \
     --dry-run=client -o yaml | kubectl apply -f -
   kubectl create secret generic minio-secret \
