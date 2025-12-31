@@ -17,7 +17,6 @@ spec:
       containers:
         - name: gateway
           image: chat-app-api-gateway:latest
-          imagePullPolicy: Never
           ports:
             - containerPort: 8000
               name: http

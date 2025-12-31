@@ -17,7 +17,6 @@ spec:
       containers:
         - name: realtime
           image: chat-app-realtime:latest
-          imagePullPolicy: Never
           ports:
             - containerPort: 50054
               name: websocket

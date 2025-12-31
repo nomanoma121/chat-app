@@ -17,7 +17,6 @@ spec:
       containers:
         - name: guild
           image: chat-app-guild:latest
-          imagePullPolicy: Never
           ports:
             - containerPort: 50052
               name: grpc

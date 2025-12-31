@@ -17,7 +17,6 @@ spec:
       containers:
         - name: media
           image: chat-app-media:latest
-          imagePullPolicy: Never
           ports:
             - containerPort: 50055
               name: grpc
