@@ -36,7 +36,7 @@ import (
 )
 
 var (
-	db *pgxpool.Pool
+	db           *pgxpool.Pool
 	otelEndpoint string
 )
 

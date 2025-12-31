@@ -33,9 +33,7 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var (
-	otelEndpoint string
-)
+var otelEndpoint string
 
 const (
 	BUCKET_NAME = "chat-app-bucket"

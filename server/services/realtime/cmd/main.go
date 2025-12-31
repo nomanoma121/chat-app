@@ -26,9 +26,7 @@ import (
 	_ "net/http/pprof"
 )
 
-var (
-	otelEndpoint string
-)
+var otelEndpoint string
 
 func init() {
 	_ = godotenv.Load()

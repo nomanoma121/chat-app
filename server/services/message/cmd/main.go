@@ -38,7 +38,7 @@ import (
 )
 
 var (
-	db *pgxpool.Pool
+	db           *pgxpool.Pool
 	otelEndpoint string
 )
 
@@ -101,7 +101,7 @@ func main() {
 	reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
 	reg.MustRegister(collectors.NewGoCollector())
 
-	tp, err := tracing.InitTracer(context.Background(), otelEndpoint,"message-service")
+	tp, err := tracing.InitTracer(context.Background(), otelEndpoint, "message-service")
 	if err != nil {
 		log.Error("Failed to initialize tracer", "error", err)
 		os.Exit(1)
