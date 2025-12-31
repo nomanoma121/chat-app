@@ -7,11 +7,11 @@ spec:
   project: chat-app
   source:
     repoURL: https://github.com/nomanoma121/chat-app
-    path: k8s/overlays/local
+    path: k8s/overlays/prod
     targetRevision: main
   destination:
     server: https://kubernetes.default.svc
-    namespace: chat-app-local
+    namespace: chat-app-prod
   syncPolicy:
     automated:
       prune: true

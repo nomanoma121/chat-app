@@ -6,7 +6,7 @@ logging {
 discovery.kubernetes "pods" {
   role = "pod"
   namespaces {
-    names = ["chat-app-local", "database", "storage", "monitoring"]
+    names = ["chat-app-prod", "database", "storage", "monitoring"]
   }
 }
 
