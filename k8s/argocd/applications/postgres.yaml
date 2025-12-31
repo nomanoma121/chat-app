@@ -13,7 +13,7 @@ spec:
         valueFiles:
           - $values/k8s/argocd/values/postgres.yaml
     - repoURL: https://github.com/nomanoma121/chat-app
-      targetRevision: feat/introduce-k8s
+      targetRevision: main
       ref: values
       path: k8s/argocd/values
   destination:

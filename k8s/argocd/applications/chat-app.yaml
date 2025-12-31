@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/nomanoma121/chat-app
     path: k8s/overlays/local
-    targetRevision: feat/introduce-k8s
+    targetRevision: main
   destination:
     server: https://kubernetes.default.svc
     namespace: chat-app-local
