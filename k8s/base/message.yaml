@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: message
-          image: chat-app-message:latest
+          image: ghcr.io/nomanoma121/chat-app-message:v25.12.31@sha256:eb443f98ce984816676b8a4363456da63b274b85590aff68e5f8a5879ec73631
           ports:
             - containerPort: 50053
               name: grpc

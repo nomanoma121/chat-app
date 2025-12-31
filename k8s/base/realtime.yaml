@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: realtime
-          image: chat-app-realtime:latest
+          image: ghcr.io/nomanoma121/chat-app-realtime:v25.12.31@sha256:352185ba29866bdb4dd4b37b706ae7a4ae5365c903c512dfc346fac9887f6f48
           ports:
             - containerPort: 50054
               name: websocket

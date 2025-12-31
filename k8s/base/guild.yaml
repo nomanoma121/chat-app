@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: guild
-          image: chat-app-guild:latest
+          image: ghcr.io/nomanoma121/chat-app-guild:v25.12.31@sha256:27cf5ce38579e71ddaa916581b1f45940fe4fff96ca214b413a516798b1bab21
           ports:
             - containerPort: 50052
               name: grpc
