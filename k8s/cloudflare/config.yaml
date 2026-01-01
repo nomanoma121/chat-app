@@ -26,4 +26,7 @@ ingress:
     originRequest:
       noTLSVerify: true
 
+  - hostname: chat-media-cs.nomanoma-dev.com
+    service: http://minio-console.storage.svc:9001
+
   - service: http_status:404
