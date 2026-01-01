@@ -33,6 +33,10 @@ argocd-secrets:
     --from-literal=password=$DATABASE_PASSWORD \
     -n database \
     --dry-run=client -o yaml | kubectl apply -f -
+  kubectl create secret generic tunnel-token \
+    --from-literal=token=$CLOUDFLARE_TUNNEL_TOKEN \
+    -n default \
+    --dry-run=client -o yaml | kubectl apply -f -
 
 argocd:
   echo "Access ArgoCD UI at http://localhost:8080"

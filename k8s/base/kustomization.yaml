@@ -8,8 +8,12 @@ resources:
   - message.yaml
   - user.yaml
   - realtime.yaml
+  - tunnel.yaml
 
 configMapGenerator:
+  - name: cloudflared-config
+    files:
+      - config.yaml=tunnel-config.yaml
   - name: app-config
     literals:
       - USER_SERVICE_URL=user:50051
@@ -19,3 +23,6 @@ configMapGenerator:
       - MEDIA_SERVICE_URL=media:50055
       - REDIS_ADDR=redis-master.database:6379
       - OTEL_EXPORTER_OTLP_ENDPOINT=alloy.monitoring:4317
+
+generatorOptions:
+  disableNameSuffixHash: true

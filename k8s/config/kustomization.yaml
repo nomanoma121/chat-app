@@ -7,7 +7,6 @@ configMapGenerator:
   - name: alloy-config
     files:
       - config.alloy
-  
   - name: grafana-dashboards
     files:
       - dashboard.json
