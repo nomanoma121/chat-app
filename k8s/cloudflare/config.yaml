@@ -1,0 +1,29 @@
+tunnel: d4e17559-a33f-49fe-9289-b1b768c228e8
+credentials-file: /etc/cloudflared/creds/credentials.json
+
+metrics: 0.0.0.0:2000
+no-autoupdate: true
+
+ingress:
+  - hostname: chat-api.nomanoma-dev.com
+    service: http://gateway.chat-app-prod.svc:8000
+
+  - hostname: chat-media.nomanoma-dev.com
+    service: http://minio.storage.svc:9000
+
+  - hostname: chat-ws.nomanoma-dev.com
+    service: http://realtime.chat-app-prod.svc:50054
+    originRequest:
+      noTLSVerify: true
+
+  - hostname: argocd.nomanoma-dev.com
+    service: http://argocd-server.argocd.svc:80
+    originRequest:
+      noTLSVerify: true
+
+  - hostname: grafana.nomanoma-dev.com
+    service: http://grafana.monitoring.svc
+    originRequest:
+      noTLSVerify: true
+
+  - service: http_status:404

@@ -21,7 +21,7 @@ argocd-secrets:
   kubectl create namespace storage --dry-run=client -o yaml | kubectl apply -f -
   kubectl create namespace database --dry-run=client -o yaml | kubectl apply -f -
   kubectl create secret generic app-secrets \
-    --from-env-file=k8s/overlays/prod/.env \
+    --from-env-file=.env \
     -n chat-app-prod \
     --dry-run=client -o yaml | kubectl apply -f -
   kubectl create secret generic minio-secret \
@@ -41,3 +41,10 @@ argocd:
 
 db-pf:
   kubectl port-forward -n database svc/postgres 5432:5432
+
+cft-secret:
+  kubectl create namespace cloudflare --dry-run=client -o yaml | kubectl apply -f -
+  kubectl create secret generic tunnel-credentials \
+    --from-file=credentials.json=$HOME/.cloudflared/d4e17559-a33f-49fe-9289-b1b768c228e8.json \
+    -n cloudflare \
+    --dry-run=client -o yaml | kubectl apply -f -

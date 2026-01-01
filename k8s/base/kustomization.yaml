@@ -19,3 +19,6 @@ configMapGenerator:
       - MEDIA_SERVICE_URL=media:50055
       - REDIS_ADDR=redis-master.database:6379
       - OTEL_EXPORTER_OTLP_ENDPOINT=alloy.monitoring:4317
+
+generatorOptions:
+  disableNameSuffixHash: true

@@ -42,7 +42,7 @@ kind: Service
 metadata:
   name: realtime
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: realtime
   ports:
@@ -50,7 +50,6 @@ spec:
       protocol: TCP
       port: 50054
       targetPort: 50054
-      nodePort: 30054
     - name: pprof
       protocol: TCP
       port: 6060
