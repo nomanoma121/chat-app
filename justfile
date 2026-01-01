@@ -33,10 +33,6 @@ argocd-secrets:
     --from-literal=password=$DATABASE_PASSWORD \
     -n database \
     --dry-run=client -o yaml | kubectl apply -f -
-  kubectl create secret generic tunnel-token \
-    --from-literal=token=$CLOUDFLARE_TUNNEL_TOKEN \
-    -n default \
-    --dry-run=client -o yaml | kubectl apply -f -
 
 argocd:
   echo "Access ArgoCD UI at http://localhost:8080"
@@ -45,3 +41,10 @@ argocd:
 
 db-pf:
   kubectl port-forward -n database svc/postgres 5432:5432
+
+cft-secret:
+  kubectl create namespace cloudflare --dry-run=client -o yaml | kubectl apply -f -
+  kubectl create secret generic tunnel-credentials \
+    --from-file=credentials.json=$HOME/.cloudflared/8a017a59-d645-4774-85e3-dd0a5f1913bb.json \
+    -n cloudflare \
+    --dry-run=client -o yaml | kubectl apply -f -

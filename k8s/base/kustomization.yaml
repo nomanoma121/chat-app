@@ -8,12 +8,8 @@ resources:
   - message.yaml
   - user.yaml
   - realtime.yaml
-  - tunnel.yaml
 
 configMapGenerator:
-  - name: cloudflared-config
-    files:
-      - config.yaml=tunnel-config.yaml
   - name: app-config
     literals:
       - USER_SERVICE_URL=user:50051
