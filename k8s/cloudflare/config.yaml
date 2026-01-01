@@ -1,4 +1,4 @@
-tunnel: 529e865e-cc1f-4133-8468-b730e55ff4f7
+tunnel: d4e17559-a33f-49fe-9289-b1b768c228e8
 credentials-file: /etc/cloudflared/creds/credentials.json
 
 metrics: 0.0.0.0:2000
