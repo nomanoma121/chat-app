@@ -7,13 +7,13 @@ protocol: http2
 
 ingress:
   - hostname: chat-api.nomanoma-dev.com
-    service: http://gateway.default.svc:8000
+    service: http://gateway.chat-app-prod.svc:8000
 
   - hostname: chat-media.nomanoma-dev.com
     service: http://minio.storage.svc:9000
 
   - hostname: chat-ws.nomanoma-dev.com
-    service: http://realtime.default.svc:50054
+    service: http://realtime.chat-app-prod.svc:50054
     originRequest:
       noTLSVerify: true
       http2Origin: false
