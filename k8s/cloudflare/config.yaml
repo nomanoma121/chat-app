@@ -21,4 +21,9 @@ ingress:
     originRequest:
       noTLSVerify: true
 
+  - hostname: grafana.nomanoma-dev.com
+    service: http://grafana.monitoring.svc:3000
+    originRequest:
+      noTLSVerify: true
+
   - service: http_status:404
