@@ -45,6 +45,6 @@ db-pf:
 cft-secret:
   kubectl create namespace cloudflare --dry-run=client -o yaml | kubectl apply -f -
   kubectl create secret generic tunnel-credentials \
-    --from-file=credentials.json=$HOME/.cloudflared/8a017a59-d645-4774-85e3-dd0a5f1913bb.json \
+    --from-file=credentials.json=$HOME/.cloudflared/d4e17559-a33f-49fe-9289-b1b768c228e8.json \
     -n cloudflare \
     --dry-run=client -o yaml | kubectl apply -f -
