@@ -15,12 +15,10 @@ resources:
     memory: 512Mi
 
 service:
-  type: NodePort
-  nodePort: 30090
+  type: ClusterIP
 
 consoleService:
-  type: NodePort
-  nodePort: 30091
+  type: ClusterIP
 
 buckets:
   - name: chat-app-bucket

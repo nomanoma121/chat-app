@@ -42,7 +42,7 @@ kind: Service
 metadata:
   name: gateway
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: gateway
   ports:
@@ -50,7 +50,6 @@ spec:
       protocol: TCP
       port: 8000
       targetPort: 8000
-      nodePort: 30080
     - name: pprof
       protocol: TCP
       port: 6060
